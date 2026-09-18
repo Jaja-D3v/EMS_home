@@ -1,0 +1,3 @@
+https://coreui.io/bootstrap/docs/forms/input-group/ -> bootstrap templates
+https://fontawesome.com/ -> for icons 
+https://tcpdf.org -> for pdf 
