@@ -1,4 +1,4 @@
-<?php $pageTitle = "Dashboard"; ?>
+<?php $pageTitle = "Add new fire extinguisher"; ?>
 
 <!DOCTYPE html>
 <!--

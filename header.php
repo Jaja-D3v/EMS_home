@@ -26,4 +26,5 @@
     <link href="css/examples.css" rel="stylesheet">
     <script src="js/config.js"></script>
     <script src="js/color-modes.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
   </head>

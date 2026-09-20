@@ -1,0 +1,21 @@
+dashboard
+- search
+- sorting 
+- total number of FE
+- total inspected this month
+- expired
+
+QR code scan 
+description: this is for inspecting the FE 
+- qr scanner
+- checklist show 
+- update check list 
+
+
+Audit log
+
+- User Activity log
+
+Notification
+Description: user will notify 2 months before the expiiration date
+- notification of list nearly expired items/FE
