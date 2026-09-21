@@ -5,7 +5,7 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 $host = "localhost";
 $username = "root";
 $password = "";
-$database = "ems_db";
+$database = "kp201";
 
 try {
     $conn = new mysqli($host, $username, $password, $database);

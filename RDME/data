@@ -1,0 +1,35 @@
+# FE INFORMATION DB
+
+- Location
+- FE NO.
+- Capacity
+- Type
+- Class
+- Manufactured Date
+- blank [    ]
+- Condition
+- Remaraks
+
+# FE FORM DB
+- FE NO.    -Auto fill
+- Location  -Auto fill
+- Capacity  -Auto fill
+- Type      -Auto fill
+- Class     -Auto fill
+- Date Inspected
+- Inspected By
+- Verified & Approved By
+- Action Taken
+- Target Date of Implementation
+
+___CHECKLIST__ 
+- Seal
+- Pin
+- Pressure(195 psi)
+- Hose
+- Nozzle
+- Belt
+- Cylinder(body)
+- Demarcation line
+- Signage
+- status

@@ -1,4 +1,4 @@
-<?php $pageTitle = "HOME"; ?>
+<?php $pageTitle = "Scan QR Code"; ?>
 
 <!DOCTYPE html>
 <!--

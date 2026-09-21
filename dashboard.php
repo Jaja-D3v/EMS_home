@@ -1,4 +1,9 @@
-<?php $pageTitle = "Dashboard"; ?>
+<?php
+$pageTitle = "Dashboard";
+include './backend/controller/FireExtinguisherController.php';
+$info = getAllFireExtinguishers();
+
+?>
 
 <!DOCTYPE html>
 <!--
@@ -90,69 +95,71 @@
         </div>
 
         <!-- Content here -->
+        <?php foreach ($info as $data): ?>
+          <div class="card mt-3">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <strong>Fire Extinguisher: <?= htmlspecialchars($data['extinguisher_code']) ?></strong>
+              <span class="badge bg-success">Active</span>
+            </div>
 
-        <div class="card mt-3">
-          <div class="card-header d-flex justify-content-between align-items-center">
-            <strong>Fire Extinguisher: E01-106</strong>
-            <span class="badge bg-success">Active</span>
-          </div>
+            <div class="card-body">
 
-          <div class="card-body">
+              <div class="row g-3">
 
-            <div class="row g-3">
+                <div class="col-6 col-md-4">
+                  <small class="text-body-secondary">Type</small>
+                  <div class="fw-semibold"> <?= htmlspecialchars($data['type']) ?></div>
+                </div>
 
-              <div class="col-6 col-md-4">
-                <small class="text-body-secondary">Type</small>
-                <div class="fw-semibold">ABC</div>
+                <div class="col-6 col-md-4">
+                  <small class="text-body-secondary">Capacity</small>
+                  <div class="fw-semibold"> <?= htmlspecialchars($data['capacity']) ?></div>
+                </div>
+
+                <div class="col-6 col-md-4">
+                  <small class="text-body-secondary">Location</small>
+                  <div class="fw-semibold"> <?= htmlspecialchars($data['location']) ?></div>
+                </div>
+
+                <div class="col-6 col-md-4">
+                  <small class="text-body-secondary">Last Inspection</small>
+                  <div class="fw-semibold"> <?= htmlspecialchars($data['date_acquired']) ?></div>
+                </div>
+
+                <div class="col-6 col-md-4">
+                  <small class="text-body-secondary">Expiration Date</small>
+                  <div class="fw-semibold"> <?= htmlspecialchars($data['expiration_date']) ?></div>
+                </div>
+
+                <div class="col-6 col-md-4">
+                  <small class="text-body-secondary">Status</small>
+                  <div class="fw-semibold"> <?= htmlspecialchars($data['status']) ?></div>
+                </div>
+
               </div>
 
-              <div class="col-6 col-md-4">
-                <small class="text-body-secondary">Capacity</small>
-                <div class="fw-semibold">4.5 kg</div>
-              </div>
+              <hr>
 
-              <div class="col-6 col-md-4">
-                <small class="text-body-secondary">Location</small>
-                <div class="fw-semibold">Building 1 - 2nd Floor</div>
-              </div>
+              <div class="d-flex justify-content-end gap-2">
+                <a href="view-extinguisher.php?id=<?= urlencode($data['extinguisher_id']) ?>" class="btn btn-primary">
+                  View
+                </a>
 
-              <div class="col-6 col-md-4">
-                <small class="text-body-secondary">Last Inspection</small>
-                <div class="fw-semibold">September 10, 2026</div>
-              </div>
+                <a href="edit-extinguisher.php?id=<?= urlencode($data['extinguisher_id']) ?>" class="btn btn-warning">
+                  Edit
+                </a>
 
-              <div class="col-6 col-md-4">
-                <small class="text-body-secondary">Next Inspection</small>
-                <div class="fw-semibold">October 10, 2026</div>
-              </div>
-
-              <div class="col-6 col-md-4">
-                <small class="text-body-secondary">Condition</small>
-                <div class="fw-semibold">Good</div>
+                <a href="delete-extinguisher.php?id=<?= urlencode($data['extinguisher_id']) ?>"
+                  class="btn btn-danger"
+                  onclick="return confirm('Are you sure you want to delete this fire extinguisher?');">
+                  Delete
+                </a>
               </div>
 
             </div>
-
-            <hr>
-
-            <div class="d-flex justify-content-end gap-2">
-              <a href="view-extinguisher.php?id=E01-106" class="btn btn-primary">
-                View
-              </a>
-
-              <a href="edit-extinguisher.php?id=E01-106" class="btn btn-warning">
-                Edit
-              </a>
-
-              <a href="delete-extinguisher.php?id=E01-106"
-                class="btn btn-danger"
-                onclick="return confirm('Are you sure you want to delete this fire extinguisher?');">
-                Delete
-              </a>
-            </div>
-
           </div>
-        </div>
+
+        <?php endforeach; ?>
 
       </div>
     </div>

@@ -88,7 +88,7 @@
   --cui-body-line-height: 1.5;
   --cui-body-color: rgba(33, 33, 33, 0.95);
   --cui-body-color-rgb: 37, 42.92, 54.02;
-  --cui-body-bg: #fff;
+  --cui-body-bg: #f9fafb;
   --cui-body-bg-rgb: 255, 255, 255;
   --cui-emphasis-color: #080a0c;
   --cui-emphasis-color-rgb: 8, 10, 12;
@@ -6254,7 +6254,7 @@ textarea.form-control-lg {
 }
 
 .btn-close {
-  --cui-btn-close-color: #080a0c;
+  --cui-btn-close-color: black;
   --cui-btn-close-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23080a0c'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414'/%3e%3c/svg%3e");
   --cui-btn-close-opacity: 0.5;
   --cui-btn-close-hover-opacity: 0.75;
@@ -6265,7 +6265,7 @@ textarea.form-control-lg {
   width: 1em;
   height: 1em;
   padding: 0.25em 0.25em;
-  color: var(--cui-btn-close-color);
+  color: black;
   background: transparent var(--cui-btn-close-bg) center/1em auto no-repeat;
   filter: var(--cui-btn-close-filter);
   border: 0;
@@ -8371,7 +8371,7 @@ textarea.form-control-lg {
 .sidebar {
   --cui-sidebar-zindex: 1035;
   --cui-sidebar-width: 16rem;
-  --cui-sidebar-bg: var(--cui-body-bg);
+  --cui-sidebar-bg: #00132d;
   --cui-sidebar-padding-x: 1rem;
   --cui-sidebar-padding-y: 1rem;
   --cui-sidebar-color: var(--cui-body-color);
@@ -8526,7 +8526,7 @@ textarea.form-control-lg {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: whitesmoke;
+  background-color: #00132d;
   padding: var(--cui-sidebar-padding-y) var(--cui-sidebar-padding-x);
 }
 .sidebar-header .btn-close {
@@ -8631,7 +8631,7 @@ textarea.form-control-lg {
 
 .sidebar-dark {
   --cui-body-color: rgba(255, 255, 255, 0.87);
-  --cui-body-bg: #0D47A1;
+  --cui-body-bg: #183153;
   --cui-emphasis-color: #fff;
   --cui-secondary-color: rgba(255, 255, 255, 0.6);
   --cui-secondary-bg: #323a49;
@@ -14758,6 +14758,8 @@ textarea.form-control-lg {
 
 /* this is for fontawsome icons */
 
-.fa-fire-extinguisher {
+.fa-gauge, .fa-qrcode, .fa-fire-extinguisher, .fa-user-pen, .fa-bell {
     margin-right: 10px;
 }
+
+

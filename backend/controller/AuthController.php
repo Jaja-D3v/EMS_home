@@ -1,14 +1,13 @@
 <?php
-include './backend/config/db.php';
+require_once __DIR__ . '/../model/AuthModel.php';
 
-if($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    $db_username = 'admin';
-    $db_password = 'admin456';
+    $user = loginUser($username, $password);
 
-    if($username === $db_username && $password === $db_password) {
+    if ($username === $user['LoginID'] && md5($password) === $user['password']) {
         session_start();
         $_SESSION['username'] = $username;
         header('Location: ../../dashboard.php');
