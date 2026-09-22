@@ -17,17 +17,18 @@ $data = getFireExtinguisherById($id);
 -->
 
 <html lang="en">
-<?php include 'header.php'; ?>
+<?php include 'partials/header.php'; ?>
 
 <body>
-    <?php include 'side-nav.php'; ?>
+    <?php include 'partials/side-nav.php'; ?>
     <div class="wrapper d-flex flex-column min-vh-100">
-        <?php include 'header-nav.php'; ?>
+        <?php include 'partials/header-nav.php'; ?>
 
         <div class="row justify-content-center">
             <div class="col-12 col-lg-9 col-xl-8">
                 <!-- here -->
                 <div class="card shadow-sm">
+                    
                     <!-- Header -->
                     <div class="card-header">
                         <h5 class="mb-0">Edit Fire Extinguisher</h5>
@@ -39,13 +40,19 @@ $data = getFireExtinguisherById($id);
                     <div class="card-body">
                         <form class="row g-3" action="backend/controller/FireExtinguisherController.php" method="post">
 
+                            <!-- tell the controller that this is update -->
+                            <input type="hidden" name="action" value="update">
+
+                            <input
+                                type="hidden"
+                                name="extinguisher_id"
+                                value="<?= htmlspecialchars($data['extinguisher_id']) ?>">
+
                             <!-- Fire Extinguisher Code -->
                             <div class="col-md-6">
-
                                 <label for="extinguisherCode" class="form-label">
                                     Fire Extinguisher Code
                                 </label>
-
                                 <input
                                     type="text"
                                     class="form-control"
@@ -60,7 +67,6 @@ $data = getFireExtinguisherById($id);
 
                             <!-- Type -->
                             <div class="col-md-6">
-
                                 <label for="type" class="form-label">
                                     Type
                                 </label>
@@ -70,24 +76,24 @@ $data = getFireExtinguisherById($id);
                                     name="type"
                                     class="form-select"
                                     required>
-                                    <option value="<?= htmlspecialchars($data['type']) ?>" selected disabled>
+
+                                    <option value="<?= htmlspecialchars($data['type']) ?>" selected>
                                         <?= htmlspecialchars($data['type']) ?>
                                     </option>
 
-                                    <option value="ABC">ABC</option>
-                                    <option value="BC">BC</option>
+                                    <option value="Dry Chemical">Dry Chemical</option>
                                     <option value="CO2">CO2</option>
                                     <option value="Water">Water</option>
                                     <option value="Foam">Foam</option>
+                                    <option value="Wet Chemical">Wet Chemical</option>
+                                    <option value="HCFC-123">HCFC</option>
 
                                 </select>
-
                             </div>
 
 
                             <!-- Capacity -->
                             <div class="col-md-6">
-
                                 <label for="capacity" class="form-label">
                                     Capacity
                                 </label>
@@ -97,15 +103,21 @@ $data = getFireExtinguisherById($id);
                                     class="form-control"
                                     id="capacity"
                                     name="capacity"
-                                    placeholder="e.g. 4.5 kg"
+                                    placeholder="e.g. 10 lbs"
+                                    list="capacityOptions"
                                     value="<?= htmlspecialchars($data['capacity']) ?>"
                                     required>
+
+                                <datalist id="capacityOptions">
+                                    <option value="10 lbs">
+                                    <option value="20 lbs">
+                                    <option value="50 lbs">
+                                </datalist>
                             </div>
 
 
                             <!-- Location -->
                             <div class="col-md-6">
-
                                 <label for="location" class="form-label">
                                     Location
                                 </label>
@@ -118,31 +130,26 @@ $data = getFireExtinguisherById($id);
                                     value="<?= htmlspecialchars($data['location']) ?>"
                                     placeholder="e.g. Building 1 - 2nd Floor"
                                     required>
-
                             </div>
 
 
-                            <!-- Date Acquired -->
+                            <!-- Manufactured Date -->
                             <div class="col-md-6">
-
-                                <label for="dateAcquired" class="form-label">
-                                    Date Acquired
+                                <label for="manufacturedDate" class="form-label">
+                                    Manufactured Date
                                 </label>
 
                                 <input
                                     type="date"
                                     class="form-control"
-                                    id="dateAcquired"
-                                    name="date_acquired"
-                                    value="<?= htmlspecialchars($data['date_acquired']) ?>"
-                                    required>
-
+                                    id="manufacturedDate"
+                                    name="manufactured_date"
+                                    value="<?= htmlspecialchars($data['manufactured_date']) ?>">
                             </div>
 
 
                             <!-- Expiration Date -->
                             <div class="col-md-6">
-
                                 <label for="expirationDate" class="form-label">
                                     Expiration Date
                                 </label>
@@ -153,60 +160,118 @@ $data = getFireExtinguisherById($id);
                                     id="expirationDate"
                                     name="expiration_date"
                                     value="<?= htmlspecialchars($data['expiration_date']) ?>"
+                                    readonly
                                     required>
 
+                                <small class="text-muted">
+                                    Automatically calculated as 3 years from manufactured date.
+                                </small>
                             </div>
 
 
-                            <!-- Status -->
+                            <!-- Class -->
                             <div class="col-md-6">
-
-                                <label for="status" class="form-label">
-                                    Status
+                                <label for="class" class="form-label">
+                                    Fire Class
                                 </label>
 
                                 <select
-                                    id="status"
-                                    name="status"
+                                    id="class"
+                                    name="class"
                                     class="form-select"
                                     required>
 
-                                    <option value="<?= htmlspecialchars($data['status']) ?>" selected disabled>
-                                        <?= htmlspecialchars($data['status']) ?>
+                                    <option value="<?= htmlspecialchars($data['class']) ?>" selected>
+                                        <?= htmlspecialchars($data['class']) ?>
                                     </option>
 
-                                    <option value="active">
-                                        Active
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="AB">AB</option>
+                                    <option value="ABC">ABC</option>
+                                    <option value="BC">BC</option>
+
+                                </select>
+                            </div>
+
+
+                            <!-- Placement -->
+                            <div class="col-md-6">
+                                <label for="placement" class="form-label">
+                                    Placement
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="placement"
+                                    name="placement"
+                                    list="placementOptions"
+                                    value="<?= htmlspecialchars($data['placement']) ?>"
+                                    placeholder="e.g. Wall Mounted"
+                                    required>
+
+                                <datalist id="placementOptions">
+                                    <option value="Wall Mounted">
+                                    <option value="Floor Standing">
+                                    <option value="Cabinet">
+                                    <option value="Vehicle">
+                                </datalist>
+                            </div>
+
+
+                            <!-- Condition Status -->
+                            <div class="col-md-6">
+                                <label for="conditionStatus" class="form-label">
+                                    Condition Status
+                                </label>
+
+                                <select
+                                    id="conditionStatus"
+                                    name="condition_status"
+                                    class="form-select"
+                                    required>
+
+                                    <option
+                                        value="<?= htmlspecialchars($data['condition_status']) ?>"
+                                        selected>
+                                        <?= htmlspecialchars($data['condition_status']) ?>
                                     </option>
 
-                                    <option value="For Inspection">
-                                        For Inspection
+                                    <option value="Good">
+                                        Good
                                     </option>
 
-                                    <option value="For Maintenance">
-                                        For Maintenance
-                                    </option>
-
-                                    <option value="Expired">
-                                        Expired
-                                    </option>
-
-                                    <option value="Retired">
-                                        Retired
-                                    </option>
-
-                                    <option value="Missing">
-                                        Missing
+                                    <option value="Not Good">
+                                        Not Good
                                     </option>
 
                                 </select>
+                            </div>
 
+
+                            <!-- Remarks -->
+                            <div class="col-md-6">
+                                <label for="remarks" class="form-label">
+                                    Remarks
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="remarks"
+                                    name="remarks"
+                                    value="<?= htmlspecialchars($data['remarks'] ?? '') ?>"
+                                    placeholder="e.g. Needs inspection">
                             </div>
 
 
                             <!-- Buttons -->
                             <div class="col-12">
                                 <hr class="my-2">
+
                                 <div class="d-flex justify-content-end gap-2">
 
                                     <button
@@ -217,6 +282,7 @@ $data = getFireExtinguisherById($id);
 
                                 </div>
                             </div>
+
                         </form>
                     </div>
 
@@ -235,7 +301,7 @@ $data = getFireExtinguisherById($id);
 
     </div>
     </div>
-    <?php include 'footer.php'; ?>
+    <?php include 'partials/footer.php'; ?>
     </div>
     <!-- CoreUI and necessary plugins-->
     <script src="vendors/@coreui/coreui/js/coreui.bundle.min.js"></script>

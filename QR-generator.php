@@ -15,12 +15,12 @@ $result = getAllFireExtinguishersCode();
 -->
 
 <html lang="en">
-<?php include 'header.php'; ?>
+<?php include 'partials/header.php'; ?>
 
 <body>
-  <?php include 'side-nav.php'; ?>
+  <?php include 'partials/side-nav.php'; ?>
   <div class="wrapper d-flex flex-column min-vh-100">
-    <?php include 'header-nav.php'; ?>
+    <?php include 'partials/header-nav.php'; ?>
 
     <div class="container py-4">
 
@@ -158,7 +158,7 @@ $result = getAllFireExtinguishersCode();
 
   </div>
   </div>
-  <?php include 'footer.php'; ?>
+  <?php include 'partials/footer.php'; ?>
   </div>
   <!-- CoreUI and necessary plugins-->
   <script src="vendors/@coreui/coreui/js/coreui.bundle.min.js"></script>

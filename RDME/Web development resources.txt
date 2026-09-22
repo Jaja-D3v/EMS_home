@@ -2,3 +2,7 @@ https://coreui.io/bootstrap/docs/forms/input-group/ -> bootstrap templates
 https://fontawesome.com/ -> for icons 
 https://tcpdf.org -> for pdf 
 https://sileo.aaryan.design/play -> for TOAST
+https://freefrontend.com/bootstrap-login-forms/ -> for templates
+https://storyset.com/search?q=login -> for vector templates   note:need ng attribution
+
+https://colorlib.com/wp/template/login-form-08/ -> login form 

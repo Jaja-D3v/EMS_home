@@ -21,6 +21,12 @@ description: this is for inspecting the FE
 - checklist show 
 - update check list 
 
+## QR Code generator
+- list of extinguisher 
+- generate QR code 
+- sort by date added
+- search by fe code 
+
 
 ## Activity log
 - User Activity log

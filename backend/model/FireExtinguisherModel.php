@@ -3,7 +3,6 @@
 require_once __DIR__ . '/../config/db.php';
 
 // Get All Fire Extinguisher 
-
 function getAll()
 {
     global $conn;
@@ -13,10 +12,13 @@ function getAll()
                 type,
                 capacity,
                 location,
-                date_acquired,
+                manufactured_date,
+                class,
+                placement,
+                condition_status,
+                remarks,
                 expiration_date,
-                status,
-                create_at,
+                created_at,
                 updated_at
             FROM fire_extinguishers_tbl
             ORDER BY extinguisher_id DESC";
@@ -26,7 +28,6 @@ function getAll()
 }
 
 // Get Fire Extinguisher by their id 
-
 function getById($id)
 {
     global $conn;
@@ -36,10 +37,13 @@ function getById($id)
                 type,
                 capacity,
                 location,
-                date_acquired,
+                manufactured_date,
+                class,
+                placement,
+                condition_status,
+                remarks,
                 expiration_date,
-                status,
-                create_at,
+                created_at,
                 updated_at
             FROM fire_extinguishers_tbl
             WHERE extinguisher_id = ?";
@@ -52,11 +56,15 @@ function getById($id)
 }
 
 // Get Fire Extinguisher by their code 
-
 function getByCode($code)
 {
     global $conn;
-    $sql = "SELECT *
+    $sql = "SELECT 
+                extinguisher_code,
+                location,
+                type,
+                capacity,
+                class
             FROM fire_extinguishers_tbl
             WHERE extinguisher_code = ?";
 
@@ -68,38 +76,119 @@ function getByCode($code)
 }
 
 // this function model is for adding new extinguisher
-function addNewFireExtinguisherModel($code, $type, $capacity, $location, $date_acquired, $expiration_date, $status)
-{
+function addNewFireExtinguisherModel(
+    $code,
+    $type,
+    $capacity,
+    $location,
+    $manufactured_date,
+    $class,
+    $placement,
+    $condition_status,
+    $remarks,
+    $expiration_date
+) {
     global $conn;
     $sql = "INSERT INTO fire_extinguishers_tbl
-            (extinguisher_code, type, capacity, location, date_acquired, expiration_date, status)
-            VALUES (?, ?, ?, ?, ?, ?, ?)";
-
+            (
+            extinguisher_code,
+            type,
+            capacity,
+            location,
+            manufactured_date,
+            class,
+            placement,
+            condition_status,
+            remarks,
+            expiration_date
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($conn, $sql);
 
     mysqli_stmt_bind_param(
         $stmt,
-        "sssssss",
+        "ssssssssss",
         $code,
         $type,
         $capacity,
         $location,
-        $date_acquired,
-        $expiration_date,
-        $status
+        $manufactured_date,
+        $class,
+        $placement,
+        $condition_status,
+        $remarks,
+        $expiration_date
     );
 
     $result = mysqli_stmt_execute($stmt);
 
     if ($result) {
-        return "Fire extinguisher added successfully.";
+        return true;
+    } else {
+        return false;
     }
+}
 
-    return "Failed to add fire extinguisher.";
+// this function model is for updating existing extinguisher
+function updateFireExtinguisherModel(
+    $id,
+    $code,
+    $type,
+    $capacity,
+    $location,
+    $manufactured_date,
+    $class,
+    $placement,
+    $condition_status,
+    $remarks,
+    $expiration_date
+) {
+    global $conn;
+
+    $sql = "UPDATE fire_extinguishers_tbl
+            SET
+                extinguisher_code = ?,
+                type = ?,
+                capacity = ?,
+                location = ?,
+                manufactured_date = ?,
+                class = ?,
+                placement = ?,
+                condition_status = ?,
+                remarks = ?,
+                expiration_date = ?
+            WHERE extinguisher_id = ?";
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    mysqli_stmt_bind_param(
+        $stmt,
+        "ssssssssssi",
+        $code,
+        $type,
+        $capacity,
+        $location,
+        $manufactured_date,
+        $class,
+        $placement,
+        $condition_status,
+        $remarks,
+        $expiration_date,
+        $id
+    );
+
+    $result = mysqli_stmt_execute($stmt);
+
+    if ($result) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 // this is for delete fire extinguisher by id 
-function deleteFireExtinguisherById($id) {
+function deleteFireExtinguisherById($id)
+{
     global $conn;
     $sql = "DELETE FROM fire_extinguishers_tbl
     WHERE extinguisher_id = ?";
@@ -107,4 +196,176 @@ function deleteFireExtinguisherById($id) {
     $stmt = mysqli_prepare($conn, $sql);
     mysqli_stmt_bind_param($stmt, "i", $id);
     mysqli_stmt_execute($stmt);
+
+    if ($stmt) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+// nearly expiring fire extinguisher
+function getExpiringFireExtinguishers()
+{
+    global $conn;
+    $sql = "SELECT COUNT(*) AS total
+            FROM fire_extinguishers_tbl
+            WHERE expiration_date >= CURDATE()
+            AND expiration_date <= DATE_ADD(CURDATE(), INTERVAL 2 MONTH)";
+
+    $result = mysqli_query($conn, $sql);
+
+    if (!$result) {
+        return 0;
+    }
+
+    $row = mysqli_fetch_assoc($result);
+    return (int) $row['total'];
+}
+
+
+// count all registered fire extinguishers
+function getAllFireExtinguishersCount()
+{
+    global $conn;
+
+    $sql = "SELECT COUNT(*) AS total
+            FROM fire_extinguishers_tbl";
+
+    $result = mysqli_query($conn, $sql);
+
+    if (!$result) {
+        return 0;
+    }
+
+    $row = mysqli_fetch_assoc($result);
+
+    return (int) $row['total'];
+}
+
+
+// count all spare fire extinguishers
+function getSpareFireExtinguishersCount()
+{
+    global $conn;
+
+    $sql = "SELECT COUNT(*) AS total
+            FROM fire_extinguishers_tbl
+            WHERE location = 'Storage'";
+
+    $result = mysqli_query($conn, $sql);
+
+    if (!$result) {
+        return 0;
+    }
+
+    $row = mysqli_fetch_assoc($result);
+
+    return (int) $row['total'];
+}
+
+// get total count of spare with good condition
+function getGoodSpareFireExtinguishersCount()
+{
+    global $conn;
+
+    $sql = "SELECT COUNT(*) AS total
+            FROM fire_extinguishers_tbl
+            WHERE location = 'Storage'
+            AND condition_status = 'Good'";
+
+    $result = mysqli_query($conn, $sql);
+
+    if (!$result) {
+        return 0;
+    }
+
+    $row = mysqli_fetch_assoc($result);
+    return (int) $row['total'];
+}
+
+
+// this is for count of not good 
+
+function getNotGoodSpareFireExtinguishersCount()
+{
+    global $conn;
+
+    $sql = "SELECT COUNT(*) AS total
+            FROM fire_extinguishers_tbl
+            WHERE location = 'Storage'
+            AND condition_status = 'Not Good'";
+
+    $result = mysqli_query($conn, $sql);
+
+    if (!$result) {
+        return 0;
+    }
+
+    $row = mysqli_fetch_assoc($result);
+
+    return (int) $row['total'];
+}
+
+
+// this is to get all the installed fire extinguisher
+function getInstalledFireExtinguishersCount()
+{
+    global $conn;
+    $sql = "SELECT COUNT(*) AS total
+            FROM fire_extinguishers_tbl
+            WHERE location != 'Storage'";
+
+    $result = mysqli_query($conn, $sql);
+
+    if (!$result) {
+        return 0;
+    }
+
+    $row = mysqli_fetch_assoc($result);
+
+    return (int) $row['total'];
+}
+
+// this is to get all the installed with good condition
+function getGoodInstalledFireExtinguishersCount()
+{
+    global $conn;
+
+    $sql = "SELECT COUNT(*) AS total
+            FROM fire_extinguishers_tbl
+            WHERE location != 'Storage'
+            AND condition_status = 'Good'";
+
+    $result = mysqli_query($conn, $sql);
+
+    if (!$result) {
+        return 0;
+    }
+
+    $row = mysqli_fetch_assoc($result);
+
+    return (int) $row['total'];
+}
+
+// this is to get all the installed with not good condition
+function getNotGoodInstalledFireExtinguishersCount()
+{
+    global $conn;
+
+    $sql = "SELECT COUNT(*) AS total
+            FROM fire_extinguishers_tbl
+            WHERE location != 'Storage'
+            AND condition_status = 'Not Good'";
+
+    $result = mysqli_query($conn, $sql);
+
+    if (!$result) {
+        return 0;
+    }
+
+    $row = mysqli_fetch_assoc($result);
+
+    return (int) $row['total'];
 }

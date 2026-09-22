@@ -1,14 +1,14 @@
 # FE INFORMATION DB
 
-- Location
-- FE NO.
-- Capacity
-- Type
-- Class
-- Manufactured Date
-- blank [    ]
-- Condition
-- Remaraks
+- FE NO. 
+- Type 
+- Capacity 
+- Location 
+- Manufactured Date 
+- Class 
+- Placement  
+- Condition 
+- Remaraks 
 
 # FE FORM DB
 - FE NO.    -Auto fill
@@ -23,6 +23,7 @@
 - Target Date of Implementation
 
 ___CHECKLIST__ 
+
 - Seal
 - Pin
 - Pressure(195 psi)
