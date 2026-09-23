@@ -369,3 +369,43 @@ function getNotGoodInstalledFireExtinguishersCount()
 
     return (int) $row['total'];
 }
+
+
+// get all good
+function getAllGoodCondition () {
+    global $conn;
+
+    $sql = "SELECT COUNT(*) AS total
+            FROM fire_extinguishers_tbl
+            WHERE condition_status = 'Good';";
+
+     $result = mysqli_query($conn, $sql);
+
+    if (!$result) {
+        return 0;
+    }
+
+    $row = mysqli_fetch_assoc($result);
+
+    return (int) $row['total'];
+}
+
+// get all not good
+function getAllNotGoodCondition () {
+    global $conn;
+
+    $sql = "SELECT COUNT(*) AS total
+            FROM fire_extinguishers_tbl
+            WHERE condition_status = 'Not Good'";
+            
+     $result = mysqli_query($conn, $sql);
+
+    if (!$result) {
+        return 0;
+    }
+
+    $row = mysqli_fetch_assoc($result);
+
+    return (int) $row['total'];
+
+}

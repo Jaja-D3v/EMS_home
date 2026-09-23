@@ -287,6 +287,7 @@ $data = getFireExtinguisherById($id);
                     </div>
 
                 </div>
+                <!-- END -->
             </div>
         </div>
 

@@ -1,5 +1,5 @@
-<?php 
-$pageTitle = "QR Code Generator"; 
+<?php
+$pageTitle = "QR Code Generator";
 include 'backend/controller/QRCodeGeneratorController.php';
 $result = getAllFireExtinguishersCode();
 ?>
@@ -22,135 +22,327 @@ $result = getAllFireExtinguishersCode();
   <div class="wrapper d-flex flex-column min-vh-100">
     <?php include 'partials/header-nav.php'; ?>
 
-    <div class="container py-4">
+    <div class="container-fluid py-0">
 
-      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
-        <div>
-          <h3 class="mb-1">QR Codes</h3>
-          <p class="text-muted mb-0">
-            Select fire extinguishers to print their QR codes.
-          </p>
+      <!-- Hero -->
+      <div class="card border-0 shadow-sm text-white mb-1 mt-0 overflow-hidden "
+        style="background: linear-gradient(135deg, #700808, #f50808);">
+
+        <div class="card-body p-4">
+
+          <div class="row align-items-center g-3">
+
+            <div class="col-auto">
+              <div class="bg-danger rounded-3 p-3 fs-3">
+                <i class="bi bi-qr-code-scan"></i>
+              </div>
+            </div>
+
+            <div class="col">
+              <h2 class="fw-bold mb-1">
+                QR Code Generator
+              </h2>
+
+              <p class="mb-0 text-white-50">
+                Select fire extinguishers to generate their QR codes.
+              </p>
+            </div>
+
+            <div class="col-12 col-md-auto">
+
+              <button
+                type="button"
+                class="btn btn-warning fw-semibold px-4"
+                onclick="printSelected()">
+
+                <i class="bi bi-plus-lg me-1"></i>
+                Generate QR Codes
+
+              </button>
+
+            </div>
+
+          </div>
+
         </div>
-
-        <button type="button" class="btn btn-primary" onclick="printSelected()">
-          Print Selected
-        </button>
       </div>
 
-      <!-- Select All -->
-      <div class="card">
-        <div class="card-header">
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              id="selectAll"
-              onchange="toggleSelectAll(this)">
 
-            <label class="form-check-label fw-semibold" for="selectAll">
-              Select All
-            </label>
+      <!-- Table Card -->
+      <div class="card border-0 shadow-sm">
+
+        <!-- Toolbar -->
+        <div class="card-header bg-white border-0 p-3">
+
+          <div class="row align-items-center g-3">
+
+            <div class="col-md">
+
+            </div>
+
+
+            <div class="col-md-auto">
+
+              <div class="input-group">
+
+                <span class="input-group-text bg-white">
+                  <i class="bi bi-search"></i>
+                </span>
+
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Search..."
+                  id="qrSearch">
+
+                <button
+                  class="btn btn-outline-secondary">
+
+                  <i class="bi bi-sliders"></i>
+
+                </button>
+
+              </div>
+
+            </div>
+
           </div>
+
         </div>
 
-        <div class="card-body p-0">
-          <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+        <!-- Table -->
+        <div class="table-responsive">
 
-              <thead>
-                <tr>
-                  <th width="50"></th>
-                  <th>Extinguisher Code</th>
-                  <th>Type</th>
-                  <th>Location</th>
-                </tr>
-              </thead>
+          <table class="table table-hover align-middle mb-0">
 
-              <tbody>
+            <thead class="table-light">
 
-                <?php if ($result->num_rows > 0): ?>
-                  <?php while ($row = $result->fetch_assoc()): ?>
-                    <tr>
+              <tr>
 
-                      <td>
-                        <div class="form-check">
-                          <input
-                            class="form-check-input extinguisher-checkbox"
-                            type="checkbox"
-                            value="<?= htmlspecialchars($row['extinguisher_code']) ?>">
+                <th width="50">
+
+                  <div class="form-check mb-0">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="selectAll"
+                      onchange="toggleSelectAll(this)">
+                  </div>
+
+                </th>
+
+                <th>
+                  EXTINGUISHER CODE
+                </th>
+
+                <th>
+                  TYPE
+                </th>
+
+                <th>
+                  LOCATION
+                </th>
+
+                <th width="80"></th>
+
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              <?php if ($result->num_rows > 0): ?>
+
+                <?php while ($row = $result->fetch_assoc()): ?>
+
+                  <tr>
+
+                    <!-- Checkbox -->
+                    <td>
+
+                      <input
+                        class="form-check-input extinguisher-checkbox"
+                        type="checkbox"
+                        value="<?= htmlspecialchars($row['extinguisher_code']) ?>"
+                        onchange="updateSelection()">
+
+                    </td>
+
+                    <!-- Extinguisher Code -->
+                    <td>
+
+                      <div class="d-flex align-items-center gap-2">
+
+                        <div class="bg-danger-subtle text-danger rounded-3 p-2">
+                          <i class="bi bi-fire"></i>
                         </div>
-                      </td>
 
-                      <td>
                         <strong>
                           <?= htmlspecialchars($row['extinguisher_code']) ?>
                         </strong>
-                      </td>
 
-                      <td>
-                        <?= htmlspecialchars($row['type']) ?>
-                      </td>
+                      </div>
 
-                      <td>
-                        <?= htmlspecialchars($row['location']) ?>
-                      </td>
-
-                    </tr>
-
-                  <?php endwhile; ?>
-
-                <?php else: ?>
-
-                  <tr>
-                    <td colspan="4" class="text-center py-4">
-                      No fire extinguishers found.
                     </td>
+
+
+                    <!-- Type -->
+                    <td>
+
+                      <span class="badge rounded-pill bg-primary-subtle text-primary">
+
+                        <?= htmlspecialchars($row['type']) ?>
+
+                      </span>
+
+                    </td>
+
+                    <!-- Location -->
+                    <td>
+
+                      <i class="bi bi-geo-alt-fill text-secondary me-1"></i>
+
+                      <?= htmlspecialchars($row['location']) ?>
+
+                    </td>
+
+                    <!-- Actions -->
+                    <td class="text-end">
+
+                    </td>
+
                   </tr>
 
-                <?php endif; ?>
+                <?php endwhile; ?>
 
-              </tbody>
-            </table>
-          </div>
+              <?php else: ?>
+
+                <tr>
+
+                  <td
+                    colspan="5"
+                    class="text-center py-5 text-muted">
+
+                    No fire extinguishers found.
+
+                  </td>
+
+                </tr>
+
+              <?php endif; ?>
+
+            </tbody>
+
+          </table>
+
         </div>
+
+
+        <!-- Selection Footer -->
+        <div class="card-footer border-0 bg-primary-subtle rounded selection-footer">
+
+          <div class="d-flex flex-column flex-md-row
+                        justify-content-between
+                        align-items-center
+                        gap-3">
+
+            <div class="text-primary fw-semibold">
+
+              <i class="bi bi-check-circle-fill me-1"></i>
+
+              <span id="selectedCount">0</span>
+              item(s) selected
+
+            </div>
+
+
+            <div class="d-flex gap-2">
+
+              <button
+                type="button"
+                class="btn btn-light"
+                onclick="clearSelection()">
+
+                <i class="bi bi-x-lg me-1"></i>
+                Clear
+
+              </button>
+
+
+              <button
+                type="button"
+                class="btn btn-primary"
+                onclick="printSelected()">
+
+                <i class="bi bi-printer me-1"></i>
+                Print Selected
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
+
     </div>
 
 
     <script>
-      function toggleSelectAll(selectAllCheckbox) {
+      function toggleSelectAll(source) {
 
-        const checkboxes = document.querySelectorAll('.extinguisher-checkbox');
+        document
+          .querySelectorAll('.extinguisher-checkbox')
+          .forEach(cb => {
+            cb.checked = source.checked;
+          });
 
-        checkboxes.forEach(function(checkbox) {
-          checkbox.checked = selectAllCheckbox.checked;
-        });
+        updateSelection();
+      }
+
+
+      function updateSelection() {
+
+        const selected =
+          document.querySelectorAll(
+            '.extinguisher-checkbox:checked'
+          ).length;
+
+        document.getElementById('selectedCount').textContent =
+          selected;
+      }
+
+
+      function clearSelection() {
+
+        document
+          .querySelectorAll('.extinguisher-checkbox')
+          .forEach(cb => {
+            cb.checked = false;
+          });
+
+        document.getElementById('selectAll').checked = false;
+
+        updateSelection();
       }
 
 
       function printSelected() {
 
-        const selected = [];
+        const selected = [...document.querySelectorAll(
+          '.extinguisher-checkbox:checked'
+        )].map(cb => cb.value);
 
-        document.querySelectorAll('.extinguisher-checkbox:checked')
-          .forEach(function(checkbox) {
-            selected.push(checkbox.value);
-          });
-
-
-        if (selected.length === 0) {
+        if (!selected.length) {
           alert('Please select at least one fire extinguisher.');
           return;
         }
 
-
-        // Pass selected QR codes to print page
-        const codes = encodeURIComponent(selected.join(','));
-
-        window.open(
-          'helpers/print-qr.php?codes=' + codes,
-          '_blank'
-        );
+        window.location.href =
+          'helpers/print-qr.php?codes=' +
+          encodeURIComponent(selected.join(','));
       }
     </script>
 

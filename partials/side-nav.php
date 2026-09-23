@@ -38,9 +38,9 @@
         QR Code Generator
       </a>
 
-      <a class="nav-link" href="add-extinguisher.php">
+      <a class="nav-link" href="list-extinguisher.php">
         <i class="fa-solid fa-fire-extinguisher"></i>
-        Add new extinguisher
+        Fire Extinguisher List
       </a>
 
       <a class="nav-link" href="audit-log.php">

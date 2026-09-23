@@ -1,5 +1,5 @@
 
-Day 2    TO-DO                       STATUS
+Day 2    TO-DO                           STATUS
 _____________________________________________________________
 - database creation
     - inspection_form_tbl                # DONE
@@ -14,7 +14,6 @@ _____________________________________________________________
 - edit notification                      #DONE
 - update notification                    #DONE
 - update fe info data                    #DONE
-- Insert inspection feature              #
 - delete function                        #DONE
 - delete notiff                          #DONE
 - activity  log for add fe               #DONE

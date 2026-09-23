@@ -22,6 +22,14 @@ function getFireExtinguisherByCode($code)
     return getByCode($code);
 }
 
+// same purpose with the code above but is is to get the 
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+
+    $action = $_GET['action'] ?? '';
+
+   
+}
+
 // controller function for creating/adding new fire extinguisher
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -106,10 +114,80 @@ function updateExtinguisher(
             "Update Fire Extinguisher",
             "Updated fire extinguisher $code"
         );
-        header("Location: ../../dashboard.php?id=$id&success-update=1");
+        header("Location: ../../list-extinguisher.php?id=$id&success-update=1");
         exit;
     }
     return $success;
+}
+
+
+// GET - fetch fire extinguisher for edit modal & get by code for fire extinguisher
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+
+    $action = $_GET['action'] ?? null;
+
+    if ($action === 'get') {
+
+        $ext_id = $_GET['id'] ?? null;
+
+        header('Content-Type: application/json');
+
+        if (!$ext_id) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid fire extinguisher ID.'
+            ]);
+            exit;
+        }
+
+        $data = getById($ext_id);
+
+        if (!$data) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Fire extinguisher not found.'
+            ]);
+            exit;
+        }
+
+        echo json_encode([
+            'success' => true,
+            'data' => $data
+        ]);
+
+        exit;
+    }else if ($action === 'getByCode') {
+
+        header('Content-Type: application/json');
+
+        $code = trim($_GET['code'] ?? '');
+
+        if ($code === '') {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid QR code.'
+            ]);
+            exit;
+        }
+
+        $data = getFireExtinguisherByCode($code);
+
+        if (!$data) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Fire extinguisher not found.'
+            ]);
+            exit;
+        }
+
+        echo json_encode([
+            'success' => true,
+            'data' => $data
+        ]);
+
+        exit;
+    }
 }
 
 // add new extinguisher
@@ -145,7 +223,7 @@ function addNewExtinguisher(
             "Add Fire Extinguisher",
             "Added fire extinguisher $code"
         );
-        header("Location: ../../add-extinguisher.php?success-add=1");
+        header("Location: ../../list-extinguisher.php?success-add=1");
         exit;
     }
     return $success;
@@ -159,7 +237,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $ext_id = $_GET['id'] ?? null;
         if (!$ext_id) {
 
-            header("Location: ../../dashboard.php?error=invalid_id");
+            header("Location: ../../list-extinguisher.php?error=invalid_id");
             exit;
         }
         $success = deleteFireExtinguisherById($ext_id);
@@ -170,10 +248,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 "Delete Fire Extinguisher",
                 "Deleted fire extinguisher $ext_code"
             );
-            header("Location: ../../dashboard.php?success-delete=1");
+            header("Location: ../../list-extinguisher.php?success-delete=1");
             exit;
         }
-        header("Location: ../../dashboard.php?error=delete_failed");
+        header("Location: ../../list-extinguisher.php?error=delete_failed");
         exit;
     }
 }
@@ -183,7 +261,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 function getAllExpiringCount()
 {
     $expiringCount = getExpiringFireExtinguishers();
-
     return $expiringCount;
 }
 
@@ -228,4 +305,14 @@ function getTotalGoodInstalledFireExtinguishers()
 function getTotalNotGoodInstalledFireExtinguishers()
 {
     return getNotGoodInstalledFireExtinguishersCount();
+}
+
+// get all good condition
+function getGoodCondition(){
+    return getAllGoodCondition();
+}
+
+// get all not good condition
+function getNotGoodCondition(){
+    return getAllNotGoodCondition();
 }

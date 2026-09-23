@@ -14762,4 +14762,37 @@ textarea.form-control-lg {
     margin-right: 10px;
 }
 
+/* for inspection form */
 
+.inspection-item {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .inspection-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .08) !important;
+  }
+
+  .inspection-switch {
+      cursor: pointer;
+      transition: transform 0.2s ease;
+  }
+
+  .inspection-switch:active {
+      transform: scale(0.9);
+  }
+
+  /* for stick the footer */
+.selection-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    z-index: 1030;
+
+    margin: 0 !important;
+    padding: 12px 24px;
+
+    box-shadow: 0 -3px 15px rgba(0, 0, 0, 0.08);
+}

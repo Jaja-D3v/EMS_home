@@ -1,4 +1,10 @@
-<?php $pageTitle = "Activity Log"; ?>
+<?php $pageTitle = '<div class="d-flex align-items-center gap-2 mb-1">
+                <i class="bi bi-activity text-primary"></i>
+
+                <h5 class="fw-semibold mb-0">
+                  Activity Log
+                </h5>
+              </div>'; ?>
 
 <!DOCTYPE html>
 <!--
@@ -29,14 +35,6 @@
           <div class="d-flex align-items-center justify-content-between">
 
             <div>
-              <div class="d-flex align-items-center gap-2 mb-1">
-                <i class="bi bi-activity text-primary"></i>
-
-                <h5 class="fw-semibold mb-0">
-                  Activity Log
-                </h5>
-              </div>
-
               <small class="text-body-secondary">
                 Recent system activity
               </small>

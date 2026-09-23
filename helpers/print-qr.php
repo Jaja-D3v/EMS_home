@@ -1,182 +1,179 @@
 <?php
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
 $codes = [];
 
 if (isset($_GET['codes']) && !empty($_GET['codes'])) {
-    $codes = explode(',', $_GET['codes']);
+    $codes = array_filter(
+        array_map('trim', explode(',', $_GET['codes']))
+    );
 }
 
-?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Print QR Codes</title>
-
-    <!-- Bootstrap -->
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet">
-
-    <!-- QR Code Library -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+if (empty($codes)) {
+    die('No QR codes selected.');
+}
 
 
-    <style>
-        .qr-item {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-            page-break-inside: avoid;
-            break-inside: avoid;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            min-height: 125px;
-        }
+/*
+|--------------------------------------------------------------------------
+| TCPDF
+|--------------------------------------------------------------------------
+*/
 
-        .qr-code {
-            flex-shrink: 0;
-        }
-
-        .qr-info {
-            flex: 1;
-        }
-
-        @media print {
-
-            .no-print {
-                display: none !important;
-            }
-
-            body {
-                margin: 0;
-            }
-
-            .container {
-                max-width: 100% !important;
-                width: 100% !important;
-                padding: 0 !important;
-            }
-
-            .row {
-                --bs-gutter-x: 8px;
-                --bs-gutter-y: 8px;
-            }
-
-            .qr-item {
-                border: 1px solid #000;
-                padding: 6px;
-                min-height: 115px;
-            }
-
-            .qr-code img {
-                width: 100px !important;
-                height: 100px !important;
-            }
-
-            .qr-info {
-                font-size: 12px;
-            }
-
-        }
-    </style>
-
-</head>
+$pdf = new TCPDF(
+    'L',              // Landscape
+    'mm',              // Unit
+    [64, 36],         // Page size: 64mm x 36mm
+    true,
+    'UTF-8',
+    false
+);
 
 
-<body>
+/*
+|--------------------------------------------------------------------------
+| PDF Settings
+|--------------------------------------------------------------------------
+*/
+
+$pdf->SetCreator('Fire Extinguisher Management System');
+$pdf->SetAuthor('Fire Extinguisher Management System');
+$pdf->SetTitle('Fire Extinguisher QR Codes');
+
+$pdf->setPrintHeader(false);
+$pdf->setPrintFooter(false);
+
+$pdf->SetMargins(0, 0, 0);
+$pdf->SetAutoPageBreak(false, 0);
 
 
-    <div class="container py-4">
+/*
+|--------------------------------------------------------------------------
+| Generate each QR
+|--------------------------------------------------------------------------
+*/
+
+foreach ($codes as $code) {
+
+    $pdf->AddPage();
+
+    // Border ng buong 64mm × 36mm label
+    $pdf->SetLineWidth(0.3);
+    $pdf->SetDrawColor(0, 0, 0);
+
+    $pdf->Rect(
+        1,
+        1,
+        62,
+        34
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | QR CODE
+    |--------------------------------------------------------------------------
+    */
+
+    $qrX = 2;
+    $qrY = 3;
+
+    $qrSize = 30;
+
+    $style = [
+        'border' => false,
+        'padding' => 0,
+        'fgcolor' => [0, 0, 0],
+        'bgcolor' => [255, 255, 255],
+        'module_width' => 1,
+        'module_height' => 1
+    ];
+
+    $pdf->write2DBarcode(
+        $code,
+        'QRCODE',
+        $qrX,
+        $qrY,
+        $qrSize,
+        $qrSize,
+        $style,
+        'N'
+    );
 
 
-        <!-- HEADER / PRINT BUTTON -->
+    /*
+    |--------------------------------------------------------------------------
+    | INFORMATION
+    |--------------------------------------------------------------------------
+    */
 
-        <div class="no-print d-flex justify-content-between align-items-center mb-4">
+    $infoX = 35;
+    $infoY = 9;
+    $infoWidth = 27;
 
-            <h3 class="mb-0">
-                Print QR Codes
-            </h3>
+    $pdf->SetXY($infoX, $infoY);
 
-            <button
-                type="button"
-                class="btn btn-primary"
-                onclick="window.print()">
-                Print
-            </button>
+    $pdf->SetFont(
+        'helvetica',
+        'B',
+        8
+    );
 
-        </div>
+    $pdf->MultiCell(
+        $infoWidth,
+        4,
+        "Fire Extinguisher",
+        0,
+        'L',
+        false,
+        1
+    );
 
+    $pdf->SetX($infoX);
 
-        <!-- QR CODES -->
+    $pdf->SetFont(
+        'helvetica',
+        'B',
+        8
+    );
 
-        <div class="row">
+    $pdf->MultiCell(
+        $infoWidth,
+        4,
+        $code,
+        0,
+        'L',
+        false,
+        1
+    );
 
-            <?php foreach ($codes as $index => $code): ?>
+    $pdf->SetX($infoX);
 
-                <div class="col-4">
+    $pdf->SetFont(
+        'helvetica',
+        '',
+        6
+    );
 
-                    <div class="qr-item">
-
-                        <!-- QR CODE -->
-                        <div
-                            id="qr-<?= $index ?>"
-                            class="qr-code"></div>
-
-                        <!-- INFORMATION -->
-                        <div class="qr-info">
-
-                            <div class="fw-bold">
-                                Fire Extinguisher
-                            </div>
-
-                            <div class="fw-semibold">
-                                <?= htmlspecialchars($code) ?>
-                            </div>
-
-                            <div class="small text-muted">
-                                Scan QR Code
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            <?php endforeach; ?>
-
-        </div>
-
-
-    </div>
-
-
-    <script>
-        const codes = <?= json_encode(array_values($codes)) ?>;
-
-
-        codes.forEach(function(code, index) {
-
-            new QRCode(
-                document.getElementById('qr-' + index), {
-                    text: code,
-                    width: 100,
-                    height: 100
-                }
-            );
-
-        });
-    </script>
+    $pdf->MultiCell(
+        $infoWidth,
+        4,
+        "Scan QR Code",
+        0,
+        'L',
+        false,
+        1
+    );
+}
 
 
-</body>
+/*
+|--------------------------------------------------------------------------
+| Output PDF
+|--------------------------------------------------------------------------
+*/
 
-</html>
+$pdf->Output(
+    'fire-extinguisher-qr.pdf',
+    'I'
+);
