@@ -120,8 +120,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($success) {
             if ($action_taken == "Refilled") {
                 update_refilled($extinguisher_code);
-                update_remarks($remarks, $extinguisher_code );
             }
+            update_remarks($remarks, $extinguisher_code );
+            if($status) {
+                update_status('Good', $extinguisher_code);
+            }elseif(!$status) {
+                update_status('Not Good', $extinguisher_code);
+            }
+
             $user_name = 'jared';
             createActivityLog(
                 $user_name,

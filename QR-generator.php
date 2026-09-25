@@ -96,19 +96,16 @@ $result = getAllFireExtinguishersCode();
                   id="qrSearch">
 
                 <button
-                  class="btn btn-outline-secondary">
-
-                  <i class="bi bi-sliders"></i>
-
+                  class="btn btn-primary"
+                  type="button">
+                  Search
                 </button>
 
               </div>
 
               <script>
-                // ========================================
+              
                 // SEARCH BY CODE OR LOCATION
-                // ========================================
-
                 const qrSearch = document.getElementById('qrSearch');
 
                 if (qrSearch) {
@@ -166,10 +163,8 @@ $result = getAllFireExtinguishersCode();
 
                     });
 
-                    // ========================================
+                  
                     // NO RESULTS
-                    // ========================================
-
                     let noResultsRow = document.getElementById(
                       'qrNoResults'
                     );
@@ -464,8 +459,6 @@ $result = getAllFireExtinguishersCode();
           encodeURIComponent(selected.join(','));
       }
     </script>
-
-
 
   </div>
   </div>

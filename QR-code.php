@@ -21,26 +21,152 @@
 
 
     <div class="body flex-grow-1">
-      <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+      <div class="container-fluid py-4">
 
-            <div class="card">
-              <div class="card-header">
-                <strong>Scan Fire Extinguisher QR Code</strong>
+        <div class="row justify-content-center">
+
+          <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+
+            <div class="card border-0 shadow-sm overflow-hidden">
+
+              <!-- Scanner Header -->
+              <div
+                class="card-header border-0 text-white p-4"
+                style="background: linear-gradient(135deg, #700808, #f50808);">
+
+                <div class="d-flex align-items-center gap-3">
+
+                  <div
+                    class="bg-white bg-opacity-10 rounded-3 p-3 fs-3 flex-shrink-0">
+                    <i class="bi bi-qr-code-scan"></i>
+                  </div>
+
+                  <div>
+                    <h4 class="fw-bold mb-1">
+                      Scan Fire Extinguisher QR Code
+                    </h4>
+
+                    <p class="mb-0 text-white-50 small">
+                      Point your camera at the QR code on the fire extinguisher to view its details and perform an inspection.
+                    </p>
+                  </div>
+
+                </div>
+
               </div>
 
-              <div class="card-body">
+              <!-- Scanner Body -->
+              <div class="card-body p-3 p-md-4">
 
-                <div id="qr-reader" class="w-100 overflow-hidden"></div>
+                <!-- IMPORTANT:
+                         Keep this ID exactly as qr-reader
+                    -->
+                <div
+                  class="scanner-wrapper rounded-3 overflow-hidden"
+                  id="qr-reader-wrapper">
 
+                  <div
+                    id="qr-reader"
+                    class="w-100 overflow-hidden">
+                  </div>
+
+                </div>
+
+                <!-- IMPORTANT:
+                         Keep this ID exactly as scan-result
+                    -->
                 <div id="scan-result" class="mt-3"></div>
 
+
+                <!-- Scanner Instructions -->
+                <div class="scanner-instructions rounded-3 p-3 mt-3">
+
+                  <div class="row g-3">
+
+                    <!-- Find -->
+                    <div class="col-12 col-md-4">
+
+                      <div class="d-flex align-items-start gap-2">
+
+                        <div class="scanner-step-icon">
+                          <i class="bi bi-search"></i>
+                        </div>
+
+                        <div>
+                          <div class="fw-semibold">
+                            1. Find
+                          </div>
+
+                          <small class="text-body-secondary">
+                            Locate the QR code on the fire
+                            extinguisher.
+                          </small>
+                        </div>
+
+                      </div>
+
+                    </div>
+
+
+                    <!-- Scan -->
+                    <div class="col-12 col-md-4">
+
+                      <div class="d-flex align-items-start gap-2">
+
+                        <div class="scanner-step-icon">
+                          <i class="bi bi-camera"></i>
+                        </div>
+
+                        <div>
+                          <div class="fw-semibold">
+                            2. Scan
+                          </div>
+
+                          <small class="text-body-secondary">
+                            Point your camera at the QR code.
+                          </small>
+                        </div>
+
+                      </div>
+
+                    </div>
+
+
+                    <!-- View -->
+                    <div class="col-12 col-md-4">
+
+                      <div class="d-flex align-items-start gap-2">
+
+                        <div class="scanner-step-icon">
+                          <i class="bi bi-check-circle"></i>
+                        </div>
+
+                        <div>
+                          <div class="fw-semibold">
+                            3. Inspect
+                          </div>
+
+                          <small class="text-body-secondary">
+                            Inspect the fire extinguisher details and condition.
+                          </small>
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
               </div>
+
             </div>
 
           </div>
+
         </div>
+
       </div>
 
       <script>
@@ -432,15 +558,15 @@
 
 
                     <!-- VERIFIED AND APPROVED -->
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="verifiedAndApprovedBy"
-                        name="verified_and_approved_by"
-                        placeholder="Approver name"
-                        hidden
-                        value="N/A"
-                        required>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="verifiedAndApprovedBy"
+                      name="verified_and_approved_by"
+                      placeholder="Approver name"
+                      hidden
+                      value="N/A"
+                      required>
 
                     <!-- ACTION TAKEN -->
 
@@ -550,8 +676,8 @@
                 </div>
 
 
-                  <!-- SECTION 2 -->
-                  <!-- INSPECTION CHECKLIST -->
+                <!-- SECTION 2 -->
+                <!-- INSPECTION CHECKLIST -->
 
                 <div class="border rounded-4 p-4 mb-4">
 
@@ -1196,17 +1322,17 @@
     });
 
 
-    // Status update kapag nag-change ang apat na checklist
-    document.querySelectorAll(
-      'input[name="is_pressure_ok"], ' +
-      'input[name="is_hose_ok"], ' +
-      'input[name="is_nozzle_ok"], ' +
-      'input[name="is_cylinder_body_ok"]'
-    ).forEach(checkbox => {
+    // // Status update kapag nag-change ang apat na checklist
+    // document.querySelectorAll(
+    //   'input[name="is_pressure_ok"], ' +
+    //   'input[name="is_hose_ok"], ' +
+    //   'input[name="is_nozzle_ok"], ' +
+    //   'input[name="is_cylinder_body_ok"]'
+    // ).forEach(checkbox => {
 
-      checkbox.addEventListener('change', updateInspectionStatus);
+    //   checkbox.addEventListener('change', updateInspectionStatus);
 
-    });
+    // });
   </script>
 </body>
 

@@ -22,20 +22,56 @@
   <?php include 'partials/side-nav.php'; ?>
   <div class="wrapper d-flex flex-column min-vh-100">
     <?php include 'partials/header-nav.php'; ?>
+    <div class="container-fluid py-0">
+
+      <div
+        class="card border-0 shadow-sm text-white mb-1 mt-0 overflow-hidden"
+        style="background: linear-gradient(135deg, #1d0870, #2408f5);">
+
+        <div class="card-body p-4">
+
+          <div class="row align-items-center g-3">
+
+            <!-- Icon -->
+            <div class="col-auto">
+
+              <div
+                class="bg-white bg-opacity-10 rounded-3 p-3 fs-3">
+
+                <i class="bi bi-clock-history"></i>
+
+              </div>
+
+            </div>
+
+            <!-- Title & Description -->
+            <div class="col">
+
+              <h2 class="fw-bold mb-1">
+                Activity Logs
+              </h2>
+
+              <p class="mb-0 text-white-50">
+                Track system activities, user actions, and recent fire extinguisher updates.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
 
 
     <div class="body flex-grow-1">
       <div class="container-lg px-4">
         <!-- content -->
         <div class="d-flex justify-content-between align-items-center mb-3">
-          <div>
-            <h5 class="mb-0">Recent Activity</h5>
-            <small class="text-body-secondary">
-              System activity logs
-            </small>
-          </div>
 
-          <div class="d-flex align-items-center gap-2">
+          <div class="d-flex align-items-center gap-2 mt-2">
 
             <div class="d-flex align-items-center gap-2 
                 bg-body border rounded-pill 

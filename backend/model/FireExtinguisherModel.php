@@ -489,3 +489,25 @@ function update_remarks($remarks, $ext_code)
 
     return mysqli_stmt_execute($stmt);
 }
+
+// this function is for updating fe status 
+function update_status($status, $ext_code)
+{
+    global $conn;
+
+    $sql = "UPDATE fire_extinguishers_tbl
+            SET
+                condition_status = ?
+            WHERE extinguisher_code = ?";
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    mysqli_stmt_bind_param(
+        $stmt,
+        "ss",
+        $status,
+        $ext_code
+    );
+
+    return mysqli_stmt_execute($stmt);
+}

@@ -32,6 +32,46 @@ $allNotGoodCondition = getNotGoodCondition();
   <div class="wrapper d-flex flex-column min-vh-100">
     <?php include 'partials/header-nav.php'; ?>
 
+    <div class="container-fluid py-0">
+
+      <div
+        class="card border-0 shadow-sm text-white mb-1 mt-0 overflow-hidden"
+        style="background: linear-gradient(135deg, #1d0870, #2408f5);">
+
+        <div class="card-body p-4">
+
+          <div class="row align-items-center g-3">
+
+            <!-- Icon -->
+            <div class="col-auto">
+
+              <div class="bg-white bg-opacity-10 rounded-3 p-3 fs-3">
+                <i class="bi bi-speedometer2"></i>
+              </div>
+
+            </div>
+
+            <!-- Title & Description -->
+            <div class="col">
+
+              <h2 class="fw-bold mb-1">
+                Fire Extinguisher Dashboard
+              </h2>
+
+              <p class="mb-0 text-white-50">
+                Overview of fire extinguishers, their conditions, and important safety information.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
 
     <!-- this is for dashboard totals -->
 
@@ -44,18 +84,9 @@ $allNotGoodCondition = getNotGoodCondition();
           <!-- Analytics Header -->
           <div class="d-flex justify-content-between align-items-center mb-0">
 
-            <div>
-              <h4 class="fw-bold mb-1">
-                Fire Extinguisher Analytics
-              </h4>
 
-              <small class="text-body-secondary">
-                Overview of your fire extinguisher inventory and condition
-              </small>
-            </div>
-
-            <div class="badge bg-light text-dark border px-3 py-2">
-              <i class="bi bi-calendar3 me-2"></i>
+            <div class="fs-5 fw-semibold text-body mt-3">
+              <i class="bi bi-calendar3 me-2 text-primary"></i>
               As of <span id="analyticsDate"></span>
             </div>
 
