@@ -432,25 +432,15 @@
 
 
                     <!-- VERIFIED AND APPROVED -->
-
-                    <div class="col-12 col-md-6 col-lg-4">
-
-                      <label
-                        for="verifiedAndApprovedBy"
-                        class="form-label fw-semibold">
-                        Verified & Approved By
-                      </label>
-
                       <input
                         type="text"
                         class="form-control"
                         id="verifiedAndApprovedBy"
                         name="verified_and_approved_by"
                         placeholder="Approver name"
+                        hidden
+                        value="N/A"
                         required>
-
-                    </div>
-
 
                     <!-- ACTION TAKEN -->
 
@@ -475,27 +465,63 @@
                           Select action
                         </option>
 
-                        <option value="No Action">
-                          No Action
-                        </option>
-
                         <option value="Refilled">
-                          Refilled
+                          Refill
                         </option>
 
                         <option value="Repaired">
-                          Repaired
+                          Replacement of parts
                         </option>
 
                         <option value="Replaced">
-                          Replaced
+                          Replacement of unit
                         </option>
 
-                        <option value="For Monitoring">
-                          For Monitoring
+                        <option value="Others">
+                          Others
                         </option>
 
                       </select>
+
+                      <!-- Others input -->
+                      <div id="othersActionContainer" class="mt-2 d-none">
+
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="othersAction"
+                          name="others_action"
+                          placeholder="Specify action taken">
+
+                      </div>
+
+                      <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+
+                          const actionTaken = document.getElementById('actionTaken');
+                          const othersActionContainer = document.getElementById('othersActionContainer');
+                          const othersAction = document.getElementById('othersAction');
+
+                          actionTaken.addEventListener('change', function() {
+
+                            if (this.value === 'Others') {
+
+                              othersActionContainer.classList.remove('d-none');
+                              othersAction.required = true;
+                              othersAction.focus();
+
+                            } else {
+
+                              othersActionContainer.classList.add('d-none');
+                              othersAction.required = false;
+                              othersAction.value = '';
+
+                            }
+
+                          });
+
+                        });
+                      </script>
 
                     </div>
 
@@ -524,10 +550,8 @@
                 </div>
 
 
-                <!-- =========================
-                                    SECTION 2
-                                    INSPECTION CHECKLIST
-                                ========================== -->
+                  <!-- SECTION 2 -->
+                  <!-- INSPECTION CHECKLIST -->
 
                 <div class="border rounded-4 p-4 mb-4">
 
