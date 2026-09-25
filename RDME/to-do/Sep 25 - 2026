@@ -26,6 +26,6 @@ QR Code Generator
 - total inspected this month        #
 
 
-- fix the activity log delete       #
+- fix the activity log delete       #DONE
     -- it should get the fe code and insert into database 
 

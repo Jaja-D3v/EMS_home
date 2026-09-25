@@ -409,3 +409,37 @@ function getAllNotGoodCondition () {
     return (int) $row['total'];
 
 }
+
+
+// get next code 
+function getNextFireExtinguisherCodeModel()
+{
+    global $conn;
+
+    $sql = "SELECT extinguisher_code
+            FROM fire_extinguishers_tbl
+            WHERE extinguisher_code LIKE 'FE-%'
+            ORDER BY CAST(SUBSTRING(extinguisher_code, 4) AS UNSIGNED) DESC
+            LIMIT 1";
+
+    $result = mysqli_query($conn, $sql);
+
+    if (!$result) {
+        return 'FE-001';
+    }
+
+    $row = mysqli_fetch_assoc($result);
+
+    if (!$row) {
+        return 'FE-001';
+    }
+
+    $lastNumber = (int) substr($row['extinguisher_code'], 3);
+
+    return 'FE-' . str_pad(
+        $lastNumber + 1,
+        3,
+        '0',
+        STR_PAD_LEFT
+    );
+}

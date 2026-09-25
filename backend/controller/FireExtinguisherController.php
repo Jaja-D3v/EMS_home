@@ -27,7 +27,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $action = $_GET['action'] ?? '';
 
-   
+    if ($action === 'checkCode') {
+
+        header('Content-Type: application/json');
+
+        $code = trim($_GET['code'] ?? '');
+
+
+        if ($code === '') {
+
+            echo json_encode([
+                'success' => true,
+                'exists' => false
+            ]);
+
+            exit;
+        }
+
+
+        $data = getByCode($code);
+
+
+        echo json_encode([
+            'success' => true,
+            'exists' => !empty($data)
+        ]);
+
+        exit;
+    }
+
+
+    // ========================================
+    // GET NEXT FIRE EXTINGUISHER CODE
+    // ========================================
+
+    if ($action === 'getNextCode') {
+
+        header('Content-Type: application/json');
+
+        $code = getNextFireExtinguisherCode();
+
+
+        echo json_encode([
+            'success' => true,
+            'code' => $code
+        ]);
+
+        exit;
+    }
 }
 
 // controller function for creating/adding new fire extinguisher
@@ -157,7 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         ]);
 
         exit;
-    }else if ($action === 'getByCode') {
+    } else if ($action === 'getByCode') {
 
         header('Content-Type: application/json');
 
@@ -229,7 +276,6 @@ function addNewExtinguisher(
     return $success;
 }
 
-
 // for delete FE function
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $action = $_GET['action'] ?? '';
@@ -244,7 +290,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $code = $data['extinguisher_code'];
         $success = deleteFireExtinguisherById($ext_id);
         if ($success) {
-            
+
 
             $user_name = 'jared';
             createActivityLog(
@@ -312,11 +358,19 @@ function getTotalNotGoodInstalledFireExtinguishers()
 }
 
 // get all good condition
-function getGoodCondition(){
+function getGoodCondition()
+{
     return getAllGoodCondition();
 }
 
 // get all not good condition
-function getNotGoodCondition(){
+function getNotGoodCondition()
+{
     return getAllNotGoodCondition();
+}
+
+// get next code 
+function getNextFireExtinguisherCode()
+{
+    return getNextFireExtinguisherCodeModel();
 }

@@ -496,9 +496,8 @@ $info = getAllFireExtinguishers();
                           id="editManufacturedDate"
                           name="manufactured_date"
                           value=""
-                          readonly
-                          >
-                          
+                          readonly>
+
 
                       </div>
 
@@ -636,8 +635,10 @@ $info = getAllFireExtinguishers();
                           class="form-control"
                           id="extinguisherCode"
                           name="extinguisher_code"
-                          placeholder="e.g. E01-106"
+                          placeholder="e.g. FE-001"
                           required>
+
+                        <div id="extinguisherCodeFeedback" class="small mt-1"></div>
                       </div>
 
 
@@ -835,6 +836,7 @@ $info = getAllFireExtinguishers();
 
                         <button
                           type="submit"
+                          id="addFireExtinguisherBtn"
                           class="btn btn-primary px-4">
                           <i class="bi bi-plus-lg me-1"></i>
                           Add Fire Extinguisher
@@ -964,6 +966,324 @@ $info = getAllFireExtinguishers();
       });
 
     });
+
+
+      // ========================================
+      // FIRE EXTINGUISHER CODE
+      // ========================================
+
+      const codeInput = document.getElementById('extinguisherCode');
+    const codeFeedback = document.getElementById('extinguisherCodeFeedback');
+    const addFireExtinguisherBtn = document.getElementById('addFireExtinguisherBtn');
+
+    let codeCheckTimeout;
+    let isCodeDuplicate = false;
+
+
+    // ========================================
+    // CHECK IF CODE EXISTS
+    // ========================================
+
+    function checkFireExtinguisherCode(code) {
+
+      clearTimeout(codeCheckTimeout);
+
+      codeFeedback.textContent = '';
+      codeFeedback.className = 'small mt-1';
+
+      // Default: allow submit
+      isCodeDuplicate = false;
+      addFireExtinguisherBtn.disabled = false;
+
+      // Empty code
+      if (code === '') {
+
+        codeInput.classList.remove(
+          'is-valid',
+          'is-invalid'
+        );
+
+        return;
+      }
+
+
+      // Delay checking
+      codeCheckTimeout = setTimeout(() => {
+
+        fetch(
+            `backend/controller/FireExtinguisherController.php?action=checkCode&code=${encodeURIComponent(code)}`
+          )
+          .then(response => {
+
+            if (!response.ok) {
+              throw new Error(
+                `HTTP error: ${response.status}`
+              );
+            }
+
+            return response.json();
+
+          })
+          .then(result => {
+
+            console.log('Code check result:', result);
+
+
+            // ========================================
+            // DUPLICATE
+            // ========================================
+
+            if (result.exists === true) {
+
+              isCodeDuplicate = true;
+
+              codeFeedback.textContent =
+                'This fire extinguisher code already exists.';
+
+              codeFeedback.className =
+                'small mt-1 text-danger';
+
+              codeInput.classList.add(
+                'is-invalid'
+              );
+
+              codeInput.classList.remove(
+                'is-valid'
+              );
+
+              // DISABLE ADD BUTTON
+              addFireExtinguisherBtn.disabled = true;
+
+            }
+
+
+            // ========================================
+            // AVAILABLE
+            // ========================================
+            else {
+
+              isCodeDuplicate = false;
+
+              codeFeedback.textContent =
+                'Fire extinguisher code is available.';
+
+              codeFeedback.className =
+                'small mt-1 text-success';
+
+              codeInput.classList.remove(
+                'is-invalid'
+              );
+
+              codeInput.classList.add(
+                'is-valid'
+              );
+
+              // ENABLE ADD BUTTON
+              addFireExtinguisherBtn.disabled = false;
+
+            }
+
+          })
+          .catch(error => {
+
+            console.error(
+              'Code check error:',
+              error
+            );
+
+            isCodeDuplicate = false;
+
+            codeFeedback.textContent =
+              'Unable to check fire extinguisher code.';
+
+            codeFeedback.className =
+              'small mt-1 text-warning';
+
+            codeInput.classList.remove(
+              'is-valid',
+              'is-invalid'
+            );
+
+            // Disable while checking has failed
+            addFireExtinguisherBtn.disabled = true;
+
+          });
+
+      }, 400);
+    }
+
+
+    // ========================================
+    // MANUAL CODE INPUT
+    // ========================================
+
+    codeInput.addEventListener('input', function() {
+
+      const code = this.value.trim();
+
+      checkFireExtinguisherCode(code);
+
+    });
+
+
+    // ========================================
+    // AUTO-GENERATE FIRE EXTINGUISHER CODE
+    // ========================================
+
+    function generateFireExtinguisherCode() {
+
+      fetch(
+          'backend/controller/FireExtinguisherController.php?action=getNextCode'
+        )
+        .then(response => {
+
+          if (!response.ok) {
+
+            throw new Error(
+              `HTTP error: ${response.status}`
+            );
+
+          }
+
+          return response.json();
+
+        })
+        .then(result => {
+
+          console.log(
+            'Generated code:',
+            result
+          );
+
+
+          if (result.success) {
+
+            // Put generated code into input
+            codeInput.value = result.code;
+
+            // Check generated code
+            checkFireExtinguisherCode(
+              result.code
+            );
+
+          } else {
+
+            console.error(
+              'Failed to generate fire extinguisher code.'
+            );
+
+            addFireExtinguisherBtn.disabled = true;
+
+          }
+
+        })
+        .catch(error => {
+
+          console.error(
+            'Generate code error:',
+            error
+          );
+
+          addFireExtinguisherBtn.disabled = true;
+
+        });
+
+    }
+
+
+    // ========================================
+    // AUTO-GENERATE WHEN ADD MODAL OPENS
+    // ========================================
+
+    const addFireExtinguisherModal =
+      document.getElementById(
+        'addFireExtinguisherModal'
+      );
+
+
+    if (addFireExtinguisherModal) {
+
+      addFireExtinguisherModal.addEventListener(
+        'shown.bs.modal',
+        function() {
+
+          // Generate only if empty
+          if (codeInput.value.trim() === '') {
+
+            // Disable while generating/checking
+            addFireExtinguisherBtn.disabled = true;
+
+            generateFireExtinguisherCode();
+
+          } else {
+
+            checkFireExtinguisherCode(
+              codeInput.value.trim()
+            );
+
+          }
+
+        }
+      );
+
+    }
+
+    // ========================================
+    // PREVENT SUBMIT IF DUPLICATE
+    // ========================================
+
+    const addForm = addFireExtinguisherBtn.closest('form');
+
+    if (addForm) {
+
+      addForm.addEventListener('submit', function(event) {
+
+        const code = codeInput.value.trim();
+
+
+        // Empty code
+        if (code === '') {
+
+          event.preventDefault();
+
+          codeFeedback.textContent =
+            'Fire extinguisher code is required.';
+
+          codeFeedback.className =
+            'small mt-1 text-danger';
+
+          codeInput.classList.add(
+            'is-invalid'
+          );
+
+          return;
+        }
+
+
+        // Duplicate code
+        if (isCodeDuplicate) {
+
+          event.preventDefault();
+
+          codeFeedback.textContent =
+            'This fire extinguisher code already exists.';
+
+          codeFeedback.className =
+            'small mt-1 text-danger';
+
+          codeInput.classList.add(
+            'is-invalid'
+          );
+
+          addFireExtinguisherBtn.disabled = true;
+
+          return;
+        }
+
+      });
+
+    }
+  
   </script>
 </body>
 
