@@ -26,14 +26,14 @@ $result = getAllFireExtinguishersCode();
 
       <!-- Hero -->
       <div class="card border-0 shadow-sm text-white mb-1 mt-0 overflow-hidden "
-        style="background: linear-gradient(135deg, #700808, #f50808);">
+        style="background: linear-gradient(135deg, #6d6d6d, #f4f3f3);">
 
         <div class="card-body p-4">
 
           <div class="row align-items-center g-3">
 
             <div class="col-auto">
-              <div class="bg-danger rounded-3 p-3 fs-3">
+              <div class="bg-secondary rounded-3 p-3 fs-3">
                 <i class="bi bi-qr-code-scan"></i>
               </div>
             </div>

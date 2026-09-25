@@ -7,6 +7,7 @@ _____________________________________________________________
 - sort                               # 
 - running days before expiration     #
 
+
 ## dashboard
 - analytics                          # ON GOING - created design  
 - analytics by month                 #
@@ -28,6 +29,8 @@ _____________________________________________________________
 ## list of fire extinguisher 
 - add FE generate code auto          #DONE
 - search                             #DONE
+- design a view modal                #DONE
+- view FE info                       #DONE
 
 ## Activity log 
 - sort by month                      #DONE
