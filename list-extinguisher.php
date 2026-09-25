@@ -72,6 +72,118 @@ $info = getAllFireExtinguishers();
                   </button>
                 </div>
 
+                <script>
+                  // ========================================
+                  // SEARCH BY CODE OR LOCATION
+                  // ========================================
+
+                  const searchInput = document.querySelector(
+                    'input[placeholder="Search..."]'
+                  );
+
+                  if (searchInput) {
+
+                    searchInput.addEventListener('input', function() {
+
+                      const searchValue = this.value
+                        .trim()
+                        .toLowerCase();
+
+                      const cards = document.querySelectorAll(
+                        '.card.border-1.shadow-sm.mb-1'
+                      );
+
+                      let visibleCount = 0;
+
+                      cards.forEach(card => {
+
+                        // FE Code
+                        const codeElement = card.querySelector(
+                          '.card-header small'
+                        );
+
+                        const code = codeElement ?
+                          codeElement.textContent.trim().toLowerCase() :
+                          '';
+
+                        // Location
+                        const locationElement = card.querySelector(
+                          '.bi-geo-alt'
+                        );
+
+                        const location = locationElement ?
+                          locationElement.parentElement.textContent
+                          .trim()
+                          .toLowerCase() :
+                          '';
+
+                        // Check match
+                        const match =
+                          code.includes(searchValue) ||
+                          location.includes(searchValue);
+
+                        if (match) {
+                          card.style.display = '';
+                          visibleCount++;
+                        } else {
+                          card.style.display = 'none';
+                        }
+
+                      });
+
+                      // ========================================
+                      // NO RESULT FOUND
+                      // ========================================
+
+                      let noResult = document.getElementById(
+                        'noSearchResult'
+                      );
+
+                      if (visibleCount === 0 && searchValue !== '') {
+
+                        if (!noResult) {
+
+                          noResult = document.createElement('div');
+
+                          noResult.id = 'noSearchResult';
+
+                          noResult.className =
+                            'border rounded-3 text-center text-body-secondary py-5 px-3 my-3 shadow-sm';
+
+                          noResult.innerHTML = `
+                            <div class="py-3">
+                                <i class="bi bi-search fs-1 d-block mb-3"></i>
+
+                                <div class="fw-semibold fs-6">
+                                    No fire extinguishers found.
+                                </div>
+
+                                <small class="text-body-secondary">
+                                    No results match your search.
+                                </small>
+                            </div>
+                            `;
+
+                          searchInput
+                            .closest('.d-flex.flex-column.flex-md-row')
+                            .parentElement
+                            .parentElement
+                            .after(noResult);
+                        }
+
+                        noResult.style.display = '';
+
+                      } else if (noResult) {
+
+                        noResult.style.display = 'none';
+
+                      }
+
+                    });
+
+                  }
+                </script>
+
               </div>
 
             </div>
@@ -737,7 +849,6 @@ $info = getAllFireExtinguishers();
                         </datalist>
                       </div>
 
-
                       <!-- Location -->
                       <div class="col-md-8">
                         <label for="location" class="form-label">
@@ -752,7 +863,6 @@ $info = getAllFireExtinguishers();
                           placeholder="e.g. Building 1 - 2nd Floor"
                           required>
                       </div>
-
 
                       <!-- Condition -->
                       <div class="col-md-4">
@@ -968,11 +1078,11 @@ $info = getAllFireExtinguishers();
     });
 
 
-      // ========================================
-      // FIRE EXTINGUISHER CODE
-      // ========================================
+    // ========================================
+    // FIRE EXTINGUISHER CODE
+    // ========================================
 
-      const codeInput = document.getElementById('extinguisherCode');
+    const codeInput = document.getElementById('extinguisherCode');
     const codeFeedback = document.getElementById('extinguisherCodeFeedback');
     const addFireExtinguisherBtn = document.getElementById('addFireExtinguisherBtn');
 
@@ -1283,7 +1393,6 @@ $info = getAllFireExtinguishers();
       });
 
     }
-  
   </script>
 </body>
 

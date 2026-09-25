@@ -224,7 +224,7 @@
                 <input
                   type="hidden"
                   name="action"
-                  value="add">
+                  value="inspect">
 
 
                 <!-- =========================

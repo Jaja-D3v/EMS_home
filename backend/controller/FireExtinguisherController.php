@@ -374,3 +374,4 @@ function getNextFireExtinguisherCode()
 {
     return getNextFireExtinguisherCodeModel();
 }
+

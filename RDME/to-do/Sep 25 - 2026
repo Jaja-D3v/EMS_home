@@ -4,19 +4,15 @@ _____________________________________________________________
 
 
 ## list of fire extinguisher 
-- add FE generate code auto          #DONE
-- search                             # 
 - sort                               # 
+- running days before expiration     #
 
 ## dashboard
 - analytics                          # ON GOING - created design  
 - analytics by month                 #
 
-## Activity log 
-- sort by month                      #
-- fetch activity logs                #
-- show the date in activity logs     #
-- default sort by recent             #
+
+
 
 
 - total inspected this month        #
@@ -25,5 +21,17 @@ _____________________________________________________________
 - fix the activity log delete       #DONE
     -- it should get the fe code and insert into database 
 
-- fix the action taken in QR Code   #DONE
-- search in QR generator            #DONE
+- fix the action taken in QR Code                   #DONE
+- search in QR generator nav                        #DONE
+- auto change expiration based on refilled date     #DONE
+
+## list of fire extinguisher 
+- add FE generate code auto          #DONE
+- search                             #DONE
+
+## Activity log 
+- sort by month                      #DONE
+- fetch activity logs                #DONE
+- show the date in activity logs     #DONE
+- default sort by recent             #DONE
+- implementing act log in inspect    #DONE

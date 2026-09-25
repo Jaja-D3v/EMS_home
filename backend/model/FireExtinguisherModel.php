@@ -443,3 +443,26 @@ function getNextFireExtinguisherCodeModel()
         STR_PAD_LEFT
     );
 }
+
+
+// this function is for updating refilled date 
+function update_refilled($ext_code)
+{
+    global $conn;
+
+    $sql = "UPDATE fire_extinguishers_tbl
+            SET
+                refilled_date = CURDATE(),
+                expiration_date = DATE_ADD(CURDATE(), INTERVAL 3 YEAR)
+            WHERE extinguisher_code = ?";
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    mysqli_stmt_bind_param(
+        $stmt,
+        "s",
+        $ext_code
+    );
+
+    return mysqli_stmt_execute($stmt);
+}

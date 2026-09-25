@@ -28,7 +28,7 @@ function addActivityLog($user_name, $action, $description)
 }
 
 // get all activity log
-function getAllActivityLogs()
+function getActivityLogs()
 {
     global $conn;
     $sql = "SELECT
@@ -38,7 +38,7 @@ function getAllActivityLogs()
                 description,
                 created_at
             FROM activity_logs_tbl
-            ORDER BY log_id DESC";
+            ORDER BY created_at DESC";
 
     $result = mysqli_query($conn, $sql);
     return $result;

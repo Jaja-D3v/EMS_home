@@ -43,7 +43,7 @@
         Fire Extinguisher List
       </a>
 
-      <a class="nav-link" href="audit-log.php">
+      <a class="nav-link" href="activity-log.php">
         <i class="fa-solid fa-user-pen"></i>
         Activity Log
       </a>

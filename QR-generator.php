@@ -237,7 +237,7 @@ $result = getAllFireExtinguishersCode();
 
                   <div class="form-check mb-0">
                     <input
-                      class="form-check-input"
+                      class="form-check-input border border-secondary"
                       type="checkbox"
                       id="selectAll"
                       onchange="toggleSelectAll(this)">
@@ -275,7 +275,7 @@ $result = getAllFireExtinguishersCode();
                     <td>
 
                       <input
-                        class="form-check-input extinguisher-checkbox"
+                        class="form-check-input border border-secondary extinguisher-checkbox"
                         type="checkbox"
                         value="<?= htmlspecialchars($row['extinguisher_code']) ?>"
                         onchange="updateSelection()">

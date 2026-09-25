@@ -12,7 +12,35 @@ function createActivityLog($user_name, $action, $description)
     );
 }
 
-function getActivityLogs()
-{
-    return getAllActivityLogs();
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+
+    $action = $_GET['action'] ?? '';
+
+    if ($action === 'getAll') {
+
+        header('Content-Type: application/json');
+
+        $result = getActivityLogs();
+
+        if (!$result) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Failed to fetch activity logs.'
+            ]);
+            exit;
+        }
+
+        $logs = [];
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $logs[] = $row;
+        }
+
+        echo json_encode([
+            'success' => true,
+            'data' => $logs
+        ]);
+
+        exit;
+    }
 }
