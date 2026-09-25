@@ -44,7 +44,8 @@ function getById($id)
                 remarks,
                 expiration_date,
                 created_at,
-                updated_at
+                updated_at,
+                refilled_date
             FROM fire_extinguishers_tbl
             WHERE extinguisher_id = ?";
 
@@ -461,6 +462,28 @@ function update_refilled($ext_code)
     mysqli_stmt_bind_param(
         $stmt,
         "s",
+        $ext_code
+    );
+
+    return mysqli_stmt_execute($stmt);
+}
+
+// This function is for updating remarks
+function update_remarks($remarks, $ext_code)
+{
+    global $conn;
+
+    $sql = "UPDATE fire_extinguishers_tbl
+            SET
+                remarks = ?
+            WHERE extinguisher_code = ?";
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    mysqli_stmt_bind_param(
+        $stmt,
+        "ss",
+        $remarks,
         $ext_code
     );
 

@@ -76,14 +76,86 @@ $info = getAllFireExtinguishers();
 
               <!-- Sort - Left -->
               <div>
-                <select id="sort" class="form-select">
-                  <option value="newest">Sort by</option>
-                  <option value="newest">Newest</option>
-                  <option value="oldest">Oldest</option>
-                  <option value="name-asc">Name A-Z</option>
-                  <option value="name-desc">Name Z-A</option>
-                </select>
+                <div class="input-group">
+                  <span class="input-group-text bg-body border-end-0">
+                    <i class="bi bi-funnel text-primary"></i>
+                  </span>
+
+                  <select
+                    id="conditionFilter"
+                    class="form-select border-start-0 ps-1"
+                    aria-label="Filter by condition">
+                    <option value="all">All Conditions</option>
+                    <option value="good">Good Condition</option>
+                    <option value="not-good">Not Good</option>
+                  </select>
+                </div>
               </div>
+
+              <script>
+                const conditionFilter = document.getElementById('conditionFilter');
+
+                if (conditionFilter) {
+
+                  conditionFilter.addEventListener('change', function() {
+
+                    const selectedCondition = this.value;
+
+                    const cards = document.querySelectorAll('.extinguisher-card');
+
+                    cards.forEach(card => {
+
+                      // Get all badges inside the card
+                      const badges = card.querySelectorAll('.badge');
+
+                      let condition = '';
+
+                      badges.forEach(badge => {
+
+                        const text = badge.textContent
+                          .trim()
+                          .toLowerCase();
+
+                        // Find the actual condition badge
+                        if (text === 'good' || text === 'not good') {
+                          condition = text;
+                        }
+
+                      });
+
+                      // Show all
+                      if (selectedCondition === 'all') {
+                        card.style.display = '';
+                      }
+
+                      // Good Condition
+                      else if (
+                        selectedCondition === 'good' &&
+                        condition === 'good'
+                      ) {
+                        card.style.display = '';
+                      }
+
+                      // Not Good
+                      else if (
+                        selectedCondition === 'not-good' &&
+                        condition === 'not good'
+                      ) {
+                        card.style.display = '';
+                      }
+
+                      // Hide non-matching cards
+                      else {
+                        card.style.display = 'none';
+                      }
+
+                    });
+
+                  });
+
+                }
+              </script>
+
 
               <!-- Add + Search - Right -->
               <div class="d-flex flex-column flex-md-row gap-2 ms-lg-auto">
@@ -527,7 +599,7 @@ $info = getAllFireExtinguishers();
                           </option>
 
                           <option value="Dry Chemical">Dry Chemical</option>
-                          <option value="AFF">AFF</option>
+                          <option value="AFFF">AFFF</option>
                           <option value="HCFC">HCFC</option>
                         </select>
 
@@ -581,7 +653,7 @@ $info = getAllFireExtinguishers();
                             selected>
 
                           </option>
-                         
+
                           <option value="AB">AB</option>
                           <option value="ABC">ABC</option>
                           <option value="BC">BC</option>
@@ -848,7 +920,6 @@ $info = getAllFireExtinguishers();
                             Select type
                           </option>
                           <option value="Dry Chemical">Dry Chemical</option>
-                          <option value="CO2">CO2</option>
                           <option value="AFFF">AFFF</option>
                           <option value="HCFC">HCFC</option>
                         </select>
@@ -892,13 +963,14 @@ $info = getAllFireExtinguishers();
                           <option value="" selected disabled>
                             Select class
                           </option>
+                          <option value="AB">AB</option>
+                          <option value="ABC">ABC</option>
+                          <option value="BC">BC</option>
                           <option value="A">A</option>
                           <option value="B">B</option>
                           <option value="C">C</option>
                           <option value="D">D</option>
-                          <option value="AB">AB</option>
-                          <option value="ABC">ABC</option>
-                          <option value="BC">BC</option>
+
                         </select>
                       </div>
 
@@ -1323,22 +1395,32 @@ $info = getAllFireExtinguishers();
 
                         <!-- Manufactured Date -->
                         <div class="col-12 col-md-6">
-
                           <div class="border rounded-3 p-3">
-
                             <label class="form-label small text-body-secondary mb-1">
                               <i class="bi bi-calendar-event me-1 text-secondary"></i>
                               Manufactured Date
                             </label>
-
                             <input
                               type="date"
                               class="form-control-plaintext fw-semibold p-0"
                               id="viewManufacturedDate"
                               readonly>
-
                           </div>
+                        </div>
 
+                        <!-- Refilled Date -->
+                        <div class="col-12 col-md-6">
+                          <div class="border rounded-3 p-3">
+                            <label class="form-label small text-body-secondary mb-1">
+                              <i class="bi bi-arrow-repeat me-1 text-secondary"></i>
+                              Last Refilled Date
+                            </label>
+                            <input
+                              type="date"
+                              class="form-control-plaintext fw-semibold p-0"
+                              id="viewLastRefilledDate"
+                              readonly>
+                          </div>
                         </div>
 
 
@@ -1359,7 +1441,7 @@ $info = getAllFireExtinguishers();
                               readonly>
 
                             <small class="text-body-secondary d-block mt-1">
-                              Automatically calculated as 3 years from the manufactured date.
+                              Automatically calculated as 3 years from the manufacturing or refill date.
                             </small>
 
                           </div>
@@ -1963,6 +2045,10 @@ $info = getAllFireExtinguishers();
             document.getElementById(
               'viewManufacturedDate'
             ).value = data.manufactured_date ?? '';
+
+            document.getElementById(
+              'viewLastRefilledDate'
+            ).value = data.refilled_date ?? '';
 
 
             document.getElementById(

@@ -4,7 +4,6 @@ _____________________________________________________________
 
 
 ## list of fire extinguisher 
-- sort                               # 
 - running days before expiration     #
 
 
@@ -31,6 +30,8 @@ _____________________________________________________________
 - search                             #DONE
 - design a view modal                #DONE
 - view FE info                       #DONE
+- sort                               #DONE
+
 
 ## Activity log 
 - sort by month                      #DONE

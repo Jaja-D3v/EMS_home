@@ -16,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $verified_and_approved_by = $_POST['verified_and_approved_by'] ?? null;
         $action_taken = $_POST['action_taken'] ?? null;
         $target_date_of_implementation = $_POST['target_date_of_implementation'] ?? null;
+        $remarks = $_POST['remarks'] ?? null;
 
 
         /*
@@ -119,6 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($success) {
             if ($action_taken == "Refilled") {
                 update_refilled($extinguisher_code);
+                update_remarks($remarks, $extinguisher_code );
             }
             $user_name = 'jared';
             createActivityLog(
