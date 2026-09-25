@@ -77,21 +77,16 @@ $allNotGoodCondition = getNotGoodCondition();
 
           </div>
 
-
-
-
-          <!-- end of stats -->
+          <!-- end of header -->
 
           <div class="container-fluid px-4 py-4 mb-1">
-            <!-- Expiring -->
-            <div class="row">
+            <!-- totals -->
+            <div class="row g-3">
 
               <!-- Expiring Soon -->
-              <div class="col-12 col-md-3 mt-1 mb-4">
+              <div class="col-12 col-sm-6 col-lg-3">
                 <div class="card border-1 shadow-sm h-100">
-
                   <div class="card-body d-flex align-items-center">
-
                     <div class="bg-danger bg-opacity-10 rounded-3 p-3 me-3">
                       <i class="bi bi-calendar-x-fill text-danger fs-3"></i>
                     </div>
@@ -109,20 +104,15 @@ $allNotGoodCondition = getNotGoodCondition();
                         Within 2 months
                       </small>
                     </div>
-
                   </div>
-
                 </div>
               </div>
 
 
               <!-- Total Fire Extinguishers -->
-              <div class="col-12 col-md-3 mt-1 mb-4">
-
+              <div class="col-12 col-sm-6 col-lg-3">
                 <div class="card border-1 shadow-sm h-100">
-
                   <div class="card-body d-flex align-items-center">
-
                     <div class="bg-primary bg-opacity-10 rounded-3 p-3 me-3">
                       <i class="fa-solid fa-layer-group text-primary fs-3"></i>
                     </div>
@@ -140,22 +130,17 @@ $allNotGoodCondition = getNotGoodCondition();
                         Registered in system
                       </small>
                     </div>
-
                   </div>
-
                 </div>
               </div>
 
 
               <!-- Total Spare Fire Extinguishers -->
-              <div class="col-12 col-md-3 mt-1 mb-4">
-
+              <div class="col-12 col-sm-6 col-lg-3">
                 <div class="card border-1 shadow-sm h-100">
-
                   <div class="card-body">
 
                     <div class="d-flex align-items-center">
-
                       <div class="bg-secondary bg-opacity-10 rounded-3 p-3 me-3">
                         <i class="fa-solid fa-boxes-stacked text-secondary fs-3"></i>
                       </div>
@@ -173,11 +158,9 @@ $allNotGoodCondition = getNotGoodCondition();
                           Spare units
                         </small>
                       </div>
-
                     </div>
 
                     <div class="d-flex gap-2 mt-3">
-
                       <span class="badge bg-success-subtle text-success">
                         Good: <?= $goodSpareFE ?>
                       </span>
@@ -186,20 +169,18 @@ $allNotGoodCondition = getNotGoodCondition();
                         Not Good: <?= $notGoodSpareFE ?>
                       </span>
                     </div>
+
                   </div>
                 </div>
               </div>
 
 
               <!-- Total Installed Fire Extinguishers -->
-              <div class="col-12 col-md-3 mt-1 mb-4">
-
+              <div class="col-12 col-sm-6 col-lg-3">
                 <div class="card border-1 shadow-sm h-100">
-
                   <div class="card-body">
 
                     <div class="d-flex align-items-center">
-
                       <div class="bg-secondary bg-opacity-10 rounded-3 p-3 me-3">
                         <i class="fa-solid fa-fire-extinguisher text-primary fs-3"></i>
                       </div>
@@ -217,11 +198,9 @@ $allNotGoodCondition = getNotGoodCondition();
                           Installed units
                         </small>
                       </div>
-
                     </div>
 
                     <div class="d-flex gap-2 mt-3">
-
                       <span class="badge bg-success-subtle text-success">
                         Good: <?= $goodInstalledFE ?>
                       </span>
@@ -229,11 +208,9 @@ $allNotGoodCondition = getNotGoodCondition();
                       <span class="badge bg-danger-subtle text-danger">
                         Not Good: <?= $notGoodInstalledFE ?>
                       </span>
-
                     </div>
 
                   </div>
-
                 </div>
               </div>
 
@@ -256,9 +233,9 @@ $allNotGoodCondition = getNotGoodCondition();
                     <div class="d-flex align-items-center gap-2 mb-3">
 
                       <div class="rounded-3 bg-primary-subtle
-                                    text-primary d-flex
-                                    align-items-center
-                                    justify-content-center"
+                                      text-primary d-flex
+                                      align-items-center
+                                      justify-content-center"
                         style="width:40px;height:40px;">
 
                         <i class="bi bi-shield-check"></i>
@@ -312,9 +289,9 @@ $allNotGoodCondition = getNotGoodCondition();
                     <div class="d-flex align-items-center gap-2 mb-3">
 
                       <div class="rounded-3 bg-primary-subtle
-                                    text-primary d-flex
-                                    align-items-center
-                                    justify-content-center"
+                                      text-primary d-flex
+                                      align-items-center
+                                      justify-content-center"
                         style="width:40px;height:40px;">
 
                         <i class="bi bi-clock"></i>
@@ -370,9 +347,9 @@ $allNotGoodCondition = getNotGoodCondition();
                     <div class="d-flex align-items-center gap-2 mb-3">
 
                       <div class="rounded-3 bg-primary-subtle
-                                    text-primary d-flex
-                                    align-items-center
-                                    justify-content-center"
+                                      text-primary d-flex
+                                      align-items-center
+                                      justify-content-center"
                         style="width:40px;height:40px;">
 
                         <i class="bi bi-pie-chart-fill"></i>
@@ -534,9 +511,9 @@ $allNotGoodCondition = getNotGoodCondition();
                     <div class="d-flex align-items-center gap-2 mb-3">
 
                       <div class="rounded-3 bg-primary-subtle
-                                    text-primary d-flex
-                                    align-items-center
-                                    justify-content-center"
+                                      text-primary d-flex
+                                      align-items-center
+                                      justify-content-center"
                         style="width:40px;height:40px;">
 
                         <i class="bi bi-list-columns"></i>
@@ -551,7 +528,7 @@ $allNotGoodCondition = getNotGoodCondition();
 
 
                     <div class="d-flex justify-content-between
-                                align-items-center border-bottom py-2">
+                                  align-items-center border-bottom py-2">
 
                       <small>Total Fire Extinguishers</small>
 
@@ -563,7 +540,7 @@ $allNotGoodCondition = getNotGoodCondition();
 
 
                     <div class="d-flex justify-content-between
-                                align-items-center border-bottom py-2">
+                                  align-items-center border-bottom py-2">
 
                       <small>Installed Units</small>
 
@@ -575,7 +552,7 @@ $allNotGoodCondition = getNotGoodCondition();
 
 
                     <div class="d-flex justify-content-between
-                                align-items-center border-bottom py-2">
+                                  align-items-center border-bottom py-2">
 
                       <small>Spare Units</small>
 
@@ -587,32 +564,32 @@ $allNotGoodCondition = getNotGoodCondition();
 
 
                     <div class="d-flex justify-content-between
-                                align-items-center border-bottom py-2">
+                                  align-items-center border-bottom py-2">
 
                       <small>Good Units</small>
 
                       <span class="badge bg-success-subtle text-success">
-                       <?=$allGoodCondition  ?>
+                        <?= $allGoodCondition  ?>
                       </span>
 
                     </div>
 
 
                     <div class="d-flex justify-content-between
-                                align-items-center border-bottom py-2">
+                                  align-items-center border-bottom py-2">
 
                       <small>Not Good Units</small>
 
                       <span class="badge bg-danger-subtle text-danger">
-                       <?=$allNotGoodCondition  ?>
-                        
+                        <?= $allNotGoodCondition  ?>
+
                       </span>
 
                     </div>
 
 
                     <div class="d-flex justify-content-between
-                                align-items-center py-2">
+                                  align-items-center py-2">
 
                       <small>Expiring Soon</small>
 

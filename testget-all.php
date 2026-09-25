@@ -2,7 +2,7 @@
 
 require_once './backend/controller/FireExtinguisherController.php';
 
-$data = getAllFireExtinguishersController();
+// $data = getAllFireExtinguishersController();
 
 while ($row = mysqli_fetch_assoc($data)) {
     echo $row['extinguisher_code'];

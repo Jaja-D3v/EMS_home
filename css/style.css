@@ -14759,27 +14759,27 @@ textarea.form-control-lg {
 /* this is for fontawsome icons */
 
 .fa-gauge, .fa-qrcode, .fa-fire-extinguisher, .fa-user-pen, .fa-bell {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 /* for inspection form */
 
 .inspection-item {
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
   .inspection-item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .08) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .08) !important;
   }
 
   .inspection-switch {
-      cursor: pointer;
-      transition: transform 0.2s ease;
+    cursor: pointer;
+    transition: transform 0.2s ease;
   }
 
   .inspection-switch:active {
-      transform: scale(0.9);
+    transform: scale(0.9);
   }
 
   /* for stick the footer */

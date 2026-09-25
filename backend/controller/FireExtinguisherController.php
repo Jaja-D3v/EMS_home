@@ -240,13 +240,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             header("Location: ../../list-extinguisher.php?error=invalid_id");
             exit;
         }
+        $data = getFireExtinguisherById($ext_id);
+        $code = $data['extinguisher_code'];
         $success = deleteFireExtinguisherById($ext_id);
         if ($success) {
+            
+
             $user_name = 'jared';
             createActivityLog(
                 $user_name,
                 "Delete Fire Extinguisher",
-                "Deleted fire extinguisher $ext_code"
+                "Deleted fire extinguisher $code"
             );
             header("Location: ../../list-extinguisher.php?success-delete=1");
             exit;

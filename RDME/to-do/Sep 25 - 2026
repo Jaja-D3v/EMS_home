@@ -1,0 +1,31 @@
+
+Day 4    TO-DO                       STATUS
+_____________________________________________________________
+
+
+## list of fire extinguisher 
+- add FE generate code auto          #
+- search                             # 
+- sort                               # 
+
+## dashboard
+- analytics                          # ON GOING - created design  
+- analytics by month                 #
+
+## To fix
+QR Code Generator 
+- 
+
+## Activity log 
+- sort by month                      #
+- fetch activity logs                #
+- show the date in activity logs     #
+- default sort by recent             #
+
+
+- total inspected this month        #
+
+
+- fix the activity log delete       #
+    -- it should get the fe code and insert into database 
+
