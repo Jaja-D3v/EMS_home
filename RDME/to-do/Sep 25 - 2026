@@ -25,3 +25,5 @@ _____________________________________________________________
 - fix the activity log delete       #DONE
     -- it should get the fe code and insert into database 
 
+- fix the action taken in QR Code   #DONE
+- search in QR generator            #DONE

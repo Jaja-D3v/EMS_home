@@ -14782,7 +14782,13 @@ textarea.form-control-lg {
     transform: scale(0.9);
   }
 
-  /* for stick the footer */
+
+
+
+/* ========================================
+   SELECTION FOOTER
+======================================== */
+
 .selection-footer {
     position: fixed;
     bottom: 0;
@@ -14795,4 +14801,34 @@ textarea.form-control-lg {
     padding: 12px 24px;
 
     box-shadow: 0 -3px 15px rgba(0, 0, 0, 0.08);
+
+    /* Hidden state */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(100%);
+
+    transition:
+        opacity 0.3s ease,
+        transform 0.35s ease,
+        visibility 0.35s ease;
+}
+
+/* Visible state */
+.selection-footer.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 767.98px) {
+
+    .selection-footer {
+        padding: 12px 16px;
+    }
+
 }

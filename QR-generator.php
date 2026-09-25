@@ -104,6 +104,120 @@ $result = getAllFireExtinguishersCode();
 
               </div>
 
+              <script>
+                // ========================================
+                // SEARCH BY CODE OR LOCATION
+                // ========================================
+
+                const qrSearch = document.getElementById('qrSearch');
+
+                if (qrSearch) {
+
+                  qrSearch.addEventListener('input', function() {
+
+                    const searchValue = this.value
+                      .trim()
+                      .toLowerCase();
+
+                    const tbody = document.querySelector(
+                      'table tbody'
+                    );
+
+                    const rows = tbody.querySelectorAll('tr');
+
+                    let hasResults = false;
+
+                    rows.forEach(row => {
+
+                      const checkbox = row.querySelector(
+                        '.extinguisher-checkbox'
+                      );
+
+                      // Skip empty/default rows
+                      if (!checkbox) {
+                        return;
+                      }
+
+                      // Extinguisher code
+                      const code = checkbox.value
+                        .toLowerCase();
+
+                      // Location
+                      const location = row.cells[3] ?
+                        row.cells[3].textContent
+                        .trim()
+                        .toLowerCase() :
+                        '';
+
+                      const match =
+                        code.includes(searchValue) ||
+                        location.includes(searchValue);
+
+                      if (match) {
+
+                        row.style.display = '';
+                        hasResults = true;
+
+                      } else {
+
+                        row.style.display = 'none';
+
+                      }
+
+                    });
+
+                    // ========================================
+                    // NO RESULTS
+                    // ========================================
+
+                    let noResultsRow = document.getElementById(
+                      'qrNoResults'
+                    );
+
+                    if (!hasResults && searchValue !== '') {
+
+                      if (!noResultsRow) {
+
+                        noResultsRow = document.createElement('tr');
+
+                        noResultsRow.id = 'qrNoResults';
+
+                        noResultsRow.innerHTML = `
+                    <td
+                        colspan="5"
+                        class="text-center py-5 text-muted">
+
+                        <i class="bi bi-search fs-3 d-block mb-2"></i>
+
+                        <div class="fw-semibold">
+                            No results found
+                        </div>
+
+                        <div class="small">
+                            No fire extinguisher matches
+                            your search.
+                        </div>
+
+                    </td>
+                `;
+
+                        tbody.appendChild(noResultsRow);
+
+                      }
+
+                    } else {
+
+                      if (noResultsRow) {
+                        noResultsRow.remove();
+                      }
+
+                    }
+
+                  });
+
+                }
+              </script>
+
             </div>
 
           </div>
@@ -239,44 +353,35 @@ $result = getAllFireExtinguishersCode();
 
 
         <!-- Selection Footer -->
-        <div class="card-footer border-0 bg-primary-subtle rounded selection-footer">
+        <div id="selectionFooter" class="card-footer border-0 bg-primary-subtle rounded selection-footer">
 
           <div class="d-flex flex-column flex-md-row
-                        justify-content-between
-                        align-items-center
-                        gap-3">
+                justify-content-between
+                align-items-center
+                gap-3">
 
-            <div class="text-primary fw-semibold">
-
+            <div class="text-primary fw-semibold text-center text-md-start">
               <i class="bi bi-check-circle-fill me-1"></i>
-
               <span id="selectedCount">0</span>
               item(s) selected
-
             </div>
 
-
-            <div class="d-flex gap-2">
+            <div class="d-flex flex-wrap gap-2 justify-content-center flex-shrink-0">
 
               <button
                 type="button"
                 class="btn btn-light"
                 onclick="clearSelection()">
-
                 <i class="bi bi-x-lg me-1"></i>
                 Clear
-
               </button>
-
 
               <button
                 type="button"
                 class="btn btn-primary"
                 onclick="printSelected()">
-
                 <i class="bi bi-printer me-1"></i>
                 Print Selected
-
               </button>
 
             </div>
@@ -310,10 +415,24 @@ $result = getAllFireExtinguishersCode();
             '.extinguisher-checkbox:checked'
           ).length;
 
-        document.getElementById('selectedCount').textContent =
-          selected;
-      }
+        const selectedCount =
+          document.getElementById('selectedCount');
 
+        const selectionFooter =
+          document.getElementById('selectionFooter');
+
+        selectedCount.textContent = selected;
+
+        if (selected > 0) {
+
+          selectionFooter.classList.add('show');
+
+        } else {
+
+          selectionFooter.classList.remove('show');
+
+        }
+      }
 
       function clearSelection() {
 
