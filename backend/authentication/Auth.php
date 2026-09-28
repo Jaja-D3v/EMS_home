@@ -1,4 +1,5 @@
 <?php
+header('Content-Type: application/json');
 
 $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
 
@@ -12,9 +13,7 @@ session_set_cookie_params([
 
 session_start();
 
-header('Content-Type: application/json');
-
-$timeout = 300; // 5 minutes
+$timeout = 310; // 5 mins + 10s buffer
 
 if (
     isset($_SESSION['LAST_ACTIVITY']) &&
@@ -24,34 +23,32 @@ if (
     session_destroy();
 
     http_response_code(401);
-
     echo json_encode([
         "success" => false,
         "message" => "Session expired."
     ]);
-
     exit;
 }
 
-$_SESSION['LAST_ACTIVITY'] = time();
-
 if (!isset($_SESSION['id'])) {
-
     http_response_code(401);
-
     echo json_encode([
         "success" => false,
         "message" => "Unauthorized."
     ]);
-
     exit;
 }
 
+// I-refresh ang session activity timestamp sa PHP
+$_SESSION['LAST_ACTIVITY'] = time();
+
 echo json_encode([
     "success" => true,
+    "message" => "Session extended successfully.",
     "user" => [
         "id" => $_SESSION['id'],
-        "LoginID" => $_SESSION['LoginID'],
-        "Role" => $_SESSION['Role']
+        "LoginID" => $_SESSION['LoginID'] ?? null,
+        "Role" => $_SESSION['Role'] ?? null,
+        "EmployeeName" => $_SESSION['EmployeeName'] ?? null
     ]
 ]);

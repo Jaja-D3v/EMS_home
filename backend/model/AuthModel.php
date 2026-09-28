@@ -6,7 +6,7 @@ function loginUser($loginID, $password)
 {
     global $conn;
 
-    $sql = "SELECT id, LoginID, password, Role
+    $sql = "SELECT id, LoginID, password, Role, EmployeeName
             FROM kane_users_login
             WHERE LoginID = ?";
 

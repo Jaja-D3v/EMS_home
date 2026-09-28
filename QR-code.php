@@ -1,4 +1,8 @@
-<?php include_once 'notification/inspect_fe_success.php'; ?>
+<?php
+include_once 'notification/inspect_fe_success.php';
+require_once 'backend/authentication/SessionChecker.php';
+
+?>
 
 
 <!DOCTYPE html>
@@ -550,8 +554,8 @@
                         class="form-control"
                         id="inspectedBy"
                         name="inspected_by"
-                        placeholder="Inspector name"
-                        required>
+                        value="<?= htmlspecialchars($_SESSION['EmployeeName']) ?>"
+                        readonly>
 
                     </div>
 
@@ -1333,6 +1337,8 @@
 
     // });
   </script>
+  <?php include_once 'notification/session_timeout.php'; ?>
+
 </body>
 
 </html>

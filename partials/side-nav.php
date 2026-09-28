@@ -43,23 +43,97 @@
         Fire Extinguisher List
       </a>
 
-      <a class="nav-link" href="activity-log.php">
-        <i class="fa-solid fa-user-pen"></i>
-        Activity Log
-      </a>
+      <!-- Inspection Approvals -->
+    <li class="nav-group">
 
-      <a class="nav-link" href="notification.php">
-        <i class="fa-solid fa-bell"></i>
-        Notification
-      </a>
+      <a
+        class="nav-link nav-group-toggle"
+        href="#">
 
-      <a class="nav-link" href="inspection-approvals.php">
-        <i class="fa-solid fa-file-signature"></i>
+        <i class="bi bi-file-earmark-check me-2"></i>
         Inspection Approvals
+
       </a>
 
+      <ul class="nav-group-items">
 
-      <!-- end navigation -->
+        <!-- Pending Approval -->
+        <li class="nav-item">
+
+          <a
+            class="nav-link"
+            href="inspection-approvals.php?status=pending">
+
+            <i class="bi bi-clock me-2"></i>
+            Pending Approval
+
+          </a>
+
+        </li>
+
+        <!-- Approved -->
+        <li class="nav-item">
+
+          <a
+            class="nav-link"
+            href="inspection-approvals.php?status=approved">
+
+            <i class="bi bi-check-circle me-2"></i>
+            Approved
+
+          </a>
+
+        </li>
+
+        <!-- Rejected -->
+        <li class="nav-item">
+
+          <a
+            class="nav-link"
+            href="inspection-approvals.php?status=rejected">
+
+            <i class="bi bi-x-circle me-2"></i>
+            Rejected
+
+          </a>
+
+        </li>
+
+      </ul>
+
+    </li>
+
+
+    <!-- Activity Log -->
+    <li class="nav-item">
+
+      <a
+        class="nav-link"
+        href="activity-log.php">
+
+        <i class="fa-solid fa-user-pen me-2"></i>
+        Activity Log
+
+      </a>
+
+    </li>
+
+    <!-- Maintenance -->
+    <li class="nav-item">
+
+      <a
+        class="nav-link"
+        href="maintenance.php">
+
+        <i class="bi bi-tools me-2"></i>
+        Maintenance
+
+      </a>
+
+    </li>
+
+
+    <!-- end navigation -->
 
     </li>
     <li class="nav-divider"></li>

@@ -31,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['id'] = $user['id'];
         $_SESSION['LoginID'] = $user['LoginID'];
         $_SESSION['Role'] = $user['Role'];
+        $_SESSION['EmployeeName'] = $user['EmployeeName'];
 
         /*
          * Start inactivity timer

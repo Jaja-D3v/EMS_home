@@ -1,4 +1,6 @@
-
+<?php 
+require_once 'backend/authentication/SessionChecker.php'; 
+?>
 <!DOCTYPE html>
 <!--
 * CoreUI - Free Bootstrap Admin Template
@@ -1015,6 +1017,8 @@
             }
         });
     </script>
+    <?php include_once 'notification/session_timeout.php'; ?>
+
 </body>
 
 </html>

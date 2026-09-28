@@ -1,5 +1,7 @@
 <?php
 include 'backend/controller/QRCodeGeneratorController.php';
+require_once 'backend/authentication/SessionChecker.php'; 
+
 $result = getAllFireExtinguishersCode();
 ?>
 
@@ -103,7 +105,6 @@ $result = getAllFireExtinguishersCode();
               </div>
 
               <script>
-              
                 // SEARCH BY CODE OR LOCATION
                 const qrSearch = document.getElementById('qrSearch');
 
@@ -162,7 +163,7 @@ $result = getAllFireExtinguishersCode();
 
                     });
 
-                  
+
                     // NO RESULTS
                     let noResultsRow = document.getElementById(
                       'qrNoResults'
@@ -475,6 +476,8 @@ $result = getAllFireExtinguishersCode();
       }
     });
   </script>
+  <?php include_once 'notification/session_timeout.php'; ?>
+
 </body>
 
 </html>

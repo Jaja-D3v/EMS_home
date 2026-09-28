@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <!--
 * CoreUI - Free Bootstrap Admin Template
@@ -17,9 +16,9 @@
     <?php include 'partials/header-nav.php'; ?>
 
     <!-- CONTENT HERE -->
-    
 
-    </div>
+
+  </div>
   </div>
   <?php include 'partials/footer.php'; ?>
   </div>
@@ -35,6 +34,8 @@
       }
     });
   </script>
+  <?php include_once 'notification/session_timeout.php'; ?>
+
 </body>
 
 </html>

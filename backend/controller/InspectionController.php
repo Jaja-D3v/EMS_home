@@ -2,6 +2,56 @@
 require_once __DIR__ . '/../model/InspectionModel.php';
 require_once __DIR__ . '/../model/FireExtinguisherModel.php';
 require_once __DIR__ . '/ActivityLogController.php';
+require_once __DIR__ . '/../authentication/SessionChecker.php';
+
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+
+    $action = $_GET['action'] ?? null;
+
+    if ($action === 'get') {
+
+        $id = isset($_GET['id'])
+            ? (int) $_GET['id']
+            : 0;
+
+        header('Content-Type: application/json');
+
+        if ($id <= 0) {
+            http_response_code(400);
+
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid inspection ID.'
+            ]);
+
+            exit;
+        }
+
+        $inspection = getInspectionCheckListById($id);
+
+        if ($inspection) {
+
+            echo json_encode([
+                'success' => true,
+                'inspection' => $inspection
+            ]);
+        } else {
+
+            http_response_code(404);
+
+            echo json_encode([
+                'success' => false,
+                'message' => 'Inspection record not found.'
+            ]);
+        }
+
+        exit;
+    }
+}
+
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? null;
@@ -12,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $type = $_POST['type'] ?? null;
         $class = $_POST['class'] ?? null;
         $date_inspected = $_POST['date_inspected'] ?? null;
-        $inspected_by = $_POST['inspected_by'] ?? null;
+        $inspected_by = $_SESSION['EmployeeName'] ?? 'error while getting employee name';
         $verified_and_approved_by = $_POST['verified_and_approved_by'] ?? null;
         $action_taken = $_POST['action_taken'] ?? null;
         $target_date_of_implementation = $_POST['target_date_of_implementation'] ?? null;
@@ -121,14 +171,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($action_taken == "Refilled") {
                 update_refilled($extinguisher_code);
             }
-            update_remarks($remarks, $extinguisher_code );
-            if($status) {
+            update_remarks($remarks, $extinguisher_code);
+            if ($status) {
                 update_status('Good', $extinguisher_code);
-            }elseif(!$status) {
+            } elseif (!$status) {
                 update_status('Not Good', $extinguisher_code);
             }
 
-            $user_name = 'jared';
+            $user_name = $_SESSION['EmployeeName'] ?? 'error while getting employee name';
             createActivityLog(
                 $user_name,
                 "Inspect Fire Extinguisher",
@@ -138,4 +188,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
     }
+}
+
+function getAllInspected()
+{
+    return getAllInspectionCheckList();
 }

@@ -1,9 +1,9 @@
 <?php
 include 'backend/controller/FireExtinguisherController.php';
+require_once 'backend/authentication/SessionChecker.php'; 
 
 $id = $_GET['id'];
 $data = getFireExtinguisherById($id);
-
 ?>
 
 <!DOCTYPE html>
@@ -27,7 +27,7 @@ $data = getFireExtinguisherById($id);
             <div class="col-12 col-lg-9 col-xl-8">
                 <!-- here -->
                 <div class="card shadow-sm">
-                    
+
                     <!-- Header -->
                     <div class="card-header">
                         <h5 class="mb-0">Edit Fire Extinguisher</h5>
@@ -315,6 +315,7 @@ $data = getFireExtinguisherById($id);
             }
         });
     </script>
+    <?php include_once 'notification/session_timeout.php'; ?>
 </body>
 
 </html>

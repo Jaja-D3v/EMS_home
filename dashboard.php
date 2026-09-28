@@ -1,6 +1,6 @@
 <?php
 include './backend/controller/FireExtinguisherController.php';
-require_once 'backend/authentication/Auth.php';
+require_once 'backend/authentication/SessionChecker.php';
 
 $totalFE = getTotalFireExtinguishers();
 $totalSpareFE = getTotalSpareFireExtinguishers();
@@ -80,7 +80,6 @@ $allNotGoodCondition = getNotGoodCondition();
 
         <?php 
         include_once 'notification/fe-expiration-notice.php'; 
-        include_once 'notification/session_timeout.php'; 
         ?>
 
         <div class="row g-5">
@@ -977,7 +976,8 @@ $allNotGoodCondition = getNotGoodCondition();
       );
     </script>
 
-
+        
+    <?php include_once 'notification/session_timeout.php'; ?>
 </body>
 
 </html>

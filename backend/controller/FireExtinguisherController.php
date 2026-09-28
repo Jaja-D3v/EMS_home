@@ -2,6 +2,8 @@
 
 require_once __DIR__ . '/../model/FireExtinguisherModel.php';
 require_once __DIR__ . '/ActivityLogController.php';
+require_once __DIR__ . '/../authentication/SessionChecker.php';
+
 
 
 // Get all fire extinguishers
@@ -57,9 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
 
-    // ========================================
     // GET NEXT FIRE EXTINGUISHER CODE
-    // ========================================
 
     if ($action === 'getNextCode') {
 
@@ -77,7 +77,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
+
 // controller function for creating/adding new fire extinguisher
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $ext_code = $_POST['extinguisher_code'] ?? null;
@@ -155,7 +157,7 @@ function updateExtinguisher(
     );
 
     if ($success) {
-        $user_name = 'jared';
+        $user_name = $_SESSION['EmployeeName'] ?? 'error while getting employee name';
         createActivityLog(
             $user_name,
             "Update Fire Extinguisher",
@@ -169,7 +171,6 @@ function updateExtinguisher(
 
 
 // GET - fetch fire extinguisher for edit modal & get by code for fire extinguisher
-
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $action = $_GET['action'] ?? null;
@@ -264,7 +265,7 @@ function addNewExtinguisher(
     );
 
     if ($success) {
-        $user_name = 'jared';
+        $user_name = $_SESSION['EmployeeName'] ?? 'error while getting employee name';
         createActivityLog(
             $user_name,
             "Add Fire Extinguisher",
@@ -292,7 +293,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ($success) {
 
 
-            $user_name = 'jared';
+            $user_name = $_SESSION['EmployeeName'] ?? 'error while getting employee name';
             createActivityLog(
                 $user_name,
                 "Delete Fire Extinguisher",
@@ -374,4 +375,3 @@ function getNextFireExtinguisherCode()
 {
     return getNextFireExtinguisherCodeModel();
 }
-

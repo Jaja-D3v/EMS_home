@@ -1,5 +1,7 @@
 <?php
 include './backend/controller/FireExtinguisherController.php';
+require_once 'backend/authentication/SessionChecker.php'; 
+
 $info = getAllFireExtinguishers();
 ?>
 
@@ -1187,7 +1189,7 @@ $info = getAllFireExtinguishers();
             </div>
 
             <!-- this is for view modal -->
-            <!-- View Fire Extinguisher Modal -->
+          
             <!-- View Fire Extinguisher Modal -->
             <div
               class="modal fade"
@@ -2168,6 +2170,8 @@ $info = getAllFireExtinguishers();
 
     });
   </script>
+  <?php include_once 'notification/session_timeout.php'; ?>
+
 </body>
 
 </html>

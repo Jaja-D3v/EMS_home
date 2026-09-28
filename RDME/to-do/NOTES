@@ -1,0 +1,36 @@
+## PAGINATION - ACROSS ALL NAVS
+
+ ## INSPECTION APPROVALS
+    - PENDING
+    - APPROVE
+    - REJECTED
+
+## create generated report 
+
+
+ ## MAINTENANCE
+ - DROP DOWNS DB
+ - Should be maintainable and can be replaced
+
+ ## PLACEMENT
+ - put it in the list 
+
+ ## MAINTENANCE
+ - SHOULD BE REPLACEBLE THE DROP DOWNS
+
+ ## BRANCH
+- ADD NEW COLUMN FOR BRANCH WHERE IT IS LOCATED
+
+
+ ## ACTIVITY LOG
+- FILTER BY EXACT DATE
+- PAGINATION
+- BY 10 
+
+## Soft delete
+- archive for fire extinguisher
+
+
+## ANOTHER 
+- COLUMN OF FOR BRANCH
+

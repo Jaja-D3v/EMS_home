@@ -1,3 +1,6 @@
+<?php 
+require_once 'backend/authentication/SessionChecker.php'; 
+?>
 <!DOCTYPE html>
 <!--
 * CoreUI - Free Bootstrap Admin Template
@@ -461,7 +464,6 @@
 
             });
 
-
             // Display all logs
             renderActivityLogs(allActivityLogs);
 
@@ -485,7 +487,6 @@
           });
       }
 
-
       // ==========================================
       // Initial Fetch
       // ==========================================
@@ -494,6 +495,7 @@
 
     });
   </script>
+  <?php include_once 'notification/session_timeout.php'; ?>
 </body>
 
 </html>

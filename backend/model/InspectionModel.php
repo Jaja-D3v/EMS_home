@@ -79,3 +79,52 @@ function addInspectionChecklist(
 
     return mysqli_stmt_execute($stmt);
 }
+
+function getAllInspectionCheckList()
+{
+    global $conn;
+
+    $sql = "SELECT *
+            FROM inspection_checklist_tbl
+            ORDER BY inspect_id DESC";
+
+    $result = mysqli_query($conn, $sql);
+
+    if (!$result) {
+        return [];
+    }
+
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+function getInspectionCheckListById($id)
+{
+    global $conn;
+
+    $sql = "SELECT *
+            FROM inspection_checklist_tbl
+            WHERE inspect_id = ?
+            LIMIT 1";
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        return null;
+    }
+
+    mysqli_stmt_bind_param(
+        $stmt,
+        "i",
+        $id
+    );
+
+    mysqli_stmt_execute($stmt);
+
+    $result = mysqli_stmt_get_result($stmt);
+
+    $inspection = mysqli_fetch_assoc($result);
+
+    mysqli_stmt_close($stmt);
+
+    return $inspection ?: null;
+}
