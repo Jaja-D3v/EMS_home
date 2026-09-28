@@ -9,7 +9,7 @@ _____________________________________________________________
 - sort add near expiry fe                #
 
 ## Apporve inspections list    
-condition: if the user role === safety officer then it will visble to them then if its not it is not visbi         
+condition: if the user role === safety officer then it will visble to them then if its not it is not visible         
 - fetch all inspection list              #
 
 
@@ -22,8 +22,13 @@ condition: if the user role === safety officer then it will visble to them then 
 - total inspected this month                      #
 - cards that has total number should be clickable #
 
-## Authentication
-- If the user leaves the tab inactive for 5 minutes, a message will appear asking, “Are you still here?” The user will have 1 minute to click “Extend Session.” If the countdown reaches zero, the user will be automatically logged out.
+## INSPECTION CHECKLIST TBL 
+- TARGET DATE OF IMPLEMENTATION SHOULD BE NULLABLE 
+- 
+
+## CREATE BRANCH
+
+
 
 
 
@@ -45,3 +50,14 @@ ____________________DONE________________________________________________________
 
 ## ERROR page 
 - Created error pages 401, 404, 500      #DONE
+
+ ## INSPECTION APPROVALS   
+    - DROPDOWN PENDING                   #DONE
+    - DROPDOWN APPROVE                   #DONE
+    - DROPDOWN REJECTED                  #DONE
+
+## Authentication                        #DONE
+- If the user leaves the tab inactive for 5 minutes, a message will appear asking, “Are you still here?” The user will have 1 minute to click “Extend Session.” If the countdown reaches zero, the user will be automatically logged out.
+
+
+
