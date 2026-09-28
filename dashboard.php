@@ -1,6 +1,6 @@
 <?php
-$pageTitle = "Dashboard";
 include './backend/controller/FireExtinguisherController.php';
+require_once 'backend/authentication/Auth.php';
 
 $totalFE = getTotalFireExtinguishers();
 $totalSpareFE = getTotalSpareFireExtinguishers();
@@ -78,7 +78,10 @@ $allNotGoodCondition = getNotGoodCondition();
     <div class="main-content flex-grow-1">
       <div class="container-lg px-4">
 
-        <?php include_once 'notification/fe-expiration-notice.php'; ?>
+        <?php 
+        include_once 'notification/fe-expiration-notice.php'; 
+        include_once 'notification/session_timeout.php'; 
+        ?>
 
         <div class="row g-5">
           <!-- Analytics Header -->

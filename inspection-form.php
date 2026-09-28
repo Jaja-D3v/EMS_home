@@ -1,4 +1,3 @@
-<?php $pageTitle = "Page Title"; ?>
 
 <!DOCTYPE html>
 <!--

@@ -1,11 +1,3 @@
-<?php $pageTitle = '<div class="d-flex align-items-center gap-2 mb-1">
-                <i class="bi bi-activity text-primary"></i>
-
-                <h5 class="fw-semibold mb-0">
-                  Activity Log
-                </h5>
-              </div>'; ?>
-
 <!DOCTYPE html>
 <!--
 * CoreUI - Free Bootstrap Admin Template

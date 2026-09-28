@@ -1,4 +1,3 @@
-<?php $pageTitle = "Scan QR Code"; ?>
 <?php include_once 'notification/inspect_fe_success.php'; ?>
 
 

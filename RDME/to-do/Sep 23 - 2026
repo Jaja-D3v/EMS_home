@@ -5,13 +5,10 @@ _____________________________________________________________
 - Create Inspection form             #DONE
 
 
-- fetch activity logs                #
 - fix update and delete form         # DONE
 
 ## list of fire extinguisher 
 - add fe button working              # DONE 
-- search                             # 
-- sort                               # 
 
 
 ## Scan QR Code 
@@ -20,13 +17,7 @@ _____________________________________________________________
 
 
 ## dashboard
-- analytics                                 #ON GOING - created design  
 - list of FE should not be in dashboard     #DONE
-
-
-## To fix
-QR Code Generator 
-- 
 
 
 
@@ -38,5 +29,4 @@ if the status_condition of the list below is x Then the status_condition must be
 - hose
 - nozzle
 - cyclinder body
-
 - created badge for FE status if good or not good

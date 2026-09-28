@@ -1,5 +1,4 @@
 <?php
-$pageTitle = "QR Code Generator";
 include 'backend/controller/QRCodeGeneratorController.php';
 $result = getAllFireExtinguishersCode();
 ?>

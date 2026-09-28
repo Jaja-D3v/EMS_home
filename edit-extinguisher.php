@@ -1,5 +1,4 @@
 <?php
-$pageTitle = "Edit Fire Extinguisher Information";
 include 'backend/controller/FireExtinguisherController.php';
 
 $id = $_GET['id'];

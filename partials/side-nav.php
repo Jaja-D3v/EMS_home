@@ -53,6 +53,11 @@
         Notification
       </a>
 
+      <a class="nav-link" href="inspection-approvals.php">
+        <i class="fa-solid fa-file-signature"></i>
+        Inspection Approvals
+      </a>
+
 
       <!-- end navigation -->
 
