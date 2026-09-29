@@ -1,8 +1,7 @@
 <?php
 include './backend/controller/FireExtinguisherController.php';
-require_once 'backend/authentication/SessionChecker.php'; 
+require_once 'backend/authentication/SessionChecker.php';
 
-$info = getAllFireExtinguishers();
 ?>
 
 <!DOCTYPE html>
@@ -369,7 +368,25 @@ $info = getAllFireExtinguishers();
               </div>
 
             </div>
+            <?php
 
+            $limit = 10;
+
+            $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+
+            if ($page < 1) {
+              $page = 1;
+            }
+
+            $offset = ($page - 1) * $limit;
+
+            $info = getAllFireExtinguishers($limit, $offset);
+
+            $totalRecords = getTotalFireExtinguishers();
+
+            $totalPages = (int) ceil($totalRecords / $limit);
+
+            ?>
             <!-- Content here -->
             <?php foreach ($info as $data): ?>
 
@@ -457,8 +474,8 @@ $info = getAllFireExtinguishers();
                       <div class="d-flex align-items-center gap-2">
                         <div
                           class="d-flex align-items-center justify-content-center
-               bg-danger bg-opacity-10 text-danger
-               rounded-3 flex-shrink-0"
+                            bg-danger bg-opacity-10 text-danger
+                            rounded-3 flex-shrink-0"
                           style="width: 32px; height: 32px;">
                           <i class="bi bi-qr-code"></i>
                         </div>
@@ -479,8 +496,8 @@ $info = getAllFireExtinguishers();
                       <div class="d-flex align-items-center gap-2">
                         <div
                           class="d-flex align-items-center justify-content-center
-               bg-primary bg-opacity-10 text-primary
-               rounded-3 flex-shrink-0"
+                                bg-primary bg-opacity-10 text-primary
+                                rounded-3 flex-shrink-0"
                           style="width: 32px; height: 32px;">
                           <i class="bi bi-box-seam"></i>
                         </div>
@@ -501,8 +518,8 @@ $info = getAllFireExtinguishers();
                       <div class="d-flex align-items-center gap-2">
                         <div
                           class="d-flex align-items-center justify-content-center
-               bg-warning bg-opacity-10 text-warning
-               rounded-3 flex-shrink-0"
+                                bg-warning bg-opacity-10 text-warning
+                                rounded-3 flex-shrink-0"
                           style="width: 32px; height: 32px;">
                           <i class="bi bi-fire"></i>
                         </div>
@@ -566,6 +583,86 @@ $info = getAllFireExtinguishers();
 
             <?php endforeach; ?>
 
+            <?php if ($totalPages > 1): ?>
+
+              <div
+                class="position-fixed bottom-0 end-0 bg-body border-top shadow-sm py-2"
+                style="width: calc(100% - 260px); z-index: 1020;">
+
+                <div class="container-fluid px-3 px-md-4">
+
+                  <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
+
+                    <!-- Showing -->
+                    <div class="text-body-secondary small text-center text-sm-start">
+                      Showing
+                      <strong><?= min($offset + 1, $totalRecords) ?></strong>
+                      -
+                      <strong><?= min($offset + $limit, $totalRecords) ?></strong>
+                      of
+                      <strong><?= $totalRecords ?></strong>
+                      fire extinguishers
+                    </div>
+
+                    <!-- Pagination -->
+                    <nav aria-label="Fire extinguisher pagination">
+                      <ul class="pagination pagination-sm mb-0">
+
+                        <!-- Previous -->
+                        <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
+                          <a
+                            class="page-link px-3"
+                            href="list-extinguisher.php?page=<?= max(1, $page - 1) ?>"
+                            aria-label="Previous">
+
+                            <i class="bi bi-chevron-left"></i>
+
+                            <span class="d-none d-sm-inline ms-1">
+                              Previous
+                            </span>
+
+                          </a>
+                        </li>
+
+                        <!-- Page Numbers -->
+                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+
+                          <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+                            <a
+                              class="page-link px-3"
+                              href="list-extinguisher.php?page=<?= $i ?>">
+                              <?= $i ?>
+                            </a>
+                          </li>
+
+                        <?php endfor; ?>
+
+                        <!-- Next -->
+                        <li class="page-item <?= ($page >= $totalPages) ? 'disabled' : '' ?>">
+                          <a
+                            class="page-link px-3"
+                            href="list-extinguisher.php?page=<?= min($totalPages, $page + 1) ?>"
+                            aria-label="Next">
+
+                            <span class="d-none d-sm-inline me-1">
+                              Next
+                            </span>
+
+                            <i class="bi bi-chevron-right"></i>
+
+                          </a>
+                        </li>
+
+                      </ul>
+                    </nav>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            <?php endif; ?>
             <!-- this is for edit form extinguisher -->
 
 
@@ -1070,7 +1167,7 @@ $info = getAllFireExtinguishers();
                       </div>
 
                       <!-- Location -->
-                      <div class="col-md-8">
+                      <div class="col-12 col-md-6 col-lg-5">
                         <label for="location" class="form-label">
                           Location
                         </label>
@@ -1084,8 +1181,31 @@ $info = getAllFireExtinguishers();
                           required>
                       </div>
 
+                      <!-- Branch -->
+                      <div class="col-12 col-md-3 col-lg-4">
+                        <label for="branch" class="form-label">
+                          Branch
+                        </label>
+
+                        <select
+                          class="form-select"
+                          id="branch"
+                          name="branch"
+                          required>
+
+                          <option value="" selected disabled>
+                            Select branch
+                          </option>
+
+                          <option value="Laguna">Laguna</option>
+                          <option value="Lima">Lima</option>
+                          <option value="Cebu">Cebu</option>
+                          <option value="Cavite">Cavite</option>
+                        </select>
+                      </div>
+
                       <!-- Condition -->
-                      <div class="col-md-4">
+                      <div class="col-12 col-md-3 col-lg-3">
                         <label for="conditionStatus" class="form-label">
                           Condition
                         </label>
@@ -1178,18 +1298,12 @@ $info = getAllFireExtinguishers();
 
                   </div>
 
-
-
-
-
-
-
                 </div>
               </div>
             </div>
 
             <!-- this is for view modal -->
-          
+
             <!-- View Fire Extinguisher Modal -->
             <div
               class="modal fade"

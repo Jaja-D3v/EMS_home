@@ -35,7 +35,7 @@
 
       <a class="nav-link" href="QR-generator.php">
         <i class="fa-solid fa-qrcode"></i>
-        QR Code Generator
+        Print QR Code 
       </a>
 
       <a class="nav-link" href="list-extinguisher.php">
@@ -50,7 +50,7 @@
         class="nav-link nav-group-toggle"
         href="#">
 
-        <i class="bi bi-file-earmark-check me-2"></i>
+        <i class="fa-solid fa-list-check"></i>
         Inspection Approvals
 
       </a>
@@ -103,7 +103,6 @@
 
     </li>
 
-
     <!-- Activity Log -->
     <li class="nav-item">
 
@@ -131,10 +130,7 @@
       </a>
 
     </li>
-
-
     <!-- end navigation -->
-
     </li>
     <li class="nav-divider"></li>
     <li class="nav-title">Extras</li>

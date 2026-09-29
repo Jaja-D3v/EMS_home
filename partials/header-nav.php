@@ -76,12 +76,14 @@
 
           <div class="dropdown-divider"></div>
 
-          <a class="dropdown-item" href="backend/authentication/logout.php">
+          <a
+            class="dropdown-item"
+            href="#"
+            id="logoutBtn">
             <svg
               class="icon me-2"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 512 512">
-
               <path
                 fill="var(--ci-primary-color, currentcolor)"
                 d="M77.155 272.034H351.75v-32.001H77.155l75.053-75.053v-.001l-22.628-22.626-113.681 113.68.001.001h-.001L129.58 369.715l22.628-22.627v-.001z"
@@ -91,7 +93,6 @@
                 fill="var(--ci-primary-color, currentcolor)"
                 d="M160 16v32h304v416H160v32h336V16z"
                 class="ci-primary" />
-
             </svg>
 
             Logout
@@ -102,3 +103,46 @@
   </div>
 
 </header>
+
+<script>
+document.getElementById('logoutBtn').addEventListener('click', function (e) {
+    e.preventDefault();
+
+    Swal.fire({
+        title: 'Ready to leave?',
+        text: 'Your current session will be securely logged out.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, Logout',
+        cancelButtonText: 'Stay Logged In',
+        reverseButtons: true,
+        buttonsStyling: false,
+        customClass: {
+            popup: 'shadow-lg rounded-4',
+            confirmButton: 'btn btn-danger px-4 ms-2',
+            cancelButton: 'btn btn-light border px-4'
+        }
+    }).then((result) => {
+
+        if (result.isConfirmed) {
+
+            Swal.fire({
+                title: 'Logging out...',
+                text: 'Please wait a moment.',
+                icon: 'info',
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Small delay for a smoother logout experience
+            setTimeout(() => {
+                window.location.href = 'backend/authentication/logout.php';
+            }, 1200);
+        }
+    });
+});
+</script>

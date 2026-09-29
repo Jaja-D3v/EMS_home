@@ -44,3 +44,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     }
 }
+
+function getActivityLogsPaginated(
+    $limit = 10,
+    $offset = 0,
+    $month = '',
+    $date = ''
+) {
+    return getActivityLogs(
+        $limit,
+        $offset,
+        $month,
+        $date
+    );
+}
+
+
+function getActivityLogsTotal(
+    $month = '',
+    $date = ''
+) {
+    return getActivityLogsCount(
+        $month,
+        $date
+    );
+}

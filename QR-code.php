@@ -571,108 +571,6 @@ require_once 'backend/authentication/SessionChecker.php';
                       value="N/A"
                       required>
 
-                    <!-- ACTION TAKEN -->
-
-                    <div class="col-12 col-md-6 col-lg-4">
-
-                      <label
-                        for="actionTaken"
-                        class="form-label fw-semibold">
-                        Action Taken
-                      </label>
-
-                      <select
-                        class="form-select"
-                        id="actionTaken"
-                        name="action_taken"
-                        required>
-
-                        <option
-                          value=""
-                          selected
-                          disabled>
-                          Select action
-                        </option>
-
-                        <option value="Refilled">
-                          Refill
-                        </option>
-
-                        <option value="Repaired">
-                          Replacement of parts
-                        </option>
-
-                        <option value="Replaced">
-                          Replacement of unit
-                        </option>
-
-                        <option value="Others">
-                          Others
-                        </option>
-
-                      </select>
-
-                      <!-- Others input -->
-                      <div id="othersActionContainer" class="mt-2 d-none">
-
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="othersAction"
-                          name="others_action"
-                          placeholder="Specify action taken">
-
-                      </div>
-
-                      <script>
-                        document.addEventListener('DOMContentLoaded', function() {
-
-                          const actionTaken = document.getElementById('actionTaken');
-                          const othersActionContainer = document.getElementById('othersActionContainer');
-                          const othersAction = document.getElementById('othersAction');
-
-                          actionTaken.addEventListener('change', function() {
-
-                            if (this.value === 'Others') {
-
-                              othersActionContainer.classList.remove('d-none');
-                              othersAction.required = true;
-                              othersAction.focus();
-
-                            } else {
-
-                              othersActionContainer.classList.add('d-none');
-                              othersAction.required = false;
-                              othersAction.value = '';
-
-                            }
-
-                          });
-
-                        });
-                      </script>
-
-                    </div>
-
-
-                    <!-- TARGET DATE -->
-
-                    <div class="col-12 col-md-6 col-lg-4">
-
-                      <label
-                        for="targetDate"
-                        class="form-label fw-semibold">
-                        Target Date of Implementation
-                      </label>
-
-                      <input
-                        type="date"
-                        class="form-control"
-                        id="targetDate"
-                        name="target_date_of_implementation"
-                        required>
-
-                    </div>
 
                   </div>
 
@@ -684,35 +582,40 @@ require_once 'backend/authentication/SessionChecker.php';
 
                 <div class="border rounded-4 p-4 mb-4">
 
-                  <div class="d-flex align-items-center gap-3 mb-2">
+                  <!-- Header -->
+                  <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-3 mb-2">
 
-                    <div
-                      class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
-                      style="width: 34px; height: 34px;">
-                      2
+                    <!-- Step Number + Title -->
+                    <div class="d-flex align-items-center gap-3 flex-grow-1">
+                      <div
+                        class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                        style="width: 34px; height: 34px;">
+                        2
+                      </div>
+
+                      <div>
+                        <h6 class="fw-bold mb-0">
+                          Inspection Checklist
+                        </h6>
+
+                        <small class="text-body-secondary">
+                          Check the box if the item is Not Good.
+                        </small>
+                      </div>
                     </div>
 
-                    <div>
+                    <!-- Status -->
+                    <div class="d-flex align-items-center gap-2 flex-shrink-0 ms-sm-auto">
+                      <span class="text-body-secondary small fw-semibold">
+                        Condition status:
+                      </span>
 
-                      <h6 class="fw-bold mb-0">
-                        Inspection Checklist
-                      </h6>
-
-
-
-                      <small class="text-body-secondary">
-                        Check the box if the item is Not Good.
-                      </small>
-
-
-
-
+                      <span
+                        id="inspectionConditionStatus"
+                        class="badge bg-success">
+                        Good
+                      </span>
                     </div>
-                    <span
-                      id="inspectionConditionStatus"
-                      class="badge bg-success ms-auto">
-                      Good
-                    </span>
 
                   </div>
 
@@ -1323,19 +1226,6 @@ require_once 'backend/authentication/SessionChecker.php';
       updateInspectionStatus();
 
     });
-
-
-    // // Status update kapag nag-change ang apat na checklist
-    // document.querySelectorAll(
-    //   'input[name="is_pressure_ok"], ' +
-    //   'input[name="is_hose_ok"], ' +
-    //   'input[name="is_nozzle_ok"], ' +
-    //   'input[name="is_cylinder_body_ok"]'
-    // ).forEach(checkbox => {
-
-    //   checkbox.addEventListener('change', updateInspectionStatus);
-
-    // });
   </script>
   <?php include_once 'notification/session_timeout.php'; ?>
 

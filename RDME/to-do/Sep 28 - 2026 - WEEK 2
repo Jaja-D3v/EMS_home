@@ -2,39 +2,6 @@
 Day 4    TO-DO                       STATUS
 _____________________________________________________________
 
-
-## list of fire extinguisher 
-- running days before expiration         #
-- add badge if the fe is nearly expired  #
-- sort add near expiry fe                #
-
-## Apporve inspections list    
-condition: if the user role === safety officer then it will visble to them then if its not it is not visible         
-- fetch all inspection list              #
-
-
-
-
-
-## dashboard
-- analytics                                       # ON GOING - created design  
-- analytics by month                              #
-- total inspected this month                      #
-- cards that has total number should be clickable #
-
-## INSPECTION CHECKLIST TBL 
-- TARGET DATE OF IMPLEMENTATION SHOULD BE NULLABLE 
-- 
-
-## CREATE BRANCH
-
-
-
-
-
-
-____________________DONE___________________________________________________________________________
-
 - fix bug search in fe list              #DONE
 - created authentication for user        #DONE
 - implemented atentication for pages     #DONE

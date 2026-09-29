@@ -2,18 +2,17 @@
 
 session_start();
 
-/*
-|--------------------------------------------------------------------------
-| Destroy PHP Session
-|--------------------------------------------------------------------------
-*/
+/**
+ * --------------------------------------------------------------------------
+ * Destroy PHP Session
+ * --------------------------------------------------------------------------
+ */
 
 // Unset all session variables
 $_SESSION = [];
 
 // Delete PHP session cookie
 if (ini_get('session.use_cookies')) {
-
     $params = session_get_cookie_params();
 
     setcookie(
@@ -30,15 +29,6 @@ if (ini_get('session.use_cookies')) {
 // Destroy the session
 session_destroy();
 
-
-
-http_response_code(200);
-
-header('Content-Type: application/json');
-
-echo json_encode([
-    'success' => true,
-    'message' => 'Session logged out successfully.'
-]);
-
+// Redirect to login form
+header('Location: ../../authentication/login.html');
 exit;

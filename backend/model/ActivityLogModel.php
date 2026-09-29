@@ -28,9 +28,40 @@ function addActivityLog($user_name, $action, $description)
 }
 
 // get all activity log
-function getActivityLogs()
+function getActivityLogs($limit = 10, $offset = 0, $month = '', $date = '')
 {
     global $conn;
+
+    $limit = (int) $limit;
+    $offset = (int) $offset;
+
+    $conditions = [];
+    $params = [];
+    $types = "";
+
+    // Exact date filter
+    if (!empty($date)) {
+
+        $conditions[] = "DATE(created_at) = ?";
+        $params[] = $date;
+        $types .= "s";
+
+    }
+    // Month filter
+    elseif ($month !== '') {
+
+        $conditions[] = "MONTH(created_at) = ?";
+        $params[] = (int) $month + 1;
+        $types .= "i";
+
+    }
+
+    $where = "";
+
+    if (!empty($conditions)) {
+        $where = "WHERE " . implode(" AND ", $conditions);
+    }
+
     $sql = "SELECT
                 log_id,
                 user_name,
@@ -38,8 +69,79 @@ function getActivityLogs()
                 description,
                 created_at
             FROM activity_logs_tbl
-            ORDER BY created_at DESC";
+            $where
+            ORDER BY created_at DESC
+            LIMIT $limit OFFSET $offset";
 
-    $result = mysqli_query($conn, $sql);
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        return false;
+    }
+
+    if (!empty($params)) {
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
+    }
+
+    mysqli_stmt_execute($stmt);
+
+    $result = mysqli_stmt_get_result($stmt);
+
     return $result;
+}
+
+
+// activity log count
+function getActivityLogsCount($month = '', $date = '')
+{
+    global $conn;
+
+    $conditions = [];
+    $params = [];
+    $types = "";
+
+    // Exact date
+    if (!empty($date)) {
+
+        $conditions[] = "DATE(created_at) = ?";
+        $params[] = $date;
+        $types .= "s";
+
+    }
+    // Month
+    elseif ($month !== '') {
+
+        $conditions[] = "MONTH(created_at) = ?";
+        $params[] = (int) $month + 1;
+        $types .= "i";
+
+    }
+
+    $where = "";
+
+    if (!empty($conditions)) {
+        $where = "WHERE " . implode(" AND ", $conditions);
+    }
+
+    $sql = "SELECT COUNT(*) AS total
+            FROM activity_logs_tbl
+            $where";
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        return 0;
+    }
+
+    if (!empty($params)) {
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
+    }
+
+    mysqli_stmt_execute($stmt);
+
+    $result = mysqli_stmt_get_result($stmt);
+
+    $row = mysqli_fetch_assoc($result);
+
+    return (int) $row['total'];
 }

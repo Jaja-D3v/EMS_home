@@ -41,17 +41,17 @@ $result = getAllFireExtinguishersCode();
 
             <div class="col">
               <h2 class="fw-bold mb-1">
-                QR Code Generator
+                Print QR Code
               </h2>
 
               <p class="mb-0 text-white-50">
-                Select fire extinguishers to generate their QR codes.
+                Select fire extinguishers to print their QR codes.
               </p>
             </div>
 
             <div class="col-12 col-md-auto">
 
-              <button
+              <!-- <button
                 type="button"
                 class="btn btn-warning fw-semibold px-4"
                 onclick="printSelected()">
@@ -59,7 +59,7 @@ $result = getAllFireExtinguishersCode();
                 <i class="bi bi-plus-lg me-1"></i>
                 Generate QR Codes
 
-              </button>
+              </button> -->
 
             </div>
 

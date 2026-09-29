@@ -6,10 +6,10 @@ require_once __DIR__ . '/../authentication/SessionChecker.php';
 
 
 
-// Get all fire extinguishers
-function getAllFireExtinguishers()
+// Get paginated fire extinguishers
+function getAllFireExtinguishers($limit = 10, $offset = 0)
 {
-    return getAll();
+    return getAll($limit, $offset);
 }
 
 // Get fire extinguisher by ID
@@ -24,7 +24,7 @@ function getFireExtinguisherByCode($code)
     return getByCode($code);
 }
 
-// same purpose with the code above but is is to get the 
+// same purpose with the code above but it is to get the 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $action = $_GET['action'] ?? '';
@@ -93,6 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ext_remarks = $_POST['remarks'] ?? null;
     $ext_expiration_date = $_POST['expiration_date'] ?? null;
     $ext_id = $_POST['extinguisher_id'] ?? null;
+    $ext_branch = $_POST['branch'] ?? null;
     $action = $_POST['action'] ?? null;
 
 
@@ -107,7 +108,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ext_placement,
             $ext_condition_status,
             $ext_remarks,
-            $ext_expiration_date
+            $ext_expiration_date,
+            $ext_branch
         );
     } else if ($action == 'update') {
 
@@ -122,7 +124,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ext_placement,
             $ext_condition_status,
             $ext_remarks,
-            $ext_expiration_date
+            $ext_expiration_date,
+            $ext_branch
         );
     }
 }
@@ -139,7 +142,8 @@ function updateExtinguisher(
     $placement,
     $condition_status,
     $remarks,
-    $expiration_date
+    $expiration_date,
+    $ext_branch
 ) {
 
     $success = updateFireExtinguisherModel(
@@ -153,7 +157,8 @@ function updateExtinguisher(
         $placement,
         $condition_status,
         $remarks,
-        $expiration_date
+        $expiration_date,
+        $ext_branch
     );
 
     if ($success) {
@@ -249,7 +254,9 @@ function addNewExtinguisher(
     $placement,
     $condition_status,
     $remarks,
-    $expiration_date
+    $expiration_date,
+    $ext_branch
+
 ) {
     $success = addNewFireExtinguisherModel(
         $code,
@@ -261,7 +268,8 @@ function addNewExtinguisher(
         $placement,
         $condition_status,
         $remarks,
-        $expiration_date
+        $expiration_date,
+        $ext_branch
     );
 
     if ($success) {

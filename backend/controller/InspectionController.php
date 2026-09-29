@@ -64,8 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $date_inspected = $_POST['date_inspected'] ?? null;
         $inspected_by = $_SESSION['EmployeeName'] ?? 'error while getting employee name';
         $verified_and_approved_by = $_POST['verified_and_approved_by'] ?? null;
-        $action_taken = $_POST['action_taken'] ?? null;
-        $target_date_of_implementation = $_POST['target_date_of_implementation'] ?? null;
+        $action_taken = 'N/A';
+        $target_date_of_implementation = 'N/A';
         $remarks = $_POST['remarks'] ?? null;
 
 

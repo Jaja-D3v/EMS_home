@@ -30,9 +30,6 @@ require_once 'backend/authentication/SessionChecker.php';
             New Inspection
         </button>
 
-
-
-
         <!-- =========================
             INSPECTION CHECKLIST MODAL
         ========================== -->

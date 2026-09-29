@@ -3,9 +3,10 @@
 require_once __DIR__ . '/../config/db.php';
 
 // Get All Fire Extinguisher 
-function getAll()
+function getAll($limit, $offset)
 {
     global $conn;
+
     $sql = "SELECT
                 extinguisher_id,
                 extinguisher_code,
@@ -19,12 +20,23 @@ function getAll()
                 remarks,
                 expiration_date,
                 created_at,
-                updated_at
+                updated_at,
+                branch
             FROM fire_extinguishers_tbl
-            ORDER BY extinguisher_id DESC";
+            WHERE archived = 0
+            ORDER BY extinguisher_id DESC
+            LIMIT ? OFFSET ?";
 
-    $result = mysqli_query($conn, $sql);
-    return $result;
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        return false;
+    }
+
+    mysqli_stmt_bind_param($stmt, "ii", $limit, $offset);
+    mysqli_stmt_execute($stmt);
+
+    return mysqli_stmt_get_result($stmt);
 }
 
 // Get Fire Extinguisher by their id 
@@ -87,7 +99,8 @@ function addNewFireExtinguisherModel(
     $placement,
     $condition_status,
     $remarks,
-    $expiration_date
+    $expiration_date,
+    $branch
 ) {
     global $conn;
     $sql = "INSERT INTO fire_extinguishers_tbl
@@ -101,14 +114,15 @@ function addNewFireExtinguisherModel(
             placement,
             condition_status,
             remarks,
-            expiration_date
+            expiration_date,
+            branch
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($conn, $sql);
 
     mysqli_stmt_bind_param(
         $stmt,
-        "ssssssssss",
+        "sssssssssss",
         $code,
         $type,
         $capacity,
@@ -118,7 +132,8 @@ function addNewFireExtinguisherModel(
         $placement,
         $condition_status,
         $remarks,
-        $expiration_date
+        $expiration_date,
+        $branch
     );
 
     $result = mysqli_stmt_execute($stmt);
@@ -142,7 +157,8 @@ function updateFireExtinguisherModel(
     $placement,
     $condition_status,
     $remarks,
-    $expiration_date
+    $expiration_date,
+    $branch
 ) {
     global $conn;
 
@@ -157,7 +173,8 @@ function updateFireExtinguisherModel(
                 placement = ?,
                 condition_status = ?,
                 remarks = ?,
-                expiration_date = ?
+                expiration_date = ?,
+                branch = ? 
             WHERE extinguisher_id = ?";
 
     $stmt = mysqli_prepare($conn, $sql);
@@ -175,6 +192,7 @@ function updateFireExtinguisherModel(
         $condition_status,
         $remarks,
         $expiration_date,
+        $branch,
         $id
     );
 
@@ -187,24 +205,31 @@ function updateFireExtinguisherModel(
     }
 }
 
-// this is for delete fire extinguisher by id 
+// This is for soft delete / archive fire extinguisher by ID
 function deleteFireExtinguisherById($id)
 {
     global $conn;
-    $sql = "DELETE FROM fire_extinguishers_tbl
-    WHERE extinguisher_id = ?";
+
+    $sql = "UPDATE fire_extinguishers_tbl
+            SET archived = 1
+            WHERE extinguisher_id = ?";
 
     $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $id);
-    mysqli_stmt_execute($stmt);
 
-    if ($stmt) {
-        return true;
-    } else {
+    if (!$stmt) {
         return false;
     }
-}
 
+    mysqli_stmt_bind_param($stmt, "i", $id);
+
+    if (mysqli_stmt_execute($stmt)) {
+        mysqli_stmt_close($stmt);
+        return true;
+    }
+
+    mysqli_stmt_close($stmt);
+    return false;
+}
 
 // nearly expiring fire extinguisher
 function getExpiringFireExtinguishers()
@@ -226,13 +251,14 @@ function getExpiringFireExtinguishers()
 }
 
 
-// count all registered fire extinguishers
+// count all active registered fire extinguishers
 function getAllFireExtinguishersCount()
 {
     global $conn;
 
     $sql = "SELECT COUNT(*) AS total
-            FROM fire_extinguishers_tbl";
+            FROM fire_extinguishers_tbl
+            WHERE archived = 0";
 
     $result = mysqli_query($conn, $sql);
 
@@ -253,7 +279,8 @@ function getSpareFireExtinguishersCount()
 
     $sql = "SELECT COUNT(*) AS total
             FROM fire_extinguishers_tbl
-            WHERE location = 'Storage'";
+            WHERE location = 'Storage'
+            AND archived = 0";
 
     $result = mysqli_query($conn, $sql);
 

@@ -4,7 +4,7 @@ require_once 'backend/authentication/SessionChecker.php';
 
 $totalFE = getTotalFireExtinguishers();
 $totalSpareFE = getTotalSpareFireExtinguishers();
-$info = getAllFireExtinguishers();
+// $info = getAllFireExtinguishers();
 $goodSpareFE = getTotalGoodSpareFireExtinguishers();
 $notGoodSpareFE = getTotalNotGoodSpareFireExtinguishers();
 $totalInstalledFE = getTotalInstalledFireExtinguishers();
