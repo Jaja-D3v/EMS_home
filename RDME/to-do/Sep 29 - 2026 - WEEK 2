@@ -2,8 +2,6 @@
 Day 4    TO-DO                       STATUS
 _____________________________________________________________
 
-
-
 ## list of fire extinguisher 
 - running days before expiration         #
 - add badge if the fe is nearly expired  #
@@ -36,14 +34,22 @@ condition: if the user role === safety officer then it will visble to them then 
 ____________________DONE___________________________________________________________________________
 
 ## logout
-- create backend logout                          #DONE
-- create pop up confirmation                     #DONE
+- create backend logout                           #DONE
+- create pop up confirmation                      #DONE
 
 # Scan QR Code
 -  status pag nag fill out dapat may label --     #DONE
 
 # Branch
  - ADD NEW COLUMN FOR BRANCH WHERE IT IS LOCATED  #DONE
+
+# List of Fire Extinguihser
+ - pagination                                     #DONE
+
+# Inspection Approvals
+ - pagination reject, approved, pending           #DONE
+ - responsive                                     #
+
 
 
 

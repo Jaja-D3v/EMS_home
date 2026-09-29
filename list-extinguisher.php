@@ -518,8 +518,8 @@ require_once 'backend/authentication/SessionChecker.php';
                       <div class="d-flex align-items-center gap-2">
                         <div
                           class="d-flex align-items-center justify-content-center
-                                bg-warning bg-opacity-10 text-warning
-                                rounded-3 flex-shrink-0"
+                            bg-warning bg-opacity-10 text-warning
+                            rounded-3 flex-shrink-0"
                           style="width: 32px; height: 32px;">
                           <i class="bi bi-fire"></i>
                         </div>
@@ -586,7 +586,7 @@ require_once 'backend/authentication/SessionChecker.php';
             <?php if ($totalPages > 1): ?>
 
               <div
-                class="position-fixed bottom-0 end-0 bg-body border-top shadow-sm py-2"
+                class="position-fixed bottom-0 end-0 bg-body border-top shadow py-2"
                 style="width: calc(100% - 260px); z-index: 1020;">
 
                 <div class="container-fluid px-3 px-md-4">
@@ -664,7 +664,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
             <?php endif; ?>
             <!-- this is for edit form extinguisher -->
-
 
             <div
               class="modal fade"
@@ -2124,7 +2123,7 @@ require_once 'backend/authentication/SessionChecker.php';
         }
 
 
-        // Duplicate code
+        // for Duplicate validation ng fe code 
         if (isCodeDuplicate) {
 
           event.preventDefault();
@@ -2149,10 +2148,7 @@ require_once 'backend/authentication/SessionChecker.php';
     }
 
     // this is for view ng fire extinguisher
-    // ========================================
-    // VIEW FIRE EXTINGUISHER
-    // ========================================
-
+  
     document.querySelectorAll('.view-extinguisher-btn').forEach(button => {
 
       button.addEventListener('click', function() {

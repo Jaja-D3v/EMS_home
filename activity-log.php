@@ -91,7 +91,7 @@ $totalPages = (int) ceil($totalRecords / $limit);
     <div class="body flex-grow-1">
       <div class="container-lg px-4">
         <!-- content -->
-        <div class="d-flex justify-content-between align-items-center mb-3"> 
+        <div class="d-flex justify-content-between align-items-center mb-3">
           <!-- Date Filter -->
           <form method="GET" class="d-flex align-items-center">
             <div class="d-flex align-items-center gap-2 bg-body border rounded-pill shadow-sm mt-2 px-3 py-1">
@@ -236,20 +236,32 @@ $totalPages = (int) ceil($totalRecords / $limit);
             <div class="container-fluid px-3 px-md-4">
 
               <div class="d-flex flex-column flex-sm-row
-                  justify-content-between
-                  align-items-center
-                  gap-2">
+            justify-content-between
+            align-items-center
+            gap-2">
 
                 <!-- Showing -->
                 <div class="text-body-secondary small
-                    text-center text-sm-start">
+                text-center text-sm-start">
 
                   Showing
-                  <strong><?= min($offset + 1, $totalRecords) ?></strong>
+
+                  <strong>
+                    <?= min($offset + 1, $totalRecords) ?>
+                  </strong>
+
                   -
-                  <strong><?= min($offset + $limit, $totalRecords) ?></strong>
+
+                  <strong>
+                    <?= min($offset + $limit, $totalRecords) ?>
+                  </strong>
+
                   of
-                  <strong><?= $totalRecords ?></strong>
+
+                  <strong>
+                    <?= $totalRecords ?>
+                  </strong>
+
                   activities
 
                 </div>
@@ -258,12 +270,9 @@ $totalPages = (int) ceil($totalRecords / $limit);
                 <!-- Pagination -->
                 <nav
                   aria-label="Activity log pagination"
-                  class="w-100 w-sm-auto">
+                  class="ms-sm-auto">
 
-                  <ul class="pagination pagination-sm
-                     justify-content-center
-                     flex-wrap
-                     mb-0">
+                  <ul class="pagination pagination-sm mb-0">
 
                     <!-- Previous -->
                     <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">

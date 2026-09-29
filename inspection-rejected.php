@@ -5,7 +5,6 @@ require_once 'backend/controller/InspectionController.php';
 
 $limit = 10;
 
-// Current page
 $page = isset($_GET['page'])
   ? (int) $_GET['page']
   : 1;
@@ -14,72 +13,34 @@ if ($page < 1) {
   $page = 1;
 }
 
-// Date filter
 $date = $_GET['date'] ?? null;
 
 if ($date === '') {
   $date = null;
 }
 
-// Offset
-$offset = ($page - 1) * $limit;
 
-// ========================================
-// GET TOTAL PENDING APPROVALS
-// ========================================
-
-$totalRecords = getPendingApprovalTotal($date);
-
-// ========================================
-// TOTAL PAGES
-// ========================================
+$totalRecords = getRejectedApprovalTotal($date);
 
 $totalPages = (int) ceil($totalRecords / $limit);
 
-// ========================================
-// GET CURRENT PAGE DATA
-// ========================================
+if ($totalPages > 0 && $page > $totalPages) {
+  $page = $totalPages;
+}
 
-$result = getPendingApprovals(
+$offset = ($page - 1) * $limit;
+
+$result = getRejectedApprovals(
   $limit,
   $offset,
   $date
 );
-
-// ========================================
-// CONVERT TO ARRAY
-// ========================================
 
 $inspectionChecklists = [];
 
 if ($result) {
   while ($row = mysqli_fetch_assoc($result)) {
     $inspectionChecklists[] = $row;
-  }
-}
-
-// ========================================
-// PREVENT INVALID PAGE
-// ========================================
-
-if ($totalPages > 0 && $page > $totalPages) {
-
-  $page = $totalPages;
-
-  $offset = ($page - 1) * $limit;
-
-  $result = getPendingApprovals(
-    $limit,
-    $offset,
-    $date
-  );
-
-  $inspectionChecklists = [];
-
-  if ($result) {
-    while ($row = mysqli_fetch_assoc($result)) {
-      $inspectionChecklists[] = $row;
-    }
   }
 }
 
@@ -147,7 +108,6 @@ if ($totalPages > 0 && $page > $totalPages) {
 
       </div>
 
-
       <!-- Filters -->
 
       <div class="card border-0 shadow-sm mb-3">
@@ -178,29 +138,32 @@ if ($totalPages > 0 && $page > $totalPages) {
 
             </div>
 
-
-            <!-- Status -->
-
-
             <!-- Date -->
 
             <div class="col-12 col-md-3 col-lg-3">
-
               <div class="input-group">
-
                 <span class="input-group-text bg-white">
-
                   <i class="bi bi-calendar3"></i>
-
                 </span>
 
                 <input
                   type="date"
                   class="form-control"
-                  id="inspectionDateFilter">
+                  id="inspectionDateFilter"
+                  value="<?= htmlspecialchars($date ?? '') ?>"
+                  onchange="
+                  const selectedDate = this.value;
 
+                  if (selectedDate) {
+                    window.location.href =
+                      'inspection-rejected.php?page=1&date=' +
+                      encodeURIComponent(selectedDate);
+                  } else {
+                    window.location.href =
+                      'inspection-rejected.php?page=1';
+                  }
+                ">
               </div>
-
             </div>
 
           </div>
@@ -250,7 +213,6 @@ if ($totalPages > 0 && $page > $totalPages) {
 
               </thead>
 
-
               <tbody id="inspectionList">
 
                 <?php if (!empty($inspectionChecklists)): ?>
@@ -294,12 +256,6 @@ if ($totalPages > 0 && $page > $totalPages) {
                         break;
                     }
 
-
-                    /*
-                |--------------------------------------------------------------------------
-                | Inspection Date
-                |--------------------------------------------------------------------------
-                */
 
                     $inspectionDate = '';
 
@@ -357,7 +313,6 @@ if ($totalPages > 0 && $page > $totalPages) {
 
                       </td>
 
-
                       <!-- Location -->
 
                       <td>
@@ -367,7 +322,6 @@ if ($totalPages > 0 && $page > $totalPages) {
                         ) ?>
 
                       </td>
-
 
                       <!-- Date Inspected -->
 
@@ -413,7 +367,6 @@ if ($totalPages > 0 && $page > $totalPages) {
 
                       </td>
 
-
                       <!-- Status -->
 
                       <td>
@@ -432,7 +385,6 @@ if ($totalPages > 0 && $page > $totalPages) {
                         </span>
 
                       </td>
-
 
                       <!-- Actions -->
 
@@ -481,21 +433,6 @@ if ($totalPages > 0 && $page > $totalPages) {
 
                             </button>
 
-
-                          <?php else: ?>
-
-                            <!-- Details -->
-
-                            <a
-                              href="view-inspection.php?id=<?= urlencode($inspection['inspect_id']) ?>"
-                              class="btn btn-sm btn-light border">
-
-                              <i class="bi bi-file-text me-1"></i>
-
-                              Details
-
-                            </a>
-
                           <?php endif; ?>
 
                         </div>
@@ -536,32 +473,6 @@ if ($totalPages > 0 && $page > $totalPages) {
 
                   <!-- No Database Records -->
 
-                  <tr>
-
-                    <td
-                      colspan="5"
-                      class="text-center py-5">
-
-                      <div class="text-body-secondary">
-
-                        <i
-                          class="bi bi-clipboard-x fs-1 d-block mb-2">
-                        </i>
-
-                        <div class="fw-semibold">
-                          No inspection records found.
-                        </div>
-
-                        <small>
-                          There are currently no inspections for approval.
-                        </small>
-
-                      </div>
-
-                    </td>
-
-                  </tr>
-
                 <?php endif; ?>
 
               </tbody>
@@ -572,24 +483,19 @@ if ($totalPages > 0 && $page > $totalPages) {
 
         </div>
 
-
-        <!-- ========================================================== -->
         <!-- PAGINATION FOOTER -->
-        <!-- ========================================================== -->
-
-        <div
-          class="position-fixed bottom-0 end-0 bg-body border-top shadow py-2"
-          style="width: calc(100% - 260px); z-index: 1020;">
+        <div class="position-fixed bottom-0 start-0 end-0 bg-body border-top shadow-sm py-2"
+          style="z-index: 1020;">
 
           <div class="container-fluid px-3 px-md-4">
 
-            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
 
               <!-- Showing -->
-              <div class="text-body-secondary small text-center text-sm-start">
+              <div class="text-body-secondary small text-center text-md-start">
                 Showing
                 <strong>
-                  <?= $totalRecords > 0 ? min($offset + 1, $totalRecords) : 0 ?>
+                  <?= $totalRecords > 0 ? $offset + 1 : 0 ?>
                 </strong>
                 -
                 <strong>
@@ -602,6 +508,7 @@ if ($totalPages > 0 && $page > $totalPages) {
                 inspections
               </div>
 
+
               <!-- Pagination -->
               <?php if ($totalPages > 1): ?>
 
@@ -610,17 +517,16 @@ if ($totalPages > 0 && $page > $totalPages) {
                   <ul class="pagination pagination-sm mb-0">
 
                     <!-- Previous -->
-                    <li
-                      class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
+                    <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
 
                       <a
-                        class="page-link px-3"
-                        href="inspection-approvals.php?page=<?= max(1, $page - 1) ?><?= !empty($date) ? '&date=' . urlencode($date) : '' ?>"
+                        class="page-link"
+                        href="inspection-rejected.php?page=<?= max(1, $page - 1) ?><?= !empty($date) ? '&date=' . urlencode($date) : '' ?>"
                         aria-label="Previous">
 
                         <i class="bi bi-chevron-left"></i>
 
-                        <span class="d-none d-sm-inline ms-1">
+                        <span class="d-none d-lg-inline ms-1">
                           Previous
                         </span>
 
@@ -628,15 +534,16 @@ if ($totalPages > 0 && $page > $totalPages) {
 
                     </li>
 
+
                     <!-- Page Numbers -->
                     <?php for ($i = 1; $i <= $totalPages; $i++): ?>
 
                       <li
-                        class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+                        class="page-item d-none d-md-block <?= ($i == $page) ? 'active' : '' ?>">
 
                         <a
-                          class="page-link px-3"
-                          href="inspection-approvals.php?page=<?= $i ?><?= !empty($date) ? '&date=' . urlencode($date) : '' ?>">
+                          class="page-link"
+                          href="inspection-rejected.php?page=<?= $i ?><?= !empty($date) ? '&date=' . urlencode($date) : '' ?>">
 
                           <?= $i ?>
 
@@ -646,16 +553,26 @@ if ($totalPages > 0 && $page > $totalPages) {
 
                     <?php endfor; ?>
 
+
+                    <!-- Mobile Current Page -->
+                    <li class="page-item d-md-none active">
+
+                      <span class="page-link">
+                        <?= $page ?> / <?= $totalPages ?>
+                      </span>
+
+                    </li>
+
+
                     <!-- Next -->
-                    <li
-                      class="page-item <?= ($page >= $totalPages) ? 'disabled' : '' ?>">
+                    <li class="page-item <?= ($page >= $totalPages) ? 'disabled' : '' ?>">
 
                       <a
-                        class="page-link px-3"
-                        href="inspection-approvals.php?page=<?= min($totalPages, $page + 1) ?><?= !empty($date) ? '&date=' . urlencode($date) : '' ?>"
+                        class="page-link"
+                        href="inspection-rejected.php?page=<?= min($totalPages, $page + 1) ?><?= !empty($date) ? '&date=' . urlencode($date) : '' ?>"
                         aria-label="Next">
 
-                        <span class="d-none d-sm-inline me-1">
+                        <span class="d-none d-lg-inline me-1">
                           Next
                         </span>
 
@@ -681,11 +598,7 @@ if ($totalPages > 0 && $page > $totalPages) {
 
     </div>
 
-
     <?php include './partials/view-inspection-modal.php'; ?>
-
-
-
 
     <!-- CoreUI and necessary plugins -->
 

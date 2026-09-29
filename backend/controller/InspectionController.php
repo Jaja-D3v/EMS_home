@@ -194,3 +194,51 @@ function getAllInspected()
 {
     return getAllInspectionCheckList();
 }
+
+
+// __________FOR PENDING APPROVAL__________________________________________
+
+
+// Get pending approvals
+function getPendingApprovals($limit = 10, $offset = 0, $date = null)
+{
+    return getAllPendingApproval($limit, $offset, $date);
+}
+
+
+// Get total number of pending approvals
+function getPendingApprovalTotal($date = null)
+{
+    return getPendingApprovalCount($date);
+}
+
+// __________FOR APPROVED APPROVAL__________________________________________
+
+// Get pending approvals
+function getApprovedApprovals($limit = 10, $offset = 0, $date = null)
+{
+    return getAllApprovedApproval($limit, $offset, $date);
+}
+
+
+// Get total number of pending approvals
+function getApprovedApprovalTotal($date = null)
+{
+    return getApprovedApprovalCount($date);
+}
+
+
+// __________FOR REJECTED APPROVAL__________________________________________
+
+// Get pending approvals
+function getRejectedApprovals($limit = 10, $offset = 0, $date = null)
+{
+    return getAllRejectedApproval($limit, $offset, $date);
+}
+
+
+// Get total number of pending approvals
+function getRejectedApprovalTotal($date = null)
+{
+    return getRejectedApprovalCount($date);
+}

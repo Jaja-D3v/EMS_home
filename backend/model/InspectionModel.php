@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../config/db.php';
 
+// funciton for add inspection list
 function addInspectionChecklist(
     $extinguisher_code,
     $location,
@@ -80,6 +81,7 @@ function addInspectionChecklist(
     return mysqli_stmt_execute($stmt);
 }
 
+// get all list 
 function getAllInspectionCheckList()
 {
     global $conn;
@@ -97,6 +99,7 @@ function getAllInspectionCheckList()
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
+// get all list by id
 function getInspectionCheckListById($id)
 {
     global $conn;
@@ -127,4 +130,150 @@ function getInspectionCheckListById($id)
     mysqli_stmt_close($stmt);
 
     return $inspection ?: null;
+}
+
+
+// _________FOR PENDING APPROVAL______________________
+
+// Get pending approvals with pagination and exact date filter
+function getAllPendingApproval($limit = 10, $offset = 0, $date = null)
+{
+    global $conn;
+
+    $sql = "SELECT *
+            FROM inspection_checklist_tbl
+            WHERE evaluation_status = 'Pending'";
+
+    // Exact date filter
+    if (!empty($date)) {
+        $sql .= " AND DATE(date_inspected) = '" . mysqli_real_escape_string($conn, $date) . "'";
+    }
+
+    $sql .= " ORDER BY inspect_id DESC
+              LIMIT $limit OFFSET $offset";
+
+    $result = mysqli_query($conn, $sql);
+
+    return $result;
+}
+
+// for count all the pending approval 
+function getPendingApprovalCount($date = null)
+{
+    global $conn;
+
+    $sql = "SELECT COUNT(*) AS total
+            FROM inspection_checklist_tbl
+            WHERE evaluation_status = 'Pending'";
+
+    if (!empty($date)) {
+        $safeDate = mysqli_real_escape_string($conn, $date);
+
+        $sql .= " AND DATE(date_inspected) = '$safeDate'";
+    }
+
+    $result = mysqli_query($conn, $sql);
+
+    $row = mysqli_fetch_assoc($result);
+
+    return (int) $row['total'];
+}
+
+
+// _________FOR APPROVED APPROVAL______________________
+
+// Get approved approvals with pagination and exact date filter
+function getAllApprovedApproval($limit = 10, $offset = 0, $date = null)
+{
+    global $conn;
+
+    $sql = "SELECT *
+            FROM inspection_checklist_tbl
+            WHERE evaluation_status = 'Approved'";
+
+    // Exact date filter
+    if (!empty($date)) {
+        $sql .= " AND DATE(date_inspected) = '" . mysqli_real_escape_string($conn, $date) . "'";
+    }
+
+    $sql .= " ORDER BY inspect_id DESC
+              LIMIT $limit OFFSET $offset";
+
+    $result = mysqli_query($conn, $sql);
+
+    return $result;
+}
+
+
+
+// for count all the pending approval 
+function getApprovedApprovalCount($date = null)
+{
+    global $conn;
+
+    $sql = "SELECT COUNT(*) AS total
+            FROM inspection_checklist_tbl
+            WHERE evaluation_status = 'Approved'";
+
+    if (!empty($date)) {
+        $safeDate = mysqli_real_escape_string($conn, $date);
+
+        $sql .= " AND DATE(date_inspected) = '$safeDate'";
+    }
+
+    $result = mysqli_query($conn, $sql);
+
+    $row = mysqli_fetch_assoc($result);
+
+    return (int) $row['total'];
+}
+
+
+// _________FOR REJECTED APPROVAL______________________
+
+
+// Get rejected approvals with pagination and exact date filter
+function getAllRejectedApproval($limit = 10, $offset = 0, $date = null)
+{
+    global $conn;
+
+    $sql = "SELECT *
+            FROM inspection_checklist_tbl
+            WHERE evaluation_status = 'Rejected'";
+
+    // Exact date filter
+    if (!empty($date)) {
+        $sql .= " AND DATE(date_inspected) = '" . mysqli_real_escape_string($conn, $date) . "'";
+    }
+
+    $sql .= " ORDER BY inspect_id DESC
+              LIMIT $limit OFFSET $offset";
+
+    $result = mysqli_query($conn, $sql);
+
+    return $result;
+}
+
+
+
+// for count all the rejected approval 
+function getRejectedApprovalCount($date = null)
+{
+    global $conn;
+
+    $sql = "SELECT COUNT(*) AS total
+            FROM inspection_checklist_tbl
+            WHERE evaluation_status = 'Rejected'";
+
+    if (!empty($date)) {
+        $safeDate = mysqli_real_escape_string($conn, $date);
+
+        $sql .= " AND DATE(date_inspected) = '$safeDate'";
+    }
+
+    $result = mysqli_query($conn, $sql);
+
+    $row = mysqli_fetch_assoc($result);
+
+    return (int) $row['total'];
 }
