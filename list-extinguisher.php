@@ -400,6 +400,38 @@ require_once 'backend/authentication/SessionChecker.php';
                 $badgeClass = 'bg-danger-subtle text-danger';
                 $statusIcon = 'bi-exclamation-circle-fill';
               }
+
+              // ___expiration and running days
+              $expirationBadge = null;
+              $expirationBadgeClass = '';
+              $expirationIcon = '';
+
+              if (!empty($data['expiration_date'])) {
+
+                $today = new DateTime('today');
+                $expirationDate = new DateTime($data['expiration_date']);
+
+                // Two months from today
+                $twoMonthsFromNow = (clone $today)->modify('+2 months');
+
+                if ($expirationDate < $today) {
+
+                  // Already expired
+                  $expiredDays = $today->diff($expirationDate)->days;
+
+                  $expirationBadge = "Expired {$expiredDays} days ago";
+                  $expirationBadgeClass = 'bg-danger-subtle text-danger';
+                  $expirationIcon = 'bi-exclamation-triangle-fill';
+                } elseif ($expirationDate <= $twoMonthsFromNow) {
+
+                  // Within 2 months before expiration
+                  $remainingDays = $today->diff($expirationDate)->days;
+
+                  $expirationBadge = "Expires in {$remainingDays} days";
+                  $expirationBadgeClass = 'bg-warning-subtle text-warning-emphasis';
+                  $expirationIcon = 'bi-hourglass-split';
+                }
+              }
               ?>
 
               <div class="card border border-primary-subtle shadow-sm mb-2 extinguisher-card overflow-hidden">
@@ -453,14 +485,33 @@ require_once 'backend/authentication/SessionChecker.php';
 
 
                     <!-- Status -->
-                    <span
-                      class="badge <?= $badgeClass ?> rounded-pill px-3 py-2 text-nowrap flex-shrink-0">
+                    <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-sm-end gap-2">
 
-                      <i class="bi <?= $statusIcon ?> me-1"></i>
+                      <!-- Condition -->
+                      <span
+                        class="badge <?= $badgeClass ?> rounded-pill px-3 py-2 text-nowrap">
 
-                      <?= htmlspecialchars($condition) ?>
+                        <i class="bi <?= $statusIcon ?> me-1"></i>
 
-                    </span>
+                        <?= htmlspecialchars($condition) ?>
+
+                      </span>
+
+                      <!-- Expiration -->
+                      <?php if ($expirationBadge !== null): ?>
+
+                        <span
+                          class="badge <?= $expirationBadgeClass ?> rounded-pill px-3 py-2 text-nowrap">
+
+                          <i class="bi <?= $expirationIcon ?> me-1"></i>
+
+                          <?= htmlspecialchars($expirationBadge) ?>
+
+                        </span>
+
+                      <?php endif; ?>
+
+                    </div>
 
                   </div>
 
@@ -585,11 +636,8 @@ require_once 'backend/authentication/SessionChecker.php';
 
             <?php if ($totalPages > 1): ?>
 
-              <div
-                class="position-fixed bottom-0 end-0 bg-body border-top shadow py-2"
-                style="width: calc(100% - 260px); z-index: 1020;">
-
-                <div class="container-fluid px-3 px-md-4">
+              <div class="position-fixed bottom-0 start-0 end-0 bg-body border-top shadow py-2">
+                <div class="container-fluid px-2 px-sm-3 px-md-4">
 
                   <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
 
@@ -611,7 +659,7 @@ require_once 'backend/authentication/SessionChecker.php';
                         <!-- Previous -->
                         <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
                           <a
-                            class="page-link px-3"
+                            class="page-link px-2 px-sm-3"
                             href="list-extinguisher.php?page=<?= max(1, $page - 1) ?>"
                             aria-label="Previous">
 
@@ -620,7 +668,6 @@ require_once 'backend/authentication/SessionChecker.php';
                             <span class="d-none d-sm-inline ms-1">
                               Previous
                             </span>
-
                           </a>
                         </li>
 
@@ -629,7 +676,7 @@ require_once 'backend/authentication/SessionChecker.php';
 
                           <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
                             <a
-                              class="page-link px-3"
+                              class="page-link px-2 px-sm-3"
                               href="list-extinguisher.php?page=<?= $i ?>">
                               <?= $i ?>
                             </a>
@@ -640,7 +687,7 @@ require_once 'backend/authentication/SessionChecker.php';
                         <!-- Next -->
                         <li class="page-item <?= ($page >= $totalPages) ? 'disabled' : '' ?>">
                           <a
-                            class="page-link px-3"
+                            class="page-link px-2 px-sm-3"
                             href="list-extinguisher.php?page=<?= min($totalPages, $page + 1) ?>"
                             aria-label="Next">
 
@@ -649,7 +696,6 @@ require_once 'backend/authentication/SessionChecker.php';
                             </span>
 
                             <i class="bi bi-chevron-right"></i>
-
                           </a>
                         </li>
 
@@ -659,7 +705,6 @@ require_once 'backend/authentication/SessionChecker.php';
                   </div>
 
                 </div>
-
               </div>
 
             <?php endif; ?>
@@ -2148,7 +2193,7 @@ require_once 'backend/authentication/SessionChecker.php';
     }
 
     // this is for view ng fire extinguisher
-  
+
     document.querySelectorAll('.view-extinguisher-btn').forEach(button => {
 
       button.addEventListener('click', function() {

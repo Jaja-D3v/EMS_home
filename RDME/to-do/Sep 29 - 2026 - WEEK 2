@@ -1,37 +1,37 @@
 
-Day 4    TO-DO                       STATUS
+Day 6    TO-DO                       STATUS
 _____________________________________________________________
 
 ## list of fire extinguisher 
-- running days before expiration         #
-- add badge if the fe is nearly expired  #
+
 - sort add near expiry fe                #
-- Soft Delete                            #
+- fetch deleted fe                       # 
+
+## generate report 
+- select date and generate report        #
+
+## Maintenance
+- dropdown update                        #
+
 
 ## Apporve inspections list    
-condition: if the user role === safety officer then it will visble to them then if its not it is not visible         
+condition: if the user role === safety officer then it will visble to them, if its not it is not visible         
 - fetch all inspection list              #
 
 
-
-
-
 ## dashboard
-- analytics                                       # ON GOING - created design  
+- analytics                                       # ON GOING 
 - analytics by month                              # 
 - total inspected this month                      #
 - cards that has total number should be clickable #
 
-## INSPECTION CHECKLIST TBL 
-- TARGET DATE OF IMPLEMENTATION SHOULD BE NULLABLE 
-- 
-
-## CREATE BRANCH COLUMN
 
 
 
 
-____________________DONE___________________________________________________________________________
+
+
+____________________________________________________________DONE___________________________________________________________________________
 
 ## logout
 - create backend logout                           #DONE
@@ -45,11 +45,18 @@ ____________________DONE________________________________________________________
 
 # List of Fire Extinguihser
  - pagination                                     #DONE
+ - Soft Delete                                    #DONE
+ - running days before expiration         # DONE
+ - add badge if the fe is nearly expired  # DONE
 
 # Inspection Approvals
  - pagination reject, approved, pending           #DONE
- - responsive                                     #
+ - responsive                                     #DONE
+ - safety can approve and approve                 #DONE
 
+## INSPECTION CHECKLIST TBL 
+- TARGET DATE OF IMPLEMENTATION SHOULD BE NULLABLE#DONE
 
+- fix bugg in pagination of list of fe            #DONE
 
 

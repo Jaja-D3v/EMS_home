@@ -277,3 +277,26 @@ function getRejectedApprovalCount($date = null)
 
     return (int) $row['total'];
 }
+
+
+// _________FOR UPDATE EVALUATION STATUS______________________
+
+
+function updateEvaluationStatus($id, $evaluation_status)
+{
+    global $conn;
+
+    $sql = "UPDATE inspection_checklist_tbl
+            SET evaluation_status = ?
+            WHERE inspect_id = ?";
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        return false;
+    }
+
+    mysqli_stmt_bind_param($stmt, "si", $evaluation_status, $id);
+
+    return mysqli_stmt_execute($stmt);
+}

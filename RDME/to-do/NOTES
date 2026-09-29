@@ -1,9 +1,3 @@
-## PAGINATION - ACROSS ALL NAVS
-
- ## INSPECTION APPROVALS   
-    - PENDING
-    - APPROVE
-    - REJECTED
 
 ## create generated report 
  - PER SPECIFIC DATE 
@@ -19,27 +13,35 @@
  ## MAINTENANCE
  - SHOULD BE REPLACEBLE THE DROP DOWNS
 
- ## BRANCH
- - ADD NEW COLUMN FOR BRANCH WHERE IT IS LOCATED  #DONE
-
-
- ## ACTIVITY LOG
-- FILTER BY EXACT DATE
-- PAGINATION
-- BY 10 
-
 ## Soft delete
 - archive for fire extinguisher
-
 
 ## ANOTHER 
 - COLUMN OF FOR BRANCH
 
 ## CREATE LOGO FOR THE SYSTEM 
 
-## CREATE BRANCH COLUMN
 ## DROPDOWN TABLE
-## status pag nag fill out dapat may label -- #DONE
 
 ## Prin QR code 
 
+
+<!-- ___________DONE____________ -->
+
+## status pag nag fill out dapat may label -- #DONE
+## BRANCH
+ - ADD NEW COLUMN FOR BRANCH WHERE IT IS LOCATED  #DONE
+
+## PAGINATION - ACROSS ALL NAVS 
+
+ ## INSPECTION APPROVALS   
+    - PENDING
+    - APPROVE
+    - REJECTED
+
+ ## ACTIVITY LOG
+- FILTER BY EXACT DATE
+- PAGINATION
+- BY 10 
+
+## CREATE BRANCH COLUMN

@@ -67,6 +67,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $action_taken = 'N/A';
         $target_date_of_implementation = 'N/A';
         $remarks = $_POST['remarks'] ?? null;
+        
+        
 
 
         /*
@@ -187,6 +189,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: ../../QR-code.php?id=$extinguisher_code&success-inspect=1");
             exit;
         }
+    }elseif($action == 'update_evaluation_status'){
+
+        $inspect_id = $_POST['inspect_id'] ?? null;
+        $eval_stats = $_POST['evaluation_status'] ?? null;
+        echo $inspect_id, $eval_stats;
+        updateEvalStats($inspect_id, $eval_stats);
     }
 }
 
@@ -241,4 +249,19 @@ function getRejectedApprovals($limit = 10, $offset = 0, $date = null)
 function getRejectedApprovalTotal($date = null)
 {
     return getRejectedApprovalCount($date);
+}
+
+// _______________UPDATE EVALUATION STATUS_____________
+
+function updateEvalStats($eval_id, $evalStatus)
+{
+    $success = updateEvaluationStatus($eval_id, $evalStatus);
+
+    if ($success) {
+        header("Location: ../../inspection-pending.php?approved_success=1");
+        exit;
+    }
+
+    header("Location: ../../inspection-pending.php?error=1");
+    exit;
 }

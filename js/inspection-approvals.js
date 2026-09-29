@@ -323,7 +323,16 @@ async function viewInspection(inspectId) {
 
 
         const inspection = data.inspection;
+        const approveInspectId = document.getElementById("approveInspectId");
+        const rejectInspectId = document.getElementById("rejectInspectId");
 
+        if (approveInspectId) {
+            approveInspectId.value = inspectId;
+        }
+
+        if (rejectInspectId) {
+            rejectInspectId.value = inspectId;
+        }
 
         /*
         |--------------------------------------------------------------------------
@@ -666,4 +675,19 @@ function updateChecklistStatus(
 
     }
 
+}
+
+// _____CONFIRMATION APPROVAL___
+function confirmApprove() {
+    return confirm(
+        "Are you sure you want to approve this inspection?\n\n" +
+        "This action will change the inspection status to Approved."
+    );
+}
+
+function confirmReject() {
+    return confirm(
+        "Are you sure you want to reject this inspection?\n\n" +
+        "This action will change the inspection status to Rejected."
+    );
 }
