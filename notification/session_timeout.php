@@ -51,7 +51,7 @@
 
         const AUTH_URL = './backend/authentication/Auth.php';
         const LOGOUT_URL = './backend/authentication/logout.php';
-        const LOGIN_URL = './authentication/login.html';
+        const LOGIN_URL = './authentication/login.php';
 
         const ACTIVITY_KEY = 'ems_last_activity';
         const LOGOUT_KEY = 'ems_logout';

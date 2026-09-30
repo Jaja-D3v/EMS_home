@@ -1,4 +1,3 @@
-
 /*
 |--------------------------------------------------------------------------
 | INSPECTION FILTERS
@@ -30,54 +29,34 @@ function filterInspections() {
         ? inspectionSearch.value.trim().toLowerCase()
         : "";
 
-
     const statusValue = inspectionStatusFilter
         ? inspectionStatusFilter.value.toLowerCase()
         : "all";
-
 
     const dateValue = inspectionDateFilter
         ? inspectionDateFilter.value
         : "";
 
-
     const rows = inspectionList
         ? inspectionList.querySelectorAll(".inspection-row")
         : [];
 
-
     let visibleCount = 0;
 
-
     rows.forEach(row => {
-
-        /*
-        |--------------------------------------------------------------------------
-        | Get Row Data
-        |--------------------------------------------------------------------------
-        */
 
         const feCode =
             row.dataset.feCode || "";
 
-
         const location =
             row.dataset.location || "";
-
 
         const status =
             row.dataset.status || "";
 
-
         const date =
             row.dataset.date || "";
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Search Filter
-        |--------------------------------------------------------------------------
-        */
 
         const matchesSearch =
             searchValue === "" ||
@@ -85,33 +64,15 @@ function filterInspections() {
             location.includes(searchValue);
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | Status Filter
-        |--------------------------------------------------------------------------
-        */
-
         const matchesStatus =
             statusValue === "all" ||
             status === statusValue;
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | Date Filter
-        |--------------------------------------------------------------------------
-        */
-
         const matchesDate =
             dateValue === "" ||
             date === dateValue;
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Final Result
-        |--------------------------------------------------------------------------
-        */
 
         const shouldShow =
             matchesSearch &&
@@ -119,30 +80,16 @@ function filterInspections() {
             matchesDate;
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | Show / Hide Row
-        |--------------------------------------------------------------------------
-        */
-
         row.style.display =
             shouldShow ? "" : "none";
 
 
         if (shouldShow) {
-
             visibleCount++;
-
         }
 
     });
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | Show No Results
-    |--------------------------------------------------------------------------
-    */
 
     showNoResults(
         visibleCount === 0
@@ -160,9 +107,7 @@ function filterInspections() {
 function showNoResults(show) {
 
     if (!inspectionList) {
-
         return;
-
     }
 
 
@@ -172,12 +117,6 @@ function showNoResults(show) {
         );
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Show
-    |--------------------------------------------------------------------------
-    */
-
     if (show) {
 
         if (!noResultsRow) {
@@ -185,31 +124,28 @@ function showNoResults(show) {
             noResultsRow =
                 document.createElement("tr");
 
-
             noResultsRow.id =
                 "noInspectionResults";
 
-
             noResultsRow.innerHTML = `
 
-                        <td
-                            colspan="5"
-                            class="text-center py-5">
+                <td
+                    colspan="5"
+                    class="text-center py-5">
 
-                            <div class="text-body-secondary">
+                    <div class="text-body-secondary">
 
-                                <i
-                                    class="bi bi-search fs-1 d-block mb-2">
-                                </i>
+                        <i
+                            class="bi bi-search fs-1 d-block mb-2">
+                        </i>
 
-                                No inspection records match your filters.
+                        No inspection records match your filters.
 
-                            </div>
+                    </div>
 
-                        </td>
+                </td>
 
-                    `;
-
+            `;
 
             inspectionList.appendChild(
                 noResultsRow
@@ -217,19 +153,9 @@ function showNoResults(show) {
 
         }
 
-
         noResultsRow.style.display = "";
 
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Hide
-    |--------------------------------------------------------------------------
-    */
-
-    else {
+    } else {
 
         if (noResultsRow) {
 
@@ -245,7 +171,7 @@ function showNoResults(show) {
 
 /*
 |--------------------------------------------------------------------------
-| SEARCH EVENT
+| FILTER EVENTS
 |--------------------------------------------------------------------------
 */
 
@@ -259,12 +185,6 @@ if (inspectionSearch) {
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| STATUS EVENT
-|--------------------------------------------------------------------------
-*/
-
 if (inspectionStatusFilter) {
 
     inspectionStatusFilter.addEventListener(
@@ -274,12 +194,6 @@ if (inspectionStatusFilter) {
 
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| DATE EVENT
-|--------------------------------------------------------------------------
-*/
 
 if (inspectionDateFilter) {
 
@@ -301,7 +215,11 @@ filterInspections();
 
 
 
-// this is for modal view ng inspection info
+/*
+|--------------------------------------------------------------------------
+| VIEW INSPECTION
+|--------------------------------------------------------------------------
+*/
 
 async function viewInspection(inspectId) {
 
@@ -311,28 +229,59 @@ async function viewInspection(inspectId) {
             `backend/controller/InspectionController.php?action=get&id=${inspectId}`
         );
 
-        const data = await response.json();
+
+        const data =
+            await response.json();
 
 
         if (!data.success || !data.inspection) {
 
-            alert("Unable to load inspection details.");
+            alert(
+                "Unable to load inspection details."
+            );
 
             return;
+
         }
 
 
-        const inspection = data.inspection;
-        const approveInspectId = document.getElementById("approveInspectId");
-        const rejectInspectId = document.getElementById("rejectInspectId");
+        const inspection =
+            data.inspection;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | INSPECTION IDS
+        |--------------------------------------------------------------------------
+        */
+
+        const approveInspectId =
+            document.getElementById(
+                "approveInspectId"
+            );
+
+
+        const rejectInspectId =
+            document.getElementById(
+                "rejectInspectId"
+            );
+
 
         if (approveInspectId) {
-            approveInspectId.value = inspectId;
+
+            approveInspectId.value =
+                inspectId;
+
         }
 
+
         if (rejectInspectId) {
-            rejectInspectId.value = inspectId;
+
+            rejectInspectId.value =
+                inspectId;
+
         }
+
 
         /*
         |--------------------------------------------------------------------------
@@ -340,68 +289,96 @@ async function viewInspection(inspectId) {
         |--------------------------------------------------------------------------
         */
 
-        document.getElementById("viewExtinguisherCode").value =
+        document.getElementById(
+            "viewExtinguisherCode"
+        ).value =
             inspection.extinguisher_code || "—";
 
-        document.getElementById("viewInspectionLocation").value =
+
+        document.getElementById(
+            "viewInspectionLocation"
+        ).value =
             inspection.location || "—";
 
-        document.getElementById("viewInspectionCapacity").value =
+
+        document.getElementById(
+            "viewInspectionCapacity"
+        ).value =
             inspection.capacity || "—";
 
-        document.getElementById("viewInspectionType").value =
+
+        document.getElementById(
+            "viewInspectionType"
+        ).value =
             inspection.type || "—";
 
-        document.getElementById("viewInspectionClass").value =
+
+        document.getElementById(
+            "viewInspectionClass"
+        ).value =
             inspection.class || "—";
 
-        document.getElementById("viewInspectedBy").value =
+
+        document.getElementById(
+            "viewInspectedBy"
+        ).value =
             inspection.inspected_by || "—";
 
-        document.getElementById("viewVerifiedAndApprovedBy").value =
-            inspection.verified_and_approved_by || "N/A";
 
-        document.getElementById("viewActionTaken").value =
-            inspection.action_taken || "—";
+        /*
+        |--------------------------------------------------------------------------
+        | REMARKS
+        |--------------------------------------------------------------------------
+        */
 
-        document.getElementById("viewTargetDate").value =
-            inspection.target_date_of_implementation || "—";
-
-        document.getElementById("viewRemarks").value =
+        document.getElementById(
+            "viewRemarks"
+        ).value =
             inspection.remarks || "N/A";
 
 
         /*
         |--------------------------------------------------------------------------
-        | DATE
+        | DATE INSPECTED
         |--------------------------------------------------------------------------
         */
 
         if (inspection.date_inspected) {
 
-            const date = new Date(
-                inspection.date_inspected
-            );
+            const date =
+                new Date(
+                    inspection.date_inspected
+                );
+
 
             if (!isNaN(date.getTime())) {
 
-                document.getElementById("viewDateInspected").value =
-                    date.toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric"
-                    });
+                document.getElementById(
+                    "viewDateInspected"
+                ).value =
+                    date.toLocaleDateString(
+                        "en-US",
+                        {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric"
+                        }
+                    );
 
             } else {
 
-                document.getElementById("viewDateInspected").value =
+                document.getElementById(
+                    "viewDateInspected"
+                ).value =
                     inspection.date_inspected;
 
             }
 
         } else {
 
-            document.getElementById("viewDateInspected").value =
+            document.getElementById(
+                "viewDateInspected"
+            ).value =
                 "—";
 
         }
@@ -414,7 +391,9 @@ async function viewInspection(inspectId) {
         */
 
         const status =
-            inspection.evaluation_status || "Pending";
+            inspection.evaluation_status ||
+            "Pending";
+
 
         const statusContainer =
             document.getElementById(
@@ -459,15 +438,149 @@ async function viewInspection(inspectId) {
 
         statusContainer.innerHTML = `
 
-            <span class="badge rounded-pill ${statusClass} px-3 py-2">
+            <span
+                class="badge rounded-pill ${statusClass} px-3 py-2">
 
-                <i class="bi ${statusIcon} me-1"></i>
+                <i
+                    class="bi ${statusIcon} me-1">
+                </i>
 
                 ${statusLabel}
 
             </span>
 
         `;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CORRECTIVE ACTION
+        |--------------------------------------------------------------------------
+        */
+
+        const actionTaken =
+            document.getElementById(
+                "viewActionTaken"
+            );
+
+
+        const targetDate =
+            document.getElementById(
+                "viewTargetDate"
+            );
+
+
+        if (actionTaken) {
+
+            const savedAction =
+                inspection.action_taken || "";
+
+
+            const otherAction =
+                actionTaken.parentElement.querySelector(
+                    'input[name="other_action"]'
+                );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | ALWAYS RESET FIRST
+            |--------------------------------------------------------------------------
+            */
+
+            actionTaken.value = "";
+
+
+            if (otherAction) {
+
+                otherAction.value = "";
+
+                otherAction.classList.add(
+                    "d-none"
+                );
+
+                otherAction.required =
+                    false;
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | ONLY LOAD SAVED ACTION
+            | IF NOT PENDING
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                status !== "Pending" &&
+                savedAction !== ""
+            ) {
+
+                const standardActions = [
+
+                    "Refill",
+                    "Replacement of Parts",
+                    "Replacement of Unit"
+
+                ];
+
+
+                if (
+                    standardActions.includes(
+                        savedAction
+                    )
+                ) {
+
+                    actionTaken.value =
+                        savedAction;
+
+                } else {
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | CUSTOM ACTION
+                    |--------------------------------------------------------------------------
+                    */
+
+                    actionTaken.value =
+                        "Others";
+
+
+                    if (otherAction) {
+
+                        otherAction.value =
+                            savedAction;
+
+                        otherAction.classList.remove(
+                            "d-none"
+                        );
+
+                        otherAction.required =
+                            true;
+
+                    }
+
+                }
+
+            }
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | TARGET DATE
+        |--------------------------------------------------------------------------
+        */
+
+        if (targetDate) {
+
+            targetDate.value =
+                inspection.target_date_of_implementation ||
+                "";
+
+        }
 
 
         /*
@@ -481,40 +594,48 @@ async function viewInspection(inspectId) {
             inspection.is_seal_ok
         );
 
+
         updateChecklistStatus(
             "Pin",
             inspection.is_pin_ok
         );
+
 
         updateChecklistStatus(
             "Pressure",
             inspection.is_pressure_ok
         );
 
+
         updateChecklistStatus(
             "Hose",
             inspection.is_hose_ok
         );
+
 
         updateChecklistStatus(
             "Nozzle",
             inspection.is_nozzle_ok
         );
 
+
         updateChecklistStatus(
             "Belt",
             inspection.is_belt_ok
         );
+
 
         updateChecklistStatus(
             "CylinderBody",
             inspection.is_cylinder_body_ok
         );
 
+
         updateChecklistStatus(
             "DemarcationLine",
             inspection.is_demarcation_line_ok
         );
+
 
         updateChecklistStatus(
             "Signage",
@@ -558,21 +679,25 @@ async function viewInspection(inspectId) {
             );
 
 
-        if (allGood) {
+        if (conditionStatus) {
 
-            conditionStatus.className =
-                "badge bg-success ms-auto";
+            if (allGood) {
 
-            conditionStatus.textContent =
-                "Good";
+                conditionStatus.className =
+                    "badge bg-success ms-auto";
 
-        } else {
+                conditionStatus.textContent =
+                    "Good";
 
-            conditionStatus.className =
-                "badge bg-danger ms-auto";
+            } else {
 
-            conditionStatus.textContent =
-                "Not Good";
+                conditionStatus.className =
+                    "badge bg-danger ms-auto";
+
+                conditionStatus.textContent =
+                    "Not Good";
+
+            }
 
         }
 
@@ -605,6 +730,7 @@ async function viewInspection(inspectId) {
             error
         );
 
+
         alert(
             "An error occurred while loading the inspection."
         );
@@ -612,6 +738,7 @@ async function viewInspection(inspectId) {
     }
 
 }
+
 
 
 /*
@@ -635,6 +762,11 @@ function updateChecklistStatus(
         document.getElementById(
             `view${itemName}Status`
         );
+
+
+    if (!textElement || !statusElement) {
+        return;
+    }
 
 
     const isGood =
@@ -677,17 +809,369 @@ function updateChecklistStatus(
 
 }
 
-// _____CONFIRMATION APPROVAL___
+
+
+/*
+|--------------------------------------------------------------------------
+| CORRECTIVE ACTION - OTHERS
+|--------------------------------------------------------------------------
+*/
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const actionTaken =
+            document.getElementById(
+                "viewActionTaken"
+            );
+
+
+        if (!actionTaken) {
+            return;
+        }
+
+
+        actionTaken.addEventListener(
+            "change",
+            function () {
+
+                const otherAction =
+                    this.parentElement.querySelector(
+                        'input[name="other_action"]'
+                    );
+
+
+                if (!otherAction) {
+                    return;
+                }
+
+
+                if (this.value === "Others") {
+
+                    otherAction.classList.remove(
+                        "d-none"
+                    );
+
+                    otherAction.required =
+                        true;
+
+                } else {
+
+                    otherAction.classList.add(
+                        "d-none"
+                    );
+
+                    otherAction.required =
+                        false;
+
+                    otherAction.value =
+                        "";
+
+                }
+
+            }
+        );
+
+    }
+);
+
+
+
+/*
+|--------------------------------------------------------------------------
+| SET CORRECTIVE ACTION VALUES
+|--------------------------------------------------------------------------
+*/
+
+function setCorrectiveActionValues(
+    type
+) {
+
+    const actionSelect =
+        document.getElementById(
+            "viewActionTaken"
+        );
+
+
+    const targetDate =
+        document.getElementById(
+            "viewTargetDate"
+        );
+
+
+    if (!actionSelect || !targetDate) {
+
+        alert(
+            "Corrective Action fields are missing."
+        );
+
+        return false;
+
+    }
+
+
+    const otherAction =
+        actionSelect.parentElement.querySelector(
+            'input[name="other_action"]'
+        );
+
+
+    let actionValue =
+        actionSelect.value;
+
+
+    let customAction =
+        "";
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | VALIDATE ACTION
+    |--------------------------------------------------------------------------
+    */
+
+    if (actionValue === "") {
+
+        alert(
+            "Please select an action."
+        );
+
+
+        actionSelect.focus();
+
+
+        return false;
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | OTHERS
+    |--------------------------------------------------------------------------
+    */
+
+    if (actionValue === "Others") {
+
+        customAction =
+            otherAction
+                ? otherAction.value.trim()
+                : "";
+
+
+        if (customAction === "") {
+
+            alert(
+                "Please specify the other action."
+            );
+
+
+            if (otherAction) {
+
+                otherAction.focus();
+
+            }
+
+
+            return false;
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SAVE CUSTOM ACTION AS ACTION TAKEN
+        |--------------------------------------------------------------------------
+        */
+
+        actionValue =
+            customAction;
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | VALIDATE TARGET DATE
+    |--------------------------------------------------------------------------
+    */
+
+    if (targetDate.value === "") {
+
+        alert(
+            "Please select the target date of implementation."
+        );
+
+
+        targetDate.focus();
+
+
+        return false;
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | APPROVE
+    |--------------------------------------------------------------------------
+    */
+
+    if (type === "approve") {
+
+        const approveAction =
+            document.getElementById(
+                "approveActionTaken"
+            );
+
+
+        const approveOther =
+            document.getElementById(
+                "approveOtherAction"
+            );
+
+
+        const approveDate =
+            document.getElementById(
+                "approveTargetDate"
+            );
+
+
+        if (approveAction) {
+
+            approveAction.value =
+                actionValue;
+
+        }
+
+
+        if (approveOther) {
+
+            approveOther.value =
+                customAction;
+
+        }
+
+
+        if (approveDate) {
+
+            approveDate.value =
+                targetDate.value;
+
+        }
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | REJECT
+    |--------------------------------------------------------------------------
+    */
+
+    if (type === "reject") {
+
+        const rejectAction =
+            document.getElementById(
+                "rejectActionTaken"
+            );
+
+
+        const rejectOther =
+            document.getElementById(
+                "rejectOtherAction"
+            );
+
+
+        const rejectDate =
+            document.getElementById(
+                "rejectTargetDate"
+            );
+
+
+        if (rejectAction) {
+
+            rejectAction.value =
+                actionValue;
+
+        }
+
+
+        if (rejectOther) {
+
+            rejectOther.value =
+                customAction;
+
+        }
+
+
+        if (rejectDate) {
+
+            rejectDate.value =
+                targetDate.value;
+
+        }
+
+    }
+
+
+    return true;
+
+}
+
+
+
+/*
+|--------------------------------------------------------------------------
+| APPROVE CONFIRMATION
+|--------------------------------------------------------------------------
+*/
+
 function confirmApprove() {
+
+    if (
+        !setCorrectiveActionValues(
+            "approve"
+        )
+    ) {
+
+        return false;
+
+    }
+
+
     return confirm(
         "Are you sure you want to approve this inspection?\n\n" +
         "This action will change the inspection status to Approved."
     );
+
 }
 
+
+
+/*
+|--------------------------------------------------------------------------
+| REJECT CONFIRMATION
+|--------------------------------------------------------------------------
+*/
+
 function confirmReject() {
+
+    if (
+        !setCorrectiveActionValues(
+            "reject"
+        )
+    ) {
+
+        return false;
+
+    }
+
+
     return confirm(
         "Are you sure you want to reject this inspection?\n\n" +
         "This action will change the inspection status to Rejected."
     );
+
 }

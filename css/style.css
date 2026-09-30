@@ -17027,3 +17027,11 @@ fieldset:disabled .btn {
 
   font-size: 1rem;
 }
+
+.submenu-chevron {
+    transition: transform 0.25s ease;
+}
+
+.nav-link[aria-expanded="true"] .submenu-chevron {
+    transform: rotate(180deg);
+}

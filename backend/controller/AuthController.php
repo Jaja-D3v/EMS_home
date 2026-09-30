@@ -6,13 +6,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
+    $branch = $_POST['branch'] ?? '';
+
+
 
     $user = loginUser($username, $password);
 
     if (
         $user &&
         $username === $user['LoginID'] &&
-        md5($password) === $user['password']
+        md5($password) === $user['password'] &&  !empty($branch)
     ) {
 
         /*
@@ -32,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['LoginID'] = $user['LoginID'];
         $_SESSION['Role'] = $user['Role'];
         $_SESSION['EmployeeName'] = $user['EmployeeName'];
+        $_SESSION['branch'] = $branch;
 
         /*
          * Start inactivity timer
@@ -47,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
 
         header(
-            'Location: ../../authentication/login.html?error=invalid_credentials'
+            'Location: ../../authentication/login.php?error=invalid_credentials'
         );
         exit();
     }

@@ -5,7 +5,6 @@ require_once __DIR__ . '/ActivityLogController.php';
 require_once __DIR__ . '/../authentication/SessionChecker.php';
 
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $action = $_GET['action'] ?? null;
@@ -67,8 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $action_taken = 'N/A';
         $target_date_of_implementation = 'N/A';
         $remarks = $_POST['remarks'] ?? null;
-        
-        
+
+
 
 
         /*
@@ -167,35 +166,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $is_signage_ok,
             $status
         );
+    } elseif ($action == 'update_evaluation_status') {
+
+        $inspect_id =
+            $_POST['inspect_id'] ?? null;
+
+        $eval_stats =
+            $_POST['evaluation_status'] ?? null;
+
+        $action_taken =
+            trim($_POST['action_taken'] ?? '');
+
+        $target_date =
+            $_POST['target_date_of_implementation'] ?? null;
+
+        $Approver_name =
+            $_SESSION['EmployeeName'] ?? null;
 
 
-        if ($success) {
-            if ($action_taken == "Refilled") {
-                update_refilled($extinguisher_code);
-            }
-            update_remarks($remarks, $extinguisher_code);
-            if ($status) {
-                update_status('Good', $extinguisher_code);
-            } elseif (!$status) {
-                update_status('Not Good', $extinguisher_code);
-            }
+        if ($eval_stats == "Approved") {
 
-            $user_name = $_SESSION['EmployeeName'] ?? 'error while getting employee name';
-            createActivityLog(
-                $user_name,
-                "Inspect Fire Extinguisher",
-                "Inspect fire extinguisher $extinguisher_code"
+            ApprovedBy(
+                $Approver_name,
+                $inspect_id
             );
-            header("Location: ../../QR-code.php?id=$extinguisher_code&success-inspect=1");
+        } elseif ($eval_stats == "Rejected") {
+
+            RejectedBy(
+                $Approver_name,
+                $inspect_id
+            );
+        }
+
+
+        // Evaluation Status
+        $statusSuccess = updateEvalStats(
+            $inspect_id,
+            $eval_stats
+        );
+
+
+        // Corrective Action
+        $actionSuccess = updateCorrectiveAction(
+            $inspect_id,
+            $action_taken,
+            $target_date
+        );
+
+
+        // Final redirect
+        if ($statusSuccess && $actionSuccess) {
+
+            header(
+                "Location: ../../inspection-pending.php?approved_success=1"
+            );
             exit;
         }
-    }elseif($action == 'update_evaluation_status'){
 
-        $inspect_id = $_POST['inspect_id'] ?? null;
-        $eval_stats = $_POST['evaluation_status'] ?? null;
-        echo $inspect_id, $eval_stats;
-        updateEvalStats($inspect_id, $eval_stats);
+
+        header(
+            "Location: ../../inspection-pending.php?error=1"
+        );
+        exit;
     }
+}
+
+function ApprovedBy($name, $inspectid)
+{
+    Approved_by($name, $inspectid);
+}
+function RejectedBy($name, $inspectid)
+{
+    Rejected_by($name, $inspectid);
 }
 
 function getAllInspected()
@@ -255,13 +297,8 @@ function getRejectedApprovalTotal($date = null)
 
 function updateEvalStats($eval_id, $evalStatus)
 {
-    $success = updateEvaluationStatus($eval_id, $evalStatus);
-
-    if ($success) {
-        header("Location: ../../inspection-pending.php?approved_success=1");
-        exit;
-    }
-
-    header("Location: ../../inspection-pending.php?error=1");
-    exit;
+    return updateEvaluationStatus(
+        $eval_id,
+        $evalStatus
+    );
 }

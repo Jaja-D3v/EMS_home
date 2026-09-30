@@ -1,3 +1,11 @@
+<?php
+require_once __DIR__ . '../../backend/controller/BranchController.php';
+
+
+$branches = getAllBranchesController();
+?>
+
+
 <!DOCTYPE html>
 <!--
 * CoreUI - Free Bootstrap Admin Template
@@ -105,12 +113,7 @@
 
                   </div>
 
-
-                  <!-- =================================================
-                       EXISTING BACKEND FORM
-                       DO NOT CHANGE ACTION / METHOD / FIELD NAMES
-                       ================================================= -->
-                  <form action="./backend/controller/AuthController.php" method="post" autocomplete="off" novalidate>
+                  <form action="./backend/controller/AuthController.php" method="post" autocomplete="off" >
 
 
                     <!-- Username -->
@@ -131,7 +134,7 @@
                         </span>
 
                         <input class="form-control" name="username" id="email" type="text"
-                          placeholder="Username or Employee Code" autocomplete="off">
+                          placeholder="Username or Employee Code" autocomplete="off" required>
 
                       </div>
 
@@ -156,7 +159,7 @@
                         </span>
 
                         <input class="form-control" id="password" name="password" type="password"
-                          placeholder="Your password" autocomplete="off">
+                          placeholder="Your password" autocomplete="off" required>
 
                         <button class="btn btn-outline-secondary" type="button" id="togglePassword"
                           aria-label="Show password">
@@ -165,6 +168,38 @@
                           </i>
 
                         </button>
+
+                      </div>
+
+                    </div>
+
+                    <!-- Branch -->
+                    <div class="mb-4">
+
+                      <label class="form-label small fw-semibold" for="branch">
+                        Branch
+                      </label>
+
+                      <div class="input-group">
+
+                        <span class="input-group-text bg-white">
+                          <i class="bi bi-building text-body-secondary"></i>
+                        </span>
+
+                        <select class="form-select" name="branch" id="branch" required>
+                          <option value="" selected disabled>
+                            Select your branch
+                          </option>
+
+                          <?php foreach ($branches as $branch): ?>
+
+                          <option value="<?= htmlspecialchars($branch['branch_name']) ?>">
+                            <?= htmlspecialchars($branch['branch_name']) ?>
+                          </option>
+
+                          <?php endforeach; ?>
+
+                        </select>
 
                       </div>
 

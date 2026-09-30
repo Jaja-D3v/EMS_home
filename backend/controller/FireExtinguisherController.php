@@ -93,11 +93,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ext_remarks = $_POST['remarks'] ?? null;
     $ext_expiration_date = $_POST['expiration_date'] ?? null;
     $ext_id = $_POST['extinguisher_id'] ?? null;
-    $ext_branch = $_POST['branch'] ?? null;
+    $ext_branch = $_SESSION['branch'] ?? null;
     $action = $_POST['action'] ?? null;
+    $added_by = $added_by = $_SESSION['EmployeeName'] ?? null;
 
 
     if ($action == 'add') {
+
         addNewExtinguisher(
             $ext_code,
             $ext_type,
@@ -109,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ext_condition_status,
             $ext_remarks,
             $ext_expiration_date,
-            $ext_branch
+            $added_by
         );
     } else if ($action == 'update') {
 
@@ -124,8 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ext_placement,
             $ext_condition_status,
             $ext_remarks,
-            $ext_expiration_date,
-            $ext_branch
+            $ext_expiration_date
         );
     }
 }
@@ -142,8 +143,7 @@ function updateExtinguisher(
     $placement,
     $condition_status,
     $remarks,
-    $expiration_date,
-    $ext_branch
+    $expiration_date
 ) {
 
     $success = updateFireExtinguisherModel(
@@ -157,23 +157,26 @@ function updateExtinguisher(
         $placement,
         $condition_status,
         $remarks,
-        $expiration_date,
-        $ext_branch
+        $expiration_date
     );
 
     if ($success) {
-        $user_name = $_SESSION['EmployeeName'] ?? 'error while getting employee name';
+
+        $user_name = $_SESSION['EmployeeName']
+            ?? 'error while getting employee name';
+
         createActivityLog(
             $user_name,
             "Update Fire Extinguisher",
             "Updated fire extinguisher $code"
         );
+
         header("Location: ../../list-extinguisher.php?id=$id&success-update=1");
         exit;
     }
+
     return $success;
 }
-
 
 // GET - fetch fire extinguisher for edit modal & get by code for fire extinguisher
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -255,9 +258,9 @@ function addNewExtinguisher(
     $condition_status,
     $remarks,
     $expiration_date,
-    $ext_branch
-
+    $added_by
 ) {
+
     $success = addNewFireExtinguisherModel(
         $code,
         $type,
@@ -269,19 +272,24 @@ function addNewExtinguisher(
         $condition_status,
         $remarks,
         $expiration_date,
-        $ext_branch
+        $added_by
     );
 
     if ($success) {
-        $user_name = $_SESSION['EmployeeName'] ?? 'error while getting employee name';
+
+        $user_name = $_SESSION['EmployeeName']
+            ?? 'error while getting employee name';
+
         createActivityLog(
             $user_name,
             "Add Fire Extinguisher",
             "Added fire extinguisher $code"
         );
+
         header("Location: ../../list-extinguisher.php?success-add=1");
         exit;
     }
+
     return $success;
 }
 
@@ -315,71 +323,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-
-// count nearly expiration
-function getAllExpiringCount()
-{
-    $expiringCount = getExpiringFireExtinguishers();
-    return $expiringCount;
-}
-
-
-// total count of fe registered in system 
-function getTotalFireExtinguishers()
-{
-    return getAllFireExtinguishersCount();
-}
-
-// get all spare fe
-function getTotalSpareFireExtinguishers()
-{
-    return getSpareFireExtinguishersCount();
-}
-
-// get all spare with good condition
-function getTotalGoodSpareFireExtinguishers()
-{
-    return getGoodSpareFireExtinguishersCount();
-}
-
-// get all spare with not good condition
-function getTotalNotGoodSpareFireExtinguishers()
-{
-    return getNotGoodSpareFireExtinguishersCount();
-}
-
-// get all installed fire extingsuiher
-function getTotalInstalledFireExtinguishers()
-{
-    return getInstalledFireExtinguishersCount();
-}
-
-// get all installed fire extinguisher with good condition
-function getTotalGoodInstalledFireExtinguishers()
-{
-    return getGoodInstalledFireExtinguishersCount();
-}
-
-// get all installed fire extinguisher with not good condition
-function getTotalNotGoodInstalledFireExtinguishers()
-{
-    return getNotGoodInstalledFireExtinguishersCount();
-}
-
-// get all good condition
-function getGoodCondition()
-{
-    return getAllGoodCondition();
-}
-
-// get all not good condition
-function getNotGoodCondition()
-{
-    return getAllNotGoodCondition();
-}
-
 // get next code 
 function getNextFireExtinguisherCode()
 {
     return getNextFireExtinguisherCodeModel();
+}
+
+function getTotalFireExtinguishers()
+{
+    return getTotalFireExtinguishersModel();
 }

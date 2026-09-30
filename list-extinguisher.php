@@ -565,7 +565,7 @@ require_once 'backend/authentication/SessionChecker.php';
                     </div>
 
                     <!-- Type -->
-                    <div class="col-6 col-md-3">
+                    <div class="col-6 col-md-2">
                       <div class="d-flex align-items-center gap-2">
                         <div
                           class="d-flex align-items-center justify-content-center
@@ -590,7 +590,7 @@ require_once 'backend/authentication/SessionChecker.php';
                     </div>
 
                     <!-- Location -->
-                    <div class="col-6 col-md-3">
+                    <div class="col-6 col-md-2">
                       <div class="d-flex align-items-center gap-2">
                         <div
                           class="d-flex align-items-center justify-content-center
@@ -613,6 +613,42 @@ require_once 'backend/authentication/SessionChecker.php';
                       </div>
                     </div>
 
+                    <!-- Class -->
+
+                    <div class="col-6 col-md-2">
+
+                      <div class="d-flex align-items-center gap-2">
+
+                        <div
+                          class="d-flex align-items-center justify-content-center
+                                bg-success bg-opacity-10 text-success
+                                rounded-3 flex-shrink-0"
+                          style="width: 32px; height: 32px;">
+
+                          <i class="bi bi-building"></i>
+
+                        </div>
+
+                        <div class="min-width-0">
+
+                          <div class="text-body-secondary small lh-1">
+                            Branch
+                          </div>
+
+                          <div
+                            class="fw-semibold small text-truncate"
+                            title="<?= htmlspecialchars($data['branch']) ?>">
+
+                            <?= htmlspecialchars($data['branch']) ?>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
                     <!-- View -->
                     <div class="col-12 col-md-2">
                       <button
@@ -621,8 +657,10 @@ require_once 'backend/authentication/SessionChecker.php';
                         data-id="<?= htmlspecialchars($data['extinguisher_id']) ?>"
                         data-bs-toggle="modal"
                         data-bs-target="#viewFireExtinguisherModal">
+
                         <i class="bi bi-eye me-1"></i>
                         View
+
                       </button>
                     </div>
 
@@ -787,7 +825,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                       </div>
 
-
                       <!-- Type -->
                       <div class="col-md-6">
 
@@ -816,7 +853,6 @@ require_once 'backend/authentication/SessionChecker.php';
                         </select>
 
                       </div>
-
 
                       <!-- Capacity -->
                       <div class="col-md-4">
@@ -1211,7 +1247,7 @@ require_once 'backend/authentication/SessionChecker.php';
                       </div>
 
                       <!-- Location -->
-                      <div class="col-12 col-md-6 col-lg-5">
+                      <div class="col-12 col-md-8">
                         <label for="location" class="form-label">
                           Location
                         </label>
@@ -1225,31 +1261,8 @@ require_once 'backend/authentication/SessionChecker.php';
                           required>
                       </div>
 
-                      <!-- Branch -->
-                      <div class="col-12 col-md-3 col-lg-4">
-                        <label for="branch" class="form-label">
-                          Branch
-                        </label>
-
-                        <select
-                          class="form-select"
-                          id="branch"
-                          name="branch"
-                          required>
-
-                          <option value="" selected disabled>
-                            Select branch
-                          </option>
-
-                          <option value="Laguna">Laguna</option>
-                          <option value="Lima">Lima</option>
-                          <option value="Cebu">Cebu</option>
-                          <option value="Cavite">Cavite</option>
-                        </select>
-                      </div>
-
                       <!-- Condition -->
-                      <div class="col-12 col-md-3 col-lg-3">
+                      <div class="col-12 col-md-4">
                         <label for="conditionStatus" class="form-label">
                           Condition
                         </label>
@@ -1259,11 +1272,14 @@ require_once 'backend/authentication/SessionChecker.php';
                           name="condition_status"
                           class="form-select"
                           required>
+
                           <option value="" selected disabled>
                             Select condition
                           </option>
+
                           <option value="Good">Good</option>
                           <option value="Not Good">Not Good</option>
+
                         </select>
                       </div>
 

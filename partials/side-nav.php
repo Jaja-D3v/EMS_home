@@ -38,84 +38,75 @@
         Print QR Code
       </a>
 
-      <a class="nav-link" href="list-extinguisher.php">
-        <i class="fa-solid fa-fire-extinguisher"></i>
-        Fire Extinguisher List
-      </a>
-      <?php
-      $currentStatus = $_GET['status'] ?? '';
-      ?>
-
-      <!-- Inspection Approvals -->
+      <!-- Fire Extinguisher List -->
     <li class="nav-item">
 
       <!-- Parent -->
       <a
         class="nav-link d-flex align-items-center"
         data-bs-toggle="collapse"
-        href="#inspectionApprovalsMenu"
+        href="#fireExtinguisherMenu"
         role="button"
-        aria-expanded="<?= $currentStatus ? 'true' : 'false' ?>"
-        aria-controls="inspectionApprovalsMenu">
+        aria-expanded="false"
+        aria-controls="fireExtinguisherMenu">
 
-        <i class="fa-solid fa-list-check me-2"></i>
+        <i class="fa-solid fa-fire-extinguisher me-2"></i>
 
-        <span>Inspection Approvals</span>
+        <span>Fire Extinguisher List</span>
 
-        <i class="bi bi-chevron-down ms-auto"></i>
-
+        <i class="bi bi-chevron-down ms-auto submenu-chevron"></i>
       </a>
 
 
       <!-- Submenu -->
       <div
-        class="collapse <?= $currentStatus ? 'show' : '' ?>"
-        id="inspectionApprovalsMenu">
+        class="collapse"
+        id="fireExtinguisherMenu">
 
         <ul class="nav flex-column ms-3">
 
-          <!-- Pending Approval -->
+          <!-- Active Fire Extinguishers -->
           <li class="nav-item">
 
             <a
-              class="nav-link <?= ($currentStatus === 'pending') ? 'active' : '' ?>"
-              href="inspection-pending.php">
+              class="nav-link"
+              href="list-extinguisher.php">
 
-              <i class="bi bi-clock me-2"></i>
+              <i class="bi bi-fire me-2"></i>
 
-              Pending Approval
+              Active Fire Extinguishers
 
             </a>
 
           </li>
 
 
-          <!-- Approved -->
+          <!-- Expiring Soon -->
           <li class="nav-item">
 
             <a
-              class="nav-link <?= ($currentStatus === 'approved') ? 'active' : '' ?>"
-              href="inspection-approved.php">
+              class="nav-link"
+              href="expiring-extinguisher.php">
 
-              <i class="bi bi-check-circle me-2"></i>
+              <i class="bi bi-hourglass-split me-2"></i>
 
-              Approved
+              Expiring Soon
 
             </a>
 
           </li>
 
 
-          <!-- Rejected -->
+          <!-- Archived -->
           <li class="nav-item">
 
             <a
-              class="nav-link <?= ($currentStatus === 'rejected') ? 'active' : '' ?>"
-              href="inspection-rejected.php">
+              class="nav-link"
+              href="archived-extinguisher.php">
 
-              <i class="bi bi-x-circle me-2"></i>
+              <i class="bi bi-trash3 me-2"></i>
 
-              Rejected
+              Deleted
 
             </a>
 
@@ -125,6 +116,58 @@
 
       </div>
 
+    </li>
+    <?php
+    $currentStatus = $_GET['status'] ?? '';
+    ?>
+
+    <!-- Inspection Approvals -->
+    <li class="nav-item">
+
+      <a
+        class="nav-link d-flex align-items-center"
+        data-bs-toggle="collapse"
+        href="#inspectionApprovalMenu"
+        role="button"
+        aria-expanded="false"
+        aria-controls="inspectionApprovalMenu">
+
+        <i class="bi bi-clipboard-check me-2"></i>
+
+        <span>Inspection Approvals</span>
+
+        <i class="bi bi-chevron-down ms-auto submenu-chevron"></i>
+      </a>
+
+      <div
+        class="collapse"
+        id="inspectionApprovalMenu">
+
+        <ul class="nav flex-column ms-3">
+
+          <li class="nav-item">
+            <a class="nav-link" href="inspection-pending.php">
+              <i class="bi bi-hourglass-split me-2"></i>
+              Pending
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="inspection-approved.php">
+              <i class="bi bi-check-circle me-2"></i>
+              Approved
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="inspection-rejected.php">
+              <i class="bi bi-x-circle me-2"></i>
+              Rejected
+            </a>
+          </li>
+
+        </ul>
+      </div>
     </li>
 
     <!-- Activity Log -->

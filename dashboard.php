@@ -1,17 +1,25 @@
 <?php
-include './backend/controller/FireExtinguisherController.php';
 require_once 'backend/authentication/SessionChecker.php';
 
-$totalFE = getTotalFireExtinguishers();
+include './backend/controller/DashboardController.php';
+$totalFE = getTotalFireExtinguishersDashboard();
 $totalSpareFE = getTotalSpareFireExtinguishers();
-// $info = getAllFireExtinguishers();
 $goodSpareFE = getTotalGoodSpareFireExtinguishers();
 $notGoodSpareFE = getTotalNotGoodSpareFireExtinguishers();
+
 $totalInstalledFE = getTotalInstalledFireExtinguishers();
 $goodInstalledFE = getTotalGoodInstalledFireExtinguishers();
 $notGoodInstalledFE = getTotalNotGoodInstalledFireExtinguishers();
+
 $allGoodCondition = getGoodCondition();
 $allNotGoodCondition = getNotGoodCondition();
+
+$typeCounts = getFireExtinguisherTypeCountsController();
+
+$monthlyInspectionData = getInspectLastThreeMonths();
+
+$expirySoon = getAllExpiringCount();
+
 
 ?>
 
@@ -78,37 +86,25 @@ $allNotGoodCondition = getNotGoodCondition();
     <div class="main-content flex-grow-1">
       <div class="container-lg px-4">
 
-        <?php 
-        include_once 'notification/fe-expiration-notice.php'; 
+        <?php
+        include_once 'notification/fe-expiration-notice.php';
         ?>
 
         <div class="row g-5">
           <!-- Analytics Header -->
-          <div class="d-flex justify-content-between align-items-center mb-0">
+          <form method="POST" action="">
 
+            <div class="d-flex justify-content-between align-items-center mb-0 flex-wrap gap-2">
 
-            <div class="fs-5 fw-semibold text-body mt-3">
-              <i class="bi bi-calendar3 me-2 text-primary"></i>
-              As of <span id="analyticsDate"></span>
+              <!-- Date -->
+              <div class="fs-5 fw-semibold text-body mt-3">
+                <i class="bi bi-calendar3 me-2 text-primary"></i>
+                As of <span id="analyticsDate"></span>
+              </div>
+
             </div>
 
-            <script>
-              document.addEventListener('DOMContentLoaded', function() {
-
-                const today = new Date();
-
-                const formattedDate = today.toLocaleDateString('en-US', {
-                  month: 'long',
-                  day: 'numeric',
-                  year: 'numeric'
-                });
-
-                document.getElementById('analyticsDate').textContent = formattedDate;
-
-              });
-            </script>
-
-          </div>
+          </form>
 
           <!-- end of header -->
 
@@ -117,7 +113,7 @@ $allNotGoodCondition = getNotGoodCondition();
             <div class="row g-3">
 
               <!-- Expiring Soon -->
-              <div class="col-12 col-sm-6 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-6 col-xl-3">
                 <div class="card border-1 shadow-sm h-100">
                   <div class="card-body d-flex align-items-center">
                     <div class="bg-danger bg-opacity-10 rounded-3 p-3 me-3">
@@ -130,7 +126,7 @@ $allNotGoodCondition = getNotGoodCondition();
                       </h6>
 
                       <h3 class="fw-bold mb-0">
-                        <?= $expiringCount ?>
+                        <?= $expirySoon  ?>
                       </h3>
 
                       <small class="text-muted">
@@ -141,9 +137,8 @@ $allNotGoodCondition = getNotGoodCondition();
                 </div>
               </div>
 
-
               <!-- Total Fire Extinguishers -->
-              <div class="col-12 col-sm-6 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-6 col-xl-3">
                 <div class="card border-1 shadow-sm h-100">
                   <div class="card-body d-flex align-items-center">
                     <div class="bg-primary bg-opacity-10 rounded-3 p-3 me-3">
@@ -169,7 +164,7 @@ $allNotGoodCondition = getNotGoodCondition();
 
 
               <!-- Total Spare Fire Extinguishers -->
-              <div class="col-12 col-sm-6 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-6 col-xl-3">
                 <div class="card border-1 shadow-sm h-100">
                   <div class="card-body">
 
@@ -207,9 +202,8 @@ $allNotGoodCondition = getNotGoodCondition();
                 </div>
               </div>
 
-
               <!-- Total Installed Fire Extinguishers -->
-              <div class="col-12 col-sm-6 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-6 col-xl-3">
                 <div class="card border-1 shadow-sm h-100">
                   <div class="card-body">
 
@@ -249,60 +243,136 @@ $allNotGoodCondition = getNotGoodCondition();
 
             </div>
 
-
-
-
             <!-- MAIN ANALYTICS -->
             <div class="row g-3 mt-0">
 
+              <?php
+              // ==========================================
+              // MONTHLY INSPECTION DATA - LATEST 3 MONTHS
+              // ==========================================
 
-              <!-- Condition Overview -->
-              <div class="col-12 col-md-6 col-xl-3">
+              $inspectionData = [];
+
+              for ($i = 2; $i >= 0; $i--) {
+
+                $date = new DateTime();
+                $date->modify("-{$i} month");
+
+                $monthKey = $date->format('Y-m');
+
+                $inspectionData[$monthKey] = [
+                  'label' => $date->format('M'),
+                  'total' => 0
+                ];
+              }
+
+              foreach ($monthlyInspectionData as $row) {
+
+                if (isset($inspectionData[$row['inspection_month']])) {
+
+                  $inspectionData[$row['inspection_month']]['total'] =
+                    (int) $row['total_inspected'];
+                }
+              }
+
+              $chartLabels = [];
+              $chartValues = [];
+
+              foreach ($inspectionData as $data) {
+
+                $chartLabels[] = $data['label'];
+                $chartValues[] = $data['total'];
+              }
+
+              $totalInspected3Months = array_sum($chartValues);
+
+              $previousMonth = $chartValues[1];
+              $currentMonth  = $chartValues[2];
+
+              if ($currentMonth > $previousMonth) {
+
+                $trendIcon = 'bi-arrow-up';
+                $trendText = 'Up from last month';
+                $trendClass = 'text-success';
+              } elseif ($currentMonth < $previousMonth) {
+
+                $trendIcon = 'bi-arrow-down';
+                $trendText = 'Down from last month';
+                $trendClass = 'text-danger';
+              } else {
+
+                $trendIcon = 'bi-dash';
+                $trendText = 'No change';
+                $trendClass = 'text-body-secondary';
+              }
+              ?>
+
+
+              <!-- ==========================================
+         MONTHLY INSPECTIONS
+    =========================================== -->
+              <div class="col-12 col-lg-6">
 
                 <div class="card border shadow-sm h-100">
 
-                  <div class="card-body">
+                  <div class="card-body pb-2">
 
-                    <div class="d-flex align-items-center gap-2 mb-3">
+                    <!-- Header -->
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start gap-3">
 
-                      <div class="rounded-3 bg-primary-subtle
-                                      text-primary d-flex
-                                      align-items-center
-                                      justify-content-center"
-                        style="width:40px;height:40px;">
+                      <!-- Title -->
+                      <div class="d-flex align-items-center gap-2">
 
-                        <i class="bi bi-shield-check"></i>
+                        <div
+                          class="rounded-3 bg-danger-subtle text-danger d-flex align-items-center justify-content-center flex-shrink-0"
+                          style="width:42px;height:42px;">
+                          <i class="bi bi-bar-chart-fill fs-5"></i>
+                        </div>
+
+                        <div class="min-w-0">
+
+                          <h5 class="fw-semibold mb-0 text-truncate">
+                            Monthly Inspections
+                          </h5>
+
+                          <small class="text-body-secondary">
+                            Latest 3 months
+                          </small>
+
+                        </div>
 
                       </div>
 
-                      <div>
-                        <h6 class="fw-bold mb-0">
-                          Condition Overview
-                        </h6>
 
-                        <small class="text-body-secondary">
-                          Overall status
-                        </small>
+                      <!-- Total -->
+                      <div class="text-start text-sm-end flex-shrink-0">
+
+                        <div class="small text-body-secondary">
+                          Total
+                        </div>
+
+                        <div class="fs-3 fw-bold lh-1">
+                          <?= number_format($totalInspected3Months) ?>
+                        </div>
+
+                        <div class="small <?= $trendClass ?> mt-1">
+
+                          <i class="bi <?= $trendIcon ?>"></i>
+
+                          <?= htmlspecialchars($trendText) ?>
+
+                        </div>
+
                       </div>
 
                     </div>
 
-                    <div style="height:230px;">
-                      <canvas id="conditionChart"></canvas>
-                    </div>
 
-                    <div class="d-flex justify-content-center gap-3 mt-2">
-
-                      <small>
-                        <span class="text-success">●</span>
-                        Good (4)
-                      </small>
-
-                      <small>
-                        <span class="text-danger">●</span>
-                        Not Good (4)
-                      </small>
-
+                    <!-- Chart -->
+                    <div
+                      class="position-relative mt-4"
+                      style="height:clamp(180px, 28vw, 250px);">
+                      <canvas id="monthlyInspectionChart"></canvas>
                     </div>
 
                   </div>
@@ -312,84 +382,41 @@ $allNotGoodCondition = getNotGoodCondition();
               </div>
 
 
-              <!-- Expiring Soon -->
-              <div class="col-12 col-md-6 col-xl-3">
+              <?php
+              // ==========================================
+              // FIRE EXTINGUISHER TYPE DATA
+              // ==========================================
+
+
+              $totalExtinguishers = 0;
+
+              foreach ($typeCounts as $typeData) {
+
+                $totalExtinguishers += (int) $typeData['total'];
+              }
+              ?>
+
+
+              <!-- ==========================================
+         BY TYPE
+    =========================================== -->
+              <div class="col-12 col-md-6 col-lg-3">
 
                 <div class="card border shadow-sm h-100">
 
                   <div class="card-body">
 
+                    <!-- Header -->
                     <div class="d-flex align-items-center gap-2 mb-3">
 
-                      <div class="rounded-3 bg-primary-subtle
-                                      text-primary d-flex
-                                      align-items-center
-                                      justify-content-center"
+                      <div
+                        class="rounded-3 bg-primary-subtle text-primary d-flex align-items-center justify-content-center flex-shrink-0"
                         style="width:40px;height:40px;">
-
-                        <i class="bi bi-clock"></i>
-
-                      </div>
-
-                      <div>
-                        <h6 class="fw-bold mb-0">
-                          Expiring Soon
-                        </h6>
-
-                        <small class="text-body-secondary">
-                          Units that need attention
-                        </small>
-                      </div>
-
-                    </div>
-
-                    <div style="height:230px;">
-                      <canvas id="expiringChart"></canvas>
-                    </div>
-
-                    <div class="d-flex justify-content-center gap-3 mt-2">
-
-                      <small>
-                        <span class="text-danger">●</span>
-                        Expiring Soon (2)
-                      </small>
-
-                      <small>
-                        <span class="text-secondary">●</span>
-                        Not Expiring (6)
-                      </small>
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-
-
-
-              <!-- By Type -->
-              <div class="col-12 col-md-6 col-xl-3">
-
-                <div class="card border shadow-sm h-100">
-
-                  <div class="card-body">
-
-                    <div class="d-flex align-items-center gap-2 mb-3">
-
-                      <div class="rounded-3 bg-primary-subtle
-                                      text-primary d-flex
-                                      align-items-center
-                                      justify-content-center"
-                        style="width:40px;height:40px;">
-
                         <i class="bi bi-pie-chart-fill"></i>
-
                       </div>
 
-                      <div>
+                      <div class="min-w-0">
+
                         <h6 class="fw-bold mb-0">
                           By Type
                         </h6>
@@ -397,135 +424,77 @@ $allNotGoodCondition = getNotGoodCondition();
                         <small class="text-body-secondary">
                           Fire extinguisher types
                         </small>
+
                       </div>
 
                     </div>
 
 
-                    <!-- Type 1 -->
-                    <div class="mb-3">
+                    <?php if (!empty($typeCounts)): ?>
 
-                      <div class="d-flex justify-content-between mb-1">
+                      <?php foreach ($typeCounts as $typeData): ?>
 
-                        <small>Dry Chemical</small>
+                        <?php
 
-                        <small class="fw-bold">2</small>
+                        $type = $typeData['type'];
 
-                      </div>
+                        $count = (int) $typeData['total'];
 
-                      <div class="progress" style="height:6px;">
-                        <div
-                          class="progress-bar"
-                          style="width:25%">
+                        $percentage = $totalExtinguishers > 0
+                          ? ($count / $totalExtinguishers) * 100
+                          : 0;
+
+                        ?>
+
+                        <div class="mb-3">
+
+                          <div class="d-flex justify-content-between align-items-center mb-1">
+
+                            <small class="text-truncate me-2">
+                              <?= htmlspecialchars($type) ?>
+                            </small>
+
+                            <small class="fw-bold flex-shrink-0">
+                              <?= $count ?>
+                            </small>
+
+                          </div>
+
+                          <div
+                            class="progress"
+                            style="height:6px;"
+                            role="progressbar"
+                            aria-valuenow="<?= round($percentage, 1) ?>"
+                            aria-valuemin="0"
+                            aria-valuemax="100">
+
+                            <div
+                              class="progress-bar"
+                              style="width:<?= $percentage ?>%;"></div>
+
+                          </div>
+
                         </div>
-                      </div>
 
-                    </div>
+                      <?php endforeach; ?>
 
+                    <?php else: ?>
 
-                    <!-- Type 2 -->
-                    <div class="mb-3">
+                      <div class="text-center py-4">
 
-                      <div class="d-flex justify-content-between mb-1">
+                        <i class="bi bi-fire fs-3 text-body-secondary"></i>
 
-                        <small>CO2</small>
+                        <div class="mt-2">
 
-                        <small class="fw-bold">1</small>
+                          <small class="text-body-secondary">
+                            No fire extinguisher data available.
+                          </small>
 
-                      </div>
-
-                      <div class="progress" style="height:6px;">
-                        <div
-                          class="progress-bar"
-                          style="width:12.5%">
                         </div>
-                      </div>
-
-                    </div>
-
-
-                    <!-- Type 3 -->
-                    <div class="mb-3">
-
-                      <div class="d-flex justify-content-between mb-1">
-
-                        <small>Water</small>
-
-                        <small class="fw-bold">1</small>
 
                       </div>
 
-                      <div class="progress" style="height:6px;">
-                        <div
-                          class="progress-bar"
-                          style="width:12.5%">
-                        </div>
-                      </div>
-
-                    </div>
-
-
-                    <!-- Type 4 -->
-                    <div class="mb-3">
-
-                      <div class="d-flex justify-content-between mb-1">
-
-                        <small>Foam</small>
-
-                        <small class="fw-bold">1</small>
-
-                      </div>
-
-                      <div class="progress" style="height:6px;">
-                        <div
-                          class="progress-bar"
-                          style="width:12.5%">
-                        </div>
-                      </div>
-
-                    </div>
-
-
-                    <!-- Type 5 -->
-                    <div class="mb-3">
-
-                      <div class="d-flex justify-content-between mb-1">
-
-                        <small>Wet Chemical</small>
-
-                        <small class="fw-bold">1</small>
-
-                      </div>
-
-                      <div class="progress" style="height:6px;">
-                        <div
-                          class="progress-bar"
-                          style="width:12.5%">
-                        </div>
-                      </div>
-
-                    </div>
-
-
-                    <!-- Type 6 -->
-                    <div>
-
-                      <div class="d-flex justify-content-between mb-1">
-
-                        <small>HCFC-123</small>
-
-                        <small class="fw-bold">2</small>
-
-                      </div>
-
-                      <div class="progress" style="height:6px;">
-                        <div
-                          class="progress-bar"
-                          style="width:25%">
-                        </div>
-                      </div>
-
-                    </div>
+                    <?php endif; ?>
 
                   </div>
 
@@ -534,23 +503,22 @@ $allNotGoodCondition = getNotGoodCondition();
               </div>
 
 
-              <!-- Quick Summary -->
-              <div class="col-12 col-md-6 col-xl-3">
+              <!-- ==========================================
+         QUICK SUMMARY
+    =========================================== -->
+              <div class="col-12 col-md-6 col-lg-3">
 
                 <div class="card border shadow-sm h-100">
 
                   <div class="card-body">
 
+                    <!-- Header -->
                     <div class="d-flex align-items-center gap-2 mb-3">
 
-                      <div class="rounded-3 bg-primary-subtle
-                                      text-primary d-flex
-                                      align-items-center
-                                      justify-content-center"
+                      <div
+                        class="rounded-3 bg-primary-subtle text-primary d-flex align-items-center justify-content-center flex-shrink-0"
                         style="width:40px;height:40px;">
-
                         <i class="bi bi-list-columns"></i>
-
                       </div>
 
                       <h6 class="fw-bold mb-0">
@@ -560,79 +528,91 @@ $allNotGoodCondition = getNotGoodCondition();
                     </div>
 
 
-                    <div class="d-flex justify-content-between
-                                  align-items-center border-bottom py-2">
+                    <!-- Total FE -->
+                    <div class="d-flex justify-content-between align-items-center border-bottom py-2 gap-2">
 
-                      <small>Total Fire Extinguishers</small>
+                      <small class="text-truncate">
+                        Total Fire Extinguishers
+                      </small>
 
-                      <span class="badge bg-light text-dark">
+                      <span class="badge bg-light text-dark flex-shrink-0">
                         <?= $totalFE ?>
                       </span>
 
                     </div>
 
 
-                    <div class="d-flex justify-content-between
-                                  align-items-center border-bottom py-2">
+                    <!-- Installed -->
+                    <div class="d-flex justify-content-between align-items-center border-bottom py-2 gap-2">
 
-                      <small>Installed Units</small>
+                      <small>
+                        Installed Units
+                      </small>
 
-                      <span class="badge bg-light text-dark">
+                      <span class="badge bg-light text-dark flex-shrink-0">
                         <?= $totalInstalledFE ?>
                       </span>
 
                     </div>
 
 
-                    <div class="d-flex justify-content-between
-                                  align-items-center border-bottom py-2">
+                    <!-- Spare -->
+                    <div class="d-flex justify-content-between align-items-center border-bottom py-2 gap-2">
 
-                      <small>Spare Units</small>
+                      <small>
+                        Spare Units
+                      </small>
 
-                      <span class="badge bg-light text-dark">
-                        <?= $totalSpareFE  ?>
+                      <span class="badge bg-light text-dark flex-shrink-0">
+                        <?= $totalSpareFE ?>
                       </span>
 
                     </div>
 
 
-                    <div class="d-flex justify-content-between
-                                  align-items-center border-bottom py-2">
+                    <!-- Good -->
+                    <div class="d-flex justify-content-between align-items-center border-bottom py-2 gap-2">
 
-                      <small>Good Units</small>
+                      <small>
+                        Good Units
+                      </small>
 
-                      <span class="badge bg-success-subtle text-success">
-                        <?= $allGoodCondition  ?>
+                      <span class="badge bg-success-subtle text-success flex-shrink-0">
+                        <?= $allGoodCondition ?>
                       </span>
 
                     </div>
 
 
-                    <div class="d-flex justify-content-between
-                                  align-items-center border-bottom py-2">
+                    <!-- Not Good -->
+                    <div class="d-flex justify-content-between align-items-center border-bottom py-2 gap-2">
 
-                      <small>Not Good Units</small>
+                      <small>
+                        Not Good Units
+                      </small>
 
-                      <span class="badge bg-danger-subtle text-danger">
-                        <?= $allNotGoodCondition  ?>
-
+                      <span class="badge bg-danger-subtle text-danger flex-shrink-0">
+                        <?= $allNotGoodCondition ?>
                       </span>
 
                     </div>
 
 
-                    <div class="d-flex justify-content-between
-                                  align-items-center py-2">
+                    <!-- Expiring -->
+                    <div class="d-flex justify-content-between align-items-center py-2 gap-2">
 
-                      <small>Expiring Soon</small>
+                      <small>
+                        Expiring Soon
+                      </small>
 
-                      <span class="badge bg-warning-subtle text-warning-emphasis">
-                        <?= $expiringCount ?>
+                      <span class="badge bg-warning-subtle text-warning-emphasis flex-shrink-0">
+                        <?= $expirySoon ?>
                       </span>
 
                     </div>
 
 
+                    <!-- Information -->
                     <div class="alert alert-primary mt-3 mb-0 small">
 
                       <i class="bi bi-info-circle me-1"></i>
@@ -650,13 +630,18 @@ $allNotGoodCondition = getNotGoodCondition();
 
             </div>
 
+
+            <!-- Chart.js Data -->
+            <script>
+              const labels = <?= json_encode($chartLabels) ?>;
+              const values = <?= json_encode($chartValues) ?>;
+            </script>
+
+            <script src="js/dashboard.js"></script>
+
           </div>
 
-
           <!-- content end -->
-
-
-
         </div>
       </div>
       <?php include 'partials/footer.php'; ?>
@@ -674,309 +659,6 @@ $allNotGoodCondition = getNotGoodCondition();
       });
     </script>
 
-    <!-- for chart -->
-
-    <script>
-      // ============================================
-      // INSTALLED VS SPARE
-      // ============================================
-
-      new Chart(
-        document.getElementById('installedSpareChart'), {
-          type: 'bar',
-
-          data: {
-            labels: [
-              'Installed FE',
-              'Spare FE'
-            ],
-
-            datasets: [{
-                label: 'Good',
-                data: [2, 2],
-                backgroundColor: '#20b978',
-                borderRadius: 3
-              },
-              {
-                label: 'Not Good',
-                data: [2, 2],
-                backgroundColor: '#ff5b61',
-                borderRadius: 3
-              }
-            ]
-          },
-
-          options: {
-
-            responsive: true,
-
-            maintainAspectRatio: false,
-
-            plugins: {
-              legend: {
-                position: 'bottom'
-              }
-            },
-
-            scales: {
-
-              x: {
-                stacked: true,
-
-                grid: {
-                  display: false
-                }
-              },
-
-              y: {
-                stacked: true,
-
-                beginAtZero: true,
-
-                ticks: {
-                  stepSize: 1
-                }
-              }
-
-            }
-
-          }
-        }
-      );
-
-
-      // ============================================
-      // CONDITION OVERVIEW
-      // ============================================
-
-      new Chart(
-        document.getElementById('conditionChart'), {
-          type: 'doughnut',
-
-          data: {
-
-            labels: [
-              'Good',
-              'Not Good'
-            ],
-
-            datasets: [{
-              data: [
-                4,
-                4
-              ],
-
-              backgroundColor: [
-                '#20b978',
-                '#ff5b61'
-              ],
-
-              borderWidth: 0
-            }]
-
-          },
-
-          options: {
-
-            responsive: true,
-
-            maintainAspectRatio: false,
-
-            cutout: '65%',
-
-            plugins: {
-
-              legend: {
-                display: false
-              }
-
-            }
-
-          }
-
-        }
-      );
-
-
-      // ============================================
-      // EXPIRING SOON
-      // ============================================
-
-      new Chart(
-        document.getElementById('expiringChart'), {
-          type: 'doughnut',
-
-          data: {
-
-            labels: [
-              'Expiring Soon',
-              'Not Expiring'
-            ],
-
-            datasets: [{
-              data: [
-                2,
-                6
-              ],
-
-              backgroundColor: [
-                '#ff5b61',
-                '#dce1e7'
-              ],
-
-              borderWidth: 0
-            }]
-
-          },
-
-          options: {
-
-            responsive: true,
-
-            maintainAspectRatio: false,
-
-            cutout: '65%',
-
-            plugins: {
-
-              legend: {
-                display: false
-              }
-
-            }
-
-          }
-
-        }
-      );
-
-
-      // ============================================
-      // INSPECTION TREND
-      // ============================================
-
-      new Chart(
-        document.getElementById('inspectionTrendChart'), {
-          type: 'bar',
-
-          data: {
-
-            labels: [
-              'Apr 2026',
-              'May 2026',
-              'Jun 2026',
-              'Jul 2026',
-              'Aug 2026',
-              'Sep 2026'
-            ],
-
-            datasets: [
-
-              {
-                type: 'bar',
-                label: 'Good',
-                data: [
-                  4,
-                  5,
-                  5,
-                  6,
-                  4,
-                  6
-                ],
-                backgroundColor: '#20b978',
-                borderRadius: 3
-              },
-
-              {
-                type: 'bar',
-                label: 'Not Good',
-                data: [
-                  2,
-                  3,
-                  2,
-                  3,
-                  2,
-                  3
-                ],
-                backgroundColor: '#ff5b61',
-                borderRadius: 3
-              },
-
-              {
-                type: 'line',
-                label: 'Total Inspected',
-                data: [
-                  6,
-                  8,
-                  7,
-                  8,
-                  6,
-                  8
-                ],
-
-                borderColor: '#f5a623',
-
-                backgroundColor: '#f5a623',
-
-                borderWidth: 2,
-
-                pointRadius: 4,
-
-                pointHoverRadius: 6,
-
-                tension: 0.3
-              }
-
-            ]
-
-          },
-
-          options: {
-
-            responsive: true,
-
-            maintainAspectRatio: false,
-
-            interaction: {
-              mode: 'index',
-              intersect: false
-            },
-
-            plugins: {
-
-              legend: {
-                position: 'bottom'
-              }
-
-            },
-
-            scales: {
-
-              x: {
-                grid: {
-                  display: false
-                }
-              },
-
-              y: {
-
-                beginAtZero: true,
-
-                ticks: {
-                  stepSize: 2
-                }
-
-              }
-
-            }
-
-          }
-
-        }
-      );
-    </script>
-
-        
     <?php include_once 'notification/session_timeout.php'; ?>
 </body>
 

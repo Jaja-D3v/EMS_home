@@ -5,11 +5,33 @@ require_once './backend/config/db.php';
 function getExtinguisher()
 {
     global $conn;
-    $sql = "SELECT extinguisher_id, extinguisher_code, type, location
+
+    $branch = $_SESSION['branch'] ?? null;
+
+    if (empty($branch)) {
+        return false;
+    }
+
+    $sql = "
+        SELECT
+            extinguisher_id,
+            extinguisher_code,
+            type,
+            location
         FROM fire_extinguishers_tbl
-        ORDER BY extinguisher_code ASC";
+        WHERE branch = ?
+        ORDER BY extinguisher_code ASC
+    ";
 
-    $result = $conn->query($sql);
+    $stmt = $conn->prepare($sql);
 
-    return $result;
+    if (!$stmt) {
+        return false;
+    }
+
+    $stmt->bind_param("s", $branch);
+
+    $stmt->execute();
+
+    return $stmt->get_result();
 }

@@ -1,79 +1,83 @@
+<?php
 
-
-<?php 
 include_once './backend/controller/FireExtinguisherController.php';
 
 $expiringCount = getAllExpiringCount();
 
+// Show only once per login session
+if (
+    !isset($_SESSION['expiration_notice_shown']) &&
+    $expiringCount > 0
+):
 
-// if ($expiringCount > 0): ?>
+    $_SESSION['expiration_notice_shown'] = true;
 
-      <!-- <div
-        id="expirationNotice"
-        class="alert alert-warning border-0 shadow-sm d-flex align-items-center gap-3"
-        role="alert"
-        style="
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translate(-50%, -120%);
-            opacity: 0;
-            z-index: 9999;
-            width: min(500px, calc(100% - 30px));
-            border-radius: 12px;
-        "
+?>
+
+<div
+    id="expirationNotice"
+    class="alert alert-warning border-0 shadow-sm d-flex align-items-center gap-3"
+    role="alert"
+    style="
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translate(-50%, -120%);
+        opacity: 0;
+        z-index: 9999;
+        width: min(500px, calc(100% - 30px));
+        border-radius: 12px;
+    "
+>
+    <div
+        class="d-flex align-items-center justify-content-center
+               bg-warning text-dark rounded-circle flex-shrink-0"
+        style="width: 42px; height: 42px;"
     >
-
-        <div
-            class="d-flex align-items-center justify-content-center
-                   bg-warning text-dark rounded-circle flex-shrink-0"
-            style="width: 42px; height: 42px;"
-        >
-            <i class="bi bi-exclamation-triangle-fill"></i>
-        </div>
-
-        <div class="flex-grow-1">
-
-            <div class="fw-semibold">
-                Expiration Notice
-            </div>
-
-            <div class="small">
-                <?= $expiringCount ?>
-                fire extinguisher(s) will expire within the next 2 months.
-            </div>
-
-        </div>
-
+        <i class="bi bi-exclamation-triangle-fill"></i>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
+    <div class="flex-grow-1">
+        <div class="fw-semibold">
+            Expiration Notice
+        </div>
 
-            const notice = document.getElementById('expirationNotice');
+        <div class="small">
+            <?= $expiringCount ?>
+            fire extinguisher(s) will expire within the next 2 months.
+        </div>
+    </div>
+</div>
 
-            // Show from top
-            setTimeout(() => {
-                notice.style.transition =
-                    'transform 0.5s ease, opacity 0.5s ease';
+<script>
+document.addEventListener('DOMContentLoaded', function () {
 
-                notice.style.transform =
-                    'translate(-50%, 0)';
+    const notice = document.getElementById('expirationNotice');
 
-                notice.style.opacity = '1';
-            }, 100);
+    if (!notice) return;
 
-            // Hide after 3 seconds
-            setTimeout(() => {
+    setTimeout(function () {
 
-                notice.style.transform =
-                    'translate(-50%, -120%)';
+        notice.style.transition =
+            'transform 0.5s ease, opacity 0.5s ease';
 
-                notice.style.opacity = '0';
+        notice.style.transform =
+            'translate(-50%, 0)';
 
-            }, 3000);
+        notice.style.opacity = '1';
 
-        });
-    </script> -->
+    }, 100);
 
-<?php //endif; ?>
+    setTimeout(function () {
+
+        notice.style.transform =
+            'translate(-50%, -120%)';
+
+        notice.style.opacity = '0';
+
+    }, 3000);
+
+});
+</script>
+
+<?php endif; ?>

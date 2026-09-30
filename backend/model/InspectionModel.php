@@ -80,33 +80,69 @@ function addInspectionChecklist(
 
     return mysqli_stmt_execute($stmt);
 }
+// Get current logged-in branch
+function getBranch()
+{
+    return $_SESSION['branch'] ?? null;
+}
 
-// get all list 
+
+// ============================================================
+// GET ALL LIST
+// ============================================================
+
 function getAllInspectionCheckList()
 {
     global $conn;
 
-    $sql = "SELECT *
-            FROM inspection_checklist_tbl
-            ORDER BY inspect_id DESC";
+    $branch = getBranch();
 
-    $result = mysqli_query($conn, $sql);
-
-    if (!$result) {
+    if (empty($branch)) {
         return [];
     }
 
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    $sql = "SELECT *
+            FROM inspection_checklist_tbl
+            WHERE LOWER(TRIM(branch)) = LOWER(TRIM(?))
+            ORDER BY inspect_id DESC";
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        return [];
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $branch);
+    mysqli_stmt_execute($stmt);
+
+    $result = mysqli_stmt_get_result($stmt);
+
+    $data = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    mysqli_stmt_close($stmt);
+
+    return $data;
 }
 
-// get all list by id
+
+// ============================================================
+// GET ALL LIST BY ID
+// ============================================================
+
 function getInspectionCheckListById($id)
 {
     global $conn;
 
+    $branch = getBranch();
+
+    if (empty($branch)) {
+        return null;
+    }
+
     $sql = "SELECT *
             FROM inspection_checklist_tbl
             WHERE inspect_id = ?
+              AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
             LIMIT 1";
 
     $stmt = mysqli_prepare($conn, $sql);
@@ -117,8 +153,9 @@ function getInspectionCheckListById($id)
 
     mysqli_stmt_bind_param(
         $stmt,
-        "i",
-        $id
+        "is",
+        $id,
+        $branch
     );
 
     mysqli_stmt_execute($stmt);
@@ -133,162 +170,42 @@ function getInspectionCheckListById($id)
 }
 
 
-// _________FOR PENDING APPROVAL______________________
+// ============================================================
+// FOR PENDING APPROVAL
+// ============================================================
 
 // Get pending approvals with pagination and exact date filter
 function getAllPendingApproval($limit = 10, $offset = 0, $date = null)
 {
     global $conn;
 
-    $sql = "SELECT *
-            FROM inspection_checklist_tbl
-            WHERE evaluation_status = 'Pending'";
+    $branch = getBranch();
 
-    // Exact date filter
-    if (!empty($date)) {
-        $sql .= " AND DATE(date_inspected) = '" . mysqli_real_escape_string($conn, $date) . "'";
+    if (empty($branch)) {
+        return false;
     }
-
-    $sql .= " ORDER BY inspect_id DESC
-              LIMIT $limit OFFSET $offset";
-
-    $result = mysqli_query($conn, $sql);
-
-    return $result;
-}
-
-// for count all the pending approval 
-function getPendingApprovalCount($date = null)
-{
-    global $conn;
-
-    $sql = "SELECT COUNT(*) AS total
-            FROM inspection_checklist_tbl
-            WHERE evaluation_status = 'Pending'";
-
-    if (!empty($date)) {
-        $safeDate = mysqli_real_escape_string($conn, $date);
-
-        $sql .= " AND DATE(date_inspected) = '$safeDate'";
-    }
-
-    $result = mysqli_query($conn, $sql);
-
-    $row = mysqli_fetch_assoc($result);
-
-    return (int) $row['total'];
-}
-
-
-// _________FOR APPROVED APPROVAL______________________
-
-// Get approved approvals with pagination and exact date filter
-function getAllApprovedApproval($limit = 10, $offset = 0, $date = null)
-{
-    global $conn;
 
     $sql = "SELECT *
             FROM inspection_checklist_tbl
-            WHERE evaluation_status = 'Approved'";
+            WHERE evaluation_status = 'Pending'
+              AND LOWER(TRIM(branch)) = LOWER(TRIM(?))";
+
+    $types = "s";
+    $params = [$branch];
 
     // Exact date filter
     if (!empty($date)) {
-        $sql .= " AND DATE(date_inspected) = '" . mysqli_real_escape_string($conn, $date) . "'";
+        $sql .= " AND DATE(date_inspected) = ?";
+        $types .= "s";
+        $params[] = $date;
     }
 
     $sql .= " ORDER BY inspect_id DESC
-              LIMIT $limit OFFSET $offset";
+              LIMIT ? OFFSET ?";
 
-    $result = mysqli_query($conn, $sql);
-
-    return $result;
-}
-
-
-
-// for count all the pending approval 
-function getApprovedApprovalCount($date = null)
-{
-    global $conn;
-
-    $sql = "SELECT COUNT(*) AS total
-            FROM inspection_checklist_tbl
-            WHERE evaluation_status = 'Approved'";
-
-    if (!empty($date)) {
-        $safeDate = mysqli_real_escape_string($conn, $date);
-
-        $sql .= " AND DATE(date_inspected) = '$safeDate'";
-    }
-
-    $result = mysqli_query($conn, $sql);
-
-    $row = mysqli_fetch_assoc($result);
-
-    return (int) $row['total'];
-}
-
-
-// _________FOR REJECTED APPROVAL______________________
-
-
-// Get rejected approvals with pagination and exact date filter
-function getAllRejectedApproval($limit = 10, $offset = 0, $date = null)
-{
-    global $conn;
-
-    $sql = "SELECT *
-            FROM inspection_checklist_tbl
-            WHERE evaluation_status = 'Rejected'";
-
-    // Exact date filter
-    if (!empty($date)) {
-        $sql .= " AND DATE(date_inspected) = '" . mysqli_real_escape_string($conn, $date) . "'";
-    }
-
-    $sql .= " ORDER BY inspect_id DESC
-              LIMIT $limit OFFSET $offset";
-
-    $result = mysqli_query($conn, $sql);
-
-    return $result;
-}
-
-
-
-// for count all the rejected approval 
-function getRejectedApprovalCount($date = null)
-{
-    global $conn;
-
-    $sql = "SELECT COUNT(*) AS total
-            FROM inspection_checklist_tbl
-            WHERE evaluation_status = 'Rejected'";
-
-    if (!empty($date)) {
-        $safeDate = mysqli_real_escape_string($conn, $date);
-
-        $sql .= " AND DATE(date_inspected) = '$safeDate'";
-    }
-
-    $result = mysqli_query($conn, $sql);
-
-    $row = mysqli_fetch_assoc($result);
-
-    return (int) $row['total'];
-}
-
-
-// _________FOR UPDATE EVALUATION STATUS______________________
-
-
-function updateEvaluationStatus($id, $evaluation_status)
-{
-    global $conn;
-
-    $sql = "UPDATE inspection_checklist_tbl
-            SET evaluation_status = ?
-            WHERE inspect_id = ?";
+    $types .= "ii";
+    $params[] = (int) $limit;
+    $params[] = (int) $offset;
 
     $stmt = mysqli_prepare($conn, $sql);
 
@@ -296,7 +213,375 @@ function updateEvaluationStatus($id, $evaluation_status)
         return false;
     }
 
-    mysqli_stmt_bind_param($stmt, "si", $evaluation_status, $id);
+    mysqli_stmt_bind_param($stmt, $types, ...$params);
+    mysqli_stmt_execute($stmt);
 
-    return mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    return $result;
+}
+
+
+// For count all pending approval
+function getPendingApprovalCount($date = null)
+{
+    global $conn;
+
+    $branch = getBranch();
+
+    if (empty($branch)) {
+        return 0;
+    }
+
+    $sql = "SELECT COUNT(*) AS total
+            FROM inspection_checklist_tbl
+            WHERE evaluation_status = 'Pending'
+              AND LOWER(TRIM(branch)) = LOWER(TRIM(?))";
+
+    $types = "s";
+    $params = [$branch];
+
+    if (!empty($date)) {
+        $sql .= " AND DATE(date_inspected) = ?";
+        $types .= "s";
+        $params[] = $date;
+    }
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        return 0;
+    }
+
+    mysqli_stmt_bind_param($stmt, $types, ...$params);
+    mysqli_stmt_execute($stmt);
+
+    $result = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($result);
+
+    mysqli_stmt_close($stmt);
+
+    return (int) ($row['total'] ?? 0);
+}
+
+
+// ============================================================
+// FOR APPROVED APPROVAL
+// ============================================================
+
+// Get approved approvals with pagination and exact date filter
+function getAllApprovedApproval($limit = 10, $offset = 0, $date = null)
+{
+    global $conn;
+
+    $branch = getBranch();
+
+    if (empty($branch)) {
+        return false;
+    }
+
+    $sql = "SELECT *
+            FROM inspection_checklist_tbl
+            WHERE evaluation_status = 'Approved'
+              AND LOWER(TRIM(branch)) = LOWER(TRIM(?))";
+
+    $types = "s";
+    $params = [$branch];
+
+    // Exact date filter
+    if (!empty($date)) {
+        $sql .= " AND DATE(date_inspected) = ?";
+        $types .= "s";
+        $params[] = $date;
+    }
+
+    $sql .= " ORDER BY inspect_id DESC
+              LIMIT ? OFFSET ?";
+
+    $types .= "ii";
+    $params[] = (int) $limit;
+    $params[] = (int) $offset;
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        return false;
+    }
+
+    mysqli_stmt_bind_param($stmt, $types, ...$params);
+    mysqli_stmt_execute($stmt);
+
+    $result = mysqli_stmt_get_result($stmt);
+
+    return $result;
+}
+
+
+// For count all approved approval
+function getApprovedApprovalCount($date = null)
+{
+    global $conn;
+
+    $branch = getBranch();
+
+    if (empty($branch)) {
+        return 0;
+    }
+
+    $sql = "SELECT COUNT(*) AS total
+            FROM inspection_checklist_tbl
+            WHERE evaluation_status = 'Approved'
+              AND LOWER(TRIM(branch)) = LOWER(TRIM(?))";
+
+    $types = "s";
+    $params = [$branch];
+
+    if (!empty($date)) {
+        $sql .= " AND DATE(date_inspected) = ?";
+        $types .= "s";
+        $params[] = $date;
+    }
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        return 0;
+    }
+
+    mysqli_stmt_bind_param($stmt, $types, ...$params);
+    mysqli_stmt_execute($stmt);
+
+    $result = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($result);
+
+    mysqli_stmt_close($stmt);
+
+    return (int) ($row['total'] ?? 0);
+}
+
+
+// ============================================================
+// FOR REJECTED APPROVAL
+// ============================================================
+
+// Get rejected approvals with pagination and exact date filter
+function getAllRejectedApproval($limit = 10, $offset = 0, $date = null)
+{
+    global $conn;
+
+    $branch = getBranch();
+
+    if (empty($branch)) {
+        return false;
+    }
+
+    $sql = "SELECT *
+            FROM inspection_checklist_tbl
+            WHERE evaluation_status = 'Rejected'
+              AND LOWER(TRIM(branch)) = LOWER(TRIM(?))";
+
+    $types = "s";
+    $params = [$branch];
+
+    // Exact date filter
+    if (!empty($date)) {
+        $sql .= " AND DATE(date_inspected) = ?";
+        $types .= "s";
+        $params[] = $date;
+    }
+
+    $sql .= " ORDER BY inspect_id DESC
+              LIMIT ? OFFSET ?";
+
+    $types .= "ii";
+    $params[] = (int) $limit;
+    $params[] = (int) $offset;
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        return false;
+    }
+
+    mysqli_stmt_bind_param($stmt, $types, ...$params);
+    mysqli_stmt_execute($stmt);
+
+    $result = mysqli_stmt_get_result($stmt);
+
+    return $result;
+}
+
+
+// For count all rejected approval
+function getRejectedApprovalCount($date = null)
+{
+    global $conn;
+
+    $branch = getBranch();
+
+    if (empty($branch)) {
+        return 0;
+    }
+
+    $sql = "SELECT COUNT(*) AS total
+            FROM inspection_checklist_tbl
+            WHERE evaluation_status = 'Rejected'
+              AND LOWER(TRIM(branch)) = LOWER(TRIM(?))";
+
+    $types = "s";
+    $params = [$branch];
+
+    if (!empty($date)) {
+        $sql .= " AND DATE(date_inspected) = ?";
+        $types .= "s";
+        $params[] = $date;
+    }
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        return 0;
+    }
+
+    mysqli_stmt_bind_param($stmt, $types, ...$params);
+    mysqli_stmt_execute($stmt);
+
+    $result = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($result);
+
+    mysqli_stmt_close($stmt);
+
+    return (int) ($row['total'] ?? 0);
+}
+
+
+// ============================================================
+// FOR UPDATE EVALUATION STATUS
+// ============================================================
+
+function updateEvaluationStatus($id, $evaluation_status)
+{
+    global $conn;
+
+    $branch = getBranch();
+
+    if (empty($branch)) {
+        return false;
+    }
+
+    $sql = "UPDATE inspection_checklist_tbl
+            SET evaluation_status = ?
+            WHERE inspect_id = ?
+              AND LOWER(TRIM(branch)) = LOWER(TRIM(?))";
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        return false;
+    }
+
+    mysqli_stmt_bind_param(
+        $stmt,
+        "sis",
+        $evaluation_status,
+        $id,
+        $branch
+    );
+
+    $result = mysqli_stmt_execute($stmt);
+
+    mysqli_stmt_close($stmt);
+
+    return $result;
+}
+
+
+function Approved_by($name, $id)
+{
+    global $conn;
+
+    $sql = "
+        UPDATE inspection_checklist_tbl
+        SET verified_and_approved_by = ?
+        WHERE inspect_id = ?
+    ";
+
+    $stmt = $conn->prepare($sql);
+
+    if (!$stmt) {
+        return false;
+    }
+
+    $stmt->bind_param("si", $name, $id);
+
+    return $stmt->execute();
+}
+
+
+function Rejected_by($name, $id)
+{
+    global $conn;
+
+    $sql = "
+        UPDATE inspection_checklist_tbl
+        SET rejected_by = ?
+        WHERE inspect_id = ?
+    ";
+
+    $stmt = $conn->prepare($sql);
+
+    if (!$stmt) {
+        return false;
+    }
+
+    $stmt->bind_param("si", $name, $id);
+
+    return $stmt->execute();
+}
+
+
+
+
+
+
+function updateCorrectiveAction(
+    $inspect_id,
+    $action_taken,
+    $target_date
+) {
+    global $conn;
+
+    $branch = getCurrentBranch();
+
+    if (empty($branch)) {
+        return false;
+    }
+
+    $sql = "UPDATE inspection_checklist_tbl
+            SET
+                action_taken = ?,
+                target_date_of_implementation = ?
+            WHERE inspect_id = ?
+              AND LOWER(TRIM(branch)) = LOWER(TRIM(?))";
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        return false;
+    }
+
+    mysqli_stmt_bind_param(
+        $stmt,
+        "ssis",
+        $action_taken,
+        $target_date,
+        $inspect_id,
+        $branch
+    );
+
+    $success = mysqli_stmt_execute($stmt);
+
+    mysqli_stmt_close($stmt);
+
+    return $success;
 }
