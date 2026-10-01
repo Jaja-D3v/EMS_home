@@ -62,10 +62,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $class = $_POST['class'] ?? null;
         $date_inspected = $_POST['date_inspected'] ?? null;
         $inspected_by = $_SESSION['EmployeeName'] ?? 'error while getting employee name';
-        $verified_and_approved_by = $_POST['verified_and_approved_by'] ?? null;
+        $verified_and_approved_by = 'N/A';
         $action_taken = 'N/A';
         $target_date_of_implementation = 'N/A';
         $remarks = $_POST['remarks'] ?? null;
+        $branch = $_POST['branch'] ?? null;
 
 
 
@@ -143,7 +144,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         /*
      * Save inspection checklist
      */
-        $branch = $_SESSION['branch'] ?? NULL;
         $success = addInspectionChecklist(
             $extinguisher_code,
             $location,

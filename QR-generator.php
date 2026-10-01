@@ -1,8 +1,10 @@
 <?php
 include 'backend/controller/QRCodeGeneratorController.php';
-require_once 'backend/authentication/SessionChecker.php'; 
+require_once 'backend/authentication/SessionChecker.php';
 
 $result = getAllFireExtinguishersCode();
+
+
 ?>
 
 
@@ -28,43 +30,24 @@ $result = getAllFireExtinguishersCode();
       <!-- Hero -->
       <div class="card border-0 shadow-sm text-white mb-1 mt-0 overflow-hidden "
         style="background: linear-gradient(135deg, #6d6d6d, #f4f3f3);">
-
         <div class="card-body p-4">
-
           <div class="row align-items-center g-3">
-
             <div class="col-auto">
               <div class="bg-secondary rounded-3 p-3 fs-3">
                 <i class="bi bi-qr-code-scan"></i>
               </div>
             </div>
-
             <div class="col">
               <h2 class="fw-bold mb-1">
                 Print QR Code
               </h2>
-
               <p class="mb-0 text-white-50">
                 Select fire extinguishers to print their QR codes.
               </p>
             </div>
-
             <div class="col-12 col-md-auto">
-
-              <!-- <button
-                type="button"
-                class="btn btn-warning fw-semibold px-4"
-                onclick="printSelected()">
-
-                <i class="bi bi-plus-lg me-1"></i>
-                Generate QR Codes
-
-              </button> -->
-
             </div>
-
           </div>
-
         </div>
       </div>
 
@@ -77,12 +60,8 @@ $result = getAllFireExtinguishersCode();
 
           <div class="row align-items-center g-3">
 
-            <div class="col-md">
-
-            </div>
-
-
-            <div class="col-md-auto">
+            <!-- Search -->
+            <div class="col-12 col-lg">
 
               <div class="input-group">
 
@@ -93,91 +72,133 @@ $result = getAllFireExtinguishersCode();
                 <input
                   type="text"
                   class="form-control"
-                  placeholder="Search..."
+                  placeholder="Search code or location..."
                   id="qrSearch">
-
-                <button
-                  class="btn btn-primary"
-                  type="button">
-                  Search
-                </button>
 
               </div>
 
-              <script>
-                // SEARCH BY CODE OR LOCATION
-                const qrSearch = document.getElementById('qrSearch');
-
-                if (qrSearch) {
-
-                  qrSearch.addEventListener('input', function() {
-
-                    const searchValue = this.value
-                      .trim()
-                      .toLowerCase();
-
-                    const tbody = document.querySelector(
-                      'table tbody'
-                    );
-
-                    const rows = tbody.querySelectorAll('tr');
-
-                    let hasResults = false;
-
-                    rows.forEach(row => {
-
-                      const checkbox = row.querySelector(
-                        '.extinguisher-checkbox'
-                      );
-
-                      // Skip empty/default rows
-                      if (!checkbox) {
-                        return;
-                      }
-
-                      // Extinguisher code
-                      const code = checkbox.value
-                        .toLowerCase();
-
-                      // Location
-                      const location = row.cells[3] ?
-                        row.cells[3].textContent
-                        .trim()
-                        .toLowerCase() :
-                        '';
-
-                      const match =
-                        code.includes(searchValue) ||
-                        location.includes(searchValue);
-
-                      if (match) {
-
-                        row.style.display = '';
-                        hasResults = true;
-
-                      } else {
-
-                        row.style.display = 'none';
-
-                      }
-
-                    });
+            </div>
 
 
-                    // NO RESULTS
-                    let noResultsRow = document.getElementById(
-                      'qrNoResults'
-                    );
+            <!-- Branch Filter - ADMIN ONLY -->
+            <?php if (strtolower(trim($_SESSION['Role'] ?? '')) === 'admin'): ?>
 
-                    if (!hasResults && searchValue !== '') {
+              <div class="col-12 col-md-auto">
 
-                      if (!noResultsRow) {
+                <select
+                  class="form-select"
+                  id="branchFilter"
+                  style="min-width: 190px;">
 
-                        noResultsRow = document.createElement('tr');
+                  <option value="all">All Branches</option>
 
-                        noResultsRow.id = 'qrNoResults';
+                  <?php
+                  $branches = getAllBranches();
 
-                        noResultsRow.innerHTML = `
+                  if ($branches && $branches->num_rows > 0):
+                    while ($branch = $branches->fetch_assoc()):
+                  ?>
+
+                      <option
+                        value="<?= htmlspecialchars($branch['branch']) ?>"
+                        <?= (
+                          ($_GET['branch'] ?? 'all') === $branch['branch']
+                        ) ? 'selected' : '' ?>>
+
+                        <?= htmlspecialchars($branch['branch']) ?>
+
+                      </option>
+
+                  <?php
+                    endwhile;
+                  endif;
+                  ?>
+
+                </select>
+
+              </div>
+
+            <?php endif; ?>
+
+          </div>
+
+        </div>
+
+
+        <script>
+          // SEARCH BY CODE OR LOCATION
+          const qrSearch = document.getElementById('qrSearch');
+
+          if (qrSearch) {
+
+            qrSearch.addEventListener('input', function() {
+
+              const searchValue = this.value
+                .trim()
+                .toLowerCase();
+
+              const tbody = document.querySelector(
+                'table tbody'
+              );
+
+              const rows = tbody.querySelectorAll('tr');
+
+              let hasResults = false;
+
+              rows.forEach(row => {
+
+                const checkbox = row.querySelector(
+                  '.extinguisher-checkbox'
+                );
+
+                // Skip empty/default rows
+                if (!checkbox) {
+                  return;
+                }
+
+                // Extinguisher code
+                const code = checkbox.value
+                  .toLowerCase();
+
+                // Location
+                const location = row.cells[3] ?
+                  row.cells[3].textContent
+                  .trim()
+                  .toLowerCase() :
+                  '';
+
+                const match =
+                  code.includes(searchValue) ||
+                  location.includes(searchValue);
+
+                if (match) {
+
+                  row.style.display = '';
+                  hasResults = true;
+
+                } else {
+
+                  row.style.display = 'none';
+
+                }
+
+              });
+
+
+              // NO RESULTS
+              let noResultsRow = document.getElementById(
+                'qrNoResults'
+              );
+
+              if (!hasResults && searchValue !== '') {
+
+                if (!noResultsRow) {
+
+                  noResultsRow = document.createElement('tr');
+
+                  noResultsRow.id = 'qrNoResults';
+
+                  noResultsRow.innerHTML = `
                     <td
                         colspan="5"
                         class="text-center py-5 text-muted">
@@ -196,28 +217,53 @@ $result = getAllFireExtinguishersCode();
                     </td>
                 `;
 
-                        tbody.appendChild(noResultsRow);
-
-                      }
-
-                    } else {
-
-                      if (noResultsRow) {
-                        noResultsRow.remove();
-                      }
-
-                    }
-
-                  });
+                  tbody.appendChild(noResultsRow);
 
                 }
-              </script>
 
-            </div>
+              } else {
 
-          </div>
+                if (noResultsRow) {
+                  noResultsRow.remove();
+                }
 
-        </div>
+              }
+
+            });
+
+          }
+        </script>
+        <script>
+          document.addEventListener('DOMContentLoaded', function() {
+
+            const branchFilter = document.getElementById('branchFilter');
+
+            if (!branchFilter) {
+              return;
+            }
+
+            branchFilter.addEventListener('change', function() {
+
+              const selectedBranch = this.value;
+
+              const url = new URL(window.location.href);
+
+              if (selectedBranch === 'all' || selectedBranch === '') {
+
+                url.searchParams.delete('branch');
+
+              } else {
+
+                url.searchParams.set('branch', selectedBranch);
+
+              }
+
+              window.location.href = url.toString();
+
+            });
+
+          });
+        </script>
 
         <!-- Table -->
         <div class="table-responsive">
@@ -240,17 +286,13 @@ $result = getAllFireExtinguishersCode();
 
                 </th>
 
-                <th>
-                  EXTINGUISHER CODE
-                </th>
+                <th> EXTINGUISHER CODE </th>
 
-                <th>
-                  TYPE
-                </th>
+                <th> TYPE </th>
 
-                <th>
-                  LOCATION
-                </th>
+                <th> LOCATION </th>
+
+                <th> BRANCH </th>
 
                 <th width="80"></th>
 
@@ -312,6 +354,15 @@ $result = getAllFireExtinguishersCode();
                       <i class="bi bi-geo-alt-fill text-secondary me-1"></i>
 
                       <?= htmlspecialchars($row['location']) ?>
+
+                    </td>
+
+                    <!-- Location -->
+                    <td>
+
+                      <i class="bi bi-geo-alt-fill text-secondary me-1"></i>
+
+                      <?= htmlspecialchars($row['branch']) ?>
 
                     </td>
 

@@ -21,7 +21,7 @@ function getAll($limit, $offset)
 {
     global $conn;
 
-    $branch = getCurrentBranch();
+    $branch = 'Laguna';
 
     if (empty($branch)) {
         return false;

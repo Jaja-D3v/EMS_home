@@ -207,7 +207,7 @@ require_once 'backend/authentication/SessionChecker.php';
                   if (qrCodeMessage) {
 
                     fetch(
-                        `backend/controller/FireExtinguisherController.php?action=getByCode&code=${encodeURIComponent(qrCodeMessage)}`
+                        `backend/controller/ScanQRCodeController.php?action=getFeInfo&code=${encodeURIComponent(qrCodeMessage)}`
                       )
                       .then(response => response.json())
                       .then(result => {
@@ -237,6 +237,7 @@ require_once 'backend/authentication/SessionChecker.php';
                         document.getElementById("inspectionCapacity").value = data.capacity;
                         document.getElementById("inspectionType").value = data.type;
                         document.getElementById("inspectionClass").value = data.class;
+                        document.getElementById("inspectionBranch").value = data.branch;
 
                         const inspectionModal = new bootstrap.Modal(
                           document.getElementById("inspectionChecklistModal")
@@ -290,41 +291,42 @@ require_once 'backend/authentication/SessionChecker.php';
             INSPECTION CHECKLIST MODAL
         ========================== -->
 
+      <!-- =========================================================
+     INSPECTION CHECKLIST MODAL
+========================================================= -->
+
       <div
         class="modal fade"
         id="inspectionChecklistModal"
         tabindex="-1"
         aria-labelledby="inspectionChecklistModalLabel"
         aria-hidden="true">
+
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
 
-          <div class="modal-content border-0 rounded-4 shadow">
+          <div class="modal-content inspection-modal">
 
-
-            <!-- =========================
-                        MODAL HEADER
-                    ========================== -->
-
-            <div class="modal-header px-4 py-3 border-bottom">
+            <!-- =================================================
+                 HEADER
+            ================================================== -->
+            <div class="modal-header inspection-header">
 
               <div class="d-flex align-items-center gap-3">
 
-                <div class="bg-danger-subtle text-danger rounded-3 p-3">
-                  <i class="bi bi-clipboard2-check fs-4"></i>
+                <div class="inspection-header-icon">
+                  <i class="bi bi-clipboard2-check"></i>
                 </div>
 
                 <div>
-
                   <h5
                     class="modal-title fw-bold mb-1"
                     id="inspectionChecklistModalLabel">
                     Inspection Checklist
                   </h5>
 
-                  <small class="text-body-secondary">
-                    Inspect the fire extinguisher and record the condition of each item.
-                  </small>
-
+                  <div class="inspection-subtitle">
+                    Fire extinguisher safety inspection
+                  </div>
                 </div>
 
               </div>
@@ -334,16 +336,16 @@ require_once 'backend/authentication/SessionChecker.php';
                 class="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
-                onclick="location.reload()"></button>
+                onclick="location.reload()">
+              </button>
 
             </div>
 
 
-            <!-- =========================
-                        MODAL BODY
-                    ========================== -->
-
-            <div class="modal-body px-4 py-4">
+            <!-- =================================================
+                 BODY
+            ================================================== -->
+            <div class="modal-body inspection-body">
 
               <form
                 id="inspectionChecklistForm"
@@ -356,56 +358,47 @@ require_once 'backend/authentication/SessionChecker.php';
                   value="inspect">
 
 
-                <!-- =========================
-                                SECTION 1
-                                BASIC INFORMATION
-                            ========================== -->
+                <!-- =================================================
+                         SECTION 1 — BASIC INFORMATION
+                    ================================================== -->
 
-                <div class="border rounded-4 p-4 mb-4">
+                <section class="inspection-section">
 
-                  <div class="d-flex align-items-center gap-3 mb-4">
+                  <div class="section-heading">
 
-                    <div
-                      class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
-                      style="width: 34px; height: 34px;">
+                    <div class="section-number">
                       1
                     </div>
 
                     <div>
-
-                      <h6 class="fw-bold mb-0">
+                      <h6 class="section-title">
                         Basic Information
                       </h6>
 
-                      <small class="text-body-secondary">
-                        Fire extinguisher details
-                      </small>
-
-
-
+                      <p class="section-description">
+                        Fire extinguisher details retrieved from the QR code.
+                      </p>
                     </div>
 
                   </div>
 
 
-                  <div class="row g-3">
+                  <div class="information-grid">
 
-
-                    <!-- FE CODE -->
-
-                    <div class="col-12 col-md-6 col-lg-4">
+                    <!-- FIRE EXTINGUISHER CODE -->
+                    <div class="info-field">
 
                       <label
                         for="extinguisherCode"
-                        class="form-label fw-semibold">
+                        class="info-label">
                         Fire Extinguisher Code
                       </label>
 
-                      <div class="input-group">
+                      <div class="modern-input">
 
-                        <span class="input-group-text bg-body">
+                        <div class="input-icon">
                           <i class="bi bi-qr-code"></i>
-                        </span>
+                        </div>
 
                         <input
                           type="text"
@@ -422,20 +415,19 @@ require_once 'backend/authentication/SessionChecker.php';
 
 
                     <!-- LOCATION -->
-
-                    <div class="col-12 col-md-6 col-lg-4">
+                    <div class="info-field">
 
                       <label
                         for="inspectionLocation"
-                        class="form-label fw-semibold">
+                        class="info-label">
                         Location
                       </label>
 
-                      <div class="input-group">
+                      <div class="modern-input">
 
-                        <span class="input-group-text bg-body">
+                        <div class="input-icon">
                           <i class="bi bi-geo-alt"></i>
-                        </span>
+                        </div>
 
                         <input
                           type="text"
@@ -451,669 +443,647 @@ require_once 'backend/authentication/SessionChecker.php';
                     </div>
 
 
-                    <!-- CAPACITY -->
-
-                    <div class="col-12 col-md-6 col-lg-4">
+                    <!-- BRANCH -->
+                    <div class="info-field">
 
                       <label
-                        for="inspectionCapacity"
-                        class="form-label fw-semibold">
-                        Capacity
+                        for="inspectionBranch"
+                        class="info-label">
+                        Branch
                       </label>
 
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="inspectionCapacity"
-                        name="capacity"
-                        placeholder="capacity"
-                        readonly
-                        required>
+                      <div class="modern-input">
 
+                        <div class="input-icon">
+                          <i class="bi bi-building"></i>
+                        </div>
 
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="inspectionBranch"
+                          name="branch"
+                          placeholder="Branch"
+                          readonly
+                          required>
+
+                      </div>
 
                     </div>
 
 
                     <!-- TYPE -->
-
-                    <div class="col-12 col-md-6 col-lg-4">
+                    <div class="info-field">
 
                       <label
                         for="inspectionType"
-                        class="form-label fw-semibold">
+                        class="info-label">
                         Type
                       </label>
 
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="inspectionType"
-                        name="type"
-                        placeholder="Type"
-                        readonly
-                        required>
+                      <div class="modern-input">
+
+                        <div class="input-icon">
+                          <i class="bi bi-fire"></i>
+                        </div>
+
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="inspectionType"
+                          name="type"
+                          placeholder="Type"
+                          readonly
+                          required>
+
+                      </div>
+
+                    </div>
+
+
+                    <!-- CAPACITY -->
+                    <div class="info-field">
+
+                      <label
+                        for="inspectionCapacity"
+                        class="info-label">
+                        Capacity
+                      </label>
+
+                      <div class="modern-input">
+
+                        <div class="input-icon">
+                          <i class="bi bi-speedometer2"></i>
+                        </div>
+
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="inspectionCapacity"
+                          name="capacity"
+                          placeholder="Capacity"
+                          readonly
+                          required>
+
+                      </div>
 
                     </div>
 
 
                     <!-- CLASS -->
-
-                    <div class="col-12 col-md-6 col-lg-4">
+                    <div class="info-field">
 
                       <label
                         for="inspectionClass"
-                        class="form-label fw-semibold">
+                        class="info-label">
                         Class
                       </label>
 
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="inspectionClass"
-                        name="class"
-                        placeholder="Class"
-                        readonly
-                        required>
+                      <div class="modern-input">
+
+                        <div class="input-icon">
+                          <i class="bi bi-shield-check"></i>
+                        </div>
+
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="inspectionClass"
+                          name="class"
+                          placeholder="Class"
+                          readonly
+                          required>
+
+                      </div>
+
                     </div>
 
 
                     <!-- DATE INSPECTED -->
-
-                    <div class="col-12 col-md-6 col-lg-4">
+                    <div class="info-field">
 
                       <label
                         for="dateInspected"
-                        class="form-label fw-semibold">
+                        class="info-label">
                         Date of Inspection
                       </label>
 
-                      <input
-                        type="date"
-                        class="form-control"
-                        id="dateInspected"
-                        name="date_inspected"
-                        readonly
-                        required>
+                      <div class="modern-input">
+
+                        <div class="input-icon">
+                          <i class="bi bi-calendar3"></i>
+                        </div>
+
+                        <input
+                          type="date"
+                          class="form-control"
+                          id="dateInspected"
+                          name="date_inspected"
+                          readonly
+                          required>
+
+                      </div>
 
                     </div>
 
 
                     <!-- INSPECTED BY -->
-
-                    <div class="col-12 col-md-6 col-lg-4">
+                    <div class="info-field">
 
                       <label
                         for="inspectedBy"
-                        class="form-label fw-semibold">
+                        class="info-label">
                         Inspected By
                       </label>
 
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="inspectedBy"
-                        name="inspected_by"
-                        value="<?= htmlspecialchars($_SESSION['EmployeeName']) ?>"
-                        readonly>
+                      <div class="modern-input">
+
+                        <div class="input-icon">
+                          <i class="bi bi-person"></i>
+                        </div>
+
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="inspectedBy"
+                          name="inspected_by"
+                          value="<?= htmlspecialchars($_SESSION['EmployeeName']) ?>"
+                          readonly>
+
+                      </div>
 
                     </div>
-
-
-                    <!-- VERIFIED AND APPROVED -->
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="verifiedAndApprovedBy"
-                      name="verified_and_approved_by"
-                      placeholder="Approver name"
-                      hidden
-                      value="N/A"
-                      required>
-
 
                   </div>
 
-                </div>
+                </section>
 
 
-                <!-- SECTION 2 -->
-                <!-- INSPECTION CHECKLIST -->
+                <!-- =================================================
+                         SECTION 2 — INSPECTION CHECKLIST
+                    ================================================== -->
 
-                <div class="border rounded-4 p-4 mb-4">
+                <section class="inspection-section">
 
-                  <!-- Header -->
-                  <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-3 mb-2">
+                  <div class="section-heading checklist-heading">
 
-                    <!-- Step Number + Title -->
-                    <div class="d-flex align-items-center gap-3 flex-grow-1">
-                      <div
-                        class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
-                        style="width: 34px; height: 34px;">
-                        2
-                      </div>
-
-                      <div>
-                        <h6 class="fw-bold mb-0">
-                          Inspection Checklist
-                        </h6>
-
-                        <small class="text-body-secondary">
-                          Check the box if the item is Not Good.
-                        </small>
-                      </div>
+                    <div class="section-number">
+                      2
                     </div>
 
-                    <!-- Status -->
-                    <div class="d-flex align-items-center gap-2 flex-shrink-0 ms-sm-auto">
-                      <span class="text-body-secondary small fw-semibold">
-                        Condition status:
+                    <div class="flex-grow-1">
+
+                      <h6 class="section-title">
+                        Inspection Checklist
+                      </h6>
+
+                      <p class="section-description">
+                        Verify each component of the fire extinguisher.
+                      </p>
+
+                    </div>
+
+
+                    <!-- STATUS -->
+                    <div class="condition-status">
+
+                      <span class="condition-label">
+                        Overall Condition
                       </span>
 
                       <span
                         id="inspectionConditionStatus"
-                        class="badge bg-success">
+                        class="condition-badge good">
+                        <i class="bi bi-check-circle-fill"></i>
                         Good
                       </span>
-                    </div>
-
-                  </div>
-
-
-                  <!-- NOTICE -->
-
-                  <div class="alert alert-warning border-0 rounded-3 mt-3 mb-4">
-
-                    <div class="d-flex gap-2">
-
-                      <i class="bi bi-info-circle-fill mt-1"></i>
-
-                      <div>
-
-                        <div class="fw-semibold">
-                          Inspection Reminder
-                        </div>
-
-                        <small>
-                          Leave the box unchecked if the item is Not Good.
-                          Check the box if the item is Good.
-                        </small>
-
-                      </div>
 
                     </div>
 
                   </div>
 
 
-                  <div class="row g-3">
-
-
-                    <!-- SEAL -->
-
-                    <div class="col-12 col-md-6 col-lg-4">
-
-                      <div class="border rounded-4 p-3 shadow-sm h-100">
-
-                        <div class="d-flex align-items-center gap-3">
-
-                          <div class="bg-primary-subtle text-primary rounded-3 p-2 flex-shrink-0">
-
-                            <i class="bi bi-tag fs-5"></i>
-
-                          </div>
-
-                          <div class="flex-grow-1">
-
-                            <div class="fw-semibold">
-                              Seal
-                            </div>
-
-                            <small class="text-body-secondary">
-                              Check if Good
-                            </small>
-
-                          </div>
-
-                          <div class="form-check">
-
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              id="sealCheck"
-                              name="is_seal_ok"
-                              value="1"
-                              style="width: 1.35rem; height: 1.35rem;">
-
-                          </div>
-
-                        </div>
-
-                      </div>
-
-                    </div>
-
-
-                    <!-- PIN -->
-
-                    <div class="col-12 col-md-6 col-lg-4">
-
-                      <div class="border rounded-4 p-3 shadow-sm h-100">
-
-                        <div class="d-flex align-items-center gap-3">
-
-                          <div class="bg-primary-subtle text-primary rounded-3 p-2 flex-shrink-0">
-
-                            <i class="bi bi-pin-angle fs-5"></i>
-
-                          </div>
-
-                          <div class="flex-grow-1">
-
-                            <div class="fw-semibold">
-                              Pin
-                            </div>
-
-                            <small class="text-body-secondary">
-                              Check if Good
-                            </small>
-
-                          </div>
-
-                          <div class="form-check">
-
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              id="pinCheck"
-                              name="is_pin_ok"
-                              value="1"
-                              style="width: 1.35rem; height: 1.35rem;">
-
-                          </div>
-
-                        </div>
-
-                      </div>
-
-                    </div>
-
-
-                    <!-- PRESSURE -->
-
-                    <div class="col-12 col-md-6 col-lg-4">
-
-                      <div class="border rounded-4 p-3 shadow-sm h-100">
-
-                        <div class="d-flex align-items-center gap-3">
-
-                          <div class="bg-danger-subtle text-danger rounded-3 p-2 flex-shrink-0">
-
-                            <i class="bi bi-speedometer2 fs-5"></i>
-
-                          </div>
-
-                          <div class="flex-grow-1">
-
-                            <div class="fw-semibold">
-                              Pressure
-                            </div>
-
-                            <small class="text-body-secondary">
-                              Check if Good
-                            </small>
-
-                          </div>
-
-                          <div class="form-check">
-
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              id="pressureCheck"
-                              name="is_pressure_ok"
-                              value="1"
-                              style="width: 1.35rem; height: 1.35rem;">
-
-                          </div>
-
-                        </div>
-
-                      </div>
-
-                    </div>
-
-
-                    <!-- HOSE -->
-
-                    <div class="col-12 col-md-6 col-lg-4">
-
-                      <div class="border rounded-4 p-3 shadow-sm h-100">
-
-                        <div class="d-flex align-items-center gap-3">
-
-                          <div class="bg-danger-subtle text-danger rounded-3 p-2 flex-shrink-0">
-
-                            <i class="bi bi-arrow-repeat fs-5"></i>
-
-                          </div>
-
-                          <div class="flex-grow-1">
-
-                            <div class="fw-semibold">
-                              Hose
-                            </div>
-
-                            <small class="text-body-secondary">
-                              Check if Good
-                            </small>
-
-                          </div>
-
-                          <div class="form-check">
-
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              id="hoseCheck"
-                              name="is_hose_ok"
-                              value="1"
-                              style="width: 1.35rem; height: 1.35rem;">
-
-                          </div>
-
-                        </div>
-
-                      </div>
-
-                    </div>
-
-
-                    <!-- NOZZLE -->
-
-                    <div class="col-12 col-md-6 col-lg-4">
-
-                      <div class="border rounded-4 p-3 shadow-sm h-100">
-
-                        <div class="d-flex align-items-center gap-3">
-
-                          <div class="bg-danger-subtle text-danger rounded-3 p-2 flex-shrink-0">
-
-                            <i class="bi bi-send fs-5"></i>
-
-                          </div>
-
-                          <div class="flex-grow-1">
-
-                            <div class="fw-semibold">
-                              Nozzle
-                            </div>
-
-                            <small class="text-body-secondary">
-                              Check if Good
-                            </small>
-
-                          </div>
-
-                          <div class="form-check">
-
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              id="nozzleCheck"
-                              name="is_nozzle_ok"
-                              value="1"
-                              style="width: 1.35rem; height: 1.35rem;">
-
-                          </div>
-
-                        </div>
-
-                      </div>
-
-                    </div>
-
-
-                    <!-- BELT -->
-
-                    <div class="col-12 col-md-6 col-lg-4">
-
-                      <div class="border rounded-4 p-3 shadow-sm h-100">
-
-                        <div class="d-flex align-items-center gap-3">
-
-                          <div class="bg-primary-subtle text-primary rounded-3 p-2 flex-shrink-0">
-
-                            <i class="bi bi-link-45deg fs-5"></i>
-
-                          </div>
-
-                          <div class="flex-grow-1">
-
-                            <div class="fw-semibold">
-                              Belt
-                            </div>
-
-                            <small class="text-body-secondary">
-                              Check if Good
-                            </small>
-
-                          </div>
-
-                          <div class="form-check">
-
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              id="beltCheck"
-                              name="is_belt_ok"
-                              value="1"
-                              style="width: 1.35rem; height: 1.35rem;">
-
-                          </div>
-
-                        </div>
-
-                      </div>
-
-                    </div>
-
-
-                    <!-- CYLINDER BODY -->
-
-                    <div class="col-12 col-md-6 col-lg-4">
-
-                      <div class="border rounded-4 p-3 shadow-sm h-100">
-
-                        <div class="d-flex align-items-center gap-3">
-
-                          <div class="bg-danger-subtle text-danger rounded-3 p-2 flex-shrink-0">
-
-                            <i class="bi bi-fire fs-5"></i>
-
-                          </div>
-
-                          <div class="flex-grow-1">
-
-                            <div class="fw-semibold">
-                              Cylinder Body
-                            </div>
-
-                            <small class="text-body-secondary">
-                              Check if Good
-                            </small>
-
-                          </div>
-
-                          <div class="form-check">
-
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              id="cylinderBodyCheck"
-                              name="is_cylinder_body_ok"
-                              value="1"
-                              style="width: 1.35rem; height: 1.35rem;">
-
-                          </div>
-
-                        </div>
-                      </div>
-                    </div>
-
-
-                    <!-- DEMARCATION LINE -->
-
-                    <div class="col-12 col-md-6 col-lg-4">
-                      <div class="border rounded-4 p-3 shadow-sm h-100">
-                        <div class="d-flex align-items-center gap-3">
-                          <div class="bg-primary-subtle text-primary rounded-3 p-2 flex-shrink-0">
-
-                            <i class="bi bi-sign-turn-slight-right fs-5"></i>
-
-                          </div>
-
-                          <div class="flex-grow-1">
-
-                            <div class="fw-semibold">
-                              Demarcation Line
-                            </div>
-
-                            <small class="text-body-secondary">
-                              Check if Good
-                            </small>
-
-                          </div>
-
-                          <div class="form-check">
-
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              id="demarcationLineCheck"
-                              name="is_demarcation_line_ok"
-                              value="1"
-                              style="width: 1.35rem; height: 1.35rem;">
-
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-
-                    <!-- SIGNAGE -->
-
-                    <div class="col-12 col-md-6 col-lg-4">
-
-                      <div class="border rounded-4 p-3 shadow-sm h-100">
-
-                        <div class="d-flex align-items-center gap-3">
-
-                          <div class="bg-success-subtle text-success rounded-3 p-2 flex-shrink-0">
-
-                            <i class="bi bi-signpost-2 fs-5"></i>
-
-                          </div>
-
-                          <div class="flex-grow-1">
-
-                            <div class="fw-semibold">
-                              Signage
-                            </div>
-
-                            <small class="text-body-secondary">
-                              Check if Good
-                            </small>
-
-                          </div>
-
-                          <div class="form-check">
-
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              id="signageCheck"
-                              name="is_signage_ok"
-                              value="1"
-                              style="width: 1.35rem; height: 1.35rem;">
-
-                          </div>
-
-                        </div>
-
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-
-                <!-- =========================
-                         SECTION 3
-                         REMARKS
-                    ========================== -->
-
-                <div class="border rounded-4 p-4">
-
-                  <div class="d-flex align-items-center gap-3 mb-4">
-
-                    <div
-                      class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
-                      style="width: 34px; height: 34px;">
-                      3
+                  <!-- INFO NOTICE -->
+                  <div class="inspection-notice">
+
+                    <div class="notice-icon">
+                      <i class="bi bi-info-circle-fill"></i>
                     </div>
 
                     <div>
 
-                      <h6 class="fw-bold mb-0">
-                        Remarks / Comments
-                      </h6>
+                      <div class="notice-title">
+                        Inspection Guide
+                      </div>
 
-                      <small class="text-body-secondary">
-                        Add additional inspection notes
-                      </small>
+                      <div class="notice-text">
+                        Check the box when the component is in good condition.
+                      </div>
 
                     </div>
 
                   </div>
 
+
+                  <!-- CHECKLIST -->
+                  <div class="checklist-grid">
+
+
+                    <!-- =================================================
+                                 SEAL
+                            ================================================== -->
+
+                    <div class="check-item">
+
+                      <div class="check-item-icon">
+                        <i class="bi bi-tag"></i>
+                      </div>
+
+                      <div class="check-item-content">
+
+                        <div class="check-item-title">
+                          Seal
+                        </div>
+
+                        <div class="check-item-description">
+                          Safety seal condition
+                        </div>
+
+                      </div>
+
+                      <div class="form-check check-control">
+
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          id="sealCheck"
+                          name="is_seal_ok"
+                          value="1">
+
+                      </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                                 PIN
+                            ================================================== -->
+
+                    <div class="check-item">
+
+                      <div class="check-item-icon">
+                        <i class="bi bi-pin-angle"></i>
+                      </div>
+
+                      <div class="check-item-content">
+
+                        <div class="check-item-title">
+                          Pin
+                        </div>
+
+                        <div class="check-item-description">
+                          Safety pin condition
+                        </div>
+
+                      </div>
+
+                      <div class="form-check check-control">
+
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          id="pinCheck"
+                          name="is_pin_ok"
+                          value="1">
+
+                      </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                                 PRESSURE
+                            ================================================== -->
+
+                    <div class="check-item">
+
+                      <div class="check-item-icon">
+                        <i class="bi bi-speedometer2"></i>
+                      </div>
+
+                      <div class="check-item-content">
+
+                        <div class="check-item-title">
+                          Pressure
+                        </div>
+
+                        <div class="check-item-description">
+                          Pressure gauge condition
+                        </div>
+
+                      </div>
+
+                      <div class="form-check check-control">
+
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          id="pressureCheck"
+                          name="is_pressure_ok"
+                          value="1">
+
+                      </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                                 HOSE
+                            ================================================== -->
+
+                    <div class="check-item">
+
+                      <div class="check-item-icon">
+                        <i class="bi bi-arrow-repeat"></i>
+                      </div>
+
+                      <div class="check-item-content">
+
+                        <div class="check-item-title">
+                          Hose
+                        </div>
+
+                        <div class="check-item-description">
+                          Hose condition
+                        </div>
+
+                      </div>
+
+                      <div class="form-check check-control">
+
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          id="hoseCheck"
+                          name="is_hose_ok"
+                          value="1">
+
+                      </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                                 NOZZLE
+                            ================================================== -->
+
+                    <div class="check-item">
+
+                      <div class="check-item-icon">
+                        <i class="bi bi-send"></i>
+                      </div>
+
+                      <div class="check-item-content">
+
+                        <div class="check-item-title">
+                          Nozzle
+                        </div>
+
+                        <div class="check-item-description">
+                          Nozzle condition
+                        </div>
+
+                      </div>
+
+                      <div class="form-check check-control">
+
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          id="nozzleCheck"
+                          name="is_nozzle_ok"
+                          value="1">
+
+                      </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                                 BELT
+                            ================================================== -->
+
+                    <div class="check-item">
+
+                      <div class="check-item-icon">
+                        <i class="bi bi-link-45deg"></i>
+                      </div>
+
+                      <div class="check-item-content">
+
+                        <div class="check-item-title">
+                          Belt
+                        </div>
+
+                        <div class="check-item-description">
+                          Belt condition
+                        </div>
+
+                      </div>
+
+                      <div class="form-check check-control">
+
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          id="beltCheck"
+                          name="is_belt_ok"
+                          value="1">
+
+                      </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                                 CYLINDER BODY
+                            ================================================== -->
+
+                    <div class="check-item">
+
+                      <div class="check-item-icon">
+                        <i class="bi bi-fire"></i>
+                      </div>
+
+                      <div class="check-item-content">
+
+                        <div class="check-item-title">
+                          Cylinder Body
+                        </div>
+
+                        <div class="check-item-description">
+                          Cylinder body condition
+                        </div>
+
+                      </div>
+
+                      <div class="form-check check-control">
+
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          id="cylinderBodyCheck"
+                          name="is_cylinder_body_ok"
+                          value="1">
+
+                      </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                                 DEMARCATION LINE
+                            ================================================== -->
+
+                    <div class="check-item">
+
+                      <div class="check-item-icon">
+                        <i class="bi bi-sign-turn-slight-right"></i>
+                      </div>
+
+                      <div class="check-item-content">
+
+                        <div class="check-item-title">
+                          Demarcation Line
+                        </div>
+
+                        <div class="check-item-description">
+                          Visibility and condition
+                        </div>
+
+                      </div>
+
+                      <div class="form-check check-control">
+
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          id="demarcationLineCheck"
+                          name="is_demarcation_line_ok"
+                          value="1">
+
+                      </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                                 SIGNAGE
+                            ================================================== -->
+
+                    <div class="check-item">
+
+                      <div class="check-item-icon">
+                        <i class="bi bi-signpost-2"></i>
+                      </div>
+
+                      <div class="check-item-content">
+
+                        <div class="check-item-title">
+                          Signage
+                        </div>
+
+                        <div class="check-item-description">
+                          Safety signage condition
+                        </div>
+
+                      </div>
+
+                      <div class="form-check check-control">
+
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          id="signageCheck"
+                          name="is_signage_ok"
+                          value="1">
+
+                      </div>
+
+                    </div>
+
+
+                  </div>
+
+                </section>
+
+
+                <!-- =================================================
+                         SECTION 3 — REMARKS
+                    ================================================== -->
+
+                <section class="inspection-section remarks-section">
+
+                  <div class="section-heading">
+
+                    <div class="section-number">
+                      3
+                    </div>
+
+                    <div>
+                      <h6 class="section-title">
+                        Remarks / Comments
+                      </h6>
+
+                      <p class="section-description">
+                        Add additional notes about the inspection.
+                      </p>
+                    </div>
+
+                  </div>
+
+
                   <textarea
-                    class="form-control"
+                    class="form-control remarks-input"
                     id="remarks"
                     name="remarks"
                     rows="4"
-                    placeholder="Put N/A if not applicable"></textarea>
+                    placeholder="Enter inspection remarks or type N/A if not applicable"></textarea>
 
-                </div>
+                </section>
+
 
               </form>
 
             </div>
 
 
-            <!-- =========================
-                 MODAL FOOTER
-            ========================== -->
+            <!-- =================================================
+                 FOOTER
+            ================================================== -->
 
-            <div class="modal-footer px-4 py-3 border-top">
+            <div class="modal-footer inspection-footer">
 
               <button
                 type="button"
-                class="btn btn-light border px-4"
+                class="btn btn-light cancel-btn"
                 data-bs-dismiss="modal"
                 onclick="location.reload()">
+
                 <i class="bi bi-x-lg me-1"></i>
                 Cancel
+
               </button>
+
 
               <button
                 type="submit"
                 form="inspectionChecklistForm"
-                class="btn btn-primary px-4">
-                <i class="bi bi-check-lg me-1"></i>
+                class="btn save-btn">
+
+                <i class="bi bi-check2-circle me-1"></i>
                 Save Inspection
+
               </button>
 
             </div>
@@ -1121,7 +1091,576 @@ require_once 'backend/authentication/SessionChecker.php';
           </div>
 
         </div>
+
       </div>
+
+
+      <!-- =========================================================
+     INSPECTION MODAL DESIGN
+========================================================= -->
+
+      <style>
+        /* =========================================================
+       MODAL
+    ========================================================= */
+
+        .inspection-modal {
+          border: 0;
+          border-radius: 22px;
+          overflow: hidden;
+          background: #f8fafc;
+          box-shadow: 0 25px 70px rgba(15, 23, 42, 0.18);
+        }
+
+
+        /* =========================================================
+       HEADER
+    ========================================================= */
+
+        .inspection-header {
+          background: #ffffff;
+          border-bottom: 1px solid #e8edf3;
+          padding: 20px 26px;
+        }
+
+        .inspection-header-icon {
+          width: 48px;
+          height: 48px;
+          border-radius: 14px;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          background: #eef5ff;
+          color: #2563eb;
+
+          font-size: 22px;
+        }
+
+        .inspection-subtitle {
+          color: #64748b;
+          font-size: 13px;
+        }
+
+
+        /* =========================================================
+       BODY
+    ========================================================= */
+
+        .inspection-body {
+          padding: 24px;
+          background: #f8fafc;
+        }
+
+
+        /* =========================================================
+       SECTION
+    ========================================================= */
+
+        .inspection-section {
+          background: #ffffff;
+          border: 1px solid #e7edf4;
+          border-radius: 18px;
+          padding: 22px;
+          margin-bottom: 18px;
+        }
+
+        .inspection-section:last-child {
+          margin-bottom: 0;
+        }
+
+
+        /* =========================================================
+       SECTION HEADING
+    ========================================================= */
+
+        .section-heading {
+          display: flex;
+          align-items: center;
+          gap: 13px;
+          margin-bottom: 22px;
+        }
+
+        .section-number {
+          width: 34px;
+          height: 34px;
+          flex-shrink: 0;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          border-radius: 10px;
+
+          background: #2563eb;
+          color: #ffffff;
+
+          font-size: 14px;
+          font-weight: 700;
+        }
+
+        .section-title {
+          margin: 0;
+          color: #172033;
+          font-size: 15px;
+          font-weight: 700;
+        }
+
+        .section-description {
+          margin: 3px 0 0;
+          color: #7b8798;
+          font-size: 12px;
+        }
+
+
+        /* =========================================================
+       INFORMATION GRID
+    ========================================================= */
+
+        .information-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 18px;
+        }
+
+        .info-field {
+          min-width: 0;
+        }
+
+        .info-label {
+          display: block;
+          margin-bottom: 7px;
+
+          color: #475569;
+          font-size: 12px;
+          font-weight: 600;
+        }
+
+
+        /* =========================================================
+       MODERN INPUT
+    ========================================================= */
+
+        .modern-input {
+          display: flex;
+          align-items: center;
+
+          min-height: 45px;
+
+          border: 1px solid #dfe6ee;
+          border-radius: 11px;
+
+          background: #f8fafc;
+
+          overflow: hidden;
+
+          transition: all .2s ease;
+        }
+
+        .modern-input:focus-within {
+          border-color: #93b4ef;
+          box-shadow: 0 0 0 3px rgba(37, 99, 235, .08);
+        }
+
+        .input-icon {
+          width: 43px;
+          height: 45px;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          color: #64748b;
+          font-size: 16px;
+
+          flex-shrink: 0;
+        }
+
+        .modern-input .form-control {
+          height: 45px;
+
+          border: 0 !important;
+          outline: 0 !important;
+          box-shadow: none !important;
+
+          background: transparent;
+
+          color: #263449;
+          font-size: 13px;
+          font-weight: 500;
+
+          padding-left: 0;
+        }
+
+        .modern-input .form-control::placeholder {
+          color: #a0aabb;
+        }
+
+
+        /* =========================================================
+       CHECKLIST HEADER
+    ========================================================= */
+
+        .checklist-heading {
+          margin-bottom: 18px;
+        }
+
+        .condition-status {
+          margin-left: auto;
+
+          display: flex;
+          align-items: center;
+          gap: 9px;
+        }
+
+        .condition-label {
+          color: #7b8798;
+          font-size: 12px;
+          font-weight: 600;
+        }
+
+        .condition-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+
+          padding: 7px 11px;
+
+          border-radius: 999px;
+
+          font-size: 12px;
+          font-weight: 700;
+        }
+
+        .condition-badge.good {
+          background: #ecfdf3;
+          color: #15803d;
+        }
+
+
+        /* =========================================================
+       NOTICE
+    ========================================================= */
+
+        .inspection-notice {
+          display: flex;
+          align-items: flex-start;
+          gap: 11px;
+
+          padding: 13px 15px;
+
+          margin-bottom: 18px;
+
+          border: 1px solid #dbeafe;
+          border-radius: 12px;
+
+          background: #f8fbff;
+        }
+
+        .notice-icon {
+          color: #2563eb;
+          font-size: 17px;
+          line-height: 1.2;
+        }
+
+        .notice-title {
+          color: #334155;
+          font-size: 12px;
+          font-weight: 700;
+          margin-bottom: 2px;
+        }
+
+        .notice-text {
+          color: #64748b;
+          font-size: 12px;
+        }
+
+
+        /* =========================================================
+       CHECKLIST GRID
+    ========================================================= */
+
+        .checklist-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 12px;
+        }
+
+        .check-item {
+          min-height: 76px;
+
+          display: flex;
+          align-items: center;
+          gap: 12px;
+
+          padding: 13px 14px;
+
+          border: 1px solid #e5eaf0;
+          border-radius: 14px;
+
+          background: #ffffff;
+
+          transition: all .2s ease;
+        }
+
+        .check-item:hover {
+          border-color: #cbd8ea;
+          background: #fbfdff;
+          transform: translateY(-1px);
+        }
+
+        .check-item-icon {
+          width: 39px;
+          height: 39px;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          flex-shrink: 0;
+
+          border-radius: 11px;
+
+          background: #eff6ff;
+          color: #2563eb;
+
+          font-size: 17px;
+        }
+
+        .check-item-content {
+          min-width: 0;
+          flex: 1;
+        }
+
+        .check-item-title {
+          color: #263449;
+          font-size: 13px;
+          font-weight: 700;
+          margin-bottom: 2px;
+        }
+
+        .check-item-description {
+          color: #94a0b2;
+          font-size: 11px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+
+        /* =========================================================
+       CHECKBOX
+    ========================================================= */
+
+        .check-control {
+          margin: 0;
+          padding: 0;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .check-control .form-check-input {
+          width: 21px;
+          height: 21px;
+
+          margin: 0;
+
+          border: 2px solid #cbd5e1;
+
+          cursor: pointer;
+
+          box-shadow: none;
+        }
+
+        .check-control .form-check-input:focus {
+          box-shadow: 0 0 0 3px rgba(37, 99, 235, .10);
+        }
+
+        .check-control .form-check-input:checked {
+          background-color: #2563eb;
+          border-color: #2563eb;
+        }
+
+
+        /* =========================================================
+       REMARKS
+    ========================================================= */
+
+        .remarks-section {
+          margin-bottom: 0;
+        }
+
+        .remarks-input {
+          resize: vertical;
+
+          border: 1px solid #dfe6ee;
+          border-radius: 12px;
+
+          background: #f8fafc;
+
+          padding: 13px 15px;
+
+          font-size: 13px;
+
+          box-shadow: none !important;
+        }
+
+        .remarks-input:focus {
+          border-color: #93b4ef;
+          background: #ffffff;
+
+          box-shadow: 0 0 0 3px rgba(37, 99, 235, .08) !important;
+        }
+
+        .remarks-input::placeholder {
+          color: #a0aabb;
+        }
+
+
+        /* =========================================================
+       FOOTER
+    ========================================================= */
+
+        .inspection-footer {
+          padding: 16px 24px;
+
+          background: #ffffff;
+          border-top: 1px solid #e8edf3;
+
+          gap: 10px;
+        }
+
+        .cancel-btn {
+          min-height: 42px;
+
+          border-radius: 10px;
+
+          padding: 0 18px;
+
+          color: #475569;
+          font-size: 13px;
+          font-weight: 600;
+        }
+
+        .save-btn {
+          min-height: 42px;
+
+          border: 0;
+          border-radius: 10px;
+
+          padding: 0 20px;
+
+          background: #2563eb;
+          color: #ffffff;
+
+          font-size: 13px;
+          font-weight: 600;
+
+          box-shadow: 0 5px 12px rgba(37, 99, 235, .18);
+
+          transition: all .2s ease;
+        }
+
+        .save-btn:hover {
+          background: #1d4ed8;
+          color: #ffffff;
+          transform: translateY(-1px);
+        }
+
+
+        /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+        @media (max-width: 991px) {
+
+          .information-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+
+          .checklist-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+
+        }
+
+
+        @media (max-width: 767px) {
+
+          .inspection-header {
+            padding: 16px 18px;
+          }
+
+          .inspection-body {
+            padding: 14px;
+          }
+
+          .inspection-section {
+            padding: 17px;
+            border-radius: 15px;
+          }
+
+          .information-grid {
+            grid-template-columns: 1fr;
+            gap: 14px;
+          }
+
+          .checklist-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .checklist-heading {
+            align-items: flex-start;
+          }
+
+          .condition-status {
+            margin-left: 0;
+            margin-top: 4px;
+          }
+
+          .inspection-footer {
+            padding: 13px 14px;
+          }
+
+          .cancel-btn,
+          .save-btn {
+            flex: 1;
+          }
+
+        }
+
+
+        @media (max-width: 480px) {
+
+          .inspection-header-icon {
+            width: 42px;
+            height: 42px;
+            font-size: 19px;
+          }
+
+          .inspection-header .modal-title {
+            font-size: 15px;
+          }
+
+          .inspection-subtitle {
+            font-size: 11px;
+          }
+
+          .section-heading {
+            align-items: flex-start;
+          }
+
+          .condition-status {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+          }
+
+        }
+      </style>
 
 
     </div>

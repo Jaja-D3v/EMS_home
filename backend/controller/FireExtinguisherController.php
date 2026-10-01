@@ -213,37 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         ]);
 
         exit;
-    } else if ($action === 'getByCode') {
-
-        header('Content-Type: application/json');
-
-        $code = trim($_GET['code'] ?? '');
-
-        if ($code === '') {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Invalid QR code.'
-            ]);
-            exit;
-        }
-
-        $data = getFireExtinguisherByCode($code);
-
-        if (!$data) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Fire extinguisher not found.'
-            ]);
-            exit;
-        }
-
-        echo json_encode([
-            'success' => true,
-            'data' => $data
-        ]);
-
-        exit;
-    }
+    } 
 }
 
 // add new extinguisher

@@ -1,74 +1,180 @@
 <?php
 
 require_once __DIR__ . '/../model/DashboardModel.php';
+
+/*
+|--------------------------------------------------------------------------
+| DASHBOARD CONTROLLER
+|--------------------------------------------------------------------------
+| Admin:
+|   - Default = ALL branches
+|   - Can filter by selected branch
+|
+| Non-Admin:
+|   - Always uses $_SESSION['Branch']
+|   - Ignores any branch filter from request
+|--------------------------------------------------------------------------
+*/
+
+
+/**
+ * Get selected branch based on user role.
+ *
+ * Admin:
+ *     ?branch=Calamba  -> Calamba
+ *     ?branch=all      -> All
+ *     no branch        -> All
+ *
+ * Non-admin:
+ *     Always -> $_SESSION['Branch']
+ */
+function getDashboardBranch()
+{
+    if (($_SESSION['Role'] ?? '') === 'Admin') {
+
+        // Admin can use branch filter
+        $branch = $_GET['branch'] ?? 'all';
+
+        // Empty filter = all
+        if ($branch === null || trim($branch) === '') {
+            return 'all';
+        }
+
+        return trim($branch);
+    }
+
+    // Non-admin can ONLY access their own branch
+    return $_SESSION['Branch'] ?? null;
+}
+
+
+/**
+ * INSPECTION - LAST 3 MONTHS
+ */
 function getInspectLastThreeMonths()
 {
-    $branch = $_SESSION['branch'] ?? null;
+    $branch = getDashboardBranch();
+
     return getInspectionLastThreeMonths($branch);
 }
 
+
+/**
+ * FIRE EXTINGUISHER TYPE COUNTS
+ */
 function getFireExtinguisherTypeCountsController()
 {
-    $branch = $_SESSION['branch'] ?? null;
+    $branch = getDashboardBranch();
+
     return getFireExtinguisherTypeCounts($branch);
 }
 
+
+/**
+ * EXPIRING FIRE EXTINGUISHERS
+ */
 function getAllExpiringCount()
 {
-    $branch = $_SESSION['branch'] ?? null;
+    $branch = getDashboardBranch();
+
     return getExpiringFireExtinguishers($branch);
 }
 
+
+/**
+ * NOT GOOD CONDITION
+ */
 function getNotGoodCondition()
 {
-    $branch = $_SESSION['branch'] ?? null;
+    $branch = getDashboardBranch();
+
     return getAllNotGoodCondition($branch);
 }
 
+
+/**
+ * GOOD CONDITION
+ */
 function getGoodCondition()
 {
-    $branch = $_SESSION['branch'] ?? null;
+    $branch = getDashboardBranch();
+
     return getAllGoodCondition($branch);
 }
 
+
+/**
+ * INSTALLED - NOT GOOD
+ */
 function getTotalNotGoodInstalledFireExtinguishers()
 {
-    $branch = $_SESSION['branch'] ?? null;
+    $branch = getDashboardBranch();
+
     return getNotGoodInstalledFireExtinguishersCount($branch);
 }
 
+
+/**
+ * INSTALLED - GOOD
+ */
 function getTotalGoodInstalledFireExtinguishers()
 {
-    $branch = $_SESSION['branch'] ?? null;
+    $branch = getDashboardBranch();
+
     return getGoodInstalledFireExtinguishersCount($branch);
 }
 
+
+/**
+ * TOTAL INSTALLED
+ */
 function getTotalInstalledFireExtinguishers()
 {
-    $branch = $_SESSION['branch'] ?? null;
+    $branch = getDashboardBranch();
+
     return getInstalledFireExtinguishersCount($branch);
 }
 
+
+/**
+ * SPARE - NOT GOOD
+ */
 function getTotalNotGoodSpareFireExtinguishers()
 {
-    $branch = $_SESSION['branch'] ?? null;
+    $branch = getDashboardBranch();
+
     return getNotGoodSpareFireExtinguishersCount($branch);
 }
 
+
+/**
+ * SPARE - GOOD
+ */
 function getTotalGoodSpareFireExtinguishers()
 {
-    $branch = $_SESSION['branch'] ?? null;
+    $branch = getDashboardBranch();
+
     return getGoodSpareFireExtinguishersCount($branch);
 }
 
+
+/**
+ * TOTAL SPARE
+ */
 function getTotalSpareFireExtinguishers()
 {
-    $branch = $_SESSION['branch'] ?? null;
+    $branch = getDashboardBranch();
+
     return getSpareFireExtinguishersCount($branch);
 }
 
+
+/**
+ * TOTAL FIRE EXTINGUISHERS
+ */
 function getTotalFireExtinguishersDashboard()
 {
-    $branch = $_SESSION['branch'] ?? null;
+    $branch = getDashboardBranch();
+
     return getAllFireExtinguishersCount($branch);
 }

@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../config/db.php';
 
 
+
 // ============================================================
 // INSPECTION - LAST 3 MONTHS
 // ============================================================
@@ -53,6 +54,8 @@ function getInspectionLastThreeMonths($branch)
         $data[] = $row;
     }
 
+    $stmt->close();
+
     return $data;
 }
 
@@ -70,9 +73,23 @@ function getExpiringFireExtinguishers($branch)
         FROM fire_extinguishers_tbl
         WHERE archived = 0
           AND expiration_date >= CURDATE()
-          AND expiration_date <= DATE_ADD(CURDATE(), INTERVAL 2 MONTH)
-          AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
+          AND expiration_date <= DATE_ADD(
+              CURDATE(),
+              INTERVAL 2 MONTH
+          )
     ";
+
+    /*
+    |--------------------------------------------------------------------------
+    | Only filter branch if NOT admin/all
+    |--------------------------------------------------------------------------
+    */
+
+    if ($branch !== 'all') {
+        $sql .= "
+            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
+        ";
+    }
 
     $stmt = $conn->prepare($sql);
 
@@ -80,10 +97,14 @@ function getExpiringFireExtinguishers($branch)
         return 0;
     }
 
-    $stmt->bind_param("s", $branch);
+    if ($branch !== 'all') {
+        $stmt->bind_param("s", $branch);
+    }
+
     $stmt->execute();
 
     $result = $stmt->get_result();
+
     $row = $result->fetch_assoc();
 
     $stmt->close();
@@ -121,9 +142,12 @@ function getAllNotGoodCondition($branch)
     $stmt->execute();
 
     $result = $stmt->get_result();
+
     $row = $result->fetch_assoc();
 
-    return (int) $row['total'];
+    $stmt->close();
+
+    return (int) ($row['total'] ?? 0);
 }
 
 
@@ -141,7 +165,7 @@ function getFireExtinguisherTypeCounts($branch)
             COUNT(*) AS total
         FROM fire_extinguishers_tbl f
         WHERE f.type IS NOT NULL
-        AND TRIM(f.type) != ''
+          AND TRIM(f.type) != ''
     ";
 
     if ($branch !== 'all') {
@@ -171,6 +195,8 @@ function getFireExtinguisherTypeCounts($branch)
         $data[] = $row;
     }
 
+    $stmt->close();
+
     return $data;
 }
 
@@ -187,7 +213,7 @@ function getAllBranches()
         SELECT DISTINCT branch
         FROM fire_extinguishers_tbl
         WHERE branch IS NOT NULL
-        AND TRIM(branch) != ''
+          AND TRIM(branch) != ''
         ORDER BY branch ASC
     ";
 
@@ -196,9 +222,11 @@ function getAllBranches()
     $data = [];
 
     if ($result) {
+
         while ($row = $result->fetch_assoc()) {
             $data[] = $row;
         }
+
     }
 
     return $data;
@@ -234,9 +262,12 @@ function getAllGoodCondition($branch)
     $stmt->execute();
 
     $result = $stmt->get_result();
+
     $row = $result->fetch_assoc();
 
-    return (int) $row['total'];
+    $stmt->close();
+
+    return (int) ($row['total'] ?? 0);
 }
 
 
@@ -252,7 +283,7 @@ function getNotGoodInstalledFireExtinguishersCount($branch)
         SELECT COUNT(*) AS total
         FROM fire_extinguishers_tbl
         WHERE location != 'Storage'
-        AND condition_status = 'Not Good'
+          AND condition_status = 'Not Good'
     ";
 
     if ($branch !== 'all') {
@@ -270,9 +301,12 @@ function getNotGoodInstalledFireExtinguishersCount($branch)
     $stmt->execute();
 
     $result = $stmt->get_result();
+
     $row = $result->fetch_assoc();
 
-    return (int) $row['total'];
+    $stmt->close();
+
+    return (int) ($row['total'] ?? 0);
 }
 
 
@@ -288,7 +322,7 @@ function getGoodInstalledFireExtinguishersCount($branch)
         SELECT COUNT(*) AS total
         FROM fire_extinguishers_tbl
         WHERE location != 'Storage'
-        AND condition_status = 'Good'
+          AND condition_status = 'Good'
     ";
 
     if ($branch !== 'all') {
@@ -306,9 +340,12 @@ function getGoodInstalledFireExtinguishersCount($branch)
     $stmt->execute();
 
     $result = $stmt->get_result();
+
     $row = $result->fetch_assoc();
 
-    return (int) $row['total'];
+    $stmt->close();
+
+    return (int) ($row['total'] ?? 0);
 }
 
 
@@ -341,9 +378,12 @@ function getInstalledFireExtinguishersCount($branch)
     $stmt->execute();
 
     $result = $stmt->get_result();
+
     $row = $result->fetch_assoc();
 
-    return (int) $row['total'];
+    $stmt->close();
+
+    return (int) ($row['total'] ?? 0);
 }
 
 
@@ -359,7 +399,7 @@ function getNotGoodSpareFireExtinguishersCount($branch)
         SELECT COUNT(*) AS total
         FROM fire_extinguishers_tbl
         WHERE location = 'Storage'
-        AND condition_status = 'Not Good'
+          AND condition_status = 'Not Good'
     ";
 
     if ($branch !== 'all') {
@@ -377,9 +417,12 @@ function getNotGoodSpareFireExtinguishersCount($branch)
     $stmt->execute();
 
     $result = $stmt->get_result();
+
     $row = $result->fetch_assoc();
 
-    return (int) $row['total'];
+    $stmt->close();
+
+    return (int) ($row['total'] ?? 0);
 }
 
 
@@ -395,7 +438,7 @@ function getGoodSpareFireExtinguishersCount($branch)
         SELECT COUNT(*) AS total
         FROM fire_extinguishers_tbl
         WHERE location = 'Storage'
-        AND condition_status = 'Good'
+          AND condition_status = 'Good'
     ";
 
     if ($branch !== 'all') {
@@ -413,9 +456,12 @@ function getGoodSpareFireExtinguishersCount($branch)
     $stmt->execute();
 
     $result = $stmt->get_result();
+
     $row = $result->fetch_assoc();
 
-    return (int) $row['total'];
+    $stmt->close();
+
+    return (int) ($row['total'] ?? 0);
 }
 
 
@@ -431,7 +477,7 @@ function getSpareFireExtinguishersCount($branch)
         SELECT COUNT(*) AS total
         FROM fire_extinguishers_tbl
         WHERE location = 'Storage'
-        AND archived = 0
+          AND archived = 0
     ";
 
     if ($branch !== 'all') {
@@ -449,9 +495,12 @@ function getSpareFireExtinguishersCount($branch)
     $stmt->execute();
 
     $result = $stmt->get_result();
+
     $row = $result->fetch_assoc();
 
-    return (int) $row['total'];
+    $stmt->close();
+
+    return (int) ($row['total'] ?? 0);
 }
 
 
@@ -484,7 +533,10 @@ function getAllFireExtinguishersCount($branch)
     $stmt->execute();
 
     $result = $stmt->get_result();
+
     $row = $result->fetch_assoc();
 
-    return (int) $row['total'];
+    $stmt->close();
+
+    return (int) ($row['total'] ?? 0);
 }

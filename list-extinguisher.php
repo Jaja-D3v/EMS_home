@@ -486,17 +486,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                     <!-- Status -->
                     <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-sm-end gap-2">
-
-                      <!-- Condition -->
-                      <span
-                        class="badge <?= $badgeClass ?> rounded-pill px-3 py-2 text-nowrap">
-
-                        <i class="bi <?= $statusIcon ?> me-1"></i>
-
-                        <?= htmlspecialchars($condition) ?>
-
-                      </span>
-
                       <!-- Expiration -->
                       <?php if ($expirationBadge !== null): ?>
 
@@ -510,6 +499,18 @@ require_once 'backend/authentication/SessionChecker.php';
                         </span>
 
                       <?php endif; ?>
+
+                      <!-- Condition -->
+                      <span
+                        class="badge <?= $badgeClass ?> rounded-pill px-3 py-2 text-nowrap">
+
+                        <i class="bi <?= $statusIcon ?> me-1"></i>
+
+                        <?= htmlspecialchars($condition) ?>
+
+                      </span>
+
+
 
                     </div>
 
