@@ -1,5 +1,5 @@
-<?php 
-require_once 'backend/authentication/SessionChecker.php'; 
+<?php
+require_once 'backend/authentication/SessionChecker.php';
 require_once 'backend/controller/FireExtinguisherController.php';
 
 ?>
@@ -68,13 +68,12 @@ require_once 'backend/controller/FireExtinguisherController.php';
 
                         <!-- Title & Description -->
                         <div class="col">
-
                             <h2 class="fw-bold mb-1">
-                                Fire Extinguishers Expiring Soon
+                                Deleted Fire Extinguishers
                             </h2>
 
                             <p class="mb-0 text-white-50">
-                                View fire extinguishers expiring within the next two months.
+                                View deleted fire extinguishers.
                             </p>
 
                         </div>

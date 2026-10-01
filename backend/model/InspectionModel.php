@@ -86,7 +86,7 @@ function addInspectionChecklist(
 // Get current logged-in branch
 function getBranch()
 {
-    return $_SESSION['branch'] ?? null;
+    return $_SESSION['Branch'] ?? null;
 }
 
 

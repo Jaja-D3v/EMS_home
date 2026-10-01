@@ -2,14 +2,9 @@
 
 require_once __DIR__ . '/../config/db.php';
 
-
-// =====================================================
-// GET SESSION BRANCH
-// =====================================================
-
 function getCurrentBranch()
 {
-    return $_SESSION['branch'] ?? null;
+    return $_SESSION['Branch'] ?? null;
 }
 
 
@@ -21,50 +16,163 @@ function getAll($limit, $offset)
 {
     global $conn;
 
-    $branch = 'Laguna';
+    $role = strtolower(trim($_SESSION['Role'] ?? ''));
 
-    if (empty($branch)) {
-        return false;
+    /*
+    |--------------------------------------------------------------------------
+    | ADMIN
+    |--------------------------------------------------------------------------
+    | Admin:
+    | - All branches by default
+    | - Optional ?branch=Laguna
+    |--------------------------------------------------------------------------
+    */
+
+    if ($role === 'admin') {
+
+        $branch = $_GET['branch'] ?? 'all';
+
+        if (
+            $branch === null ||
+            trim($branch) === ''
+        ) {
+            $branch = 'all';
+        }
+
+        $sql = "SELECT
+                    extinguisher_id,
+                    extinguisher_code,
+                    type,
+                    capacity,
+                    location,
+                    manufactured_date,
+                    class,
+                    placement,
+                    condition_status,
+                    remarks,
+                    expiration_date,
+                    created_at,
+                    updated_at,
+                    refilled_date,
+                    branch
+                FROM fire_extinguishers_tbl
+                WHERE archived = 0";
+
+        /*
+        | ADMIN BRANCH FILTER
+        */
+
+        if ($branch !== 'all') {
+
+            $sql .= "
+                AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
+            ";
+
+            $sql .= "
+                ORDER BY extinguisher_id DESC
+                LIMIT ? OFFSET ?
+            ";
+
+            $stmt = mysqli_prepare($conn, $sql);
+
+            if (!$stmt) {
+                return false;
+            }
+
+            mysqli_stmt_bind_param(
+                $stmt,
+                "sii",
+                $branch,
+                $limit,
+                $offset
+            );
+
+        } else {
+
+            $sql .= "
+                ORDER BY extinguisher_id DESC
+                LIMIT ? OFFSET ?
+            ";
+
+            $stmt = mysqli_prepare($conn, $sql);
+
+            if (!$stmt) {
+                return false;
+            }
+
+            mysqli_stmt_bind_param(
+                $stmt,
+                "ii",
+                $limit,
+                $offset
+            );
+        }
+
+        mysqli_stmt_execute($stmt);
+
+        return mysqli_stmt_get_result($stmt);
     }
 
-    $sql = "SELECT
-                extinguisher_id,
-                extinguisher_code,
-                type,
-                capacity,
-                location,
-                manufactured_date,
-                class,
-                placement,
-                condition_status,
-                remarks,
-                expiration_date,
-                created_at,
-                updated_at,
-                branch
-            FROM fire_extinguishers_tbl
-            WHERE archived = 0
-              AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
-            ORDER BY extinguisher_id DESC
-            LIMIT ? OFFSET ?";
 
-    $stmt = mysqli_prepare($conn, $sql);
+    /*
+    |--------------------------------------------------------------------------
+    | INSPECTOR
+    |--------------------------------------------------------------------------
+    | Inspector can ONLY see their own branch.
+    |--------------------------------------------------------------------------
+    */
 
-    if (!$stmt) {
-        return false;
+    if ($role === 'inspector') {
+
+        $branch = getCurrentBranch();
+
+        if (empty($branch)) {
+            return false;
+        }
+
+        $sql = "SELECT
+                    extinguisher_id,
+                    extinguisher_code,
+                    type,
+                    capacity,
+                    location,
+                    manufactured_date,
+                    class,
+                    placement,
+                    condition_status,
+                    remarks,
+                    expiration_date,
+                    created_at,
+                    updated_at,
+                    refilled_date,
+                    branch
+                FROM fire_extinguishers_tbl
+                WHERE archived = 0
+                  AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
+                ORDER BY extinguisher_id DESC
+                LIMIT ? OFFSET ?";
+
+        $stmt = mysqli_prepare($conn, $sql);
+
+        if (!$stmt) {
+            return false;
+        }
+
+        mysqli_stmt_bind_param(
+            $stmt,
+            "sii",
+            $branch,
+            $limit,
+            $offset
+        );
+
+        mysqli_stmt_execute($stmt);
+
+        return mysqli_stmt_get_result($stmt);
     }
 
-    mysqli_stmt_bind_param(
-        $stmt,
-        "sii",
-        $branch,
-        $limit,
-        $offset
-    );
 
-    mysqli_stmt_execute($stmt);
-
-    return mysqli_stmt_get_result($stmt);
+    return false;
 }
 
 
@@ -76,11 +184,7 @@ function getById($id)
 {
     global $conn;
 
-    $branch = getCurrentBranch();
-
-    if (empty($branch)) {
-        return false;
-    }
+    $role = strtolower(trim($_SESSION['Role'] ?? ''));
 
     $sql = "SELECT
                 extinguisher_id,
@@ -96,10 +200,60 @@ function getById($id)
                 expiration_date,
                 created_at,
                 updated_at,
-                refilled_date
+                refilled_date,
+                branch
             FROM fire_extinguishers_tbl
             WHERE extinguisher_id = ?
-              AND LOWER(TRIM(branch)) = LOWER(TRIM(?))";
+              AND archived = 0";
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | INSPECTOR
+    |--------------------------------------------------------------------------
+    | Inspector can only view own branch.
+    |--------------------------------------------------------------------------
+    */
+
+    if ($role === 'inspector') {
+
+        $branch = getCurrentBranch();
+
+        if (empty($branch)) {
+            return false;
+        }
+
+        $sql .= "
+            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
+        ";
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ADMIN
+    |--------------------------------------------------------------------------
+    | Admin can view any branch.
+    |--------------------------------------------------------------------------
+    */
+
+    elseif ($role === 'admin') {
+
+        // No branch restriction.
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | INVALID ROLE
+    |--------------------------------------------------------------------------
+    */
+
+    else {
+
+        return false;
+    }
+
 
     $stmt = mysqli_prepare($conn, $sql);
 
@@ -107,12 +261,25 @@ function getById($id)
         return false;
     }
 
-    mysqli_stmt_bind_param(
-        $stmt,
-        "is",
-        $id,
-        $branch
-    );
+
+    if ($role === 'inspector') {
+
+        mysqli_stmt_bind_param(
+            $stmt,
+            "is",
+            $id,
+            $branch
+        );
+
+    } else {
+
+        mysqli_stmt_bind_param(
+            $stmt,
+            "i",
+            $id
+        );
+    }
+
 
     mysqli_stmt_execute($stmt);
 
@@ -130,21 +297,27 @@ function getByCode($code)
 {
     global $conn;
 
-    $branch = 'KPLaguna';
-
-    if (empty($branch)) {
-        return false;
-    }
+    /*
+    |--------------------------------------------------------------------------
+    | QR CODE LOOKUP
+    |--------------------------------------------------------------------------
+    | Do NOT restrict by branch.
+    |
+    | QR code is the unique identifier of the extinguisher.
+    |--------------------------------------------------------------------------
+    */
 
     $sql = "SELECT
                 extinguisher_code,
                 location,
                 type,
                 capacity,
-                class
+                class,
+                branch
             FROM fire_extinguishers_tbl
             WHERE extinguisher_code = ?
-              AND LOWER(TRIM(branch)) = LOWER(TRIM(?))";
+              AND archived = 0
+            LIMIT 1";
 
     $stmt = mysqli_prepare($conn, $sql);
 
@@ -154,9 +327,8 @@ function getByCode($code)
 
     mysqli_stmt_bind_param(
         $stmt,
-        "ss",
-        $code,
-        $branch
+        "s",
+        $code
     );
 
     mysqli_stmt_execute($stmt);
@@ -259,9 +431,14 @@ function updateFireExtinguisherModel(
 ) {
     global $conn;
 
+    $role = strtolower(trim($_SESSION['Role'] ?? ''));
     $branch = getCurrentBranch();
 
-    if (empty($branch)) {
+    if ($role === 'inspector' && empty($branch)) {
+        return false;
+    }
+
+    if ($role !== 'admin' && $role !== 'inspector') {
         return false;
     }
 
@@ -278,7 +455,14 @@ function updateFireExtinguisherModel(
                 remarks = ?,
                 expiration_date = ?
             WHERE extinguisher_id = ?
-              AND LOWER(TRIM(branch)) = LOWER(TRIM(?))";
+              AND archived = 0";
+
+    if ($role === 'inspector') {
+
+        $sql .= "
+            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
+        ";
+    }
 
     $stmt = mysqli_prepare($conn, $sql);
 
@@ -286,22 +470,43 @@ function updateFireExtinguisherModel(
         return false;
     }
 
-    mysqli_stmt_bind_param(
-        $stmt,
-        "ssssssssssis",
-        $code,
-        $type,
-        $capacity,
-        $location,
-        $manufactured_date,
-        $class,
-        $placement,
-        $condition_status,
-        $remarks,
-        $expiration_date,
-        $id,
-        $branch
-    );
+    if ($role === 'inspector') {
+
+        mysqli_stmt_bind_param(
+            $stmt,
+            "ssssssssssis",
+            $code,
+            $type,
+            $capacity,
+            $location,
+            $manufactured_date,
+            $class,
+            $placement,
+            $condition_status,
+            $remarks,
+            $expiration_date,
+            $id,
+            $branch
+        );
+
+    } else {
+
+        mysqli_stmt_bind_param(
+            $stmt,
+            "ssssssssssi",
+            $code,
+            $type,
+            $capacity,
+            $location,
+            $manufactured_date,
+            $class,
+            $placement,
+            $condition_status,
+            $remarks,
+            $expiration_date,
+            $id
+        );
+    }
 
     $result = mysqli_stmt_execute($stmt);
 
@@ -319,16 +524,27 @@ function deleteFireExtinguisherById($id)
 {
     global $conn;
 
+    $role = strtolower(trim($_SESSION['Role'] ?? ''));
     $branch = getCurrentBranch();
 
-    if (empty($branch)) {
+    if ($role === 'inspector' && empty($branch)) {
+        return false;
+    }
+
+    if ($role !== 'admin' && $role !== 'inspector') {
         return false;
     }
 
     $sql = "UPDATE fire_extinguishers_tbl
             SET archived = 1
-            WHERE extinguisher_id = ?
-              AND LOWER(TRIM(branch)) = LOWER(TRIM(?))";
+            WHERE extinguisher_id = ?";
+
+    if ($role === 'inspector') {
+
+        $sql .= "
+            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
+        ";
+    }
 
     $stmt = mysqli_prepare($conn, $sql);
 
@@ -336,12 +552,23 @@ function deleteFireExtinguisherById($id)
         return false;
     }
 
-    mysqli_stmt_bind_param(
-        $stmt,
-        "is",
-        $id,
-        $branch
-    );
+    if ($role === 'inspector') {
+
+        mysqli_stmt_bind_param(
+            $stmt,
+            "is",
+            $id,
+            $branch
+        );
+
+    } else {
+
+        mysqli_stmt_bind_param(
+            $stmt,
+            "i",
+            $id
+        );
+    }
 
     $result = mysqli_stmt_execute($stmt);
 
@@ -369,7 +596,10 @@ function getNextFireExtinguisherCodeModel()
             FROM fire_extinguishers_tbl
             WHERE extinguisher_code LIKE 'FE-%'
               AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
-            ORDER BY CAST(SUBSTRING(extinguisher_code, 4) AS UNSIGNED) DESC
+            ORDER BY CAST(
+                SUBSTRING(extinguisher_code, 4)
+                AS UNSIGNED
+            ) DESC
             LIMIT 1";
 
     $stmt = mysqli_prepare($conn, $sql);
@@ -396,7 +626,10 @@ function getNextFireExtinguisherCodeModel()
         return 'FE-001';
     }
 
-    $lastNumber = (int) substr($row['extinguisher_code'], 3);
+    $lastNumber = (int) substr(
+        $row['extinguisher_code'],
+        3
+    );
 
     return 'FE-' . str_pad(
         $lastNumber + 1,
@@ -424,9 +657,14 @@ function update_refilled($ext_code)
     $sql = "UPDATE fire_extinguishers_tbl
             SET
                 refilled_date = CURDATE(),
-                expiration_date = DATE_ADD(CURDATE(), INTERVAL 3 YEAR)
+                expiration_date =
+                    DATE_ADD(
+                        CURDATE(),
+                        INTERVAL 3 YEAR
+                    )
             WHERE extinguisher_code = ?
-              AND LOWER(TRIM(branch)) = LOWER(TRIM(?))";
+              AND LOWER(TRIM(branch)) =
+                  LOWER(TRIM(?))";
 
     $stmt = mysqli_prepare($conn, $sql);
 
@@ -466,7 +704,8 @@ function update_remarks($remarks, $ext_code)
     $sql = "UPDATE fire_extinguishers_tbl
             SET remarks = ?
             WHERE extinguisher_code = ?
-              AND LOWER(TRIM(branch)) = LOWER(TRIM(?))";
+              AND LOWER(TRIM(branch)) =
+                  LOWER(TRIM(?))";
 
     $stmt = mysqli_prepare($conn, $sql);
 
@@ -507,7 +746,8 @@ function update_status($status, $ext_code)
     $sql = "UPDATE fire_extinguishers_tbl
             SET condition_status = ?
             WHERE extinguisher_code = ?
-              AND LOWER(TRIM(branch)) = LOWER(TRIM(?))";
+              AND LOWER(TRIM(branch)) =
+                  LOWER(TRIM(?))";
 
     $stmt = mysqli_prepare($conn, $sql);
 
@@ -548,7 +788,8 @@ function getTotalFireExtinguishersModel()
     $sql = "SELECT COUNT(*) AS total
             FROM fire_extinguishers_tbl
             WHERE archived = 0
-              AND LOWER(TRIM(branch)) = LOWER(TRIM(?))";
+              AND LOWER(TRIM(branch)) =
+                  LOWER(TRIM(?))";
 
     $stmt = mysqli_prepare($conn, $sql);
 
@@ -570,14 +811,28 @@ function getTotalFireExtinguishersModel()
 
     mysqli_stmt_close($stmt);
 
-    return (int) $row['total'];
+    return (int) ($row['total'] ?? 0);
 }
+
+
+// =====================================================
+// GET ALL DELETED FIRE EXTINGUISHERS
+// =====================================================
 
 function getAllDeletedFireExtinguishers($limit, $offset)
 {
     global $conn;
 
-    $branch = $_SESSION['branch'] ?? null;
+    /*
+    |--------------------------------------------------------------------------
+    | IMPORTANT
+    |--------------------------------------------------------------------------
+    | Existing code used $_SESSION['branch'].
+    | Your login session uses $_SESSION['Branch'].
+    |--------------------------------------------------------------------------
+    */
+
+    $branch = $_SESSION['Branch'] ?? null;
 
     if (empty($branch)) {
         return [];
@@ -586,7 +841,8 @@ function getAllDeletedFireExtinguishers($limit, $offset)
     $sql = "SELECT *
             FROM fire_extinguishers_tbl
             WHERE archived = 1
-              AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
+              AND LOWER(TRIM(branch)) =
+                  LOWER(TRIM(?))
             ORDER BY extinguisher_id DESC
             LIMIT ? OFFSET ?";
 
@@ -608,7 +864,10 @@ function getAllDeletedFireExtinguishers($limit, $offset)
 
     $result = mysqli_stmt_get_result($stmt);
 
-    $data = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    $data = mysqli_fetch_all(
+        $result,
+        MYSQLI_ASSOC
+    );
 
     mysqli_stmt_close($stmt);
 
@@ -616,11 +875,15 @@ function getAllDeletedFireExtinguishers($limit, $offset)
 }
 
 
+// =====================================================
+// GET TOTAL DELETED FIRE EXTINGUISHERS
+// =====================================================
+
 function getAllDeletedFireExtinguishersModel()
 {
     global $conn;
 
-    $branch = $_SESSION['branch'] ?? null;
+    $branch = $_SESSION['Branch'] ?? null;
 
     if (empty($branch)) {
         return 0;
@@ -629,7 +892,8 @@ function getAllDeletedFireExtinguishersModel()
     $sql = "SELECT COUNT(*) AS total
             FROM fire_extinguishers_tbl
             WHERE archived = 1
-              AND LOWER(TRIM(branch)) = LOWER(TRIM(?))";
+              AND LOWER(TRIM(branch)) =
+                  LOWER(TRIM(?))";
 
     $stmt = mysqli_prepare($conn, $sql);
 
