@@ -6,7 +6,7 @@ function getExtinguisher()
 {
     global $conn;
 
-    $branch = $_SESSION['branch'] ?? null;
+    $branch = 'KPLaguna';
 
     if (empty($branch)) {
         return false;

@@ -1,424 +1,1395 @@
 <?php
-require_once __DIR__ . '../../backend/controller/BranchController.php';
 
 
-$branches = getAllBranchesController();
+
+session_start();
+
+
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+header("Expires: 0");
+
+
+if (isset($_SESSION['id'])) {
+
+  header("Location: ../dashboard.php");
+  exit();
+}
+
 ?>
 
-
 <!DOCTYPE html>
-<!--
-* CoreUI - Free Bootstrap Admin Template
-* @version v5.5.0
-* @link https://coreui.io/product/free-bootstrap-admin-template/
-* Copyright (c) 2026 creativeLabs Łukasz Holeczek
-* Licensed under MIT (https://github.com/coreui/coreui-free-bootstrap-admin-template/blob/main/LICENSE)
--->
-
 <html lang="en">
 
 <head>
-  <base href="./../">
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-  <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
-  <meta name="author" content="Łukasz Holeczek">
-  <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
-  <title>Log In | EMS Equipment Management System</title>
-  <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon/android-icon-192x192.png">
-  <link rel="manifest" href="assets/favicon/manifest.json">
-  <meta name="msapplication-TileColor" content="#ffffff">
-  <meta name="msapplication-TileImage" content="assets/favicon/ms-icon-144x144.png">
-  <meta name="theme-color" content="#ffffff">
-  <!-- Vendors styles-->
-  <link rel="stylesheet" href="vendors/simplebar/css/simplebar.css">
-  <link rel="stylesheet" href="css/vendors/simplebar.css">
-  <!-- Main styles for this application-->
-  <link href="css/style.css" rel="stylesheet">
-  <!-- We use those styles to show code examples, you should remove them in your application.-->
-  <script src="js/config.js"></script>
-  <script src="js/color-modes.js"></script>
-  <!-- added by jajadev -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+  <title>IMS Safety Management System</title>
+
+
+  <!-- Bootstrap -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet">
+
+
+  <!-- Bootstrap Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+
+  <style>
+    /* =====================================================
+           GLOBAL
+        ====================================================== */
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+
+      margin: 0;
+
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+
+      background:
+        linear-gradient(90deg,
+          rgba(3, 12, 24, .25),
+          rgba(3, 12, 24, .05)),
+        url("../assets/img/ims-safety-bg.png") center center / cover no-repeat fixed;
+
+      color: #fff;
+
+      transition:
+        background .35s ease,
+        color .35s ease;
+    }
+
+
+
+    .page-overlay {
+
+      position: fixed;
+
+      inset: 0;
+
+      z-index: 0;
+
+      background:
+        linear-gradient(90deg,
+          rgba(3, 10, 20, .48) 0%,
+          rgba(3, 10, 20, .12) 55%,
+          rgba(3, 10, 20, .18) 100%);
+    }
+
+
+    /* =====================================================
+           WRAPPER
+        ====================================================== */
+
+    .login-wrapper {
+
+      position: relative;
+
+      z-index: 1;
+
+      min-height: 100vh;
+    }
+
+
+    .brand-logo {
+
+      font-size: 34px;
+
+      font-weight: 800;
+
+      letter-spacing: -1px;
+    }
+
+    .brand-logo i {
+
+      color: #3b91ff;
+    }
+
+    .brand-subtitle {
+
+      font-size: 13px;
+
+      letter-spacing: .2px;
+
+      color:
+        rgba(255, 255, 255, .75);
+    }
+
+
+
+    .safety-label {
+
+      font-size: 13px;
+
+      letter-spacing: 4px;
+
+      font-weight: 600;
+
+      color:
+        rgba(255, 255, 255, .85);
+    }
+
+    .hero-title {
+
+      font-size:
+        clamp(42px, 5vw, 72px);
+
+      line-height: .98;
+
+      font-weight: 750;
+
+      letter-spacing: -3px;
+    }
+
+    .hero-title span {
+
+      color: #006ee4;
+    }
+
+    .hero-description {
+
+      max-width: 420px;
+
+      color:
+        rgba(255, 255, 255, .78);
+
+      font-size: 17px;
+
+      line-height: 1.55;
+    }
+
+
+    .benefit-box {
+
+      background:
+        rgba(8, 20, 35, .48);
+
+      border:
+        1px solid rgba(255, 255, 255, .13);
+
+      backdrop-filter:
+        blur(14px);
+
+      -webkit-backdrop-filter:
+        blur(14px);
+
+      border-radius: 18px;
+    }
+
+    .benefit-icon {
+
+      font-size: 23px;
+    }
+
+    .benefit-title {
+
+      font-size: 12px;
+
+      font-weight: 600;
+
+      color: #fff;
+    }
+
+
+
+    .login-card {
+
+      width:
+        min(480px, 100%);
+
+      background:
+        rgba(20, 36, 55, .62);
+
+      border:
+        1px solid rgba(255, 255, 255, .20);
+
+      border-radius: 30px;
+
+      backdrop-filter:
+        blur(25px);
+
+      -webkit-backdrop-filter:
+        blur(25px);
+
+      box-shadow:
+        0 30px 80px rgba(0, 0, 0, .35),
+
+        inset 0 1px 0 rgba(255, 255, 255, .10);
+
+      padding: 48px;
+    }
+
+
+
+    .login-logo {
+
+      width: 68px;
+
+      height: 68px;
+
+      border-radius: 20px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      margin:
+        0 auto 14px;
+
+      background:
+        linear-gradient(145deg,
+          #58a8ff,
+          #1769e8);
+
+      box-shadow:
+        0 12px 30px rgba(36, 125, 255, .30);
+    }
+
+    .login-logo i {
+
+      font-size: 36px;
+
+      color: #fff;
+    }
+
+
+    .login-title {
+
+      font-size: 31px;
+
+      font-weight: 750;
+
+      letter-spacing: -1px;
+    }
+
+    .login-subtitle {
+
+      color:
+        rgba(255, 255, 255, .68);
+
+      font-size: 14px;
+    }
+
+    .login-line {
+
+      width: 35px;
+
+      height: 2px;
+
+      background:
+        rgba(255, 255, 255, .35);
+
+      margin:
+        18px auto 26px;
+    }
+
+
+    .input-group-custom {
+
+      position: relative;
+    }
+
+    .input-icon {
+
+      position: absolute;
+
+      left: 20px;
+
+      top: 50%;
+
+      transform:
+        translateY(-50%);
+
+      z-index: 5;
+
+      color:
+        rgba(255, 255, 255, .72);
+
+      font-size: 20px;
+    }
+
+    .login-input {
+
+      height: 58px;
+
+      padding-left: 55px;
+
+      padding-right: 50px;
+
+      border-radius: 17px;
+
+      color: #fff !important;
+
+      background:
+        rgba(255, 255, 255, .075) !important;
+
+      border:
+        1px solid rgba(255, 255, 255, .18) !important;
+
+      box-shadow: none !important;
+    }
+
+    .login-input::placeholder {
+
+      color:
+        rgba(255, 255, 255, .60);
+    }
+
+    .login-input:focus {
+
+      border-color:
+        rgba(72, 150, 255, .8) !important;
+
+      background:
+        rgba(255, 255, 255, .10) !important;
+
+      box-shadow:
+        0 0 0 4px rgba(59, 130, 246, .12) !important;
+    }
+
+
+
+    .password-toggle {
+
+      position: absolute;
+
+      right: 18px;
+
+      top: 50%;
+
+      transform:
+        translateY(-50%);
+
+      z-index: 5;
+
+      border: none;
+
+      background: transparent;
+
+      color:
+        rgba(255, 255, 255, .70);
+
+      font-size: 19px;
+    }
+
+    .password-toggle:hover {
+
+      color: #fff;
+    }
+
+
+    .login-error {
+
+      min-height: 22px;
+
+      margin:
+        5px 4px 14px;
+
+      color: #dc3545;
+
+      font-size: 13px;
+
+      font-weight: 500;
+
+      opacity: 0;
+
+      transform:
+        translateY(-3px);
+
+      transition:
+        all .2s ease;
+    }
+
+    .login-error.show {
+
+      opacity: 1;
+
+      transform:
+        translateY(0);
+    }
+
+
+    .btn-signin {
+
+      height: 58px;
+
+      border: none;
+
+      border-radius: 17px;
+
+      background:
+        linear-gradient(135deg,
+          #3d9bff,
+          #1769e8);
+
+      color: #fff;
+
+      font-size: 16px;
+
+      font-weight: 600;
+
+      box-shadow:
+        0 12px 28px rgba(31, 117, 240, .30);
+
+      transition:
+        .2s ease;
+    }
+
+    .btn-signin:hover {
+
+      transform:
+        translateY(-2px);
+
+      background:
+        linear-gradient(135deg,
+          #51a5ff,
+          #2477ee);
+
+      box-shadow:
+        0 16px 32px rgba(31, 117, 240, .40);
+    }
+
+    .btn-signin:active {
+
+      transform:
+        translateY(0);
+    }
+
+
+
+    .login-footer {
+
+      color:
+        rgba(255, 255, 255, .45);
+
+      font-size: 11px;
+
+      letter-spacing: .5px;
+    }
+
+
+
+    .theme-button {
+
+      position: absolute;
+
+      top: 28px;
+
+      right: 30px;
+
+      width: 42px;
+
+      height: 42px;
+
+      border-radius: 50%;
+
+      border:
+        1px solid rgba(255, 255, 255, .18);
+
+      background:
+        rgba(255, 255, 255, .08);
+
+      color: #fff;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      backdrop-filter:
+        blur(10px);
+
+      cursor: pointer;
+    }
+
+
+    body.light-mode {
+
+      background:
+        linear-gradient(90deg,
+          rgba(235, 242, 250, .75),
+          rgba(245, 248, 252, .35)),
+        url("../assets/img/ims-safety-bg.png") center center / cover no-repeat fixed;
+
+      color: #172033;
+    }
+
+    body.light-mode .page-overlay {
+
+      background:
+        linear-gradient(90deg,
+          rgba(255, 255, 255, .40),
+          rgba(255, 255, 255, .15) 55%,
+          rgba(255, 255, 255, .25));
+    }
+
+    body.light-mode .brand-subtitle {
+
+      color:
+        rgba(20, 35, 55, .65);
+    }
+
+    body.light-mode .safety-label {
+
+      color:
+        rgba(20, 35, 55, .70);
+    }
+
+    body.light-mode .hero-description {
+
+      color:
+        rgba(20, 35, 55, .70);
+    }
+
+    body.light-mode .benefit-box {
+
+      background:
+        rgba(255, 255, 255, .50);
+
+      border-color:
+        rgba(20, 35, 55, .10);
+    }
+
+    body.light-mode .benefit-title {
+
+      color: #172033;
+    }
+
+    body.light-mode .login-card {
+
+      background:
+        rgba(255, 255, 255, .62);
+
+      border-color:
+        rgba(20, 35, 55, .12);
+
+      box-shadow:
+        0 30px 80px rgba(30, 60, 90, .18),
+
+        inset 0 1px 0 rgba(255, 255, 255, .8);
+    }
+
+    body.light-mode .login-subtitle {
+
+      color:
+        rgba(20, 35, 55, .60);
+    }
+
+    body.light-mode .login-line {
+
+      background:
+        rgba(20, 35, 55, .20);
+    }
+
+    body.light-mode .text-white-50 {
+
+      color:
+        rgba(20, 35, 55, .55) !important;
+    }
+
+    body.light-mode .login-input {
+
+      color:
+        #172033 !important;
+
+      background:
+        rgba(255, 255, 255, .70) !important;
+
+      border-color:
+        rgba(20, 35, 55, .15) !important;
+    }
+
+    body.light-mode .login-input::placeholder {
+
+      color:
+        rgba(20, 35, 55, .50);
+    }
+
+    body.light-mode .input-icon {
+
+      color:
+        rgba(20, 35, 55, .60);
+    }
+
+    body.light-mode .password-toggle {
+
+      color:
+        rgba(20, 35, 55, .60);
+    }
+
+    body.light-mode .password-toggle:hover {
+
+      color: #172033;
+    }
+
+    body.light-mode .theme-button {
+
+      background:
+        rgba(255, 255, 255, .65);
+
+      border-color:
+        rgba(20, 35, 55, .12);
+
+      color: #172033;
+    }
+
+    body.light-mode .login-footer {
+
+      color:
+        rgba(20, 35, 55, .45);
+    }
+
+
+
+    .login-success-overlay {
+
+      position: fixed;
+
+      inset: 0;
+
+      z-index: 9999;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      background:
+        rgba(15, 23, 42, .35);
+
+      backdrop-filter:
+        blur(8px);
+
+      -webkit-backdrop-filter:
+        blur(8px);
+
+      opacity: 0;
+
+      visibility: hidden;
+
+      transition:
+        opacity .25s ease,
+        visibility .25s ease;
+    }
+
+    .login-success-overlay.show {
+
+      opacity: 1;
+
+      visibility: visible;
+    }
+
+    .login-success-popup {
+
+      width:
+        min(380px,
+          calc(100% - 40px));
+
+      padding:
+        34px 30px;
+
+      text-align: center;
+
+      background:
+        rgba(255, 255, 255, .94);
+
+      border:
+        1px solid rgba(255, 255, 255, .8);
+
+      border-radius: 26px;
+
+      box-shadow:
+        0 30px 80px rgba(15, 23, 42, .20);
+
+      transform:
+        scale(.92) translateY(10px);
+
+      transition:
+        transform .3s ease;
+    }
+
+    .login-success-overlay.show .login-success-popup {
+
+      transform:
+        scale(1) translateY(0);
+    }
+
+    .success-icon {
+
+      width: 68px;
+
+      height: 68px;
+
+      margin:
+        0 auto 18px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      border-radius: 50%;
+
+      background:
+        #dcfce7;
+
+      color:
+        #16a34a;
+
+      font-size: 32px;
+
+      animation:
+        successPop .45s ease;
+    }
+
+    @keyframes successPop {
+
+      0% {
+        transform: scale(.5);
+        opacity: 0;
+      }
+
+      70% {
+        transform: scale(1.08);
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .login-success-popup h4 {
+
+      margin-bottom: 7px;
+
+      color: #172033;
+
+      font-size: 21px;
+
+      font-weight: 700;
+    }
+
+    .login-success-popup p {
+
+      margin-bottom: 20px;
+
+      color: #64748b;
+
+      font-size: 14px;
+    }
+
+    .success-loader {
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      gap: 9px;
+
+      color: #64748b;
+
+      font-size: 13px;
+    }
+
+    .success-loader .spinner-border {
+
+      width: 15px;
+
+      height: 15px;
+
+      color: #2563eb;
+    }
+
+
+    /* =====================================================
+           RESPONSIVE
+        ====================================================== */
+
+    @media (max-width: 991.98px) {
+
+      body {
+        background-position: center;
+      }
+
+      .login-wrapper {
+        padding: 35px 20px;
+      }
+
+      .left-content {
+
+        text-align: center;
+
+        align-items:
+          center !important;
+      }
+
+      .hero-description {
+
+        margin-left: auto;
+
+        margin-right: auto;
+      }
+
+      .benefit-box {
+
+        margin-left: auto;
+
+        margin-right: auto;
+      }
+
+      .login-card {
+
+        margin:
+          20px auto 0;
+      }
+    }
+
+
+    @media (max-width: 575.98px) {
+
+      body {
+
+        background:
+          linear-gradient(rgba(4, 14, 27, .82),
+            rgba(4, 14, 27, .82)),
+          url("../assets/img/ims-safety-bg.png") center / cover no-repeat fixed;
+      }
+
+      body.light-mode {
+
+        background:
+          linear-gradient(rgba(235, 242, 250, .78),
+            rgba(245, 248, 252, .68)),
+          url("../assets/img/ims-safety-bg.png") center / cover no-repeat fixed;
+      }
+
+      .login-wrapper {
+
+        padding:
+          20px 15px;
+      }
+
+      .brand-logo {
+
+        font-size: 28px;
+      }
+
+      .hero-title {
+
+        font-size: 43px;
+
+        letter-spacing: -2px;
+      }
+
+      .hero-description {
+
+        font-size: 15px;
+      }
+
+      .benefit-box {
+
+        display:
+          none !important;
+      }
+
+      .login-card {
+
+        padding:
+          32px 22px;
+
+        border-radius:
+          24px;
+      }
+
+      .login-title {
+
+        font-size: 27px;
+      }
+
+      .theme-button {
+
+        top: 15px;
+
+        right: 15px;
+      }
+    }
+  </style>
+
 </head>
 
-<body>
 
-  <div class="bg-body-tertiary min-vh-100 d-flex align-items-center py-3 py-lg-4">
+<body class="light-mode">
 
-    <div class="container">
 
-      <div class="row justify-content-center">
+  <!-- =====================================================
+         SUCCESS POPUP
+    ====================================================== -->
 
-        <div class="col-12 col-xl-11 col-xxl-10">
+  <div
+    class="login-success-overlay"
+    id="loginSuccessOverlay">
 
-          <!-- Main Login Container -->
-          <div class="card border-0 shadow-lg overflow-hidden rounded-4">
+    <div class="login-success-popup">
 
-            <div class="row g-0 min-vh-lg-75">
+      <div class="success-icon">
 
+        <i class="bi bi-check-lg"></i>
 
-              <!-- =================================================
-                   LEFT SIDE - LOGIN
-                   ================================================= -->
-              <div class="col-12 col-lg-5 bg-white">
+      </div>
 
-                <div class="p-4 p-md-5 h-100 d-flex flex-column justify-content-center">
+      <h4>
+        Login Successful
+      </h4>
 
-                  <!-- Logo -->
-                  <div class="d-flex align-items-center gap-3 mb-4">
+      <p id="successMessage">
+        Welcome back!
+      </p>
 
-                    <div class="d-flex align-items-center justify-content-center
-                             bg-danger text-white rounded-3 shadow-sm flex-shrink-0"
-                      style="width: 54px; height: 54px;">
+      <div class="success-loader">
 
-                      <i class="bi bi-fire fs-2"></i>
+        <div
+          class="spinner-border spinner-border-sm">
+        </div>
 
-                    </div>
+        <span>
+          Redirecting...
+        </span>
 
-                    <div>
+      </div>
 
-                      <div class="fw-bold fs-3 lh-1">
-                        Firefighter
-                      </div>
+    </div>
 
-                      <div class="text-body-secondary small">
-                        Equipment Management System
-                      </div>
+  </div>
 
-                    </div>
 
-                  </div>
+  <!-- =====================================================
+         OVERLAY
+    ====================================================== -->
 
+  <div class="page-overlay"></div>
 
-                  <!-- Login Heading -->
-                  <div class="d-flex gap-3 mb-4">
 
-                    <div class="bg-danger rounded-pill flex-shrink-0" style="width: 4px;">
-                    </div>
+  <!-- =====================================================
+         MAIN
+    ====================================================== -->
 
-                    <div>
+  <div
+    class="
+            container-fluid
+            login-wrapper
+        ">
 
-                      <h1 class="h3 fw-bold mb-1">
-                        Welcome Back!
-                      </h1>
 
-                      <p class="text-body-secondary small mb-0">
-                        Sign in to your account to continue to the
-                        Fire Equipment Management System.
-                      </p>
+    <!-- =================================================
+             BRAND
+        ================================================== -->
 
-                    </div>
+    <div
+      class="
+                position-absolute
+                top-0
+                start-0
+                p-4
+                p-md-5
+            ">
 
-                  </div>
+      <div
+        class="
+                    d-flex
+                    align-items-center
+                    gap-2
+                ">
 
-                  <form action="./backend/controller/AuthController.php" method="post" autocomplete="off" >
+        <div class="brand-logo">
 
+          <i
+            class="bi bi-shield-fill-check">
+          </i>
 
-                    <!-- Username -->
-                    <div class="mb-3">
+          IMS
 
-                      <label class="form-label small fw-semibold" for="email">
+        </div>
 
-                        Username or Employee Code
+        <div class="brand-subtitle">
 
-                      </label>
+          Safety Management System
 
-                      <div class="input-group">
+        </div>
 
-                        <span class="input-group-text bg-white">
+      </div>
 
-                          <i class="bi bi-person text-body-secondary"></i>
+    </div>
 
-                        </span>
 
-                        <input class="form-control" name="username" id="email" type="text"
-                          placeholder="Username or Employee Code" autocomplete="off" required>
+    <!-- =================================================
+             THEME BUTTON
+        ================================================== -->
 
-                      </div>
+    <button
+      type="button"
+      class="theme-button"
+      id="themeButton"
+      title="Dark mode">
 
-                    </div>
+      <i
+        class="bi bi-moon-stars-fill">
+      </i>
 
+    </button>
 
-                    <!-- Password -->
-                    <div class="mb-4">
 
-                      <label class="form-label small fw-semibold" for="password">
+    <!-- =================================================
+             ROW
+        ================================================== -->
 
-                        Password
+    <div
+      class="
+                row
+                min-vh-100
+                align-items-center
+            ">
 
-                      </label>
 
-                      <div class="input-group">
+      <!-- =================================================
+                 LEFT
+            ================================================== -->
 
-                        <span class="input-group-text bg-white">
+      <div
+        class="
+                    col-lg-7
+                    d-none
+                    d-lg-flex
+                ">
 
-                          <i class="bi bi-lock text-body-secondary"></i>
+        <div
+          class="
+                        left-content
+                        d-flex
+                        flex-column
+                        align-items-start
+                        ps-xl-5
+                    ">
 
-                        </span>
+          <div
+            class="
+                            safety-label
+                            mb-4
+                        ">
 
-                        <input class="form-control" id="password" name="password" type="password"
-                          placeholder="Your password" autocomplete="off" required>
+            SAFER WORKPLACE
+            <br>
+            BETTER TOMORROW
 
-                        <button class="btn btn-outline-secondary" type="button" id="togglePassword"
-                          aria-label="Show password">
+          </div>
 
-                          <i class="bi bi-eye" id="passwordIcon">
-                          </i>
 
-                        </button>
+          <h1
+            class="
+                            hero-title
+                            mb-4
+                        ">
 
-                      </div>
+            Safety Today,
 
-                    </div>
+            <br>
 
-                    <!-- Branch -->
-                    <div class="mb-4">
+            <span>
 
-                      <label class="form-label small fw-semibold" for="branch">
-                        Branch
-                      </label>
+              A Safer
 
-                      <div class="input-group">
+              <br>
 
-                        <span class="input-group-text bg-white">
-                          <i class="bi bi-building text-body-secondary"></i>
-                        </span>
+              Tomorrow
 
-                        <select class="form-select" name="branch" id="branch" required>
-                          <option value="" selected disabled>
-                            Select your branch
-                          </option>
+            </span>
 
-                          <?php foreach ($branches as $branch): ?>
+          </h1>
 
-                          <option value="<?= htmlspecialchars($branch['branch_name']) ?>">
-                            <?= htmlspecialchars($branch['branch_name']) ?>
-                          </option>
 
-                          <?php endforeach; ?>
+          <p
+            class="
+                            hero-description
+                            mb-4
+                        ">
 
-                        </select>
+            Integrated systems for a safer,
+            more compliant, and more
+            productive workplace.
 
-                      </div>
+          </p>
 
-                    </div>
 
+          <!-- BENEFITS -->
 
-                    <!-- Sign In -->
-                    <div class="d-grid">
+          <div class="benefit-box p-3">
 
-                      <button class="btn btn-danger py-2 fw-semibold" type="submit">
+            <div class=" row g-0">
 
-                        <i class="bi bi-box-arrow-in-right me-2"></i>
+              <div class=" col-4 px-3 ">
 
-                        Log In
+                <div class=" benefit-icon text-info mb-2 ">
 
-                      </button>
-
-                    </div>
-
-                  </form>
-
-
-                  <!-- Security Notice -->
-                  <div class="text-body-secondary small mt-4">
-
-                    <i class="bi bi-shield-check text-danger me-1"></i>
-
-                    Authorized personnel only. Keep your account secure.
-
-                  </div>
-
-                </div>
-
-              </div>
-
-
-              <!-- =================================================
-                   RIGHT SIDE - FIRE EQUIPMENT VISUAL
-                   ================================================= -->
-              <div class="col-12 col-lg-7 d-none d-lg-flex
-                       bg-danger-subtle position-relative
-                       align-items-center justify-content-center overflow-hidden">
-
-
-                <!-- Decorative Fire Icon -->
-                <div class="position-absolute top-0 end-0
-                         translate-middle-y me-n5 mt-5
-                         text-danger opacity-25">
-
-                  <i class="bi bi-fire" style="font-size: 15rem;">
+                  <i
+                    class="bi bi-shield-check">
                   </i>
 
                 </div>
 
+                <div
+                  class="benefit-title">
 
-                <!-- Main Visual -->
-                <div class="position-relative text-center p-4 p-xl-5">
-
-                  <!-- Firefighter Icon -->
-                  <div class="mb-3">
-
-                    <div class="d-inline-flex align-items-center justify-content-center
-                             bg-white text-danger rounded-circle shadow-sm" style="width: 100px; height: 100px;">
-
-                      <i class="bi bi-person-badge" style="font-size: 4rem;">
-                      </i>
-
-                    </div>
-
-                  </div>
-
-
-                  <!-- Main Title -->
-                  <h2 class="fw-bold text-dark mb-2">
-
-                    Fire Equipment
-
-                    <span class="text-danger">
-                      Management
-                    </span>
-
-                  </h2>
-
-                  <p class="text-body-secondary mx-auto mb-4" style="max-width: 520px;">
-
-                    Manage fire extinguishers, inspections,
-                    equipment records, and safety information
-                    in one centralized system.
-
-                  </p>
-
-
-                  <!-- Equipment Cards -->
-                  <div class="row g-3 justify-content-center">
-
-
-                    <!-- Fire Extinguisher -->
-                    <div class="col-12 col-sm-4">
-
-                      <div class="card border-0 shadow-sm h-100">
-
-                        <div class="card-body py-3">
-
-                          <div class="d-inline-flex align-items-center
-                                   justify-content-center
-                                   bg-danger-subtle text-danger
-                                   rounded-3 mb-2" style="width: 48px; height: 48px;">
-
-                            <i class="bi bi-fire fs-4"></i>
-
-                          </div>
-
-                          <div class="fw-semibold small">
-                            Fire Extinguishers
-                          </div>
-
-                          <small class="text-body-secondary">
-                            Equipment records
-                          </small>
-
-                        </div>
-
-                      </div>
-
-                    </div>
-
-
-                    <!-- Inspection -->
-                    <div class="col-12 col-sm-4">
-
-                      <div class="card border-0 shadow-sm h-100">
-
-                        <div class="card-body py-3">
-
-                          <div class="d-inline-flex align-items-center
-                                   justify-content-center
-                                   bg-success-subtle text-success
-                                   rounded-3 mb-2" style="width: 48px; height: 48px;">
-
-                            <i class="bi bi-clipboard-check fs-4"></i>
-
-                          </div>
-
-                          <div class="fw-semibold small">
-                            Inspections
-                          </div>
-
-                          <small class="text-body-secondary">
-                            Safety monitoring
-                          </small>
-
-                        </div>
-
-                      </div>
-
-                    </div>
-
-
-                    <!-- QR -->
-                    <div class="col-12 col-sm-4">
-
-                      <div class="card border-0 shadow-sm h-100">
-
-                        <div class="card-body py-3">
-
-                          <div class="d-inline-flex align-items-center
-                                   justify-content-center
-                                   bg-primary-subtle text-primary
-                                   rounded-3 mb-2" style="width: 48px; height: 48px;">
-
-                            <i class="bi bi-qr-code-scan fs-4"></i>
-
-                          </div>
-
-                          <div class="fw-semibold small">
-                            QR Scanning
-                          </div>
-
-                          <small class="text-body-secondary">
-                            Quick access
-                          </small>
-
-                        </div>
-
-                      </div>
-
-                    </div>
-
-                  </div>
-
-
-                  <!-- Safety Message -->
-                  <div class="alert alert-danger border-0 mt-4 mb-0 text-start">
-
-                    <div class="d-flex gap-3">
-
-                      <i class="bi bi-shield-fill-check fs-4"></i>
-
-                      <div>
-
-                        <div class="fw-semibold">
-                          Safety Starts With Preparedness
-                        </div>
-
-                        <small>
-                          Keep your fire safety equipment
-                          inspected and ready when needed.
-                        </small>
-
-                      </div>
-
-                    </div>
-
-                  </div>
+                  Safety
+                  <br>
+                  Compliance
 
                 </div>
 
               </div>
 
+
+              <div class=" col-4 px-3 border-start border-end border-secondary ">
+
+                <div class=" benefit-icon text-success mb-2 ">
+
+                  <i
+                    class="bi bi-bar-chart-line">
+                  </i>
+
+                </div>
+
+                <div
+                  class="benefit-title">
+
+                  Efficient
+                  <br>
+                  Management
+
+                </div>
+
+              </div>
+
+
+              <div
+                class=" col-4 px-3 ">
+
+                <div
+                  class=" benefit-icon text-warning mb-2 ">
+
+                  <i
+                    class="bi bi-people">
+                  </i>
+
+                </div>
+
+                <div
+                  class="benefit-title">
+
+                  A Safer
+                  <br>
+                  Team
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+                 LOGIN
+            ================================================== -->
+
+      <div
+        class=" col-lg-5 d-flex justify-content-center align-items-center  ">
+
+
+        <div class="login-card">
+
+
+          <!-- LOGIN HEADER -->
+
+          <div class="text-center">
+
+            <div class="login-logo">
+
+              <i
+                class="bi bi-shield-fill-check">
+              </i>
+
+            </div>
+
+
+            <div class="login-title">
+              IMS
+            </div>
+
+
+            <div class="login-subtitle">
+              Safety Management System
+            </div>
+
+
+            <div class="login-line"></div>
+
+
+            <div
+              class=" small  text-uppercase fw-semibold text-white-50 "
+              style=" letter-spacing:4px; ">
+
+              Login to continue
+
+            </div>
+
+          </div>
+
+
+          <!-- =================================================
+                         FORM
+                    ================================================== -->
+
+          <form
+            action="../backend/controller/AuthController.php"
+            method="POST"
+            id="loginForm"
+            class="mt-4">
+
+
+            <!-- USERNAME -->
+
+            <div
+              class=" input-group-custom  mb-3  ">
+
+              <i
+                class=" bi bi-person input-icon  ">
+              </i>
+
+
+              <input
+                type="text"
+                name="username"
+                class=" form-control login-input "
+                placeholder="Username or Employee Code"
+                autocomplete="username"
+                required>
+
+            </div>
+
+
+            <!-- PASSWORD -->
+
+            <div
+              class=" input-group-custom mb-1 ">
+
+              <i
+                class=" bi bi-lock input-icon ">
+              </i>
+
+
+              <input
+                type="password"
+                name="password"
+                id="password"
+                class=" form-control login-input "
+                placeholder="Password"
+                autocomplete="current-password"
+                required>
+
+
+              <button
+                type="button"
+                class="password-toggle"
+                id="passwordToggle"
+                aria-label="Show password">
+
+                <i
+                  class=" bi bi-eye "
+                  id="passwordIcon">
+                </i>
+
+              </button>
+
+            </div>
+
+
+            <!-- ERROR -->
+
+            <div
+              id="loginError"
+              class="login-error">
+
+            </div>
+
+
+            <!-- BUTTON -->
+
+            <button
+              type="submit"
+              class=" btn btn-signin w-100 "
+              id="loginButton">
+
+              <span
+                id="loginButtonText">
+
+                Sign In
+
+              </span>
+
+
+              <i
+                class=" bi bi-arrow-right ms-2 "
+                id="loginButtonIcon">
+              </i>
+
+            </button>
+
+          </form>
+
+
+          <!-- FOOTER -->
+
+          <div
+            class=" text-center mt-4  ">
+
+            <div
+              class="login-footer">
+
+              IMS Safety Management System v1.0
 
             </div>
 
@@ -433,52 +1404,422 @@ $branches = getAllBranchesController();
   </div>
 
 
-  <!-- =================================================
-       PASSWORD TOGGLE
-       ================================================= -->
-  <script>
+  <!-- =====================================================
+         BOOTSTRAP JS
+    ====================================================== -->
 
-    const togglePassword =
-      document.getElementById('togglePassword');
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+  </script>
+
+
+  <script>
+    /* =====================================================
+           PASSWORD SHOW / HIDE
+        ====================================================== */
 
     const password =
-      document.getElementById('password');
+      document.getElementById("password");
+
+    const passwordToggle =
+      document.getElementById("passwordToggle");
 
     const passwordIcon =
-      document.getElementById('passwordIcon');
+      document.getElementById("passwordIcon");
 
 
-    if (togglePassword && password && passwordIcon) {
+    passwordToggle.addEventListener(
+      "click",
+      function() {
 
-      togglePassword.addEventListener('click', function () {
+        if (
+          password.type === "password"
+        ) {
 
-        const showPassword =
-          password.type === 'password';
+          password.type = "text";
 
-        password.type =
-          showPassword ? 'text' : 'password';
+          passwordIcon.classList.remove(
+            "bi-eye"
+          );
 
-        passwordIcon.classList.toggle(
-          'bi-eye',
-          !showPassword
+          passwordIcon.classList.add(
+            "bi-eye-slash"
+          );
+
+          passwordToggle.setAttribute(
+            "aria-label",
+            "Hide password"
+          );
+
+        } else {
+
+          password.type = "password";
+
+          passwordIcon.classList.remove(
+            "bi-eye-slash"
+          );
+
+          passwordIcon.classList.add(
+            "bi-eye"
+          );
+
+          passwordToggle.setAttribute(
+            "aria-label",
+            "Show password"
+          );
+        }
+
+      }
+    );
+
+
+    /* =====================================================
+       DARK / LIGHT MODE
+    ====================================================== */
+
+    const themeButton =
+      document.getElementById(
+        "themeButton"
+      );
+
+    const themeIcon =
+      themeButton.querySelector("i");
+
+
+    themeButton.addEventListener(
+      "click",
+      function() {
+
+        document.body.classList.toggle(
+          "light-mode"
         );
 
-        passwordIcon.classList.toggle(
-          'bi-eye-slash',
-          showPassword
+
+        const isLight =
+          document.body.classList.contains(
+            "light-mode"
+          );
+
+
+        if (isLight) {
+
+          themeIcon.classList.remove(
+            "bi-sun-fill"
+          );
+
+          themeIcon.classList.add(
+            "bi-moon-stars-fill"
+          );
+
+          themeButton.title =
+            "Dark mode";
+
+        } else {
+
+          themeIcon.classList.remove(
+            "bi-moon-stars-fill"
+          );
+
+          themeIcon.classList.add(
+            "bi-sun-fill"
+          );
+
+          themeButton.title =
+            "Light mode";
+        }
+
+      }
+    );
+
+
+    /* =====================================================
+       LOGIN
+    ====================================================== */
+
+    const loginForm =
+      document.getElementById(
+        "loginForm"
+      );
+
+    const loginButton =
+      document.getElementById(
+        "loginButton"
+      );
+
+    const loginButtonText =
+      document.getElementById(
+        "loginButtonText"
+      );
+
+    const loginButtonIcon =
+      document.getElementById(
+        "loginButtonIcon"
+      );
+
+    const loginError =
+      document.getElementById(
+        "loginError"
+      );
+
+    const successOverlay =
+      document.getElementById(
+        "loginSuccessOverlay"
+      );
+
+
+    loginForm.addEventListener(
+      "submit",
+      async function(event) {
+
+        event.preventDefault();
+
+
+        /* CLEAR ERROR */
+
+        loginError.textContent = "";
+
+        loginError.classList.remove(
+          "show"
         );
 
-        togglePassword.setAttribute(
-          'aria-label',
-          showPassword
-            ? 'Hide password'
-            : 'Show password'
-        );
 
-      });
+        /* LOADING */
 
-    }
+        loginButton.disabled = true;
 
+        loginButtonText.textContent =
+          "Logging in...";
+
+        loginButtonIcon.className =
+          "spinner-border spinner-border-sm ms-2";
+
+
+        try {
+
+          const formData =
+            new FormData(
+              loginForm
+            );
+
+
+          /* =========================================
+             SEND REQUEST
+          ========================================== */
+
+          const response =
+            await fetch(
+              loginForm.action, {
+                method: "POST",
+
+                body: formData,
+
+                credentials: "same-origin",
+
+                headers: {
+                  "X-Requested-With": "XMLHttpRequest",
+
+                  "Accept": "application/json"
+                }
+              }
+            );
+
+
+          /* =========================================
+             READ RESPONSE AS TEXT FIRST
+          ========================================== */
+
+          const responseText =
+            await response.text();
+
+
+          console.log(
+            "AuthController response:",
+            responseText
+          );
+
+
+          /* =========================================
+             CHECK HTTP STATUS
+          ========================================== */
+
+          if (!response.ok) {
+
+            throw new Error(
+              "Server error (" +
+              response.status +
+              ")"
+            );
+          }
+
+
+          /* =========================================
+             PARSE JSON
+          ========================================== */
+
+          let result;
+
+          try {
+
+            result =
+              JSON.parse(
+                responseText
+              );
+
+          } catch (jsonError) {
+
+            console.error(
+              "Invalid JSON from server:",
+              responseText
+            );
+
+
+            throw new Error(
+              "The server returned an invalid response."
+            );
+          }
+
+
+          /* =========================================
+             SUCCESS
+          ========================================== */
+
+          if (
+            result.success === true
+          ) {
+
+            successOverlay.classList.add(
+              "show"
+            );
+
+
+            document.body.style.overflow =
+              "hidden";
+
+
+            setTimeout(
+              function() {
+
+                /*
+                 * replace() instead of href
+                 * prevents returning to login
+                 * through browser history.
+                 */
+
+                window.location.replace(
+                  result.redirect ||
+                  "../dashboard.php"
+                );
+
+              },
+              1500
+            );
+
+
+            return;
+          }
+
+
+          /* =========================================
+             LOGIN FAILED
+          ========================================== */
+
+          loginButton.disabled =
+            false;
+
+          loginButtonText.textContent =
+            "Sign In";
+
+          loginButtonIcon.className =
+            "bi bi-arrow-right ms-2";
+
+
+          loginError.textContent =
+            result.message ||
+            "Invalid username or password.";
+
+
+          loginError.classList.add(
+            "show"
+          );
+
+
+          password.focus();
+
+        }
+
+
+        /* =========================================
+           ERROR
+        ========================================== */
+        catch (error) {
+
+          console.error(
+            "LOGIN ERROR:",
+            error
+          );
+
+
+          loginButton.disabled =
+            false;
+
+          loginButtonText.textContent =
+            "Sign In";
+
+          loginButtonIcon.className =
+            "bi bi-arrow-right ms-2";
+
+
+          /*
+           * Show the actual error
+           * instead of falsely saying
+           * server is disconnected.
+           */
+
+          if (
+            error.message.includes(
+              "invalid response"
+            )
+          ) {
+
+            loginError.textContent =
+              "Server error. Check AuthController.php.";
+
+          } else {
+
+            loginError.textContent =
+              error.message ||
+              "Unable to connect to the server. Please try again.";
+          }
+
+
+          loginError.classList.add(
+            "show"
+          );
+
+        }
+
+      }
+    );
+
+
+    /* =====================================================
+       BACK BUTTON / BFCACHE PROTECTION
+    ====================================================== */
+
+    window.addEventListener(
+      "pageshow",
+      function(event) {
+
+        if (
+          event.persisted
+        ) {
+
+          window.location.reload();
+
+        }
+
+      }
+    );
   </script>
 
 </body>

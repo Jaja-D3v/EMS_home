@@ -6,16 +6,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
-    $branch = $_POST['branch'] ?? '';
-
-
 
     $user = loginUser($username, $password);
 
     if (
         $user &&
         $username === $user['LoginID'] &&
-        md5($password) === $user['password'] &&  !empty($branch)
+        md5($password) === $user['password']
     ) {
 
         /*
@@ -35,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['LoginID'] = $user['LoginID'];
         $_SESSION['Role'] = $user['Role'];
         $_SESSION['EmployeeName'] = $user['EmployeeName'];
-        $_SESSION['branch'] = $branch;
+        $_SESSION['Branch'] = $user['Location'];
 
         /*
          * Start inactivity timer
@@ -43,16 +40,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['LAST_ACTIVITY'] = time();
 
         /*
-         * Redirect to dashboard
+         * Check if request is AJAX
          */
-        header('Location: ../../dashboard.php');
-        exit();
+        $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 
+        if ($isAjax) {
+
+            header('Content-Type: application/json');
+
+            echo json_encode([
+                'success' => true,
+                'message' => 'Login successful',
+                'redirect' => '/EMS_Home/dashboard.php'
+            ]);
+
+            exit();
+        }
+
+        /*
+         * Normal login fallback
+         */
+        header('Location: /EMS_Home/dashboard.php');
+        exit();
     } else {
 
+        /*
+         * Check if request is AJAX
+         */
+        $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+
+        if ($isAjax) {
+
+            header('Content-Type: application/json');
+
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid username or password.'
+            ]);
+
+            exit();
+        }
+
+        /*
+         * Normal login fallback
+         */
         header(
             'Location: ../../authentication/login.php?error=invalid_credentials'
         );
+
         exit();
     }
 }

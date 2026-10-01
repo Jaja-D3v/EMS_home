@@ -130,7 +130,7 @@ function getByCode($code)
 {
     global $conn;
 
-    $branch = getCurrentBranch();
+    $branch = 'KPLaguna';
 
     if (empty($branch)) {
         return false;
@@ -571,4 +571,85 @@ function getTotalFireExtinguishersModel()
     mysqli_stmt_close($stmt);
 
     return (int) $row['total'];
+}
+
+function getAllDeletedFireExtinguishers($limit, $offset)
+{
+    global $conn;
+
+    $branch = $_SESSION['branch'] ?? null;
+
+    if (empty($branch)) {
+        return [];
+    }
+
+    $sql = "SELECT *
+            FROM fire_extinguishers_tbl
+            WHERE archived = 1
+              AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
+            ORDER BY extinguisher_id DESC
+            LIMIT ? OFFSET ?";
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        return [];
+    }
+
+    mysqli_stmt_bind_param(
+        $stmt,
+        "sii",
+        $branch,
+        $limit,
+        $offset
+    );
+
+    mysqli_stmt_execute($stmt);
+
+    $result = mysqli_stmt_get_result($stmt);
+
+    $data = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    mysqli_stmt_close($stmt);
+
+    return $data;
+}
+
+
+function getAllDeletedFireExtinguishersModel()
+{
+    global $conn;
+
+    $branch = $_SESSION['branch'] ?? null;
+
+    if (empty($branch)) {
+        return 0;
+    }
+
+    $sql = "SELECT COUNT(*) AS total
+            FROM fire_extinguishers_tbl
+            WHERE archived = 1
+              AND LOWER(TRIM(branch)) = LOWER(TRIM(?))";
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        return 0;
+    }
+
+    mysqli_stmt_bind_param(
+        $stmt,
+        "s",
+        $branch
+    );
+
+    mysqli_stmt_execute($stmt);
+
+    $result = mysqli_stmt_get_result($stmt);
+
+    $row = mysqli_fetch_assoc($result);
+
+    mysqli_stmt_close($stmt);
+
+    return (int) ($row['total'] ?? 0);
 }

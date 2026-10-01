@@ -2,13 +2,22 @@
 
 require_once __DIR__ . '/../config/db_user.php';
 
-function loginUser($loginID, $password)
+function loginUser($loginID)
 {
     global $conn;
-
-    $sql = "SELECT id, LoginID, password, Role, EmployeeName
-            FROM kane_users_login
-            WHERE LoginID = ?";
+    $sql = "
+        SELECT
+            u.id,
+            u.LoginID,
+            u.password,
+            u.Role,
+            u.EmployeeName,
+            j.Location
+        FROM kane_users_login u
+        LEFT JOIN kane_jobinfo j
+            ON u.LoginID = j.IDNumber
+        WHERE u.LoginID = ?
+    ";
 
     $stmt = mysqli_prepare($conn, $sql);
 

@@ -1,0 +1,43 @@
+
+Day 8    TO-DO                       STATUS
+_____________________________________________________________
+
+## list of fire extinguisher 
+- sort add near expiry fe                #
+- fetch deleted fe                       # 
+## generate report 
+- select date and generate report        #
+
+## Maintenance
+- dropdown update                        #
+
+## Apporve inspections list    
+condition: if the user role === safety officer then it will visble to them, if its not it is not visible         
+- fetch all inspection list              #
+
+## dashboard
+- cards that has total number should be clickable #
+
+## Maintenance
+- Dropdowns update 
+- list and add another to dropdown
+
+## backend 
+- revise backend connect to user tbl
+
+
+# inspection header 
+- change the header to inspection record 
+
+
+
+____________________________________________________________DONE___________________________________________________________________________
+
+## login form
+- revised and created new design 
+- created system selector 
+- revised color in fire extinguisher    
+- remove dropdown
+
+
+

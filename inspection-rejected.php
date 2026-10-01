@@ -74,7 +74,7 @@ if ($result) {
       <!-- Page Header -->
       <div
         class="card border-0 shadow-sm text-white mb-1 mt-0 overflow-hidden"
-        style="background: linear-gradient(135deg, #c81e3a, #ff7657);">
+        style="background: linear-gradient(135deg, #1e3dc8, #57f9ff);">
 
         <div class="card-body p-4">
 
@@ -93,7 +93,7 @@ if ($result) {
             <div class="col">
 
               <h2 class="fw-bold mb-1">
-                Inspection List
+                Inspection Record
               </h2>
 
               <p class="mb-0 text-white-50">

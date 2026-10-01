@@ -333,3 +333,14 @@ function getTotalFireExtinguishers()
 {
     return getTotalFireExtinguishersModel();
 }
+
+function getAllArchiveFireExtinguishers($limit = 10, $offset = 0)
+{
+    return getAllDeletedFireExtinguishersModel($limit, $offset);
+}
+
+
+function getTotalDeletedFireExtinguishers()
+{
+    return getAllDeletedFireExtinguishersModel();
+}

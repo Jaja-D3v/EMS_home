@@ -17006,8 +17006,8 @@ fieldset:disabled .btn {
 
 /* Instructions */
 .scanner-instructions {
-  background: rgba(220, 53, 69, 0.06);
-  border: 1px solid rgba(220, 53, 69, 0.12);
+  background:  #f5faff;
+  border: 1px solid #1e81b0;
 }
 
 /* Instruction icons */
@@ -17022,7 +17022,7 @@ fieldset:disabled .btn {
 
   border-radius: 50%;
 
-  background: rgba(220, 53, 69, 0.10);
+  background: #e6e8f2;
   color: #dc3545;
 
   font-size: 1rem;

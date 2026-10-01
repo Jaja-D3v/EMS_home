@@ -1,3 +1,6 @@
+
+<?php require_once 'backend/authentication/SessionChecker.php'; ?>
+
 <!DOCTYPE html>
 <!--
 * CoreUI - Free Bootstrap Admin Template

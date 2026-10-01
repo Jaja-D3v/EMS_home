@@ -35,7 +35,7 @@ require_once 'backend/authentication/SessionChecker.php';
               <!-- Scanner Header -->
               <div
                 class="card-header border-0 text-white p-4"
-                style="background: linear-gradient(135deg, #700808, #f50808);">
+                style="background: linear-gradient(135deg, #081770, #0846f5);">
 
                 <div class="d-flex align-items-center gap-3">
 

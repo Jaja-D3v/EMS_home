@@ -143,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         /*
      * Save inspection checklist
      */
-
+        $branch = $_SESSION['branch'] ?? NULL;
         $success = addInspectionChecklist(
             $extinguisher_code,
             $location,
@@ -164,8 +164,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $is_cylinder_body_ok,
             $is_demarcation_line_ok,
             $is_signage_ok,
-            $status
+            $status,
+            $branch
         );
+         // Final redirect
+        if ($success) {
+
+            header(
+                "Location: ../../QR-code.php?success-inspect=1"
+            );
+            exit;
+        }
+
+        
     } elseif ($action == 'update_evaluation_status') {
 
         $inspect_id =
