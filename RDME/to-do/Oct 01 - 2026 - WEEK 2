@@ -44,6 +44,9 @@ ____________________________________________________________DONE________________
 - remove branch dropdown dropdown from login 
 - fix QR Code module add branch filter 
 - fix fire extinguisher list module add branch filter 
+- revise the backend of 
+- restrict the Inspector 
+- Admin can access all the data 
 
 
 

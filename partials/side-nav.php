@@ -6,7 +6,7 @@
       <div class="d-flex flex-column">
         <span class="fw-bold fs-5 lh-1"
           style="letter-spacing: 1.5px; color: #ff3b30;">
-          IMS
+          EQUIPMENT
         </span>
 
         <small class="fw-semibold mt-1"
@@ -23,7 +23,6 @@
 
       <!-- side-bar navigation -->
       <a class="nav-link" href="dashboard.php">
-        <!-- <i class="fa-solid fa-fire-extinguisher"></i> -->
         <i class="fa-solid fa-gauge"></i>
         Dashboard
       </a>
@@ -32,11 +31,12 @@
         <i class="fa-solid fa-qrcode"></i>
         Scan QR CODE
       </a>
-
-      <a class="nav-link" href="QR-generator.php">
-        <i class="fa-solid fa-qrcode"></i>
-        Print QR Code
-      </a>
+      <?php if (strtolower(trim($_SESSION['Role'] ?? '')) === 'admin'): ?>
+        <a class="nav-link" href="QR-generator.php">
+          <i class="fa-solid fa-qrcode"></i>
+          Print QR Code
+        </a>
+      <?php endif; ?>
 
       <!-- Fire Extinguisher List -->
     <li class="nav-item">
@@ -121,54 +121,56 @@
     $currentStatus = $_GET['status'] ?? '';
     ?>
 
-    <!-- Inspection Approvals -->
-    <li class="nav-item">
+    <?php if (strtolower(trim($_SESSION['Role'] ?? '')) === 'admin'): ?>
+      <!-- Inspection Approvals -->
+      <li class="nav-item">
 
-      <a
-        class="nav-link d-flex align-items-center"
-        data-bs-toggle="collapse"
-        href="#inspectionApprovalMenu"
-        role="button"
-        aria-expanded="false"
-        aria-controls="inspectionApprovalMenu">
+        <a
+          class="nav-link d-flex align-items-center"
+          data-bs-toggle="collapse"
+          href="#inspectionApprovalMenu"
+          role="button"
+          aria-expanded="false"
+          aria-controls="inspectionApprovalMenu">
 
-        <i class="bi bi-clipboard-check me-2"></i>
+          <i class="bi bi-clipboard-check me-2"></i>
 
-        <span>Inspection Approvals</span>
+          <span>Inspection Approvals</span>
 
-        <i class="bi bi-chevron-down ms-auto submenu-chevron"></i>
-      </a>
+          <i class="bi bi-chevron-down ms-auto submenu-chevron"></i>
+        </a>
 
-      <div
-        class="collapse"
-        id="inspectionApprovalMenu">
+        <div
+          class="collapse"
+          id="inspectionApprovalMenu">
 
-        <ul class="nav flex-column ms-3">
+          <ul class="nav flex-column ms-3">
 
-          <li class="nav-item">
-            <a class="nav-link" href="inspection-pending.php">
-              <i class="bi bi-hourglass-split me-2"></i>
-              Pending
-            </a>
-          </li>
+            <li class="nav-item">
+              <a class="nav-link" href="inspection-pending.php">
+                <i class="bi bi-hourglass-split me-2"></i>
+                Pending
+              </a>
+            </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="inspection-approved.php">
-              <i class="bi bi-check-circle me-2"></i>
-              Approved
-            </a>
-          </li>
+            <li class="nav-item">
+              <a class="nav-link" href="inspection-approved.php">
+                <i class="bi bi-check-circle me-2"></i>
+                Approved
+              </a>
+            </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="inspection-rejected.php">
-              <i class="bi bi-x-circle me-2"></i>
-              Rejected
-            </a>
-          </li>
+            <li class="nav-item">
+              <a class="nav-link" href="inspection-rejected.php">
+                <i class="bi bi-x-circle me-2"></i>
+                Rejected
+              </a>
+            </li>
 
-        </ul>
-      </div>
-    </li>
+          </ul>
+        </div>
+      </li>
+    <?php endif; ?>
 
     <!-- Activity Log -->
     <li class="nav-item">
@@ -202,7 +204,9 @@
     <li class="nav-divider"></li>
     <li class="nav-title">Extras</li>
   </ul>
-  <div class="sidebar-footer border-top d-none d-md-flex">
-    <button class="sidebar-toggler" type="button" data-coreui-toggle="unfoldable"></button>
+  <div class="sidebar-footer border-top d-none d-md-flex justify-content-center py-2">
+    <small class="text-white">
+      IMS · Equipment Management System
+    </small>
   </div>
 </div>

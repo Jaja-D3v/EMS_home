@@ -1,8 +1,11 @@
 <?php
 include './backend/controller/FireExtinguisherController.php';
+include './backend/controller/DropdownBranchController.php';
 include 'backend/controller/QRCodeGeneratorController.php';
-
 require_once 'backend/authentication/SessionChecker.php';
+
+
+$branchDropdown = getAllDropdownBranches();
 
 ?>
 
@@ -1386,6 +1389,30 @@ require_once 'backend/authentication/SessionChecker.php';
                           name="expiration_date"
                           required
                           readonly>
+                      </div>
+
+                      <!-- Branch -->
+                      <div class="col-12 col-md-4">
+                        <label for="branch" class="form-label">
+                          Branch
+                        </label>
+
+                        <select
+                          id="branch"
+                          name="branch_id"
+                          class="form-select"
+                          required>
+                          <option value="" selected disabled>
+                            Select branch
+                          </option>
+
+                          <?php foreach ($branchDropdown as $branch): ?>
+                            <option value="<?= htmlspecialchars($branch['branch_name']) ?>">
+                              <?= htmlspecialchars($branch['branch_name']) ?>
+                            </option>
+                          <?php endforeach; ?>
+
+                        </select>
                       </div>
 
                       <div class="col-12 text-end">
