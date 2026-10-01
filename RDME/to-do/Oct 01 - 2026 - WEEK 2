@@ -29,6 +29,9 @@ condition: if the user role === safety officer then it will visble to them, if i
 # inspection header 
 - change the header to inspection record 
 
+## approve inspection module
+- if action taken is refilled dapat mag aadjust ang expiry date 3 years from the date of refilled  
+
 
 
 ____________________________________________________________DONE___________________________________________________________________________

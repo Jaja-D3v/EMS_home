@@ -70,11 +70,11 @@ require_once 'backend/controller/FireExtinguisherController.php';
                         <div class="col">
 
                             <h2 class="fw-bold mb-1">
-                                Deleted Fire Extinguishers
+                                Fire Extinguishers Expiring Soon
                             </h2>
 
                             <p class="mb-0 text-white-50">
-                                View and manage deleted fire extinguishers.
+                                View fire extinguishers expiring within the next two months.
                             </p>
 
                         </div>
