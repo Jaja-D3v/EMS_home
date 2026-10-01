@@ -63,4 +63,4 @@ ____________________________________________________________DONE________________
 
 - fix bugg in pagination of list of fe            #DONE
 
-
+KPIMS - Implemented the backend logout and logout confirmation popup, added status labels for QR code inspection forms, integrated branch location into the database, added pagination, soft delete, expiration countdown and near-expiration badges to the Fire Extinguisher List, implemented pagination and responsive design for Inspection Approvals with Safety approval/rejection actions, made the target implementation date nullable in the Inspection Checklist table, and fixed the Fire Extinguisher List pagination bug.

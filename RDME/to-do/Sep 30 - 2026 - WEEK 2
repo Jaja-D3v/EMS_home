@@ -48,4 +48,6 @@ ____________________________________________________________DONE________________
 - 
 
 
+KPIMS -Implemented the Fire Extinguisher List class, Dashboard analytics and monthly inspection count, added_by tracking in the FE database, branch integration across the system including login selection, FE list display, near-expiration notices, and automatic branch assignment after login, as well as Action Taken and Target Date of Implementation on the Safety/Approver side.
+
 

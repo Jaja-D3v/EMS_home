@@ -32,16 +32,18 @@ condition: if the user role === safety officer then it will visble to them, if i
 ## approve inspection module
 - if action taken is refilled dapat mag aadjust ang expiry date 3 years from the date of refilled  
 
-
+## Dashboard
+- dropdown branch for admin 
 
 ____________________________________________________________DONE___________________________________________________________________________
 
 ## login form
 - revised and created new design 
-- created system selector 
+- created system selector with design 
 - revised color in fire extinguisher    
-- remove dropdown
+- remove branch dropdown dropdown from login 
 - fix QR Code module add branch filter 
+- fix fire extinguisher list module add branch filter 
 
 
 
