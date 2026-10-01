@@ -2,6 +2,8 @@
 
 require_once __DIR__ . '/backend/config/db.php';
 require_once __DIR__ . '/backend/controller/MaintenanceController.php';
+require_once 'backend/authentication/SessionChecker.php';
+
 
 $controller = new MaintenanceController($conn);
 
@@ -78,8 +80,7 @@ $locationData = $data['location'];
                             </h2>
 
                             <p class="mb-0 text-white-50">
-                                Keep your fire extinguishers in top condition
-                                with proper maintenance and service records.
+                                Manage and maintain system dropdown options and reference data.
                             </p>
 
                         </div>
@@ -90,7 +91,7 @@ $locationData = $data['location'];
 
             </div>
 
-            <div class="container-fluid px-0">
+            <div class="container-fluid px-0" id="maintenance-options">
 
                 <div class="row g-4">
 
@@ -100,7 +101,7 @@ $locationData = $data['location'];
         ====================================================== -->
 
                     <div class="col-xl-4 col-lg-6">
-                            
+
                         <div class="card h-100 border border-primary-subtle shadow rounded-3 mt-3">
 
                             <div class="card-body">
@@ -267,11 +268,18 @@ $locationData = $data['location'];
                                                 $i++
                                             ): ?>
 
-                                                <li class="page-item
-                                        <?= $i == $branchData['page'] ? 'active' : '' ?>">
+                                                <?php
+                                                $params = $_GET;
+                                                $params['branch_page'] = $i;
+                                                $params['branch_search'] = $branchData['search'];
+
+                                                $url = $_SERVER['PHP_SELF'] . '?' . http_build_query($params);
+                                                ?>
+
+                                                <li class="page-item <?= $i == $branchData['page'] ? 'active' : '' ?>">
 
                                                     <a class="page-link px-2 py-1"
-                                                        href="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>?branch_page=<?= $i ?>&branch_search=<?= urlencode($branchData['search']) ?>">
+                                                        href="<?= htmlspecialchars($url) ?>#maintenance-options">
 
                                                         <?= $i ?>
 

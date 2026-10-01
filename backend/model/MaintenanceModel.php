@@ -140,6 +140,12 @@ class MaintenanceModel
 
     public function add($category, $value)
     {
+        $value = trim($value);
+
+        $value = strtolower($value);
+
+        $value = ucwords($value);
+
         $sql = "
             INSERT INTO maintenance_dropdown_tbl
             (category, value)
@@ -166,11 +172,17 @@ class MaintenanceModel
 
     public function update($id, $value)
     {
+        $value = trim($value);
+
+        $value = strtolower($value);
+        
+        $value = ucwords($value);
+
         $sql = "
-            UPDATE maintenance_dropdown_tbl
-            SET value = ?
-            WHERE id = ?
-        ";
+        UPDATE maintenance_dropdown_tbl
+        SET value = ?
+        WHERE id = ?
+    ";
 
         $stmt = $this->conn->prepare($sql);
 

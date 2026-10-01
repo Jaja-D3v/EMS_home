@@ -1407,8 +1407,8 @@ $branchDropdown = getAllDropdownBranches();
                           </option>
 
                           <?php foreach ($branchDropdown as $branch): ?>
-                            <option value="<?= htmlspecialchars($branch['branch_name']) ?>">
-                              <?= htmlspecialchars($branch['branch_name']) ?>
+                            <option value="<?= htmlspecialchars($branch['value']) ?>">
+                              <?= htmlspecialchars($branch['value']) ?>
                             </option>
                           <?php endforeach; ?>
 
