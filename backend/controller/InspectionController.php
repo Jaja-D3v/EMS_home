@@ -448,18 +448,89 @@ function getApprovedApprovalTotal($date = null)
 
 
 // __________FOR REJECTED APPROVAL__________________________________________
-
-// Get pending approvals
+// ============================================================
+// GET REJECTED APPROVALS
+// ============================================================
 function getRejectedApprovals($limit = 10, $offset = 0, $date = null)
 {
-    return getAllRejectedApproval($limit, $offset, $date);
+    $role = strtolower(trim($_SESSION['Role'] ?? ''));
+
+    // ADMIN
+    if ($role === 'admin') {
+
+        $branch = trim($_GET['branch'] ?? 'all');
+
+        if ($branch === '') {
+            $branch = 'all';
+        }
+
+        return getAllRejectedApproval(
+            $limit,
+            $offset,
+            $date,
+            $branch
+        );
+    }
+
+    // INSPECTOR
+    if ($role === 'inspector') {
+
+        $branch = trim($_SESSION['Branch'] ?? '');
+
+        if ($branch === '') {
+            return false;
+        }
+
+        return getAllRejectedApproval(
+            $limit,
+            $offset,
+            $date,
+            $branch
+        );
+    }
+
+    return false;
 }
 
 
-// Get total number of pending approvals
+// ============================================================
+// GET REJECTED APPROVAL TOTAL
+// ============================================================
 function getRejectedApprovalTotal($date = null)
 {
-    return getRejectedApprovalCount($date);
+    $role = strtolower(trim($_SESSION['Role'] ?? ''));
+
+    // ADMIN
+    if ($role === 'admin') {
+
+        $branch = trim($_GET['branch'] ?? 'all');
+
+        if ($branch === '') {
+            $branch = 'all';
+        }
+
+        return getRejectedApprovalCount(
+            $date,
+            $branch
+        );
+    }
+
+    // INSPECTOR
+    if ($role === 'inspector') {
+
+        $branch = trim($_SESSION['Branch'] ?? '');
+
+        if ($branch === '') {
+            return 0;
+        }
+
+        return getRejectedApprovalCount(
+            $date,
+            $branch
+        );
+    }
+
+    return 0;
 }
 
 // _______________UPDATE EVALUATION STATUS_____________

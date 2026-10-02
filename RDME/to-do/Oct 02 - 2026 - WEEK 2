@@ -35,6 +35,7 @@ ____________________________________________________________DONE________________
 ## Approve Inspection Module
 - add dropdown branch pending
 - add dropdown branch approved nav
+- add dropdown branch rejected nav
 
 ## Delete Module
 - Add Restore function.
@@ -42,7 +43,7 @@ ____________________________________________________________DONE________________
 - dropdown for admin
 
 ## Backend 
-- fixed some backend based on the location
+- fixed some backend
 
 
 
