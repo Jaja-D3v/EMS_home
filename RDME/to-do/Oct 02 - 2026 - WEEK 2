@@ -9,20 +9,14 @@ _____________________________________________________________
 
 ## Dashboard Module
 - Make total number cards clickable.
-- Add branch dropdown for Admin. 
 
 ## Approve Inspection Module
 - If action taken is Refilled, set expiry date to 3 years from the refill date.  #
-- Add date selection for report generation.
+- Add generate report button (to generate report of the selected date and branch).
 - Generate report based on the selected date.
 
-## Delete Module
-- Add Restore function.
-- Make the View button functional.
-- dropdown for admin
-
 ## Dropdown 
-- set default to current location
+- set default to current location of the admin
 
 ____________________________________________________________DONE___________________________________________________________________________
 
@@ -38,7 +32,17 @@ ____________________________________________________________DONE________________
 ## Delete Module
 - dropdown for admin
 
+## Approve Inspection Module
+- add dropdown branch pending
+- add dropdown branch approved nav
 
+## Delete Module
+- Add Restore function.
+- Make the View button functional.
+- dropdown for admin
+
+## Backend 
+- fixed some backend based on the location
 
 
 

@@ -344,17 +344,106 @@ function getPendingApprovalTotal($date = null)
 
 // __________FOR APPROVED APPROVAL__________________________________________
 
-// Get pending approvals
+// ============================================================
+// GET APPROVED APPROVALS
+// ============================================================
+
 function getApprovedApprovals($limit = 10, $offset = 0, $date = null)
 {
-    return getAllApprovedApproval($limit, $offset, $date);
+    $role = strtolower(trim($_SESSION['Role'] ?? ''));
+
+
+    // ========================================================
+    // ADMIN
+    // ========================================================
+
+    if ($role === 'admin') {
+
+        $branch = trim($_GET['branch'] ?? 'all');
+
+        if ($branch === '') {
+            $branch = 'all';
+        }
+
+        return getAllApprovedApproval(
+            $limit,
+            $offset,
+            $date,
+            $branch
+        );
+    }
+
+
+    // ========================================================
+    // INSPECTOR
+    // ========================================================
+
+    if ($role === 'inspector') {
+
+        $branch = trim($_SESSION['Branch'] ?? '');
+
+        if ($branch === '') {
+            return false;
+        }
+
+        return getAllApprovedApproval(
+            $limit,
+            $offset,
+            $date,
+            $branch
+        );
+    }
+
+
+    return false;
 }
 
 
 // Get total number of pending approvals
 function getApprovedApprovalTotal($date = null)
 {
-    return getApprovedApprovalCount($date);
+    $role = strtolower(trim($_SESSION['Role'] ?? ''));
+
+
+    // ========================================================
+    // ADMIN
+    // ========================================================
+
+    if ($role === 'admin') {
+
+        $branch = trim($_GET['branch'] ?? 'all');
+
+        if ($branch === '') {
+            $branch = 'all';
+        }
+
+        return getApprovedApprovalCount(
+            $date,
+            $branch
+        );
+    }
+
+
+    // ========================================================
+    // INSPECTOR
+    // ========================================================
+
+    if ($role === 'inspector') {
+
+        $branch = trim($_SESSION['Branch'] ?? '');
+
+        if ($branch === '') {
+            return 0;
+        }
+
+        return getApprovedApprovalCount(
+            $date,
+            $branch
+        );
+    }
+
+
+    return 0;
 }
 
 
