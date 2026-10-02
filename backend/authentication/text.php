@@ -1,31 +1,27 @@
 <?php
-// session_start();
-
-
-
 session_start();
 
-require_once __DIR__ . '/../controller/QRCodeGeneratorController.php';
 
 
 
-// $timeout = 300; // 5 minutes ceiling
 
-// if (isset($_SESSION['LAST_ACTIVITY'])) {
-//     // 1. Sukatin kung ilang segundo na ang nakalipas mula sa huling activity
-//     $elapsedTime = time() - $_SESSION['LAST_ACTIVITY'];
 
-//     // 2. I-calculate ang natitirang segundo
-//     $remainingSeconds = max(0, $timeout - $elapsedTime);
+$timeout = 300; // 5 minutes ceiling
 
-//     // 3. I-convert sa minutes at seconds
-//     $minutesLeft = floor($remainingSeconds / 60);
-//     $secondsLeft = $remainingSeconds % 60;
+if (isset($_SESSION['LAST_ACTIVITY'])) {
+    // 1. Sukatin kung ilang segundo na ang nakalipas mula sa huling activity
+    $elapsedTime = time() - $_SESSION['LAST_ACTIVITY'];
 
-//     // 4. I-echo ang natitirang oras
-//     echo "Natitirang oras sa session: {$minutesLeft}m {$secondsLeft}s";
-// } else {
-//     echo "Walang active session activity.";
-// }
+    // 2. I-calculate ang natitirang segundo
+    $remainingSeconds = max(0, $timeout - $elapsedTime);
 
-$result = getAllFireExtinguishersCode();
+    // 3. I-convert sa minutes at seconds
+    $minutesLeft = floor($remainingSeconds / 60);
+    $secondsLeft = $remainingSeconds % 60;
+
+    // 4. I-echo ang natitirang oras
+    echo "Natitirang oras sa session: {$minutesLeft}m {$secondsLeft}s";
+} else {
+    echo "Walang active session activity.";
+}
+

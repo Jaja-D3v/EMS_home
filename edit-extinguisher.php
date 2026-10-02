@@ -1,6 +1,6 @@
 <?php
 include 'backend/controller/FireExtinguisherController.php';
-require_once 'backend/authentication/SessionChecker.php'; 
+// require_once 'backend/authentication/SessionChecker.php'; 
 
 $id = $_GET['id'];
 $data = getFireExtinguisherById($id);

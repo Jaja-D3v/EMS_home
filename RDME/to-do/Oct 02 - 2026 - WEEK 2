@@ -4,17 +4,17 @@ _____________________________________________________________
 
 ## Fire Extinguisher Module
 - Add Near Expiry sorting.
-- add dropdown for storage and installed
+- add dropdown for storage and installed                                                        #
 
 ## Dashboard Module
-- Make total number cards clickable.
+- Make total number cards clickable.                                                            #
 
 ## Approve Inspection Module
-- Add generate report button (to generate report of the selected date and branch).
-- Generate report based on the selected date.
+- Add generate report button (to generate report of the selected date and branch).              #
+- Generate report based on the selected date.                                                   #
 
 ## pagination
-- to all module that has list of data
+- to all module that has list of data                                                           #
 
 ## implementation of dropdown
 - implement the maintainable dropdown to forms that has dropdowns
@@ -56,6 +56,3 @@ ____________________________________________________________DONE________________
 - set default to current location of the admin to all modules that has dropdowns of branches
 
 Revised the Inspection Header to “Inspection Record,” fixed the auto-generated code bug in the Add Fire Extinguisher function, added branch dropdowns for Admin in the Dashboard and Delete modules, added branch filters for Pending, Approved, and Rejected Inspection tabs, implemented the 3-year expiration update when the action taken is Refilled, added success notifications after approval, added Restore functionality and made the View button functional in the Delete module, fixed backend issues, and set the Admin’s current location as the default branch across modules with branch dropdowns.
-
-
-
