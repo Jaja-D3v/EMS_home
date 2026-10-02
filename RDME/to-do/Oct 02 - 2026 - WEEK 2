@@ -1,0 +1,30 @@
+
+Day 9    TO-DO                       STATUS
+_____________________________________________________________
+
+## Fire Extinguisher Module
+- Add Near Expiry sorting.
+- Remove Near Expiry fetching.
+
+## Dashboard Module
+- Make total number cards clickable.
+- Add branch dropdown for Admin.
+
+## Approve Inspection Module
+- If action taken is Refilled, set expiry date to 3 years from the refill date.  #
+- Add date selection for report generation.
+- Generate report based on the selected date.
+
+## Delete Module
+- Add Restore function.
+- Make the View button functional.
+
+____________________________________________________________DONE___________________________________________________________________________
+
+# inspection header 
+- change the header to inspection record 
+
+# add fe function 
+- bugg fix for auto generated code 
+
+

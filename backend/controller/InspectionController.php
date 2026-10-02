@@ -179,51 +179,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
     } elseif ($action == 'update_evaluation_status') {
 
-        $inspect_id =
-            $_POST['inspect_id'] ?? null;
+        $inspect_id =  $_POST['inspect_id'] ?? null;
 
-        $eval_stats =
-            $_POST['evaluation_status'] ?? null;
+        $eval_stats = $_POST['evaluation_status'] ?? null;
 
-        $action_taken =
-            trim($_POST['action_taken'] ?? '');
+        $action_taken = trim($_POST['action_taken'] ?? '');
 
-        $target_date =
-            $_POST['target_date_of_implementation'] ?? null;
+        $target_date = $_POST['target_date_of_implementation'] ?? null;
 
-        $Approver_name =
-            $_SESSION['EmployeeName'] ?? null;
+        $Approver_name =  $_SESSION['EmployeeName'] ?? null;
 
 
         if ($eval_stats == "Approved") {
 
-            ApprovedBy(
-                $Approver_name,
-                $inspect_id
-            );
+            ApprovedBy($Approver_name,  $inspect_id);
+            
         } elseif ($eval_stats == "Rejected") {
 
-            RejectedBy(
-                $Approver_name,
-                $inspect_id
-            );
+            RejectedBy( $Approver_name, $inspect_id );
         }
 
-
         // Evaluation Status
-        $statusSuccess = updateEvalStats(
-            $inspect_id,
-            $eval_stats
-        );
-
+        $statusSuccess = updateEvalStats( $inspect_id, $eval_stats );
 
         // Corrective Action
-        $actionSuccess = updateCorrectiveAction(
-            $inspect_id,
-            $action_taken,
-            $target_date
-        );
-
+        $actionSuccess = updateCorrectiveAction($inspect_id, $action_taken, $target_date);
 
         // Final redirect
         if ($statusSuccess && $actionSuccess) {

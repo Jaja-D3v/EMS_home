@@ -1210,7 +1210,7 @@ $branchDropdown = getAllDropdownBranches();
                       <input
                         type="hidden"
                         name="action"
-                        value="add">
+                        value="add-new-extinguisher">
 
 
                       <!-- Fire Extinguisher Code -->
@@ -1399,9 +1399,10 @@ $branchDropdown = getAllDropdownBranches();
 
                         <select
                           id="branch"
-                          name="branch_id"
+                          name="branch"
                           class="form-select"
-                          required>
+                          required
+                          onchange="generateFireExtinguisherCode()">
                           <option value="" selected disabled>
                             Select branch
                           </option>
@@ -2036,8 +2037,10 @@ $branchDropdown = getAllDropdownBranches();
       // Delay checking
       codeCheckTimeout = setTimeout(() => {
 
+        const branch = document.getElementById('branch').value;
+
         fetch(
-            `backend/controller/FireExtinguisherController.php?action=checkCode&code=${encodeURIComponent(code)}`
+            `backend/controller/FireExtinguisherController.php?action=checkCode&code=${encodeURIComponent(code)}&branch=${encodeURIComponent(branch)}`
           )
           .then(response => {
 
@@ -2158,50 +2161,61 @@ $branchDropdown = getAllDropdownBranches();
 
     function generateFireExtinguisherCode() {
 
+      const branch = document.getElementById('branch').value;
+
+      if (!branch) {
+
+        codeInput.value = '';
+        addFireExtinguisherBtn.disabled = true;
+
+        Swal.fire({
+          icon: 'warning',
+          title: 'Branch Required',
+          text: 'Please select a branch to auto-generate an available code.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#0d6efd',
+          width: '320px',
+          padding: '1rem',
+          customClass: {
+            popup: 'small-swal-popup'
+          }
+        });
+
+
+        return;
+      }
+
       fetch(
-          'backend/controller/FireExtinguisherController.php?action=getNextCode'
+          `backend/controller/FireExtinguisherController.php?action=getNextCode&branch=${encodeURIComponent(branch)}`
         )
         .then(response => {
 
           if (!response.ok) {
-
             throw new Error(
               `HTTP error: ${response.status}`
             );
-
           }
 
           return response.json();
-
         })
         .then(result => {
 
-          console.log(
-            'Generated code:',
-            result
-          );
-
+          console.log('Generated code:', result);
 
           if (result.success) {
 
-            // Put generated code into input
             codeInput.value = result.code;
 
-            // Check generated code
+            // Check if generated code is available
             checkFireExtinguisherCode(
               result.code
             );
 
           } else {
 
-            console.error(
-              'Failed to generate fire extinguisher code.'
-            );
-
+            codeInput.value = '';
             addFireExtinguisherBtn.disabled = true;
-
           }
-
         })
         .catch(error => {
 
@@ -2210,10 +2224,9 @@ $branchDropdown = getAllDropdownBranches();
             error
           );
 
+          codeInput.value = '';
           addFireExtinguisherBtn.disabled = true;
-
         });
-
     }
 
 

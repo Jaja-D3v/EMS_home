@@ -2,42 +2,26 @@
 Day 8    TO-DO                       STATUS
 _____________________________________________________________
 
-## list of fire extinguisher 
-- sort add near expiry fe               
-## generate report 
-- select date and generate report        
-
-## dashboard
-- cards that has total number should be clickable 
-
-# inspection header 
-- change the header to inspection record 
-
-## approve inspection module
-- if action taken is refilled dapat mag aadjust ang expiry date 3 years from the date of refilled  
-
-## Dashboard
-- dropdown branch for admin 
 
 
 ____________________________________________________________DONE___________________________________________________________________________
 
-## login form
-- revised and created new design for login form
-- created system selector with design 
-- revised color in fire extinguisher    
-- remove branch dropdown dropdown from login 
-- fix QR Code module add branch filter 
-- fix fire extinguisher list module add branch filter 
-- revise the backend for location
-- restrict the Inspector only show the 4 modules
-- Admin can access all the data based on the revised backend
-- Added dropdown tables
-- maintence module design added and creates
-- maintenance functionality working
-- maintenance crud for dropdowns user can edit add and delete
-- fetch deleted fe dun sa mismong page nya    
-- get the location of the user based on the db for users 
+## Login Form
+- Revised and created a new login form design.
+- Created and designed the system selector.
+- Revised the fire extinguisher color design.
+- Removed the branch dropdown from the login form.
+- Added branch filter to the QR Code module.
+- Added branch filter to the fire extinguisher list.
+- Revised the backend location handling.
+- Restricted Inspector access to the 4 assigned modules.
+- Updated Admin access to view data based on the revised backend.
+- Added dropdown tables.
+- Added and created the Maintenance module design.
+- Implemented Maintenance module functionality.
+- Added CRUD functionality for Maintenance dropdowns module.
+- Added fetching of deleted fire extinguishers on their respective page.
+- Fetch user location based on the location data stored in the database.
 
 Revised and created a new design for the Login Form, created the System Selector with design, revised the Fire Extinguisher color, removed the Branch dropdown from the Login Form, fixed the QR Code module by adding a Branch filter, fixed the Fire Extinguisher List module by adding a Branch filter, revised the backend for Location, restricted the Inspector role to show only the four assigned modules, updated the Admin access based on the revised backend, added dropdown tables, designed and created the Maintenance module, implemented its functionality, added CRUD functionality for dropdowns allowing users to edit, add, and delete records.
 

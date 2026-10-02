@@ -44,10 +44,10 @@ function getFireExtinguisherById($id)
 // Get fire extinguisher by code
 // =====================================================
 
-function getFireExtinguisherByCode($code)
-{
-    return getByCode($code);
-}
+// function getFireExtinguisherByCode($code)
+// {
+//     return getByCode($code);
+// }
 
 
 // =====================================================
@@ -62,29 +62,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // =================================================
     // CHECK FIRE EXTINGUISHER CODE
     // =================================================
-
     if ($action === 'checkCode') {
 
         header('Content-Type: application/json');
 
         $code = trim($_GET['code'] ?? '');
+        $branch = trim($_GET['branch'] ?? '');
 
         if ($code === '') {
-
             echo json_encode([
                 'success' => true,
-                'exists' => false
+                'exists' => false,
+                'deleted' => false
             ]);
-
             exit;
         }
 
-        $data = getByCode($code);
+        $data = getByCode($code, $branch);
 
-        echo json_encode([
-            'success' => true,
-            'exists' => !empty($data)
-        ]);
+        if (!empty($data)) {
+
+            if ((int)$data['archived'] === 1) {
+
+                echo json_encode([
+                    'success' => true,
+                    'exists' => true,
+                    'deleted' => true
+                ]);
+            } else {
+
+                echo json_encode([
+                    'success' => true,
+                    'exists' => true,
+                    'deleted' => false
+                ]);
+            }
+        } else {
+
+            echo json_encode([
+                'success' => true,
+                'exists' => false,
+                'deleted' => false
+            ]);
+        }
 
         exit;
     }
@@ -98,7 +118,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         header('Content-Type: application/json');
 
-        $code = getNextFireExtinguisherCode();
+        $branch = trim($_GET['branch'] ?? '');
+
+        if ($branch === '') {
+            echo json_encode([
+                'success' => false
+            ]);
+            exit;
+        }
+
+        $code = getNextFireExtinguisherCodeModel($branch);
 
         echo json_encode([
             'success' => true,
@@ -117,38 +146,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $ext_code =
-        $_POST['extinguisher_code'] ?? null;
-
-    $ext_type =
-        $_POST['type'] ?? null;
-
-    $ext_capacity =
-        $_POST['capacity'] ?? null;
-
-    $ext_location =
-        $_POST['location'] ?? null;
-
-    $ext_manufactured_date =
-        $_POST['manufactured_date'] ?? null;
-
-    $ext_class =
-        $_POST['class'] ?? null;
-
-    $ext_placement =
-        $_POST['placement'] ?? null;
-
-    $ext_condition_status =
-        $_POST['condition_status'] ?? null;
-
-    $ext_remarks =
-        $_POST['remarks'] ?? null;
-
-    $ext_expiration_date =
-        $_POST['expiration_date'] ?? null;
-
-    $ext_id =
-        $_POST['extinguisher_id'] ?? null;
+    $ext_code = $_POST['extinguisher_code'] ?? null;
+    $ext_type = $_POST['type'] ?? null;
+    $ext_capacity = $_POST['capacity'] ?? null;
+    $ext_location = $_POST['location'] ?? null;
+    $ext_manufactured_date = $_POST['manufactured_date'] ?? null;
+    $ext_class = $_POST['class'] ?? null;
+    $ext_placement =  $_POST['placement'] ?? null;
+    $ext_condition_status = $_POST['condition_status'] ?? null;
+    $ext_remarks = $_POST['remarks'] ?? null;
+    $ext_expiration_date = $_POST['expiration_date'] ?? null;
+    $ext_id = $_POST['extinguisher_id'] ?? null;
 
     /*
     |--------------------------------------------------------------------------
@@ -159,21 +167,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     |--------------------------------------------------------------------------
     */
 
-    $ext_branch =
-        $_SESSION['Branch'] ?? null;
+    $ext_branch =  $_POST['branch'] ?? null;
 
-    $action =
-        $_POST['action'] ?? null;
+    $action = $_POST['action'] ?? null;
 
-    $added_by =
-        $_SESSION['EmployeeName'] ?? null;
+    $added_by = $_SESSION['EmployeeName'] ?? null;
 
 
     // =================================================
     // ADD
     // =================================================
 
-    if ($action == 'add') {
+    if ($action == 'add-new-extinguisher') {
 
         addNewExtinguisher(
             $ext_code,
@@ -186,14 +191,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ext_condition_status,
             $ext_remarks,
             $ext_expiration_date,
-            $added_by
+            $added_by,
+            $ext_branch
         );
     }
 
-
-    // =================================================
     // UPDATE
-    // =================================================
 
     else if ($action == 'update') {
 
@@ -214,9 +217,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 
-// =====================================================
 // UPDATE EXTINGUISHER
-// =====================================================
 
 function updateExtinguisher(
     $id,
@@ -295,7 +296,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             echo json_encode([
                 'success' => false,
                 'message' =>
-                    'Invalid fire extinguisher ID.'
+                'Invalid fire extinguisher ID.'
             ]);
 
             exit;
@@ -310,7 +311,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             echo json_encode([
                 'success' => false,
                 'message' =>
-                    'Fire extinguisher not found.'
+                'Fire extinguisher not found.'
             ]);
 
             exit;
@@ -326,50 +327,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
 
-    // =================================================
-    // GET BY CODE
-    // =================================================
+    // // =================================================
+    // // GET BY CODE
+    // // =================================================
 
-    else if ($action === 'getByCode') {
+    // else if ($action === 'getByCode') {
 
-        header('Content-Type: application/json');
+    //     header('Content-Type: application/json');
 
-        $code = trim($_GET['code'] ?? '');
-
-
-        if ($code === '') {
-
-            echo json_encode([
-                'success' => false,
-                'message' => 'Invalid QR code.'
-            ]);
-
-            exit;
-        }
+    //     $code = trim($_GET['code'] ?? '');
 
 
-        $data = getFireExtinguisherByCode($code);
+    //     if ($code === '') {
+
+    //         echo json_encode([
+    //             'success' => false,
+    //             'message' => 'Invalid QR code.'
+    //         ]);
+
+    //         exit;
+    //     }
 
 
-        if (!$data) {
-
-            echo json_encode([
-                'success' => false,
-                'message' =>
-                    'Fire extinguisher not found.'
-            ]);
-
-            exit;
-        }
+    //     $data = getFireExtinguisherByCode($code);
 
 
-        echo json_encode([
-            'success' => true,
-            'data' => $data
-        ]);
+    //     if (!$data) {
 
-        exit;
-    }
+    //         echo json_encode([
+    //             'success' => false,
+    //             'message' =>
+    //                 'Fire extinguisher not found.'
+    //         ]);
+
+    //         exit;
+    //     }
+
+
+    //     echo json_encode([
+    //         'success' => true,
+    //         'data' => $data
+    //     ]);
+
+    //     exit;
+    // }
 
 
     // =================================================
@@ -448,7 +449,8 @@ function addNewExtinguisher(
     $condition_status,
     $remarks,
     $expiration_date,
-    $added_by
+    $added_by,
+    $branch
 ) {
 
     $success = addNewFireExtinguisherModel(
@@ -462,7 +464,8 @@ function addNewExtinguisher(
         $condition_status,
         $remarks,
         $expiration_date,
-        $added_by
+        $added_by,
+        $branch
     );
 
 
@@ -573,9 +576,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 // GET NEXT CODE
 // =====================================================
 
-function getNextFireExtinguisherCode()
+function getNextFireExtinguisherCode($branch)
 {
-    return getNextFireExtinguisherCodeModel();
+    return getNextFireExtinguisherCodeModel($branch);
 }
 
 

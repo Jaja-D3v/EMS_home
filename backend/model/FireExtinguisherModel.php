@@ -86,7 +86,6 @@ function getAll($limit, $offset)
                 $limit,
                 $offset
             );
-
         } else {
 
             $sql .= "
@@ -235,9 +234,7 @@ function getById($id)
     |--------------------------------------------------------------------------
     | Admin can view any branch.
     |--------------------------------------------------------------------------
-    */
-
-    elseif ($role === 'admin') {
+    */ elseif ($role === 'admin') {
 
         // No branch restriction.
     }
@@ -247,9 +244,7 @@ function getById($id)
     |--------------------------------------------------------------------------
     | INVALID ROLE
     |--------------------------------------------------------------------------
-    */
-
-    else {
+    */ else {
 
         return false;
     }
@@ -270,7 +265,6 @@ function getById($id)
             $id,
             $branch
         );
-
     } else {
 
         mysqli_stmt_bind_param(
@@ -293,19 +287,9 @@ function getById($id)
 // GET FIRE EXTINGUISHER BY CODE
 // =====================================================
 
-function getByCode($code)
+function getByCode($code, $branch)
 {
     global $conn;
-
-    /*
-    |--------------------------------------------------------------------------
-    | QR CODE LOOKUP
-    |--------------------------------------------------------------------------
-    | Do NOT restrict by branch.
-    |
-    | QR code is the unique identifier of the extinguisher.
-    |--------------------------------------------------------------------------
-    */
 
     $sql = "SELECT
                 extinguisher_code,
@@ -313,10 +297,11 @@ function getByCode($code)
                 type,
                 capacity,
                 class,
-                branch
+                branch,
+                archived
             FROM fire_extinguishers_tbl
             WHERE extinguisher_code = ?
-              AND archived = 0
+              AND branch = ?
             LIMIT 1";
 
     $stmt = mysqli_prepare($conn, $sql);
@@ -327,8 +312,9 @@ function getByCode($code)
 
     mysqli_stmt_bind_param(
         $stmt,
-        "s",
-        $code
+        "ss",
+        $code,
+        $branch
     );
 
     mysqli_stmt_execute($stmt);
@@ -337,7 +323,6 @@ function getByCode($code)
 
     return mysqli_fetch_assoc($result);
 }
-
 
 // =====================================================
 // ADD NEW FIRE EXTINGUISHER
@@ -354,15 +339,11 @@ function addNewFireExtinguisherModel(
     $condition_status,
     $remarks,
     $expiration_date,
-    $added_by
+    $added_by,
+    $branch
 ) {
     global $conn;
 
-    $branch = getCurrentBranch();
-
-    if (empty($branch)) {
-        return false;
-    }
 
     $sql = "INSERT INTO fire_extinguishers_tbl
             (
@@ -488,7 +469,6 @@ function updateFireExtinguisherModel(
             $id,
             $branch
         );
-
     } else {
 
         mysqli_stmt_bind_param(
@@ -515,10 +495,7 @@ function updateFireExtinguisherModel(
     return $result;
 }
 
-
-// =====================================================
 // SOFT DELETE / ARCHIVE
-// =====================================================
 
 function deleteFireExtinguisherById($id)
 {
@@ -560,7 +537,6 @@ function deleteFireExtinguisherById($id)
             $id,
             $branch
         );
-
     } else {
 
         mysqli_stmt_bind_param(
@@ -578,15 +554,10 @@ function deleteFireExtinguisherById($id)
 }
 
 
-// =====================================================
 // GET NEXT FIRE EXTINGUISHER CODE
-// =====================================================
-
-function getNextFireExtinguisherCodeModel()
+function getNextFireExtinguisherCodeModel($branch)
 {
     global $conn;
-
-    $branch = getCurrentBranch();
 
     if (empty($branch)) {
         return 'FE-001';
@@ -608,16 +579,10 @@ function getNextFireExtinguisherCodeModel()
         return 'FE-001';
     }
 
-    mysqli_stmt_bind_param(
-        $stmt,
-        "s",
-        $branch
-    );
-
+    mysqli_stmt_bind_param($stmt, "s", $branch);
     mysqli_stmt_execute($stmt);
 
     $result = mysqli_stmt_get_result($stmt);
-
     $row = mysqli_fetch_assoc($result);
 
     mysqli_stmt_close($stmt);
@@ -640,9 +605,7 @@ function getNextFireExtinguisherCodeModel()
 }
 
 
-// =====================================================
 // UPDATE REFILLED DATE
-// =====================================================
 
 function update_refilled($ext_code)
 {
@@ -687,10 +650,7 @@ function update_refilled($ext_code)
 }
 
 
-// =====================================================
 // UPDATE REMARKS
-// =====================================================
-
 function update_remarks($remarks, $ext_code)
 {
     global $conn;
@@ -729,10 +689,7 @@ function update_remarks($remarks, $ext_code)
 }
 
 
-// =====================================================
 // UPDATE FIRE EXTINGUISHER STATUS
-// =====================================================
-
 function update_status($status, $ext_code)
 {
     global $conn;
