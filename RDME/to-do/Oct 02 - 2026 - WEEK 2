@@ -14,8 +14,11 @@ _____________________________________________________________
 - Add generate report button (to generate report of the selected date and branch).
 - Generate report based on the selected date.
 
-## Dropdown 
-- set default to current location of the admin
+## pagination
+
+## implementation of dropdown
+- implement the maintainable dropdown to forms that has dropdowns
+
 
 ____________________________________________________________DONE___________________________________________________________________________
 
@@ -45,6 +48,9 @@ ____________________________________________________________DONE________________
 
 ## Backend 
 - fixed some backend
+
+## Dropdown 
+- set default to current location of the admin to all modules that has dropdowns of branches
 
 
 

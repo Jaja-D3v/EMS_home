@@ -101,6 +101,24 @@ require_once 'backend/authentication/SessionChecker.php';
               <!-- Branch Filter - ADMIN ONLY -->
               <?php if (strtolower(trim($_SESSION['Role'] ?? '')) === 'admin'): ?>
 
+                <?php
+                // Branch ng naka-login na Admin
+                $adminBranch = trim($_SESSION['Branch'] ?? '');
+
+                // Kung may branch sa URL, iyon ang gagamitin.
+                // Kung wala, gamitin ang branch ng Admin.
+                $selectedBranch = $_GET['branch'] ?? $adminBranch;
+
+                // Kung walang branch sa session at wala rin sa URL,
+                // default sa All Branches
+                if (empty($selectedBranch)) {
+                  $selectedBranch = 'all';
+                }
+
+                // Get all branches
+                $branches = getAllDropdownBranches();
+                ?>
+
                 <div class="col-12 col-md-auto">
 
                   <select
@@ -108,35 +126,35 @@ require_once 'backend/authentication/SessionChecker.php';
                     id="branchFilter"
                     style="min-width: 190px;">
 
-                    <option value="all">All Branches</option>
+                    <!-- All Branches -->
+                    <option
+                      value="all"
+                      <?= $selectedBranch === 'all' ? 'selected' : '' ?>>
+                      All Branches
+                    </option>
 
-                    <?php
-                    $branches = getAllDropdownBranches();
+                    <?php if (!empty($branches)): ?>
 
-                    if (!empty($branches)):
-                      foreach ($branches as $branch):
-                    ?>
+                      <?php foreach ($branches as $branch): ?>
 
                         <option
                           value="<?= htmlspecialchars($branch['value']) ?>"
-                          <?= (
-                            ($_GET['branch'] ?? 'all') === $branch['value']
-                          ) ? 'selected' : '' ?>>
+                          <?= $selectedBranch === $branch['value'] ? 'selected' : '' ?>>
 
                           <?= htmlspecialchars($branch['value']) ?>
 
                         </option>
 
-                    <?php
-                      endforeach;
-                    endif;
-                    ?>
+                      <?php endforeach; ?>
+
+                    <?php endif; ?>
 
                   </select>
 
                 </div>
 
               <?php endif; ?>
+
 
               <script>
                 document.addEventListener('DOMContentLoaded', function() {
@@ -153,16 +171,11 @@ require_once 'backend/authentication/SessionChecker.php';
 
                     const url = new URL(window.location.href);
 
-                    if (selectedBranch === 'all' || selectedBranch === '') {
+                    // Always set the branch parameter.
+                    // This allows "all" to remain selected after reload.
+                    url.searchParams.set('branch', selectedBranch);
 
-                      url.searchParams.delete('branch');
-
-                    } else {
-
-                      url.searchParams.set('branch', selectedBranch);
-
-                    }
-
+                    // Reload page with selected branch
                     window.location.href = url.toString();
 
                   });
