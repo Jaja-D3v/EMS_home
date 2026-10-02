@@ -30,7 +30,7 @@ require_once 'backend/authentication/SessionChecker.php';
     <div class="container-fluid py-0">
 
       <div class="card border-0 shadow-sm text-white mb-1 mt-0 overflow-hidden "
-        style="background: linear-gradient(135deg, #700808, #f50808);">
+        style="background: linear-gradient(135deg, #704f08, #f59a08);">
 
         <div class="card-body p-4">
 
@@ -50,11 +50,11 @@ require_once 'backend/authentication/SessionChecker.php';
             <div class="col">
 
               <h2 class="fw-bold mb-1">
-                Fire Extinguishers
+                Fire Extinguishers Expiring Soon
               </h2>
 
               <p class="mb-0 text-white-50">
-                Manage and monitor all registered fire extinguishers.
+                List of all fire extinguishers that are expiring soon.
               </p>
 
             </div>

@@ -125,6 +125,7 @@ function getAllNotGoodCondition($branch)
         SELECT COUNT(*) AS total
         FROM fire_extinguishers_tbl
         WHERE condition_status = 'Not Good'
+        AND archived = 0
     ";
 
     if ($branch !== 'all') {
@@ -166,6 +167,7 @@ function getFireExtinguisherTypeCounts($branch)
         FROM fire_extinguishers_tbl f
         WHERE f.type IS NOT NULL
           AND TRIM(f.type) != ''
+          AND f.archived = 0
     ";
 
     if ($branch !== 'all') {
@@ -201,37 +203,6 @@ function getFireExtinguisherTypeCounts($branch)
 }
 
 
-// ============================================================
-// GET ALL BRANCHES
-// ============================================================
-
-function getAllBranches()
-{
-    global $conn;
-
-    $sql = "
-        SELECT DISTINCT branch
-        FROM fire_extinguishers_tbl
-        WHERE branch IS NOT NULL
-          AND TRIM(branch) != ''
-        ORDER BY branch ASC
-    ";
-
-    $result = $conn->query($sql);
-
-    $data = [];
-
-    if ($result) {
-
-        while ($row = $result->fetch_assoc()) {
-            $data[] = $row;
-        }
-
-    }
-
-    return $data;
-}
-
 
 // ============================================================
 // ALL GOOD CONDITION
@@ -245,6 +216,7 @@ function getAllGoodCondition($branch)
         SELECT COUNT(*) AS total
         FROM fire_extinguishers_tbl
         WHERE condition_status = 'Good'
+         AND archived = 0
     ";
 
     if ($branch !== 'all') {
@@ -284,6 +256,8 @@ function getNotGoodInstalledFireExtinguishersCount($branch)
         FROM fire_extinguishers_tbl
         WHERE location != 'Storage'
           AND condition_status = 'Not Good'
+          AND archived = 0
+
     ";
 
     if ($branch !== 'all') {
@@ -323,6 +297,7 @@ function getGoodInstalledFireExtinguishersCount($branch)
         FROM fire_extinguishers_tbl
         WHERE location != 'Storage'
           AND condition_status = 'Good'
+          AND archived = 0
     ";
 
     if ($branch !== 'all') {
@@ -361,6 +336,7 @@ function getInstalledFireExtinguishersCount($branch)
         SELECT COUNT(*) AS total
         FROM fire_extinguishers_tbl
         WHERE location != 'Storage'
+        AND archived = 0
     ";
 
     if ($branch !== 'all') {
@@ -400,6 +376,7 @@ function getNotGoodSpareFireExtinguishersCount($branch)
         FROM fire_extinguishers_tbl
         WHERE location = 'Storage'
           AND condition_status = 'Not Good'
+          AND archived = 0
     ";
 
     if ($branch !== 'all') {
@@ -439,6 +416,8 @@ function getGoodSpareFireExtinguishersCount($branch)
         FROM fire_extinguishers_tbl
         WHERE location = 'Storage'
           AND condition_status = 'Good'
+          AND archived = 0
+          
     ";
 
     if ($branch !== 'all') {

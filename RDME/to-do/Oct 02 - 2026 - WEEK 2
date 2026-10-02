@@ -5,10 +5,11 @@ _____________________________________________________________
 ## Fire Extinguisher Module
 - Add Near Expiry sorting.
 - Remove Near Expiry fetching.
+- add dropdown for storage and installed
 
 ## Dashboard Module
 - Make total number cards clickable.
-- Add branch dropdown for Admin.
+- Add branch dropdown for Admin. 
 
 ## Approve Inspection Module
 - If action taken is Refilled, set expiry date to 3 years from the refill date.  #
@@ -26,5 +27,9 @@ ____________________________________________________________DONE________________
 
 # add fe function 
 - bugg fix for auto generated code 
+
+## Dashboard Module
+- Add branch dropdown for Admin. 
+
 
 

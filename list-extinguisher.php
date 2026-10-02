@@ -33,7 +33,7 @@ $branchDropdown = getAllDropdownBranches();
     <div class="container-fluid py-0">
 
       <div class="card border-0 shadow-sm text-white mb-1 mt-0 overflow-hidden "
-        style="background: linear-gradient(135deg, #700808, #f50808);">
+        style="background: linear-gradient(135deg, #0f0870, #088af5);">
 
         <div class="card-body p-4">
 
@@ -53,11 +53,11 @@ $branchDropdown = getAllDropdownBranches();
             <div class="col">
 
               <h2 class="fw-bold mb-1">
-                Fire Extinguishers
+                Active Fire Extinguishers
               </h2>
 
               <p class="mb-0 text-white-50">
-                Manage and monitor all registered fire extinguishers.
+                Manage and monitor all active and registered fire extinguishers.
               </p>
 
             </div>
