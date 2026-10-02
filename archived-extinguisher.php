@@ -1,6 +1,8 @@
 <?php
 require_once 'backend/authentication/SessionChecker.php';
 require_once 'backend/controller/FireExtinguisherController.php';
+include './backend/controller/QRCodeGeneratorController.php';
+
 
 ?>
 
@@ -114,6 +116,78 @@ require_once 'backend/controller/FireExtinguisherController.php';
                                 placeholder="Search FE code or location...">
 
                         </div>
+
+                        <!-- Branch Filter - ADMIN ONLY -->
+                        <?php if (strtolower(trim($_SESSION['Role'] ?? '')) === 'admin'): ?>
+
+                            <div class="col-12 col-md-auto">
+
+                                <select
+                                    class="form-select"
+                                    id="branchFilter"
+                                    style="min-width: 190px;">
+
+                                    <option value="all">All Branches</option>
+
+                                    <?php
+                                    
+                                    $branches = getAllBranches();
+
+                                    if ($branches && $branches->num_rows > 0):
+                                        while ($branch = $branches->fetch_assoc()):
+                                    ?>
+
+                                            <option
+                                                value="<?= htmlspecialchars($branch['branch']) ?>"
+                                                <?= (
+                                                    ($_GET['branch'] ?? 'all') === $branch['branch']
+                                                ) ? 'selected' : '' ?>>
+
+                                                <?= htmlspecialchars($branch['branch']) ?>
+
+                                            </option>
+
+                                    <?php
+                                        endwhile;
+                                    endif;
+                                    ?>
+
+                                </select>
+
+                            </div>
+
+                        <?php endif; ?>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+
+                                const branchFilter = document.getElementById('branchFilter');
+
+                                if (!branchFilter) {
+                                    return;
+                                }
+
+                                branchFilter.addEventListener('change', function() {
+
+                                    const selectedBranch = this.value;
+
+                                    const url = new URL(window.location.href);
+
+                                    if (selectedBranch === 'all' || selectedBranch === '') {
+
+                                        url.searchParams.delete('branch');
+
+                                    } else {
+
+                                        url.searchParams.set('branch', selectedBranch);
+
+                                    }
+
+                                    window.location.href = url.toString();
+
+                                });
+
+                            });
+                        </script>
 
                     </div>
 

@@ -775,33 +775,46 @@ function getTotalFireExtinguishersModel()
 // =====================================================
 // GET ALL DELETED FIRE EXTINGUISHERS
 // =====================================================
-
 function getAllDeletedFireExtinguishers($limit, $offset)
 {
     global $conn;
 
-    /*
-    |--------------------------------------------------------------------------
-    | IMPORTANT
-    |--------------------------------------------------------------------------
-    | Existing code used $_SESSION['branch'].
-    | Your login session uses $_SESSION['Branch'].
-    |--------------------------------------------------------------------------
-    */
+    $role = strtolower(trim($_SESSION['Role'] ?? ''));
 
-    $branch = $_SESSION['Branch'] ?? null;
-
-    if (empty($branch)) {
-        return [];
+    // ADMIN = use selected branch from URL
+    // INSPECTOR = use assigned branch from session
+    if ($role === 'admin') {
+        $branch = trim($_GET['branch'] ?? 'all');
+    } else {
+        $branch = trim($_SESSION['Branch'] ?? '');
     }
 
     $sql = "SELECT *
             FROM fire_extinguishers_tbl
-            WHERE archived = 1
-              AND LOWER(TRIM(branch)) =
-                  LOWER(TRIM(?))
-            ORDER BY extinguisher_id DESC
-            LIMIT ? OFFSET ?";
+            WHERE archived = 1";
+
+    $params = [];
+    $types = '';
+
+    // Apply branch filter
+    if ($branch !== 'all' && !empty($branch)) {
+
+        $sql .= "
+            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
+        ";
+
+        $params[] = $branch;
+        $types .= 's';
+    }
+
+    $sql .= "
+        ORDER BY extinguisher_id DESC
+        LIMIT ? OFFSET ?
+    ";
+
+    $params[] = $limit;
+    $params[] = $offset;
+    $types .= 'ii';
 
     $stmt = mysqli_prepare($conn, $sql);
 
@@ -811,10 +824,8 @@ function getAllDeletedFireExtinguishers($limit, $offset)
 
     mysqli_stmt_bind_param(
         $stmt,
-        "sii",
-        $branch,
-        $limit,
-        $offset
+        $types,
+        ...$params
     );
 
     mysqli_stmt_execute($stmt);
@@ -830,7 +841,6 @@ function getAllDeletedFireExtinguishers($limit, $offset)
 
     return $data;
 }
-
 
 // =====================================================
 // GET TOTAL DELETED FIRE EXTINGUISHERS

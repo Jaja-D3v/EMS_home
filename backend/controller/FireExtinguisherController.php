@@ -592,17 +592,22 @@ function getTotalFireExtinguishers()
 }
 
 
-// =====================================================
-// GET ARCHIVED FIRE EXTINGUISHERS
-// =====================================================
-
 function getAllArchiveFireExtinguishers(
     $limit = 10,
     $offset = 0
 ) {
+    $role = strtolower(trim($_SESSION['Role'] ?? ''));
+
+    if ($role === 'admin') {
+        $branch = trim($_GET['branch'] ?? 'all');
+    } else {
+        $branch = trim($_SESSION['Branch'] ?? '');
+    }
+
     return getAllDeletedFireExtinguishers(
         $limit,
-        $offset
+        $offset,
+        $branch
     );
 }
 
