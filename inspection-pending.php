@@ -2,6 +2,7 @@
 
 require_once 'backend/authentication/SessionChecker.php';
 require_once 'backend/controller/InspectionController.php';
+require_once 'backend/controller/DropdownBranchController.php';
 
 $limit = 10;
 
@@ -165,6 +166,78 @@ if ($result) {
                 ">
               </div>
             </div>
+
+
+            <!-- Branch Filter - ADMIN ONLY -->
+            <?php if (strtolower(trim($_SESSION['Role'] ?? '')) === 'admin'): ?>
+
+              <div class="col-12 col-md-auto">
+
+                <select
+                  class="form-select"
+                  id="branchFilter"
+                  style="min-width: 190px;">
+
+                  <option value="all">All Branches</option>
+
+                  <?php
+                  $branches = getAllDropdownBranches();
+
+                  if (!empty($branches)):
+                    foreach ($branches as $branch):
+                  ?>
+
+                      <option
+                        value="<?= htmlspecialchars($branch['value']) ?>"
+                        <?= (
+                          ($_GET['branch'] ?? 'all') === $branch['value']
+                        ) ? 'selected' : '' ?>>
+
+                        <?= htmlspecialchars($branch['value']) ?>
+
+                      </option>
+
+                  <?php
+                    endforeach;
+                  endif;
+                  ?>
+
+                </select>
+
+              </div>
+
+            <?php endif; ?>
+            <script>
+              document.addEventListener('DOMContentLoaded', function() {
+
+                const branchFilter = document.getElementById('branchFilter');
+
+                if (!branchFilter) {
+                  return;
+                }
+
+                branchFilter.addEventListener('change', function() {
+
+                  const selectedBranch = this.value;
+
+                  const url = new URL(window.location.href);
+
+                  if (selectedBranch === 'all' || selectedBranch === '') {
+
+                    url.searchParams.delete('branch');
+
+                  } else {
+
+                    url.searchParams.set('branch', selectedBranch);
+
+                  }
+
+                  window.location.href = url.toString();
+
+                });
+
+              });
+            </script>
 
           </div>
 

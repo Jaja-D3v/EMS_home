@@ -167,7 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $status,
             $branch
         );
-         // Final redirect
+        // Final redirect
         if ($success) {
 
             header(
@@ -175,8 +175,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             );
             exit;
         }
-
-        
     } elseif ($action == 'update_evaluation_status') {
 
         $inspect_id =  $_POST['inspect_id'] ?? null;
@@ -193,14 +191,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($eval_stats == "Approved") {
 
             ApprovedBy($Approver_name,  $inspect_id);
-            
         } elseif ($eval_stats == "Rejected") {
 
-            RejectedBy( $Approver_name, $inspect_id );
+            RejectedBy($Approver_name, $inspect_id);
         }
 
         // Evaluation Status
-        $statusSuccess = updateEvalStats( $inspect_id, $eval_stats );
+        $statusSuccess = updateEvalStats($inspect_id, $eval_stats);
 
         // Corrective Action
         $actionSuccess = updateCorrectiveAction($inspect_id, $action_taken, $target_date);
@@ -240,17 +237,109 @@ function getAllInspected()
 // __________FOR PENDING APPROVAL__________________________________________
 
 
-// Get pending approvals
+// ============================================================
+// GET PENDING APPROVALS
+// ============================================================
+
 function getPendingApprovals($limit = 10, $offset = 0, $date = null)
 {
-    return getAllPendingApproval($limit, $offset, $date);
+    $role = strtolower(trim($_SESSION['Role'] ?? ''));
+
+    // ========================================================
+    // ADMIN
+    // ========================================================
+    if ($role === 'admin') {
+
+        // Admin can select:
+        // ?branch=all
+        // ?branch=Laguna
+        // ?branch=Main Office
+
+        $branch = trim($_GET['branch'] ?? 'all');
+
+        if ($branch === '') {
+            $branch = 'all';
+        }
+
+        return getAllPendingApproval(
+            $limit,
+            $offset,
+            $date,
+            $branch
+        );
+    }
+
+
+    // ========================================================
+    // INSPECTOR
+    // ========================================================
+    if ($role === 'inspector') {
+
+        $branch = trim($_SESSION['Branch'] ?? '');
+
+        if ($branch === '') {
+            return false;
+        }
+
+        return getAllPendingApproval(
+            $limit,
+            $offset,
+            $date,
+            $branch
+        );
+    }
+
+
+    return false;
 }
 
 
-// Get total number of pending approvals
+// ============================================================
+// GET PENDING APPROVAL TOTAL
+// ============================================================
+
 function getPendingApprovalTotal($date = null)
 {
-    return getPendingApprovalCount($date);
+    $role = strtolower(trim($_SESSION['Role'] ?? ''));
+
+
+    // ========================================================
+    // ADMIN
+    // ========================================================
+    if ($role === 'admin') {
+
+        $branch = trim($_GET['branch'] ?? 'all');
+
+        if ($branch === '') {
+            $branch = 'all';
+        }
+
+        return getPendingApprovalCount(
+            $date,
+            $branch
+        );
+    }
+
+
+    // ========================================================
+    // INSPECTOR
+    // ========================================================
+    if ($role === 'inspector') {
+
+        $branch = trim($_SESSION['Branch'] ?? '');
+
+        if ($branch === '') {
+            return 0;
+        }
+
+        return getPendingApprovalCount(
+            $date,
+            $branch
+        );
+    }
+
+
+    return 0;
 }
 
 // __________FOR APPROVED APPROVAL__________________________________________

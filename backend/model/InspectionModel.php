@@ -177,38 +177,76 @@ function getInspectionCheckListById($id)
 // FOR PENDING APPROVAL
 // ============================================================
 
-// Get pending approvals with pagination and exact date filter
-function getAllPendingApproval($limit = 10, $offset = 0, $date = null)
-{
+// ============================================================
+// GET ALL PENDING APPROVAL
+// ============================================================
+
+function getAllPendingApproval(
+    $limit = 10,
+    $offset = 0,
+    $date = null,
+    $branch = 'all'
+) {
     global $conn;
 
-    $branch = getBranch();
-
-    if (empty($branch)) {
-        return false;
-    }
 
     $sql = "SELECT *
             FROM inspection_checklist_tbl
-            WHERE evaluation_status = 'Pending'
-              AND LOWER(TRIM(branch)) = LOWER(TRIM(?))";
+            WHERE evaluation_status = 'Pending'";
 
-    $types = "s";
-    $params = [$branch];
 
-    // Exact date filter
+    $types = "";
+    $params = [];
+
+
+    // ========================================================
+    // BRANCH FILTER
+    // ========================================================
+
+    if ($branch !== 'all' && !empty($branch)) {
+
+        $sql .= "
+            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
+        ";
+
+        $types .= "s";
+        $params[] = $branch;
+    }
+
+
+    // ========================================================
+    // DATE FILTER
+    // ========================================================
+
     if (!empty($date)) {
-        $sql .= " AND DATE(date_inspected) = ?";
+
+        $sql .= "
+            AND DATE(date_inspected) = ?
+        ";
+
         $types .= "s";
         $params[] = $date;
     }
 
-    $sql .= " ORDER BY inspect_id DESC
-              LIMIT ? OFFSET ?";
+
+    // ========================================================
+    // PAGINATION
+    // ========================================================
+
+    $sql .= "
+        ORDER BY inspect_id DESC
+        LIMIT ? OFFSET ?
+    ";
 
     $types .= "ii";
+
     $params[] = (int) $limit;
     $params[] = (int) $offset;
+
+
+    // ========================================================
+    // PREPARE
+    // ========================================================
 
     $stmt = mysqli_prepare($conn, $sql);
 
@@ -216,7 +254,13 @@ function getAllPendingApproval($limit = 10, $offset = 0, $date = null)
         return false;
     }
 
-    mysqli_stmt_bind_param($stmt, $types, ...$params);
+
+    mysqli_stmt_bind_param(
+        $stmt,
+        $types,
+        ...$params
+    );
+
     mysqli_stmt_execute($stmt);
 
     $result = mysqli_stmt_get_result($stmt);
@@ -224,31 +268,57 @@ function getAllPendingApproval($limit = 10, $offset = 0, $date = null)
     return $result;
 }
 
-
 // For count all pending approval
-function getPendingApprovalCount($date = null)
-{
+
+function getPendingApprovalCount(
+    $date = null,
+    $branch = 'all'
+) {
     global $conn;
 
-    $branch = getBranch();
-
-    if (empty($branch)) {
-        return 0;
-    }
 
     $sql = "SELECT COUNT(*) AS total
             FROM inspection_checklist_tbl
-            WHERE evaluation_status = 'Pending'
-              AND LOWER(TRIM(branch)) = LOWER(TRIM(?))";
+            WHERE evaluation_status = 'Pending'";
 
-    $types = "s";
-    $params = [$branch];
+
+    $types = "";
+    $params = [];
+
+
+    // ========================================================
+    // BRANCH FILTER
+    // ========================================================
+
+    if ($branch !== 'all' && !empty($branch)) {
+
+        $sql .= "
+            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
+        ";
+
+        $types .= "s";
+        $params[] = $branch;
+    }
+
+
+    // ========================================================
+    // DATE FILTER
+    // ========================================================
 
     if (!empty($date)) {
-        $sql .= " AND DATE(date_inspected) = ?";
+
+        $sql .= "
+            AND DATE(date_inspected) = ?
+        ";
+
         $types .= "s";
         $params[] = $date;
     }
+
+
+    // ========================================================
+    // PREPARE
+    // ========================================================
 
     $stmt = mysqli_prepare($conn, $sql);
 
@@ -256,17 +326,32 @@ function getPendingApprovalCount($date = null)
         return 0;
     }
 
-    mysqli_stmt_bind_param($stmt, $types, ...$params);
+
+    // ========================================================
+    // BIND ONLY IF PARAMETERS EXIST
+    // ========================================================
+
+    if (!empty($types)) {
+
+        mysqli_stmt_bind_param(
+            $stmt,
+            $types,
+            ...$params
+        );
+    }
+
+
     mysqli_stmt_execute($stmt);
 
     $result = mysqli_stmt_get_result($stmt);
+
     $row = mysqli_fetch_assoc($result);
 
     mysqli_stmt_close($stmt);
 
+
     return (int) ($row['total'] ?? 0);
 }
-
 
 // ============================================================
 // FOR APPROVED APPROVAL
