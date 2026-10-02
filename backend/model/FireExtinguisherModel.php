@@ -884,3 +884,67 @@ function getAllDeletedFireExtinguishersModel()
 
     return (int) ($row['total'] ?? 0);
 }
+
+// 
+function getDeletedFireExtinguisherById($id)
+{
+    global $conn;
+
+    $sql = "
+        SELECT *
+        FROM fire_extinguishers_tbl
+        WHERE extinguisher_id = ?
+          AND archived = 1
+        LIMIT 1
+    ";
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        return false;
+    }
+
+    mysqli_stmt_bind_param(
+        $stmt,
+        "i",
+        $id
+    );
+
+    mysqli_stmt_execute($stmt);
+
+    $result = mysqli_stmt_get_result($stmt);
+
+    $data = mysqli_fetch_assoc($result);
+
+    mysqli_stmt_close($stmt);
+
+    return $data;
+}
+
+//  for restoration of fire extinguisher
+
+function restoreFireExtinguisher($id)
+{
+    global $conn;
+
+    $sql = "
+        UPDATE fire_extinguishers_tbl
+        SET archived = 0
+        WHERE extinguisher_id = ?
+          AND archived = 1
+    ";
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        return false;
+    }
+
+    mysqli_stmt_bind_param($stmt, "i", $id);
+
+    $success = mysqli_stmt_execute($stmt);
+
+    mysqli_stmt_close($stmt);
+
+    return $success;
+}

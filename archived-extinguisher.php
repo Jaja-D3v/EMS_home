@@ -2,6 +2,7 @@
 require_once 'backend/authentication/SessionChecker.php';
 require_once 'backend/controller/FireExtinguisherController.php';
 include './backend/controller/QRCodeGeneratorController.php';
+include './backend/controller/DropdownBranchController.php';
 
 
 ?>
@@ -130,25 +131,24 @@ include './backend/controller/QRCodeGeneratorController.php';
                                     <option value="all">All Branches</option>
 
                                     <?php
-                                    
-                                    $branches = getAllBranches();
+                                    $branches = getAllDropdownBranches();
 
-                                    if ($branches && $branches->num_rows > 0):
-                                        while ($branch = $branches->fetch_assoc()):
+                                    if (!empty($branches)):
+                                        foreach ($branches as $branch):
                                     ?>
 
                                             <option
-                                                value="<?= htmlspecialchars($branch['branch']) ?>"
+                                                value="<?= htmlspecialchars($branch['value']) ?>"
                                                 <?= (
-                                                    ($_GET['branch'] ?? 'all') === $branch['branch']
+                                                    ($_GET['branch'] ?? 'all') === $branch['value']
                                                 ) ? 'selected' : '' ?>>
 
-                                                <?= htmlspecialchars($branch['branch']) ?>
+                                                <?= htmlspecialchars($branch['value']) ?>
 
                                             </option>
 
                                     <?php
-                                        endwhile;
+                                        endforeach;
                                     endif;
                                     ?>
 
@@ -506,7 +506,7 @@ include './backend/controller/QRCodeGeneratorController.php';
                                                 class="btn btn-sm btn-secondary w-100 px-3 view-extinguisher-btn"
                                                 data-id="<?= htmlspecialchars($data['extinguisher_id']) ?>"
                                                 data-bs-toggle="modal"
-                                                data-bs-target="#viewFireExtinguisherModal">
+                                                data-bs-target="#viewDeletedFireExtinguisherModal">
 
                                                 <i class="bi bi-eye me-1"></i>
 
@@ -749,6 +749,596 @@ include './backend/controller/QRCodeGeneratorController.php';
 
         </div>
 
+        <!-- modal for view  -->
+
+        <!-- ======================================== -->
+        <!-- VIEW DELETED FIRE EXTINGUISHER MODAL -->
+        <!-- ======================================== -->
+
+        <div
+            class="modal fade"
+            id="viewDeletedFireExtinguisherModal"
+            tabindex="-1"
+            aria-labelledby="viewDeletedFireExtinguisherModalLabel"
+            aria-hidden="true">
+
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content rounded-4 border-0 shadow-lg overflow-hidden">
+
+                    <!-- Header -->
+                    <div class="modal-header border-0 bg-danger-subtle px-4 py-3">
+
+                        <div class="d-flex align-items-center gap-3">
+
+                            <div
+                                class="d-flex align-items-center justify-content-center
+                        bg-danger text-white rounded-3 flex-shrink-0"
+                                style="width: 46px; height: 46px;">
+
+                                <i class="bi bi-fire fs-4"></i>
+
+                            </div>
+
+                            <div>
+                                <h5
+                                    class="modal-title fw-bold mb-1"
+                                    id="viewDeletedFireExtinguisherModalLabel">
+
+                                    Fire Extinguisher Details
+
+                                </h5>
+
+                                <small class="text-body-secondary">
+                                    View complete fire extinguisher information.
+                                </small>
+                            </div>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                        </button>
+
+                    </div>
+
+
+                    <!-- Body -->
+                    <div class="modal-body p-3 p-md-4">
+
+                        <!-- Equipment Summary -->
+                        <div class="card border-0 bg-body-tertiary rounded-4 mb-4">
+
+                            <div class="card-body p-3 p-md-4">
+
+                                <div class="d-flex align-items-center gap-2 mb-3">
+
+                                    <div
+                                        class="d-flex align-items-center justify-content-center
+                                bg-danger-subtle text-danger rounded-2"
+                                        style="width: 34px; height: 34px;">
+
+                                        <i class="bi bi-info-circle"></i>
+
+                                    </div>
+
+                                    <div>
+                                        <h6 class="fw-bold mb-0">
+                                            Equipment Summary
+                                        </h6>
+
+                                        <small class="text-body-secondary">
+                                            Basic equipment information
+                                        </small>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="row g-3">
+
+                                    <!-- Code -->
+                                    <div class="col-md-6">
+
+                                        <label class="form-label small fw-semibold text-body-secondary mb-1">
+                                            Fire Extinguisher Code
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <span class="input-group-text bg-white border-end-0">
+                                                <i class="bi bi-upc-scan text-danger"></i>
+                                            </span>
+
+                                            <input
+                                                type="text"
+                                                id="deletedViewExtinguisherCode"
+                                                class="form-control border-start-0 ps-0"
+                                                readonly>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- Branch -->
+                                    <div class="col-md-6">
+
+                                        <label class="form-label small fw-semibold text-body-secondary mb-1">
+                                            Branch
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <span class="input-group-text bg-white border-end-0">
+                                                <i class="bi bi-building text-danger"></i>
+                                            </span>
+
+                                            <input
+                                                type="text"
+                                                id="deletedViewBranch"
+                                                class="form-control border-start-0 ps-0"
+                                                readonly>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Equipment Details -->
+                        <div class="mb-3">
+
+                            <div class="d-flex align-items-center gap-2 mb-3">
+
+                                <div
+                                    class="d-flex align-items-center justify-content-center
+                            bg-danger-subtle text-danger rounded-2"
+                                    style="width: 34px; height: 34px;">
+
+                                    <i class="bi bi-fire"></i>
+
+                                </div>
+
+                                <div>
+                                    <h6 class="fw-bold mb-0">
+                                        Equipment Details
+                                    </h6>
+
+                                    <small class="text-body-secondary">
+                                        Fire extinguisher specifications
+                                    </small>
+                                </div>
+
+                            </div>
+
+
+                            <div class="row g-3">
+
+                                <!-- Type -->
+                                <div class="col-md-6">
+
+                                    <label class="form-label small fw-semibold text-body-secondary">
+                                        Type
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="deletedViewType"
+                                        class="form-control"
+                                        readonly>
+
+                                </div>
+
+
+                                <!-- Capacity -->
+                                <div class="col-md-6">
+
+                                    <label class="form-label small fw-semibold text-body-secondary">
+                                        Capacity
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="deletedViewCapacity"
+                                        class="form-control"
+                                        readonly>
+
+                                </div>
+
+
+                                <!-- Fire Class -->
+                                <div class="col-md-6">
+
+                                    <label class="form-label small fw-semibold text-body-secondary">
+                                        Fire Class
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="deletedViewClass"
+                                        class="form-control"
+                                        readonly>
+
+                                </div>
+
+
+                                <!-- Placement -->
+                                <div class="col-md-6">
+
+                                    <label class="form-label small fw-semibold text-body-secondary">
+                                        Placement
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="deletedViewPlacement"
+                                        class="form-control"
+                                        readonly>
+
+                                </div>
+
+
+                                <!-- Location -->
+                                <div class="col-md-6">
+
+                                    <label class="form-label small fw-semibold text-body-secondary">
+                                        Location
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="deletedViewLocation"
+                                        class="form-control"
+                                        readonly>
+
+                                </div>
+
+
+                                <!-- Condition -->
+                                <div class="col-md-6">
+
+                                    <label class="form-label small fw-semibold text-body-secondary">
+                                        Condition
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="deletedViewConditionStatus"
+                                        class="form-control"
+                                        readonly>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Dates & Maintenance -->
+                        <div class="border-top pt-4 mt-4">
+
+                            <div class="d-flex align-items-center gap-2 mb-3">
+
+                                <div
+                                    class="d-flex align-items-center justify-content-center
+                            bg-danger-subtle text-danger rounded-2"
+                                    style="width: 34px; height: 34px;">
+
+                                    <i class="bi bi-calendar3"></i>
+
+                                </div>
+
+                                <div>
+                                    <h6 class="fw-bold mb-0">
+                                        Dates & Maintenance
+                                    </h6>
+
+                                    <small class="text-body-secondary">
+                                        Equipment dates and maintenance information
+                                    </small>
+                                </div>
+
+                            </div>
+
+
+                            <div class="row g-3">
+
+                                <!-- Manufactured Date -->
+                                <div class="col-md-4">
+
+                                    <label class="form-label small fw-semibold text-body-secondary">
+                                        Manufactured Date
+                                    </label>
+
+                                    <div class="input-group">
+
+                                        <span class="input-group-text bg-body-tertiary border-end-0">
+                                            <i class="bi bi-calendar-event"></i>
+                                        </span>
+
+                                        <input
+                                            type="text"
+                                            id="deletedViewManufacturedDate"
+                                            class="form-control border-start-0 ps-0"
+                                            readonly>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- Last Refilled -->
+                                <div class="col-md-4">
+
+                                    <label class="form-label small fw-semibold text-body-secondary">
+                                        Last Refilled Date
+                                    </label>
+
+                                    <div class="input-group">
+
+                                        <span class="input-group-text bg-body-tertiary border-end-0">
+                                            <i class="bi bi-arrow-repeat"></i>
+                                        </span>
+
+                                        <input
+                                            type="text"
+                                            id="deletedViewLastRefilledDate"
+                                            class="form-control border-start-0 ps-0"
+                                            readonly>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- Expiration -->
+                                <div class="col-md-4">
+
+                                    <label class="form-label small fw-semibold text-body-secondary">
+                                        Expiration Date
+                                    </label>
+
+                                    <div class="input-group">
+
+                                        <span class="input-group-text bg-body-tertiary border-end-0">
+                                            <i class="bi bi-calendar-x"></i>
+                                        </span>
+
+                                        <input
+                                            type="text"
+                                            id="deletedViewExpirationDate"
+                                            class="form-control border-start-0 ps-0"
+                                            readonly>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Remarks -->
+                        <div class="border-top pt-4 mt-4">
+
+                            <div class="d-flex align-items-center gap-2 mb-3">
+
+                                <div
+                                    class="d-flex align-items-center justify-content-center
+                            bg-danger-subtle text-danger rounded-2"
+                                    style="width: 34px; height: 34px;">
+
+                                    <i class="bi bi-chat-left-text"></i>
+
+                                </div>
+
+                                <div>
+                                    <h6 class="fw-bold mb-0">
+                                        Remarks
+                                    </h6>
+
+                                    <small class="text-body-secondary">
+                                        Additional information
+                                    </small>
+                                </div>
+
+                            </div>
+
+
+                            <textarea
+                                id="deletedViewRemarks"
+                                class="form-control"
+                                rows="3"
+                                readonly></textarea>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Footer -->
+                    <div class="modal-footer border-0 bg-body-tertiary px-3 px-md-4 py-3">
+
+                        <button
+                            type="button"
+                            class="btn btn-light border px-4"
+                            data-bs-dismiss="modal">
+
+                            <i class="bi bi-x-lg me-1"></i>
+                            Close
+
+                        </button>
+
+                        <button
+                            type="button"
+                            id="restoreDeletedFireExtinguisherBtn"
+                            class="btn btn-success px-4"
+                            data-id="">
+
+                            <i class="bi bi-arrow-counterclockwise me-1"></i>
+                            Restore
+
+                        </button>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <script>
+            document.querySelectorAll('.view-extinguisher-btn').forEach(button => {
+
+                button.addEventListener('click', function() {
+
+                    const id = this.dataset.id;
+
+                    fetch(
+                            `backend/controller/FireExtinguisherController.php?action=getDeleted&id=${id}`
+                        )
+
+                        .then(response => {
+
+                            if (!response.ok) {
+                                throw new Error(
+                                    'Failed to fetch fire extinguisher.'
+                                );
+                            }
+
+                            return response.json();
+
+                        })
+
+                        .then(result => {
+
+                            if (!result.success) {
+
+                                alert(
+                                    result.message ||
+                                    'Failed to load fire extinguisher.'
+                                );
+
+                                return;
+                            }
+
+                            const data = result.data;
+
+
+                            document.getElementById(
+                                'deletedViewExtinguisherCode'
+                            ).value = data.extinguisher_code ?? '';
+
+
+                            document.getElementById(
+                                'deletedViewBranch'
+                            ).value = data.branch ?? '';
+
+
+                            document.getElementById(
+                                'deletedViewType'
+                            ).value = data.type ?? '';
+
+
+                            document.getElementById(
+                                'deletedViewCapacity'
+                            ).value = data.capacity ?? '';
+
+
+                            document.getElementById(
+                                'deletedViewClass'
+                            ).value = data.class ?? '';
+
+
+                            document.getElementById(
+                                'deletedViewPlacement'
+                            ).value = data.placement ?? '';
+
+
+                            document.getElementById(
+                                'deletedViewLocation'
+                            ).value = data.location ?? '';
+
+
+                            document.getElementById(
+                                'deletedViewConditionStatus'
+                            ).value = data.condition_status ?? '';
+
+
+                            document.getElementById(
+                                'deletedViewManufacturedDate'
+                            ).value = data.manufactured_date ?? '';
+
+
+                            document.getElementById(
+                                'deletedViewLastRefilledDate'
+                            ).value = data.refilled_date ?? '';
+
+
+                            document.getElementById(
+                                'deletedViewExpirationDate'
+                            ).value = data.expiration_date ?? '';
+
+
+                            document.getElementById(
+                                'deletedViewRemarks'
+                            ).value = data.remarks ?? '';
+
+                            // Set ID for Restore button
+                            document.getElementById('restoreDeletedFireExtinguisherBtn').dataset.id =
+                                data.extinguisher_id;
+
+                        })
+
+                        .catch(error => {
+
+                            console.error(error);
+
+                            alert(
+                                'Something went wrong while loading fire extinguisher.'
+                            );
+
+                        });
+
+                });
+
+            });
+
+
+
+            document
+                .getElementById('restoreDeletedFireExtinguisherBtn')
+                .addEventListener('click', function() {
+
+                    const id = this.dataset.id;
+
+                    if (!id) {
+                        alert('Invalid fire extinguisher ID.');
+                        return;
+                    }
+
+                    const confirmed = confirm(
+                        'Are you sure you want to restore this fire extinguisher?\n\n' +
+                        'The fire extinguisher will be returned to the active list.'
+                    );
+
+                    if (!confirmed) {
+                        return;
+                    }
+
+                    window.location.href =
+                        `backend/controller/FireExtinguisherController.php?action=restore&id=${id}`;
+
+                });
+        </script>
 
     </div>
     </div>

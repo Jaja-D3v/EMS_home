@@ -136,6 +136,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         exit;
     }
+
+    if ($action === 'getDeleted') {
+
+        header('Content-Type: application/json');
+
+        $id = (int)($_GET['id'] ?? 0);
+
+        if ($id <= 0) {
+
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid fire extinguisher ID.'
+            ]);
+
+            exit;
+        }
+
+        $data = getDeletedFireExtinguisherById($id);
+
+        if (!$data) {
+
+            echo json_encode([
+                'success' => false,
+                'message' => 'Deleted fire extinguisher not found.'
+            ]);
+
+            exit;
+        }
+
+        echo json_encode([
+            'success' => true,
+            'data' => $data
+        ]);
+
+        exit;
+    }
 }
 
 
@@ -619,4 +655,24 @@ function getAllArchiveFireExtinguishers(
 function getTotalDeletedFireExtinguishers()
 {
     return getAllDeletedFireExtinguishersModel();
+}
+
+if ($action === 'restore') {
+
+    $id = (int)($_GET['id'] ?? 0);
+
+    if ($id <= 0) {
+        header("Location: ../../archived-extinguisher.php?error=invalid_id");
+        exit;
+    }
+
+    $success = restoreFireExtinguisher($id);
+
+    if ($success) {
+        header("Location: ../../archived-extinguisher.php?success=restored");
+        exit;
+    }
+
+    header("Location: ../../archived-extinguisher.php?error=restore_failed");
+    exit;
 }

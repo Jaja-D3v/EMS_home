@@ -113,24 +113,24 @@ $branchDropdown = getAllDropdownBranches();
                     <option value="all">All Branches</option>
 
                     <?php
-                    $branches = getAllBranches();
+                    $branches = getAllDropdownBranches();
 
-                    if ($branches && $branches->num_rows > 0):
-                      while ($branch = $branches->fetch_assoc()):
+                    if (!empty($branches)):
+                      foreach ($branches as $branch):
                     ?>
 
                         <option
-                          value="<?= htmlspecialchars($branch['branch']) ?>"
+                          value="<?= htmlspecialchars($branch['value']) ?>"
                           <?= (
-                            ($_GET['branch'] ?? 'all') === $branch['branch']
+                            ($_GET['branch'] ?? 'all') === $branch['value']
                           ) ? 'selected' : '' ?>>
 
-                          <?= htmlspecialchars($branch['branch']) ?>
+                          <?= htmlspecialchars($branch['value']) ?>
 
                         </option>
 
                     <?php
-                      endwhile;
+                      endforeach;
                     endif;
                     ?>
 
