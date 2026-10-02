@@ -32,21 +32,18 @@ function getDashboardBranch()
 {
     if (($_SESSION['Role'] ?? '') === 'Admin') {
 
-        // Admin can use branch filter
-        $branch = $_GET['branch'] ?? 'all';
-
-        // Empty filter = all
-        if ($branch === null || trim($branch) === '') {
-            return 'all';
+        // If branch is selected from dropdown, use it
+        if (isset($_GET['branch']) && trim($_GET['branch']) !== '') {
+            return trim($_GET['branch']);
         }
 
-        return trim($branch);
+        // Default branch = branch of logged-in Admin
+        return trim($_SESSION['Branch'] ?? 'all');
     }
 
     // Non-admin can ONLY access their own branch
     return $_SESSION['Branch'] ?? null;
 }
-
 
 /**
  * INSPECTION - LAST 3 MONTHS

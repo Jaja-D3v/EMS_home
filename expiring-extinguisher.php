@@ -8,13 +8,6 @@ require_once 'backend/authentication/SessionChecker.php';
 ?>
 
 <!DOCTYPE html>
-<!--
-* CoreUI - Free Bootstrap Admin Template
-* @version v5.5.0
-* @link https://coreui.io/product/free-bootstrap-admin-template/
-* Copyright (c) 2026 creativeLabs Łukasz Holeczek
-* Licensed under MIT (https://github.com/coreui/coreui-free-bootstrap-admin-template/blob/main/LICENSE)
--->
 
 <html lang="en">
 <?php include 'partials/header.php'; ?>
@@ -37,7 +30,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
           <div class="row align-items-center g-3">
 
-            <!-- Icon -->
             <div class="col-auto">
 
               <div class="bg-white bg-opacity-10 rounded-3 p-3 fs-3">
@@ -46,8 +38,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
             </div>
 
-
-            <!-- Title & Description -->
             <div class="col">
 
               <h2 class="fw-bold mb-1">
@@ -73,13 +63,8 @@ require_once 'backend/authentication/SessionChecker.php';
 
           <div class="row justify-content-center">
 
-            <!-- Content -->
-
-
-
             <div class="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center gap-3 mb-3">
 
-              <!-- Sort - Left -->
               <div>
                 <div class="input-group">
                   <span class="input-group-text bg-body border-end-0">
@@ -97,25 +82,17 @@ require_once 'backend/authentication/SessionChecker.php';
                 </div>
               </div>
 
-
-              <!-- Branch Filter - ADMIN ONLY -->
               <?php if (strtolower(trim($_SESSION['Role'] ?? '')) === 'admin'): ?>
 
                 <?php
-                // Branch ng naka-login na Admin
                 $adminBranch = trim($_SESSION['Branch'] ?? '');
 
-                // Kung may branch sa URL, iyon ang gagamitin.
-                // Kung wala, gamitin ang branch ng Admin.
                 $selectedBranch = $_GET['branch'] ?? $adminBranch;
 
-                // Kung walang branch sa session at wala rin sa URL,
-                // default sa All Branches
                 if (empty($selectedBranch)) {
                   $selectedBranch = 'all';
                 }
 
-                // Get all branches
                 $branches = getAllDropdownBranches();
                 ?>
 
@@ -126,7 +103,6 @@ require_once 'backend/authentication/SessionChecker.php';
                     id="branchFilter"
                     style="min-width: 190px;">
 
-                    <!-- All Branches -->
                     <option
                       value="all"
                       <?= $selectedBranch === 'all' ? 'selected' : '' ?>>
@@ -155,7 +131,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
               <?php endif; ?>
 
-
               <script>
                 document.addEventListener('DOMContentLoaded', function() {
 
@@ -171,11 +146,8 @@ require_once 'backend/authentication/SessionChecker.php';
 
                     const url = new URL(window.location.href);
 
-                    // Always set the branch parameter.
-                    // This allows "all" to remain selected after reload.
                     url.searchParams.set('branch', selectedBranch);
 
-                    // Reload page with selected branch
                     window.location.href = url.toString();
 
                   });
@@ -196,7 +168,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                     cards.forEach(card => {
 
-                      // Get all badges inside the card
                       const badges = card.querySelectorAll('.badge');
 
                       let condition = '';
@@ -207,19 +178,16 @@ require_once 'backend/authentication/SessionChecker.php';
                           .trim()
                           .toLowerCase();
 
-                        // Find the actual condition badge
                         if (text === 'good' || text === 'not good') {
                           condition = text;
                         }
 
                       });
 
-                      // Show all
                       if (selectedCondition === 'all') {
                         card.style.display = '';
                       }
 
-                      // Good Condition
                       else if (
                         selectedCondition === 'good' &&
                         condition === 'good'
@@ -227,7 +195,6 @@ require_once 'backend/authentication/SessionChecker.php';
                         card.style.display = '';
                       }
 
-                      // Not Good
                       else if (
                         selectedCondition === 'not-good' &&
                         condition === 'not good'
@@ -235,7 +202,6 @@ require_once 'backend/authentication/SessionChecker.php';
                         card.style.display = '';
                       }
 
-                      // Hide non-matching cards
                       else {
                         card.style.display = 'none';
                       }
@@ -247,8 +213,6 @@ require_once 'backend/authentication/SessionChecker.php';
                 }
               </script>
 
-
-              <!-- Add + Search - Right -->
               <div class="d-flex flex-column flex-md-row gap-2 ms-lg-auto">
 
                 <button
@@ -275,9 +239,6 @@ require_once 'backend/authentication/SessionChecker.php';
                 </div>
 
                 <script>
-                  // ========================================
-                  // SEARCH BY FE CODE OR LOCATION
-                  // ========================================
 
                   const searchInput = document.querySelector(
                     'input[placeholder="Search..."]'
@@ -303,10 +264,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                       cards.forEach(card => {
 
-                        // ========================================
-                        // GET FE CODE
-                        // ========================================
-
                         const codeElement = card.querySelector(
                           '.extinguisher-code'
                         );
@@ -314,11 +271,6 @@ require_once 'backend/authentication/SessionChecker.php';
                         const code = codeElement ?
                           codeElement.textContent.trim().toLowerCase() :
                           '';
-
-
-                        // ========================================
-                        // GET LOCATION
-                        // ========================================
 
                         const locationElement = card.querySelector(
                           '.extinguisher-location'
@@ -328,20 +280,10 @@ require_once 'backend/authentication/SessionChecker.php';
                           locationElement.textContent.trim().toLowerCase() :
                           '';
 
-
-                        // ========================================
-                        // SEARCH FE CODE OR LOCATION
-                        // ========================================
-
                         const match =
                           searchValue === '' ||
                           code.includes(searchValue) ||
                           location.includes(searchValue);
-
-
-                        // ========================================
-                        // SHOW / HIDE CARD
-                        // ========================================
 
                         if (match) {
 
@@ -355,11 +297,6 @@ require_once 'backend/authentication/SessionChecker.php';
                         }
 
                       });
-
-
-                      // ========================================
-                      // NO RESULT FOUND
-                      // ========================================
 
                       let noResult = document.getElementById(
                         'noSearchResult'
@@ -407,20 +344,10 @@ require_once 'backend/authentication/SessionChecker.php';
                       }
                     }
 
-
-                    // ========================================
-                    // LIVE SEARCH
-                    // ========================================
-
                     searchInput.addEventListener(
                       'input',
                       performSearch
                     );
-
-
-                    // ========================================
-                    // SEARCH BUTTON
-                    // ========================================
 
                     if (searchButton) {
 
@@ -430,11 +357,6 @@ require_once 'backend/authentication/SessionChecker.php';
                       );
 
                     }
-
-
-                    // ========================================
-                    // ENTER KEY
-                    // ========================================
 
                     searchInput.addEventListener(
                       'keydown',
@@ -469,7 +391,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
             $offset = ($page - 1) * $limit;
 
-            // Get only fire extinguishers expiring within the next 2 months
             global $conn;
 
             $role = strtolower(trim($_SESSION['Role'] ?? ''));
@@ -519,7 +440,6 @@ require_once 'backend/authentication/SessionChecker.php';
               $info = false;
             }
 
-            // Total expiring fire extinguishers
             $totalSql = "
               SELECT COUNT(*) AS total
               FROM fire_extinguishers_tbl
@@ -553,7 +473,7 @@ require_once 'backend/authentication/SessionChecker.php';
             $totalPages = (int) ceil($totalRecords / $limit);
 
             ?>
-            <!-- Content here -->
+
             <?php foreach ($info as $data): ?>
 
               <?php
@@ -567,7 +487,6 @@ require_once 'backend/authentication/SessionChecker.php';
                 $statusIcon = 'bi-exclamation-circle-fill';
               }
 
-              // ___expiration and running days
               $expirationBadge = null;
               $expirationBadgeClass = '';
               $expirationIcon = '';
@@ -577,12 +496,10 @@ require_once 'backend/authentication/SessionChecker.php';
                 $today = new DateTime('today');
                 $expirationDate = new DateTime($data['expiration_date']);
 
-                // Two months from today
                 $twoMonthsFromNow = (clone $today)->modify('+2 months');
 
                 if ($expirationDate < $today) {
 
-                  // Already expired
                   $expiredDays = $today->diff($expirationDate)->days;
 
                   $expirationBadge = "Expired {$expiredDays} days ago";
@@ -590,7 +507,6 @@ require_once 'backend/authentication/SessionChecker.php';
                   $expirationIcon = 'bi-exclamation-triangle-fill';
                 } elseif ($expirationDate <= $twoMonthsFromNow) {
 
-                  // Within 2 months before expiration
                   $remainingDays = $today->diff($expirationDate)->days;
 
                   $expirationBadge = "Expires in {$remainingDays} days";
@@ -604,12 +520,8 @@ require_once 'backend/authentication/SessionChecker.php';
 
                 <div class="card-body p-2 p-md-3">
 
-                  <!-- ============================= -->
-                  <!-- TOP SECTION -->
-                  <!-- ============================= -->
                   <div class="d-flex align-items-center gap-3">
 
-                    <!-- Icon -->
                     <div
                       class="d-flex align-items-center justify-content-center
                            bg-danger bg-opacity-10 text-danger
@@ -620,8 +532,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                     </div>
 
-
-                    <!-- Title -->
                     <div class="flex-grow-1 min-width-0">
 
                       <div class="mb-1">
@@ -649,11 +559,8 @@ require_once 'backend/authentication/SessionChecker.php';
 
                     </div>
 
-
-                    <!-- Status -->
                     <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-sm-end gap-2">
 
-                      <!-- Condition -->
                       <span
                         class="badge <?= $badgeClass ?> rounded-pill px-3 py-2 text-nowrap">
 
@@ -663,7 +570,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                       </span>
 
-                      <!-- Expiration -->
                       <?php if ($expirationBadge !== null): ?>
 
                         <span
@@ -681,12 +587,8 @@ require_once 'backend/authentication/SessionChecker.php';
 
                   </div>
 
-                  <!-- ============================= -->
-                  <!-- DETAILS + ACTION -->
-                  <!-- ============================= -->
                   <div class="row g-2 g-md-3 mt-2 align-items-center">
 
-                    <!-- FE Code -->
                     <div class="col-6 col-md-2">
                       <div class="d-flex align-items-center gap-2">
                         <div
@@ -708,7 +610,6 @@ require_once 'backend/authentication/SessionChecker.php';
                       </div>
                     </div>
 
-                    <!-- Capacity -->
                     <div class="col-6 col-md-2">
                       <div class="d-flex align-items-center gap-2">
                         <div
@@ -730,7 +631,6 @@ require_once 'backend/authentication/SessionChecker.php';
                       </div>
                     </div>
 
-                    <!-- Type -->
                     <div class="col-6 col-md-2">
                       <div class="d-flex align-items-center gap-2">
                         <div
@@ -755,7 +655,6 @@ require_once 'backend/authentication/SessionChecker.php';
                       </div>
                     </div>
 
-                    <!-- Location -->
                     <div class="col-6 col-md-2">
                       <div class="d-flex align-items-center gap-2">
                         <div
@@ -778,8 +677,6 @@ require_once 'backend/authentication/SessionChecker.php';
                         </div>
                       </div>
                     </div>
-
-                    <!-- Class -->
 
                     <div class="col-6 col-md-2">
 
@@ -815,7 +712,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                     </div>
 
-                    <!-- View -->
                     <div class="col-12 col-md-2">
                       <button
                         type="button"
@@ -845,7 +741,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                   <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
 
-                    <!-- Showing -->
                     <div class="text-body-secondary small text-center text-sm-start">
                       Showing
                       <strong><?= min($offset + 1, $totalRecords) ?></strong>
@@ -856,11 +751,9 @@ require_once 'backend/authentication/SessionChecker.php';
                       fire extinguishers
                     </div>
 
-                    <!-- Pagination -->
                     <nav aria-label="Fire extinguisher pagination">
                       <ul class="pagination pagination-sm mb-0">
 
-                        <!-- Previous -->
                         <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
                           <a
                             class="page-link px-2 px-sm-3"
@@ -875,7 +768,6 @@ require_once 'backend/authentication/SessionChecker.php';
                           </a>
                         </li>
 
-                        <!-- Page Numbers -->
                         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
 
                           <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
@@ -888,7 +780,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                         <?php endfor; ?>
 
-                        <!-- Next -->
                         <li class="page-item <?= ($page >= $totalPages) ? 'disabled' : '' ?>">
                           <a
                             class="page-link px-2 px-sm-3"
@@ -912,7 +803,6 @@ require_once 'backend/authentication/SessionChecker.php';
               </div>
 
             <?php endif; ?>
-            <!-- this is for edit form extinguisher -->
 
             <div
               class="modal fade"
@@ -925,7 +815,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                 <div class="modal-content rounded-4 border-0 shadow">
 
-                  <!-- Header -->
                   <div class="modal-header px-4 py-3">
 
                     <div>
@@ -949,8 +838,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                   </div>
 
-
-                  <!-- Body -->
                   <div class="modal-body px-4 py-4">
 
                     <form
@@ -969,9 +856,6 @@ require_once 'backend/authentication/SessionChecker.php';
                         id="editExtinguisherId"
                         name="extinguisher_id">
 
-
-
-                      <!-- Fire Extinguisher Code -->
                       <div class="col-md-6">
 
                         <label
@@ -991,7 +875,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                       </div>
 
-                      <!-- Type -->
                       <div class="col-md-6">
 
                         <label
@@ -1020,7 +903,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                       </div>
 
-                      <!-- Capacity -->
                       <div class="col-md-4">
 
                         <label
@@ -1046,8 +928,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                       </div>
 
-
-                      <!-- Class -->
                       <div class="col-md-4">
 
                         <label
@@ -1080,8 +960,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                       </div>
 
-
-                      <!-- Placement -->
                       <div class="col-md-4">
 
                         <label
@@ -1108,8 +986,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                       </div>
 
-
-                      <!-- Location -->
                       <div class="col-md-8">
 
                         <label
@@ -1128,8 +1004,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                       </div>
 
-
-                      <!-- Condition -->
                       <div class="col-md-4">
 
                         <label
@@ -1157,8 +1031,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                       </div>
 
-
-                      <!-- Manufactured Date -->
                       <div class="col-md-6">
 
                         <label
@@ -1175,11 +1047,8 @@ require_once 'backend/authentication/SessionChecker.php';
                           value=""
                           readonly>
 
-
                       </div>
 
-
-                      <!-- Expiration Date -->
                       <div class="col-md-6">
 
                         <label
@@ -1203,8 +1072,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                       </div>
 
-
-                      <!-- Remarks -->
                       <div class="col-12">
 
                         <label
@@ -1226,8 +1093,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                   </div>
 
-
-                  <!-- Footer -->
                   <div class="modal-footer px-4 py-3">
 
                     <button
@@ -1253,10 +1118,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
             </div>
 
-            <!-- this is for edit extinguisher end -->
-
-
-            <!-- this form is for add new extinguisher -->
             <div
               class="modal fade"
               id="addFireExtinguisherModal"
@@ -1267,7 +1128,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                 <div class="modal-content rounded-4 border-0 shadow">
 
-                  <!-- Header -->
                   <div class="modal-header px-4 py-3">
                     <div>
                       <h5 class="modal-title fw-semibold mb-1" id="addFireExtinguisherModalLabel">
@@ -1286,8 +1146,6 @@ require_once 'backend/authentication/SessionChecker.php';
                       aria-label="Close"></button>
                   </div>
 
-
-                  <!-- Body -->
                   <div class="modal-body px-4 py-4">
 
                     <form
@@ -1300,8 +1158,6 @@ require_once 'backend/authentication/SessionChecker.php';
                         name="action"
                         value="add">
 
-
-                      <!-- Fire Extinguisher Code -->
                       <div class="col-md-6">
                         <label for="extinguisherCode" class="form-label">
                           Fire Extinguisher Code
@@ -1318,8 +1174,6 @@ require_once 'backend/authentication/SessionChecker.php';
                         <div id="extinguisherCodeFeedback" class="small mt-1"></div>
                       </div>
 
-
-                      <!-- Type -->
                       <div class="col-md-6">
                         <label for="type" class="form-label">
                           Type
@@ -1339,8 +1193,6 @@ require_once 'backend/authentication/SessionChecker.php';
                         </select>
                       </div>
 
-
-                      <!-- Capacity -->
                       <div class="col-md-4">
                         <label for="capacity" class="form-label">
                           Capacity
@@ -1362,8 +1214,6 @@ require_once 'backend/authentication/SessionChecker.php';
                         </datalist>
                       </div>
 
-
-                      <!-- Class -->
                       <div class="col-md-4">
                         <label for="fireClass" class="form-label">
                           Fire Class
@@ -1388,8 +1238,6 @@ require_once 'backend/authentication/SessionChecker.php';
                         </select>
                       </div>
 
-
-                      <!-- Placement -->
                       <div class="col-md-4">
                         <label for="placement" class="form-label">
                           Placement
@@ -1412,7 +1260,6 @@ require_once 'backend/authentication/SessionChecker.php';
                         </datalist>
                       </div>
 
-                      <!-- Location -->
                       <div class="col-12 col-md-8">
                         <label for="location" class="form-label">
                           Location
@@ -1427,7 +1274,6 @@ require_once 'backend/authentication/SessionChecker.php';
                           required>
                       </div>
 
-                      <!-- Condition -->
                       <div class="col-12 col-md-4">
                         <label for="conditionStatus" class="form-label">
                           Condition
@@ -1449,8 +1295,6 @@ require_once 'backend/authentication/SessionChecker.php';
                         </select>
                       </div>
 
-
-                      <!-- Manufactured Date -->
                       <div class="col-md-6">
                         <label for="manufacturedDate" class="form-label">
                           Manufactured Date
@@ -1463,8 +1307,6 @@ require_once 'backend/authentication/SessionChecker.php';
                           name="manufactured_date">
                       </div>
 
-
-                      <!-- Expiration Date -->
                       <div class="col-md-6">
                         <label for="expirationDate" class="form-label">
                           Expiration Date
@@ -1485,8 +1327,6 @@ require_once 'backend/authentication/SessionChecker.php';
                         </small>
                       </div>
 
-
-                      <!-- Remarks -->
                       <div class="col-12">
                         <label for="remarks" class="form-label">
                           Remarks
@@ -1500,7 +1340,6 @@ require_once 'backend/authentication/SessionChecker.php';
                           placeholder="Additional remarks (optional)"></textarea>
                       </div>
 
-                      <!-- Footer -->
                       <div class="modal-footer px-4 py-3">
 
                         <button
@@ -1528,9 +1367,6 @@ require_once 'backend/authentication/SessionChecker.php';
               </div>
             </div>
 
-            <!-- this is for view modal -->
-
-            <!-- View Fire Extinguisher Modal -->
             <div
               class="modal fade"
               id="viewFireExtinguisherModal"
@@ -1542,7 +1378,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                 <div class="modal-content rounded-4 border-0 shadow-lg overflow-hidden">
 
-                  <!-- Header -->
                   <div class="modal-header border-0 bg-danger-subtle px-4 py-3">
 
                     <div class="d-flex align-items-center gap-3">
@@ -1577,18 +1412,14 @@ require_once 'backend/authentication/SessionChecker.php';
 
                   </div>
 
-
-                  <!-- Body -->
                   <div class="modal-body p-3 p-md-4">
 
-                    <!-- Equipment Summary -->
                     <div class="card border-0 bg-light-subtle rounded-4 mb-3">
 
                       <div class="card-body p-3">
 
                         <div class="row align-items-center g-3">
 
-                          <!-- Code -->
                           <div class="col-12 col-md-7">
 
                             <div class="text-body-secondary small mb-1">
@@ -1614,8 +1445,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                           </div>
 
-
-                          <!-- Condition -->
                           <div class="col-12 col-md-5">
 
                             <div class="text-body-secondary small mb-1">
@@ -1640,8 +1469,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                     </div>
 
-
-                    <!-- Basic Information -->
                     <div class="mb-3">
 
                       <div class="d-flex align-items-center gap-2 mb-2">
@@ -1665,10 +1492,8 @@ require_once 'backend/authentication/SessionChecker.php';
 
                       </div>
 
-
                       <div class="row g-2">
 
-                        <!-- Type -->
                         <div class="col-12 col-md-6">
 
                           <div class="border rounded-3 p-3 h-100">
@@ -1688,8 +1513,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                         </div>
 
-
-                        <!-- Capacity -->
                         <div class="col-6 col-md-3">
 
                           <div class="border rounded-3 p-3 h-100">
@@ -1709,8 +1532,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                         </div>
 
-
-                        <!-- Fire Class -->
                         <div class="col-6 col-md-3">
 
                           <div class="border rounded-3 p-3 h-100">
@@ -1730,8 +1551,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                         </div>
 
-
-                        <!-- Placement -->
                         <div class="col-12 col-md-6">
 
                           <div class="border rounded-3 p-3 h-100">
@@ -1751,8 +1570,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                         </div>
 
-
-                        <!-- Location -->
                         <div class="col-12 col-md-6">
 
                           <div class="border rounded-3 p-3 h-100">
@@ -1776,8 +1593,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                     </div>
 
-
-                    <!-- Important Dates -->
                     <div class="mb-3">
 
                       <div class="d-flex align-items-center gap-2 mb-2">
@@ -1801,10 +1616,8 @@ require_once 'backend/authentication/SessionChecker.php';
 
                       </div>
 
-
                       <div class="row g-2">
 
-                        <!-- Manufactured Date -->
                         <div class="col-12 col-md-6">
                           <div class="border rounded-3 p-3">
                             <label class="form-label small text-body-secondary mb-1">
@@ -1819,7 +1632,6 @@ require_once 'backend/authentication/SessionChecker.php';
                           </div>
                         </div>
 
-                        <!-- Refilled Date -->
                         <div class="col-12 col-md-6">
                           <div class="border rounded-3 p-3">
                             <label class="form-label small text-body-secondary mb-1">
@@ -1834,8 +1646,6 @@ require_once 'backend/authentication/SessionChecker.php';
                           </div>
                         </div>
 
-
-                        <!-- Expiration Date -->
                         <div class="col-12 col-md-6">
 
                           <div class="border rounded-3 p-3">
@@ -1863,8 +1673,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                     </div>
 
-
-                    <!-- Remarks -->
                     <div>
 
                       <div class="d-flex align-items-center gap-2 mb-2">
@@ -1888,7 +1696,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                       </div>
 
-
                       <div class="border rounded-3 p-3 bg-light-subtle">
 
                         <textarea
@@ -1903,8 +1710,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
                   </div>
 
-
-                  <!-- Footer -->
                   <div class="modal-footer border-0 bg-light-subtle px-3 px-md-4 py-3">
 
                     <button
@@ -1945,7 +1750,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
             </div>
             <script>
-              // LOGIC FOR EXPIRATION DATE AUTO FILL BASED ON MANUFACTURE DATE
               const manufacturedDate = document.getElementById('manufacturedDate');
               const expirationDate = document.getElementById('expirationDate');
 
@@ -1958,10 +1762,8 @@ require_once 'backend/authentication/SessionChecker.php';
 
                 const date = new Date(this.value + 'T00:00:00');
 
-                // Add 3 years
                 date.setFullYear(date.getFullYear() + 3);
 
-                // Format to YYYY-MM-DD
                 const year = date.getFullYear();
                 const month = String(date.getMonth() + 1).padStart(2, '0');
                 const day = String(date.getDate()).padStart(2, '0');
@@ -1969,10 +1771,6 @@ require_once 'backend/authentication/SessionChecker.php';
                 expirationDate.value = `${year}-${month}-${day}`;
               });
             </script>
-            <!-- end form is for add new extinguisher -->
-
-
-            <!-- End content -->
 
           </div>
         </div>
@@ -1980,8 +1778,6 @@ require_once 'backend/authentication/SessionChecker.php';
     </div>
     <?php include 'partials/footer.php'; ?>
   </div>
-
-
 
   <!-- CoreUI and necessary plugins-->
   <script src="vendors/@coreui/coreui/js/coreui.bundle.min.js"></script>
@@ -1995,8 +1791,6 @@ require_once 'backend/authentication/SessionChecker.php';
       }
     });
 
-
-    // this js is for edit form 
     document.querySelectorAll('.edit-extinguisher-btn').forEach(button => {
 
       button.addEventListener('click', function() {
@@ -2057,22 +1851,12 @@ require_once 'backend/authentication/SessionChecker.php';
 
     });
 
-
-    // ========================================
-    // FIRE EXTINGUISHER CODE
-    // ========================================
-
     const codeInput = document.getElementById('extinguisherCode');
     const codeFeedback = document.getElementById('extinguisherCodeFeedback');
     const addFireExtinguisherBtn = document.getElementById('addFireExtinguisherBtn');
 
     let codeCheckTimeout;
     let isCodeDuplicate = false;
-
-
-    // ========================================
-    // CHECK IF CODE EXISTS
-    // ========================================
 
     function checkFireExtinguisherCode(code) {
 
@@ -2081,11 +1865,9 @@ require_once 'backend/authentication/SessionChecker.php';
       codeFeedback.textContent = '';
       codeFeedback.className = 'small mt-1';
 
-      // Default: allow submit
       isCodeDuplicate = false;
       addFireExtinguisherBtn.disabled = false;
 
-      // Empty code
       if (code === '') {
 
         codeInput.classList.remove(
@@ -2096,8 +1878,6 @@ require_once 'backend/authentication/SessionChecker.php';
         return;
       }
 
-
-      // Delay checking
       codeCheckTimeout = setTimeout(() => {
 
         fetch(
@@ -2118,11 +1898,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
             console.log('Code check result:', result);
 
-
-            // ========================================
-            // DUPLICATE
-            // ========================================
-
             if (result.exists === true) {
 
               isCodeDuplicate = true;
@@ -2141,15 +1916,10 @@ require_once 'backend/authentication/SessionChecker.php';
                 'is-valid'
               );
 
-              // DISABLE ADD BUTTON
               addFireExtinguisherBtn.disabled = true;
 
             }
 
-
-            // ========================================
-            // AVAILABLE
-            // ========================================
             else {
 
               isCodeDuplicate = false;
@@ -2168,7 +1938,6 @@ require_once 'backend/authentication/SessionChecker.php';
                 'is-valid'
               );
 
-              // ENABLE ADD BUTTON
               addFireExtinguisherBtn.disabled = false;
 
             }
@@ -2194,18 +1963,12 @@ require_once 'backend/authentication/SessionChecker.php';
               'is-invalid'
             );
 
-            // Disable while checking has failed
             addFireExtinguisherBtn.disabled = true;
 
           });
 
       }, 400);
     }
-
-
-    // ========================================
-    // MANUAL CODE INPUT
-    // ========================================
 
     codeInput.addEventListener('input', function() {
 
@@ -2214,11 +1977,6 @@ require_once 'backend/authentication/SessionChecker.php';
       checkFireExtinguisherCode(code);
 
     });
-
-
-    // ========================================
-    // AUTO-GENERATE FIRE EXTINGUISHER CODE
-    // ========================================
 
     function generateFireExtinguisherCode() {
 
@@ -2245,13 +2003,10 @@ require_once 'backend/authentication/SessionChecker.php';
             result
           );
 
-
           if (result.success) {
 
-            // Put generated code into input
             codeInput.value = result.code;
 
-            // Check generated code
             checkFireExtinguisherCode(
               result.code
             );
@@ -2280,16 +2035,10 @@ require_once 'backend/authentication/SessionChecker.php';
 
     }
 
-
-    // ========================================
-    // AUTO-GENERATE WHEN ADD MODAL OPENS
-    // ========================================
-
     const addFireExtinguisherModal =
       document.getElementById(
         'addFireExtinguisherModal'
       );
-
 
     if (addFireExtinguisherModal) {
 
@@ -2297,10 +2046,8 @@ require_once 'backend/authentication/SessionChecker.php';
         'shown.bs.modal',
         function() {
 
-          // Generate only if empty
           if (codeInput.value.trim() === '') {
 
-            // Disable while generating/checking
             addFireExtinguisherBtn.disabled = true;
 
             generateFireExtinguisherCode();
@@ -2318,10 +2065,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
     }
 
-    // ========================================
-    // PREVENT SUBMIT IF DUPLICATE
-    // ========================================
-
     const addForm = addFireExtinguisherBtn.closest('form');
 
     if (addForm) {
@@ -2330,8 +2073,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
         const code = codeInput.value.trim();
 
-
-        // Empty code
         if (code === '') {
 
           event.preventDefault();
@@ -2349,8 +2090,6 @@ require_once 'backend/authentication/SessionChecker.php';
           return;
         }
 
-
-        // for Duplicate validation ng fe code 
         if (isCodeDuplicate) {
 
           event.preventDefault();
@@ -2373,8 +2112,6 @@ require_once 'backend/authentication/SessionChecker.php';
       });
 
     }
-
-    // this is for view ng fire extinguisher
 
     document.querySelectorAll('.view-extinguisher-btn').forEach(button => {
 
@@ -2410,45 +2147,33 @@ require_once 'backend/authentication/SessionChecker.php';
 
             const data = result.data;
 
-
-            // ========================================
-            // FILL VIEW MODAL
-            // ========================================
-
             document.getElementById(
               'viewExtinguisherCode'
             ).value = data.extinguisher_code ?? '';
-
 
             document.getElementById(
               'viewType'
             ).value = data.type ?? '';
 
-
             document.getElementById(
               'viewCapacity'
             ).value = data.capacity ?? '';
-
 
             document.getElementById(
               'viewClass'
             ).value = data.class ?? '';
 
-
             document.getElementById(
               'viewPlacement'
             ).value = data.placement ?? '';
-
 
             document.getElementById(
               'viewLocation'
             ).value = data.location ?? '';
 
-
             document.getElementById(
               'viewConditionStatus'
             ).value = data.condition_status ?? '';
-
 
             document.getElementById(
               'viewManufacturedDate'
@@ -2458,25 +2183,17 @@ require_once 'backend/authentication/SessionChecker.php';
               'viewLastRefilledDate'
             ).value = data.refilled_date ?? '';
 
-
             document.getElementById(
               'viewExpirationDate'
             ).value = data.expiration_date ?? '';
-
 
             document.getElementById(
               'viewRemarks'
             ).value = data.remarks ?? '';
 
-
-            // ========================================
-            // STORE ID FOR EDIT / DELETE
-            // ========================================
-
             document.getElementById(
               'viewEditFireExtinguisherBtn'
             ).dataset.id = data.extinguisher_id;
-
 
             const viewDeleteBtn = document.getElementById(
               'viewDeleteFireExtinguisherBtn'

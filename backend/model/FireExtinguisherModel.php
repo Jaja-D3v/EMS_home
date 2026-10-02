@@ -30,12 +30,19 @@ function getAll($limit, $offset)
 
     if ($role === 'admin') {
 
-        $branch = $_GET['branch'] ?? 'all';
-
+        // Selected branch from dropdown
         if (
-            $branch === null ||
-            trim($branch) === ''
+            isset($_GET['branch']) &&
+            trim($_GET['branch']) !== ''
         ) {
+            $branch = trim($_GET['branch']);
+        } else {
+            // Default = Admin's assigned branch
+            $branch = trim($_SESSION['Branch'] ?? '');
+        }
+
+        // If no branch is assigned, show all
+        if ($branch === '') {
             $branch = 'all';
         }
 
@@ -784,8 +791,25 @@ function getAllDeletedFireExtinguishers($limit, $offset)
     // ADMIN = use selected branch from URL
     // INSPECTOR = use assigned branch from session
     if ($role === 'admin') {
-        $branch = trim($_GET['branch'] ?? 'all');
+
+        // Selected branch from dropdown
+        if (
+            isset($_GET['branch']) &&
+            trim($_GET['branch']) !== ''
+        ) {
+            $branch = trim($_GET['branch']);
+        } else {
+            // Default = Admin's assigned branch
+            $branch = trim($_SESSION['Branch'] ?? '');
+        }
+
+        // If no branch is assigned, show all
+        if ($branch === '') {
+            $branch = 'all';
+        }
     } else {
+
+        // Inspector = assigned branch only
         $branch = trim($_SESSION['Branch'] ?? '');
     }
 

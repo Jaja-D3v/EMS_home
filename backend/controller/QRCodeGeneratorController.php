@@ -1,24 +1,34 @@
 <?php
+
 require_once __DIR__ . '/../model/QRCodeGeneratorModel.php';
+
 
 function getAllFireExtinguishersCode()
 {
     $role = strtolower(trim($_SESSION['Role'] ?? ''));
-    $sessionBranch = $_SESSION['Branch'] ?? null;
+    $sessionBranch = trim($_SESSION['Branch'] ?? '');
 
     // ADMIN
     if ($role === 'admin') {
 
-        $selectedBranch = $_GET['branch'] ?? 'all';
-
+        // If branch is selected from dropdown, use it
         if (
-            $selectedBranch === null ||
-            trim($selectedBranch) === ''
+            isset($_GET['branch']) &&
+            trim($_GET['branch']) !== ''
         ) {
+            $selectedBranch = trim($_GET['branch']);
+        } else {
+            // Default = Admin's assigned branch
+            $selectedBranch = $sessionBranch;
+        }
+
+        // If Admin has no assigned branch
+        // fallback to all branches
+        if ($selectedBranch === '') {
             $selectedBranch = 'all';
         }
 
-        return getExtinguisher(trim($selectedBranch));
+        return getExtinguisher($selectedBranch);
     }
 
 

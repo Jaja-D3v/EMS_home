@@ -108,20 +108,17 @@ $expirySoon = getAllExpiringCount();
               <?php if (strtolower(trim($_SESSION['Role'] ?? '')) === 'admin'): ?>
 
                 <?php
-                // Branch ng naka-login na Admin
                 $adminBranch = trim($_SESSION['Branch'] ?? '');
 
-                // Kung may branch sa URL, iyon ang gagamitin.
-                // Kung wala, gamitin ang branch ng Admin.
+                // URL branch has priority.
+                // Kapag wala, gamitin ang branch ng logged-in admin.
                 $selectedBranch = $_GET['branch'] ?? $adminBranch;
 
-                // Kung walang branch sa session at wala rin sa URL,
-                // default sa All Branches
+                // Kapag walang branch sa session
                 if (empty($selectedBranch)) {
                   $selectedBranch = 'all';
                 }
 
-                // Get all branches
                 $branches = getAllDropdownBranches();
                 ?>
 
@@ -146,9 +143,7 @@ $expirySoon = getAllExpiringCount();
                         <option
                           value="<?= htmlspecialchars($branch['value']) ?>"
                           <?= $selectedBranch === $branch['value'] ? 'selected' : '' ?>>
-
                           <?= htmlspecialchars($branch['value']) ?>
-
                         </option>
 
                       <?php endforeach; ?>
@@ -177,11 +172,9 @@ $expirySoon = getAllExpiringCount();
 
                     const url = new URL(window.location.href);
 
-                    // Always set the branch parameter.
-                    // This allows "all" to remain selected after reload.
+                    // Keep branch in URL
                     url.searchParams.set('branch', selectedBranch);
 
-                    // Reload page with selected branch
                     window.location.href = url.toString();
 
                   });
