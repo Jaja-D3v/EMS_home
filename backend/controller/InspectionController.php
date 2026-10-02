@@ -187,6 +187,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $Approver_name =  $_SESSION['EmployeeName'] ?? null;
 
+        $extinguisher_code = trim($_POST['extinguisher_code'] ?? '');
+       
+
 
         if ($eval_stats == "Approved") {
 
@@ -194,6 +197,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($eval_stats == "Rejected") {
 
             RejectedBy($Approver_name, $inspect_id);
+        }
+        // this is for updating expiry date pag nag refill 
+        if ($action_taken == 'Refill') {
+
+            $exp_date = new DateTime($target_date);
+            $exp_date->modify('+3 years');
+
+            $exp_date = $exp_date->format('Y-m-d');
+
+            updateExpiry($exp_date, $extinguisher_code);
         }
 
         // Evaluation Status
@@ -219,6 +232,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+
+function updateExpiry($exp_date, $extinguisherCode)
+{
+    return updateFireExtinguisherExpiryDate($exp_date, $extinguisherCode);
+}
 function ApprovedBy($name, $inspectid)
 {
     Approved_by($name, $inspectid);

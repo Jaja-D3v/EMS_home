@@ -472,7 +472,13 @@ if ($result) {
                           <button
                             type="button"
                             class="btn btn-sm btn-primary"
-                            onclick="viewInspection(<?= (int) $inspection['inspect_id'] ?>)">
+                                                          onclick="viewInspection(
+                                  <?= (int) $inspection['inspect_id'] ?>,
+                                  '<?= htmlspecialchars(
+                                                    $inspection['extinguisher_code'] ?? '',
+                                                    ENT_QUOTES
+                                                  ) ?>'
+                              )">
 
                             <i class="bi bi-eye me-1"></i>
 
@@ -1404,13 +1410,10 @@ if ($result) {
           </div>
 
 
-          <!-- =========================
-                 MODAL FOOTER
-            ========================== -->
+          <!-- MODAL FOOTER -->
           <div class="modal-footer px-4 py-3 border-top">
 
 
-            <!-- APPROVE -->
             <!-- APPROVE -->
             <form
               action="backend/controller/InspectionController.php"
@@ -1432,6 +1435,13 @@ if ($result) {
                 type="hidden"
                 name="inspect_id"
                 id="approveInspectId"
+                value="">
+
+              <!-- extinguisher code -->
+              <input
+                type="hidden"
+                name="extinguisher_code"
+                id="approveExtinguisherCode"
                 value="">
 
               <!-- ACTION TAKEN -->
@@ -1489,6 +1499,13 @@ if ($result) {
                 id="rejectInspectId"
                 value="">
 
+              <!-- extinguisher code  -->
+              <input
+                type="hidden"
+                name="extinguisher_code"
+                id="rejectExtinguisherCode"
+                value="">
+
               <!-- ACTION TAKEN -->
               <input
                 type="hidden"
@@ -1542,6 +1559,7 @@ if ($result) {
 
 
     <?php include_once 'notification/session_timeout.php'; ?>
+    <?php include_once 'notification/approve-fe-inspection-success.php'; ?>
 
 </body>
 

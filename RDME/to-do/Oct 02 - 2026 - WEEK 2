@@ -11,7 +11,6 @@ _____________________________________________________________
 - Make total number cards clickable.
 
 ## Approve Inspection Module
-- If action taken is Refilled, set expiry date to 3 years from the refill date.  #
 - Add generate report button (to generate report of the selected date and branch).
 - Generate report based on the selected date.
 
@@ -36,6 +35,8 @@ ____________________________________________________________DONE________________
 - add dropdown branch pending
 - add dropdown branch approved nav
 - add dropdown branch rejected nav
+- If action taken is Refilled, set expiry date to 3 years from the refill date.        
+- add notification after success add
 
 ## Delete Module
 - Add Restore function.

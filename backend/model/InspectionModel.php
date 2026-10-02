@@ -800,3 +800,33 @@ function updateCorrectiveAction(
 
     return $success;
 }
+
+function updateFireExtinguisherExpiryDate($exp_date, $code)
+{
+    global $conn;
+
+
+
+    $sql = "UPDATE fire_extinguishers_tbl
+            SET expiration_date = ?
+            WHERE extinguisher_code = ?";
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        return false;
+    }
+
+    mysqli_stmt_bind_param(
+        $stmt,
+        "ss",
+        $exp_date,
+        $code
+    );
+
+    $success = mysqli_stmt_execute($stmt);
+
+    mysqli_stmt_close($stmt);
+
+    return $success;
+}

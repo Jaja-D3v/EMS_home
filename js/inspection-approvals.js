@@ -221,7 +221,7 @@ filterInspections();
 |--------------------------------------------------------------------------
 */
 
-async function viewInspection(inspectId) {
+async function viewInspection(inspectId, extinguisherCode) {
 
     try {
 
@@ -280,6 +280,22 @@ async function viewInspection(inspectId) {
             rejectInspectId.value =
                 inspectId;
 
+        }
+
+        const approveExtinguisherCode =
+            document.getElementById("approveExtinguisherCode");
+
+        const rejectExtinguisherCode =
+            document.getElementById("rejectExtinguisherCode");
+
+        if (approveExtinguisherCode) {
+            approveExtinguisherCode.value =
+                extinguisherCode || "";
+        }
+
+        if (rejectExtinguisherCode) {
+            rejectExtinguisherCode.value =
+                extinguisherCode || "";
         }
 
 
