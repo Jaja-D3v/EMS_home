@@ -830,3 +830,94 @@ function updateFireExtinguisherExpiryDate($exp_date, $code)
 
     return $success;
 }
+
+
+// for generating report
+
+function getApprovedInspectionReports($ids)
+{
+    global $conn;
+
+    if (empty($ids)) {
+        return [];
+    }
+
+    $placeholders = implode(
+        ',',
+        array_fill(0, count($ids), '?')
+    );
+
+    $sql = "
+        SELECT
+            i.inspect_id,
+            i.extinguisher_code,
+            i.location,
+            i.capacity,
+            i.type,
+            i.class,
+            i.date_inspected AS date_inspected,
+            i.inspected_by AS inspected_by,
+            i.verified_and_approved_by AS verified_and_approved_by,
+
+            i.action_taken,
+            i.target_date_of_implementation,
+
+            f.remarks AS extinguisher_remarks,
+
+            i.is_seal_ok,
+            i.is_pin_ok,
+            i.is_pressure_ok,
+            i.is_hose_ok,
+            i.is_nozzle_ok,
+            i.is_belt_ok,
+            i.is_cylinder_body_ok,
+            i.is_demarcation_line_ok,
+            i.is_signage_ok,
+            i.is_cleaning_of_unit_ok,
+
+            i.status AS status,
+            i.evaluation_status AS evaluation_status,
+            i.branch
+
+        FROM inspection_checklist_tbl i
+
+        LEFT JOIN fire_extinguishers_tbl f
+            ON TRIM(f.extinguisher_code)
+             = TRIM(i.extinguisher_code)
+
+        WHERE i.inspect_id IN ($placeholders)
+          AND i.evaluation_status = 'Approved'
+
+        ORDER BY i.inspect_id ASC
+    ";
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        return [];
+    }
+
+    $types = str_repeat('i', count($ids));
+
+    $ids = array_map('intval', $ids);
+
+    mysqli_stmt_bind_param(
+        $stmt,
+        $types,
+        ...$ids
+    );
+
+    mysqli_stmt_execute($stmt);
+
+    $result = mysqli_stmt_get_result($stmt);
+
+    $inspections = [];
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $inspections[] = $row;
+    }
+
+    mysqli_stmt_close($stmt);
+
+    return $inspections;
+}

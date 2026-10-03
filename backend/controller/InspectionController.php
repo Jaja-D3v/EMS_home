@@ -560,3 +560,14 @@ function updateEvalStats($eval_id, $evalStatus)
         $evalStatus
     );
 }
+
+// for getting approved inspection reports based on the given IDs
+
+function getApprovedInspectionReportsController($ids)
+{
+    if (empty($ids)) {
+        return [];
+    }
+
+    return getApprovedInspectionReports($ids);
+}

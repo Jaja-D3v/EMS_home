@@ -1,14 +1,10 @@
 <?php
 
+// Load required libraries and application dependencies.
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '../../backend/config/db.php'; // palitan kung iba ang path ng DB mo
+require_once __DIR__ . '/../backend/controller/InspectionController.php';
 
-// ============================================================
-// GET SELECTED INSPECTION IDS
-// Example:
-// generate-inspection-report.php?ids=1,2,3
-// ============================================================
-
+// Parse the inspection IDs supplied through the request.
 $ids = [];
 
 if (isset($_GET['ids']) && !empty($_GET['ids'])) {
@@ -25,117 +21,21 @@ if (empty($ids)) {
     die('No inspection records selected.');
 }
 
-
-// ============================================================
-// GET APPROVED INSPECTION RECORDS
-// ============================================================
-
-global $conn;
-
-$placeholders = implode(
-    ',',
-    array_fill(
-        0,
-        count($ids),
-        '?'
-    )
-);
-
-$sql = "
-    SELECT
-        inspect_id,
-        extinguisher_code,
-        location,
-        capacity,
-        type,
-        class,
-        date_inspected,
-        inspected_by,
-        verified_and_approved_by,
-
-        action_taken,
-        target_date_of_implementation,
-
-        is_seal_ok,
-        is_pin_ok,
-        is_pressure_ok,
-        is_hose_ok,
-        is_nozzle_ok,
-        is_belt_ok,
-        is_cylinder_body_ok,
-        is_demarcation_line_ok,
-        is_signage_ok,
-
-        status,
-        evaluation_status,
-        branch
-
-    FROM inspection_checklist_tbl
-
-    WHERE inspect_id IN ($placeholders)
-      AND evaluation_status = 'Approved'
-
-    ORDER BY inspect_id ASC
-";
-
-
-$stmt = mysqli_prepare(
-    $conn,
-    $sql
-);
-
-if (!$stmt) {
-    die('Database query failed.');
-}
-
-
-$types = str_repeat(
-    'i',
-    count($ids)
-);
-
-$ids = array_map(
-    'intval',
-    $ids
-);
-
-mysqli_stmt_bind_param(
-    $stmt,
-    $types,
-    ...$ids
-);
-
-mysqli_stmt_execute($stmt);
-
-$result = mysqli_stmt_get_result($stmt);
-
-$inspections = [];
-
-while ($row = mysqli_fetch_assoc($result)) {
-
-    $inspections[] = $row;
-}
-
-mysqli_stmt_close($stmt);
-
+// Retrieve approved inspection records through the controller layer.
+$inspections = getApprovedInspectionReportsController($ids);
 
 if (empty($inspections)) {
-
     die('No approved inspection records found.');
 }
 
-
-// ============================================================
-// TCPDF
-// ============================================================
-
+// Initialize the inspection report PDF.
 $pdf = new TCPDF(
 
-    'L',              // Landscape
+    'L',
 
-    'mm',             // Unit
+    'mm',
 
-    'A4',             // Page size
+    'A4',
 
     true,
 
@@ -144,7 +44,6 @@ $pdf = new TCPDF(
     false
 
 );
-
 
 $pdf->SetCreator(
     'IMS Safety Management System'
@@ -162,11 +61,9 @@ $pdf->SetSubject(
     'Approved Fire Extinguisher Inspection Report'
 );
 
-
 $pdf->setPrintHeader(false);
 
 $pdf->setPrintFooter(false);
-
 
 $pdf->SetMargins(
     8,
@@ -179,629 +76,1283 @@ $pdf->SetAutoPageBreak(
     8
 );
 
+$pdf->setPrintHeader(false);
+$pdf->setPrintFooter(false);
 
-// ============================================================
-// ADD PAGE
-// ============================================================
+$marginLeft   = 8;
+$marginTop    = 8;
+$marginRight  = 8;
+$marginBottom = 8;
 
-$pdf->AddPage();
-
-
-// ============================================================
-// HEADER
-// ============================================================
-
-
-// Company
-
-$pdf->SetFont(
-    'helvetica',
-    'B',
-    9
+$pdf->SetMargins(
+    $marginLeft,
+    $marginTop,
+    $marginRight
 );
 
-$pdf->SetXY(
-    10,
-    10
+$pdf->SetAutoPageBreak(
+    false
 );
 
-$pdf->Cell(
-    55,
-    5,
-    'KANE PACKAGE PHILIPPINE INC.',
-    0,
-    0,
-    'L'
-);
+$pdf->AddPage('L', 'A4');
 
+// Define report assets.
+$companyLogo = __DIR__ . '/../assets/img/KPPI-LOGO.jpg';
+$ertLogo     = __DIR__ . '/../assets/img/ERT-LOGO.jpg';
 
-// ============================================================
-// TITLE
-// ============================================================
-
-$pdf->SetFont(
-    'helvetica',
-    'B',
-    18
-);
-
-$pdf->SetXY(
-    65,
-    8
-);
-
-$pdf->Cell(
-    150,
-    8,
-    'FIRE EXTINGUISHER',
-    0,
-    1,
-    'C'
-);
-
-
-$pdf->SetFont(
-    'helvetica',
-    'B',
-    16
-);
-
-$pdf->SetX(
-    65
-);
-
-$pdf->Cell(
-    150,
-    8,
-    'INSPECTION CHECKSHEET',
-    0,
-    1,
-    'C'
-);
-
-
-// ============================================================
-// REPORT INFORMATION
-// ============================================================
-
+// Prepare values displayed in the report header.
 $firstInspection = $inspections[0];
 
-$dateInspected =
-    $firstInspection['date_inspected']
-    ?? '';
+$dateInspected = $firstInspection['date_inspected'] ?? '';
+$inspectedBy   = $firstInspection['inspected_by'] ?? '';
 
-$inspectedBy =
-    $firstInspection['inspected_by']
-    ?? '';
+$approvedNames = [];
 
-$approvedBy =
-    $firstInspection['verified_and_approved_by']
-    ?? '';
+foreach ($inspections as $inspection) {
 
+    $name = trim(
+        $inspection['verified_and_approved_by'] ?? ''
+    );
 
-// Date inspected
+    if (
+        $name !== '' &&
+        !in_array($name, $approvedNames, true)
+    ) {
+        $approvedNames[] = $name;
+    }
+}
 
-$pdf->SetFont(
-    'helvetica',
-    '',
-    7
-);
+$approvedBy = implode("
+", $approvedNames);
 
-$pdf->SetXY(
-    220,
-    8
-);
-
-$pdf->Cell(
-    28,
-    5,
-    'Date Inspected',
-    1,
-    0,
-    'C'
-);
-
-$pdf->Cell(
-    28,
-    5,
-    $dateInspected,
-    1,
-    1,
-    'C'
-);
-
-
-// Inspected by
-
-$pdf->SetXY(
-    220,
-    13
-);
-
-$pdf->Cell(
-    28,
-    5,
-    'Inspected by',
-    1,
-    0,
-    'C'
-);
-
-$pdf->Cell(
-    28,
-    5,
-    $inspectedBy,
-    1,
-    1,
-    'C'
-);
-
-
-// Approved by
-
-$pdf->SetXY(
-    220,
-    18
-);
-
-$pdf->Cell(
-    28,
-    5,
-    'Verified & Approved',
-    1,
-    0,
-    'C'
-);
-
-$pdf->Cell(
-    28,
-    5,
-    $approvedBy,
-    1,
-    1,
-    'C'
-);
-
-
-// ============================================================
-// TABLE
-// ============================================================
-
-$pdf->SetXY(
-    8,
-    35
-);
-
-
-$pdf->SetFont(
-    'helvetica',
-    'B',
-    5.5
-);
-
-
-// ============================================================
-// COLUMN WIDTHS
-// ============================================================
-
+// Define the report table column widths.
 $width = [
+    'no'          => 15,
+    'location'    => 25,
 
-    'no' => 9,
+    'capacity'    => 13,
+    'type'        => 13,
+    'class'       => 13,
 
-    'location' => 28,
+    'seal'        => 12,
+    'pin'         => 12,
+    'pressure'    => 12,
+    'hose'        => 12,
+    'nozzle'      => 12,
+    'belt'        => 12,
+    'cylinder'    => 12,
+    'demarcation' => 12,
+    'signage'     => 12,
+    'cleaning' => 12,
 
-    'capacity' => 12,
-
-    'type' => 12,
-
-    'class' => 10,
-
-    'seal' => 9,
-
-    'pin' => 9,
-
-    'pressure' => 13,
-
-    'hose' => 9,
-
-    'nozzle' => 10,
-
-    'belt' => 9,
-
-    'cylinder' => 12,
-
-    'demarcation' => 13,
-
-    'signage' => 11,
-
-    'comments' => 32,
-
-    'status' => 12,
-
-    'action' => 30,
-
-    'target' => 27
+    'comments'    => 30,
+    'status'      => 12,
+    'action'      => 19,
+    'target'      => 20
 ];
 
+// Render the report title, logos, and inspection information.
+function drawReportHeader(
+    $pdf,
+    $companyLogo,
+    $ertLogo,
+    $dateInspected,
+    $inspectedBy,
+    $approvedBy,
+    $marginLeft,
+    $marginTop
+) {
 
-// ============================================================
-// TABLE HEADER
-// ============================================================
+    $font = 'helvetica';
 
-$pdf->SetFillColor(
-    220,
-    220,
-    220
-);
+    $headerX = 8;
+    $headerY = 8;
 
+    $logoX = 10;
+    $logoY = 5;
+    $logoW = 55;
+    $logoH = 25;
 
-$headers = [
+    $titleX = 64;
+    $titleY = 10;
+    $titleW = 78;
 
-    'No.' => 'no',
+    $ertX = 140;
+    $ertY = 11;
+    $ertW = 13;
+    $ertH = 13;
 
-    'Location' => 'location',
+    $infoX = 158;
+    $infoY = 9;
+    $infoW = 130;
 
-    'Capacity' => 'capacity',
+    if (is_file($companyLogo)) {
 
-    'Type' => 'type',
+        $pdf->Image(
+            $companyLogo,
+            $logoX,
+            $logoY,
+            $logoW,
+            $logoH,
+            '',
+            '',
+            '',
+            false,
+            300,
+            '',
+            false,
+            false,
+            0,
+            false,
+            false,
+            false
+        );
+    } else {
 
-    'Class' => 'class',
+        $pdf->SetDrawColor(
+            150,
+            150,
+            150
+        );
 
-    'Seal' => 'seal',
+        $pdf->SetLineWidth(
+            0.25
+        );
 
-    'Pin' => 'pin',
+        $pdf->Rect(
+            $logoX,
+            $logoY,
+            $logoW,
+            $logoH
+        );
 
-    'Pressure' => 'pressure',
+        $pdf->Line(
+            $logoX,
+            $logoY,
+            $logoX + $logoW,
+            $logoY + $logoH
+        );
 
-    'Hose' => 'hose',
+        $pdf->Line(
+            $logoX + $logoW,
+            $logoY,
+            $logoX,
+            $logoY + $logoH
+        );
 
-    'Nozzle' => 'nozzle',
+        $pdf->SetTextColor(
+            100,
+            100,
+            100
+        );
 
-    'Belt' => 'belt',
+        $pdf->SetFont(
+            $font,
+            'B',
+            7
+        );
 
-    'Cylinder
-(Body)' => 'cylinder',
+        $pdf->SetXY(
+            $logoX,
+            $logoY + 6
+        );
 
-    'Demarcation
-Line' => 'demarcation',
+        $pdf->Cell(
+            $logoW,
+            4,
+            'COMPANY LOGO',
+            0,
+            1,
+            'C'
+        );
 
-    'Signage' => 'signage',
+        $pdf->SetFont(
+            $font,
+            '',
+            7
+        );
 
-    'Comments' => 'comments',
+        $pdf->SetXY(
+            $logoX,
+            $logoY + 11
+        );
 
-    'Status
-("√" or "X")' => 'status',
+        $pdf->Cell(
+            $logoW,
+            3,
+            '(REPLACE IMAGE)',
+            0,
+            0,
+            'C'
+        );
+    }
 
-    'Action Taken' => 'action',
-
-    'Target Date of
-Implementation' => 'target'
-];
-
-
-foreach ($headers as $label => $key) {
-
-    $pdf->MultiCell(
-
-        $width[$key],
-
-        13,
-
-        $label,
-
-        1,
-
-        'C',
-
-        true,
-
+    $pdf->SetTextColor(
+        0,
+        0,
         0
+    );
 
+    $pdf->SetFont(
+        $font,
+        'B',
+        14
+    );
+
+    $pdf->SetXY(
+        $titleX,
+        $titleY
+    );
+
+    $pdf->Cell(
+        $titleW,
+        8,
+        'FIRE EXTINGUISHER',
+        0,
+        1,
+        'C'
+    );
+
+    $pdf->SetFont(
+        $font,
+        'B',
+        14
+    );
+
+    $pdf->SetXY(
+        $titleX,
+        $titleY + 7
+    );
+
+    $pdf->Cell(
+        $titleW,
+        8,
+        'INSPECTION CHECKSHEET',
+        0,
+        0,
+        'C'
+    );
+
+    if (is_file($ertLogo)) {
+
+        $pdf->Image(
+            $ertLogo,
+            $ertX,
+            $ertY,
+            $ertW,
+            $ertH,
+            '',
+            '',
+            '',
+            false,
+            300,
+            '',
+            false,
+            false,
+            0,
+            false,
+            false,
+            false
+        );
+    } else {
+
+        $pdf->SetDrawColor(
+            150,
+            150,
+            150
+        );
+
+        $pdf->SetLineWidth(
+            0.25
+        );
+
+        $pdf->Rect(
+            $ertX,
+            $ertY,
+            $ertW,
+            $ertH
+        );
+
+        $pdf->Line(
+            $ertX,
+            $ertY,
+            $ertX + $ertW,
+            $ertY + $ertH
+        );
+
+        $pdf->Line(
+            $ertX + $ertW,
+            $ertY,
+            $ertX,
+            $ertY + $ertH
+        );
+
+        $pdf->SetTextColor(
+            100,
+            100,
+            100
+        );
+
+        $pdf->SetFont(
+            $font,
+            'B',
+            8
+        );
+
+        $pdf->SetXY(
+            $ertX,
+            $ertY + 5
+        );
+
+        $pdf->Cell(
+            $ertW,
+            3,
+            'ERT LOGO',
+            0,
+            1,
+            'C'
+        );
+
+        $pdf->SetFont(
+            $font,
+            '',
+            8
+        );
+
+        $pdf->SetXY(
+            $ertX,
+            $ertY + 9
+        );
+
+        $pdf->Cell(
+            $ertW,
+            3,
+            '(REPLACE IMAGE)',
+            0,
+            0,
+            'C'
+        );
+    }
+
+    $infoColW = $infoW / 3;
+
+    $labelH = 7;
+    $valueH = 14;
+
+    $infoItems = [
+
+        [
+            'Date Inspected',
+            $dateInspected,
+            ''
+        ],
+
+        [
+            'Inspected by',
+            $inspectedBy,
+            '(ERT)'
+        ],
+
+        [
+            'Verified & Approved by',
+            $approvedBy,
+            '(SO)'
+        ]
+
+    ];
+
+    foreach ($infoItems as $i => $item) {
+
+        $x = $infoX + (
+            $i * $infoColW
+        );
+
+        $pdf->SetFillColor(
+            215,
+            215,
+            215
+        );
+
+        $pdf->SetDrawColor(
+            80,
+            80,
+            80
+        );
+
+        $pdf->SetLineWidth(
+            0.20
+        );
+
+        $pdf->SetTextColor(
+            0,
+            0,
+            0
+        );
+
+        $pdf->SetFont(
+            $font,
+            '',
+            7
+        );
+
+        $pdf->SetXY(
+            $x,
+            $infoY
+        );
+
+        $pdf->Cell(
+            $infoColW,
+            $labelH,
+            $item[0],
+            1,
+            0,
+            'C',
+            true
+        );
+
+        $pdf->SetFillColor(
+            255,
+            255,
+            255
+        );
+
+        $pdf->SetXY(
+            $x,
+            $infoY + $labelH
+        );
+
+        $pdf->Cell(
+            $infoColW,
+            $valueH,
+            '',
+            1,
+            0,
+            'C',
+            true
+        );
+
+        if (
+            trim($item[1]) !== ''
+        ) {
+
+            $pdf->SetTextColor(
+                0,
+                0,
+                0
+            );
+
+            $pdf->SetFont(
+                $font,
+                '',
+                9
+            );
+
+            if ($i === 2) {
+
+                $approvedLines = preg_split(
+                    '/\R+/',
+                    trim($item[1])
+                );
+
+                $lineH = 3.5;
+
+                $currentY = $infoY + $labelH + 1.5;
+
+                foreach ($approvedLines as $approvedLine) {
+
+                    $approvedLine = trim($approvedLine);
+
+                    if ($approvedLine === '') {
+                        continue;
+                    }
+
+                    $pdf->SetXY(
+                        $x + 1,
+                        $currentY
+                    );
+
+                    $pdf->Cell(
+                        $infoColW - 2,
+                        $lineH,
+                        $approvedLine,
+                        0,
+                        0,
+                        'C'
+                    );
+
+                    $currentY += $lineH;
+                }
+            } else {
+
+                $pdf->SetXY(
+                    $x,
+                    $infoY + $labelH + 3
+                );
+
+                $pdf->Cell(
+                    $infoColW,
+                    4,
+                    $item[1],
+                    0,
+                    0,
+                    'C'
+                );
+            }
+        }
+
+        if (
+            trim($item[2]) !== ''
+        ) {
+
+            $pdf->SetFont(
+                $font,
+                '',
+                7
+            );
+
+            $pdf->SetXY(
+                $x,
+                $infoY + $labelH + 10
+            );
+
+            $pdf->Cell(
+                $infoColW,
+                3,
+                $item[2],
+                0,
+                0,
+                'C'
+            );
+        }
+    }
+
+    $pdf->SetTextColor(
+        0,
+        0,
+        0
+    );
+
+    $pdf->SetDrawColor(
+        0,
+        0,
+        0
+    );
+
+    $pdf->SetLineWidth(
+        0.20
+    );
+
+    $pdf->SetFont(
+        $font,
+        '',
+        7
     );
 }
 
-$pdf->Ln();
+// Render the table headers and column groups.
+function drawTableHeader(
+    $pdf,
+    $width,
+    $tableX,
+    $tableY
+) {
 
+    $font = 'dejavusans';
 
-// ============================================================
-// DATA
-// ============================================================
+    $groupH  = 7;
+    $headerH = 11;
 
-$pdf->SetFont(
-    'helvetica',
-    '',
-    6
-);
+    $pdf->SetFont($font, '', 6.7);
+    $pdf->SetTextColor(0, 0, 0);
+    $pdf->SetFillColor(215, 215, 215);
+    $pdf->SetDrawColor(0, 0, 0);
+    $pdf->SetLineWidth(0.20);
 
+    $x = $tableX;
 
-$no = 1;
+    foreach (
+        [
+            'No.'      => 'no',
+            'Location' => 'location'
+        ] as $label => $key
+    ) {
 
+        $pdf->MultiCell(
+            $width[$key],
+            $groupH + $headerH,
+            $label,
+            1,
+            'C',
+            true,
+            0,
+            $x,
+            $tableY,
+            true,
+            0,
+            false,
+            true,
+            $groupH + $headerH,
+            'M',
+            true
+        );
 
-foreach ($inspections as $data) {
+        $x += $width[$key];
+    }
 
+    $unitWidth =
+        $width['capacity'] +
+        $width['type'] +
+        $width['class'];
 
-    // --------------------------------------------------------
-    // ROW HEIGHT
-    // --------------------------------------------------------
+    $pdf->SetXY($x, $tableY);
 
-    $rowHeight = 18;
+    $pdf->Cell(
+        $unitWidth,
+        $groupH,
+        'Unit Description',
+        1,
+        0,
+        'C',
+        true
+    );
 
+    $unitY = $tableY + $groupH;
 
-    // --------------------------------------------------------
-    // BASIC INFORMATION
-    // --------------------------------------------------------
+    $ux = $x;
+
+    foreach (
+        [
+            'Capacity' => 'capacity',
+            'Type'     => 'type',
+            'Class'    => 'class'
+        ] as $label => $key
+    ) {
+
+        $pdf->MultiCell(
+            $width[$key],
+            $headerH,
+            $label,
+            1,
+            'C',
+            true,
+            0,
+            $ux,
+            $unitY,
+            true,
+            0,
+            false,
+            true,
+            $headerH,
+            'M',
+            true
+        );
+
+        $ux += $width[$key];
+    }
+
+    $checkpointWidth =
+        $width['seal'] +
+        $width['pin'] +
+        $width['pressure'] +
+        $width['hose'] +
+        $width['nozzle'] +
+        $width['belt'] +
+        $width['cylinder'] +
+        $width['demarcation'] +
+        $width['signage'] +
+        $width['cleaning'];
+
+    $pdf->SetXY($ux, $tableY);
+
+    $pdf->Cell(
+        $checkpointWidth,
+        $groupH,
+        'Checkpoints  (NOTE: Put "√" if GOOD; "X" if NO GOOD)',
+        1,
+        0,
+        'C',
+        true
+    );
+
+    $checkpointHeaders = [
+        'Seal' => 'seal',
+        'Pin' => 'pin',
+        "Pressure
+(195
+psi)" => 'pressure',
+        'Hose' => 'hose',
+        'Nozzle' => 'nozzle',
+        'Belt' => 'belt',
+        "Cylinder
+(Body)" => 'cylinder',
+        "Demar-
+cation
+line" => 'demarcation',
+        'Signage' => 'signage',
+        "Cleaning
+of unit" => 'cleaning'
+    ];
+
+    $cx = $ux;
+
+    foreach ($checkpointHeaders as $label => $key) {
+
+        $pdf->MultiCell(
+            $width[$key],
+            $headerH,
+            $label,
+            1,
+            'C',
+            true,
+            0,
+            $cx,
+            $unitY,
+            true,
+            0,
+            false,
+            true,
+            $headerH,
+            'M',
+            true
+        );
+
+        $cx += $width[$key];
+    }
+
+    $rightHeaders = [
+        'Comments' => 'comments',
+        "Status
+(\"√\" or
+\"X\")" => 'status',
+        'Action Taken' => 'action',
+        "Target Date of
+Implementation" => 'target'
+    ];
+
+    $rx = $cx;
+
+    foreach ($rightHeaders as $label => $key) {
+
+        $pdf->MultiCell(
+            $width[$key],
+            $groupH + $headerH,
+            $label,
+            1,
+            'C',
+            true,
+            0,
+            $rx,
+            $tableY,
+            true,
+            0,
+            false,
+            true,
+            $groupH + $headerH,
+            'M',
+            true
+        );
+
+        $rx += $width[$key];
+    }
+
+    return $tableY + $groupH + $headerH;
+}
+
+// Render one inspection record in the report table.
+function drawInspectionRow(
+    $pdf,
+    $width,
+    $data,
+    $no,
+    $x,
+    $y,
+    $rowHeight
+) {
+
+    $font = 'helvetica';
+
+    $pdf->SetFont($font, '', 7);
+    $pdf->SetTextColor(0, 0, 0);
+    $pdf->SetDrawColor(0, 0, 0);
+    $pdf->SetLineWidth(0.20);
+
+    $pdf->SetFont('helvetica', '', 9);
+
+    $pdf->SetXY($x, $y);
 
     $pdf->Cell(
         $width['no'],
         $rowHeight,
-        $no,
+        $data['extinguisher_code'] ?? '',
         1,
         0,
         'C'
     );
 
+    $x += $width['no'];
 
-    $pdf->Cell(
+    $location = $data['location'] ?? '';
+
+    $pdf->SetFont('helvetica', '', 9);
+
+    $pdf->Rect(
+        $x,
+        $y,
         $width['location'],
-        $rowHeight,
-        $data['location'] ?? '',
-        1,
-        0,
-        'L'
+        $rowHeight
     );
 
+    $textWidth = $width['location'] - 2;
 
-    $pdf->Cell(
-        $width['capacity'],
-        $rowHeight,
-        $data['capacity'] ?? '',
-        1,
-        0,
-        'C'
-    );
+    if ($pdf->GetStringWidth($location) <= $textWidth) {
 
-
-    $pdf->Cell(
-        $width['type'],
-        $rowHeight,
-        $data['type'] ?? '',
-        1,
-        0,
-        'C'
-    );
-
-
-    $pdf->Cell(
-        $width['class'],
-        $rowHeight,
-        $data['class'] ?? '',
-        1,
-        0,
-        'C'
-    );
-
-
-    // --------------------------------------------------------
-    // CHECKPOINTS
-    // --------------------------------------------------------
-
-    $checkpoints = [
-
-        'seal'
-        => 'is_seal_ok',
-
-        'pin'
-        => 'is_pin_ok',
-
-        'pressure'
-        => 'is_pressure_ok',
-
-        'hose'
-        => 'is_hose_ok',
-
-        'nozzle'
-        => 'is_nozzle_ok',
-
-        'belt'
-        => 'is_belt_ok',
-
-        'cylinder'
-        => 'is_cylinder_body_ok',
-
-        'demarcation'
-        => 'is_demarcation_line_ok',
-
-        'signage'
-        => 'is_signage_ok'
-    ];
-
-
-    foreach ($checkpoints as $column => $field) {
-
-        $value =
-            $data[$field]
-            ?? 0;
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | 1 = GOOD
-        | 0 = NOT GOOD
-        |--------------------------------------------------------------------------
-        */
-
-        $symbol =
-            ((int) $value === 1)
-            ? '✓'
-            : 'X';
-
+        $pdf->SetXY(
+            $x + 1,
+            $y
+        );
 
         $pdf->Cell(
-
-            $width[$column],
-
+            $textWidth,
             $rowHeight,
-
-            $symbol,
-
-            1,
-
+            $location,
             0,
-
+            0,
             'C'
+        );
+    } else {
 
+        $pdf->SetXY(
+            $x + 1,
+            $y
+        );
+
+        $pdf->MultiCell(
+            $textWidth,
+            4,
+            $location,
+            0,
+            'L',
+            false,
+            0,
+            $x + 1,
+            $y,
+            true,
+            0,
+            false,
+            true,
+            $rowHeight,
+            'M',
+            true
         );
     }
 
+    $x += $width['location'];
 
-    // --------------------------------------------------------
-    // COMMENTS
-    // --------------------------------------------------------
+    $pdf->SetFont('helvetica', '', 9);
 
-    /*
-     * Wala pang dedicated comments column
-     * sa addInspectionChecklist() mo.
-     *
-     * Kaya blank muna ito.
-     */
+    foreach (
+        [
+            'capacity' => $data['capacity'] ?? '',
+            'type'     => $data['type'] ?? '',
+            'class'    => $data['class'] ?? ''
+        ] as $key => $value
+    ) {
 
-    $pdf->Cell(
-
-        $width['comments'],
-
-        $rowHeight,
-
-        '',
-
-        1,
-
-        0,
-
-        'L'
-
-    );
-
-
-    // --------------------------------------------------------
-    // STATUS
-    // --------------------------------------------------------
-
-    $status =
-        strtolower(
-            trim(
-                $data['status'] ?? ''
-            )
+        $pdf->Rect(
+            $x,
+            $y,
+            $width[$key],
+            $rowHeight
         );
 
+        $textWidth = $width[$key] - 2;
 
-    $statusSymbol =
-        ($status === 'good')
-        ? '✓'
-        : 'X';
+        if ($pdf->GetStringWidth($value) <= $textWidth) {
 
+            $pdf->SetXY(
+                $x + 1,
+                $y
+            );
+
+            $pdf->Cell(
+                $textWidth,
+                $rowHeight,
+                $value,
+                0,
+                0,
+                'C'
+            );
+        } else {
+
+            $pdf->SetXY(
+                $x + 1,
+                $y
+            );
+
+            $pdf->MultiCell(
+                $textWidth,
+                4,
+                $value,
+                0,
+                'L',
+                false,
+                0,
+                $x + 1,
+                $y,
+                true,
+                0,
+                false,
+                true,
+                $rowHeight,
+                'M',
+                true
+            );
+        }
+
+        $x += $width[$key];
+    }
+
+    $checkpoints = [
+        'seal'        => 'is_seal_ok',
+        'pin'         => 'is_pin_ok',
+        'pressure'    => 'is_pressure_ok',
+        'hose'        => 'is_hose_ok',
+        'nozzle'      => 'is_nozzle_ok',
+        'belt'        => 'is_belt_ok',
+        'cylinder'    => 'is_cylinder_body_ok',
+        'demarcation' => 'is_demarcation_line_ok',
+        'signage'     => 'is_signage_ok',
+        'cleaning'    => 'is_cleaning_of_unit_ok'
+    ];
+
+    foreach ($checkpoints as $column => $field) {
+
+        $value = $data[$field] ?? null;
+
+        if ($value === null || $value === '') {
+
+            $symbol = '';
+        } else {
+
+            $symbol = ((int) $value === 1)
+                ? '√'
+                : 'X';
+        }
+
+        $pdf->SetFont(
+            'dejavusans',
+            '',
+            9
+        );
+
+        $pdf->SetXY(
+            $x,
+            $y
+        );
+
+        $pdf->Cell(
+            $width[$column],
+            $rowHeight,
+            $symbol,
+            1,
+            0,
+            'C'
+        );
+
+        $x += $width[$column];
+    }
+
+    $comments = $data['extinguisher_remarks'] ?? '';
+
+    $pdf->SetFont('helvetica', '', 9);
+
+    $pdf->Rect(
+        $x,
+        $y,
+        $width['comments'],
+        $rowHeight
+    );
+
+    $textWidth = $width['comments'] - 2;
+
+    if ($pdf->GetStringWidth($comments) <= $textWidth) {
+
+        $pdf->SetXY(
+            $x + 1,
+            $y
+        );
+
+        $pdf->Cell(
+            $textWidth,
+            $rowHeight,
+            $comments,
+            0,
+            0,
+            'C'
+        );
+    } else {
+
+        $pdf->SetXY(
+            $x + 1,
+            $y
+        );
+
+        $pdf->MultiCell(
+            $textWidth,
+            4,
+            $comments,
+            0,
+            'L',
+            false,
+            0,
+            $x + 1,
+            $y,
+            true,
+            0,
+            false,
+            true,
+            $rowHeight,
+            'M',
+            true
+        );
+    }
+
+    $x += $width['comments'];
+
+    $pdf->SetFont(
+        'dejavusans',
+        '',
+        9
+    );
+
+    $statusRaw = trim(
+        (string) ($data['status'] ?? '')
+    );
+
+    $status = strtolower($statusRaw);
+
+    if (
+        in_array(
+            $status,
+            ['good', 'ok', 'pass', 'passed', '1'],
+            true
+        )
+    ) {
+
+        $statusSymbol = '√';
+    } elseif (
+        in_array(
+            $status,
+            ['not good', 'bad', 'fail', 'failed', '0'],
+            true
+        )
+    ) {
+
+        $statusSymbol = 'X';
+    } else {
+
+        $statusSymbol = $statusRaw;
+    }
+
+    $pdf->SetXY(
+        $x,
+        $y
+    );
 
     $pdf->Cell(
-
         $width['status'],
-
         $rowHeight,
-
         $statusSymbol,
-
         1,
-
         0,
-
         'C'
-
     );
 
+    $x += $width['status'];
 
-    // --------------------------------------------------------
-    // ACTION TAKEN
-    // --------------------------------------------------------
+    $actionTaken = $data['action_taken'] ?? '';
 
-    $pdf->MultiCell(
+    $pdf->SetFont('helvetica', '', 9);
 
+    $pdf->Rect(
+        $x,
+        $y,
         $width['action'],
-
-        $rowHeight,
-
-        $data['action_taken'] ?? '',
-
-        1,
-
-        'L',
-
-        false,
-
-        0
-
+        $rowHeight
     );
 
+    $textWidth = $width['action'] - 2;
 
-    // --------------------------------------------------------
-    // TARGET DATE
-    // --------------------------------------------------------
+    if ($pdf->GetStringWidth($actionTaken) <= $textWidth) {
+
+        $pdf->SetXY(
+            $x + 1,
+            $y
+        );
+
+        $pdf->Cell(
+            $textWidth,
+            $rowHeight,
+            $actionTaken,
+            0,
+            0,
+            'C'
+        );
+    } else {
+
+        $pdf->SetXY(
+            $x + 1,
+            $y
+        );
+
+        $pdf->MultiCell(
+            $textWidth,
+            4,
+            $actionTaken,
+            0,
+            'L',
+            false,
+            0,
+            $x + 1,
+            $y,
+            true,
+            0,
+            false,
+            true,
+            $rowHeight,
+            'M',
+            true
+        );
+    }
+
+    $x += $width['action'];
+
+    $pdf->SetFont(
+        'helvetica',
+        '',
+        9
+    );
+
+    $pdf->SetXY(
+        $x,
+        $y
+    );
 
     $pdf->Cell(
-
         $width['target'],
-
         $rowHeight,
-
         $data['target_date_of_implementation'] ?? '',
-
         1,
-
-        1,
-
+        0,
         'C'
-
     );
-
-
-    $no++;
 }
 
+drawReportHeader(
+    $pdf,
+    $companyLogo,
+    $ertLogo,
+    $dateInspected,
+    $inspectedBy,
+    $approvedBy,
+    $marginLeft,
+    $marginTop
+);
 
-// ============================================================
-// NOTE
-// ============================================================
+$tableY = 30;
 
-$pdf->Ln(3);
+$dataY = drawTableHeader(
+    $pdf,
+    $width,
+    $marginLeft,
+    $tableY
+);
 
+// Configure row dimensions and pagination.
+$rowHeight = 14;
+$no = 1;
+$rowsPerPage = 11;
+$rowCount = 0;
+
+foreach ($inspections as $data) {
+
+    if ($rowCount >= $rowsPerPage) {
+
+        $pdf->AddPage('L', 'A4');
+
+        drawReportHeader(
+            $pdf,
+            $companyLogo,
+            $ertLogo,
+            $dateInspected,
+            $inspectedBy,
+            $approvedBy,
+            $marginLeft,
+            $marginTop
+        );
+
+        $tableY = 30;
+
+        $dataY = drawTableHeader(
+            $pdf,
+            $width,
+            $marginLeft,
+            $tableY
+        );
+
+        $rowCount = 0;
+    }
+
+    drawInspectionRow(
+        $pdf,
+        $width,
+        $data,
+        $no,
+        $marginLeft,
+        $dataY,
+        $rowHeight
+    );
+
+    $dataY += $rowHeight;
+
+    $no++;
+    $rowCount++;
+}
+
+if (($dataY + 15) > (297 - $marginBottom)) {
+
+    $pdf->AddPage('L', 'A4');
+
+    drawReportHeader(
+        $pdf,
+        $companyLogo,
+        $ertLogo,
+        $dateInspected,
+        $inspectedBy,
+        $approvedBy,
+        $marginLeft,
+        $marginTop
+    );
+
+    $dataY = 38;
+}
+
+$pdf->SetXY(
+    $marginLeft,
+    $dataY + 3
+);
 
 $pdf->SetFont(
-    'helvetica',
+    'dejavusans',
     'I',
     7
 );
 
-
-$pdf->Cell(
-    0,
-    5,
-    'NOTE: Put "√" if GOOD; "X" if NOT GOOD.',
-    0,
-    1,
-    'L'
-);
-
-
-// ============================================================
-// APPROVAL INFORMATION
-// ============================================================
-
-$pdf->Ln(2);
-
-
 $pdf->SetFont(
-    'helvetica',
+    'dejavusans',
     '',
     7
 );
-
 
 $pdf->Cell(
     0,
@@ -812,11 +1363,7 @@ $pdf->Cell(
     'L'
 );
 
-
-// ============================================================
-// OUTPUT
-// ============================================================
-
+// Send the generated report to the browser.
 $pdf->Output(
     'fire-extinguisher-inspection-report.pdf',
     'I'
