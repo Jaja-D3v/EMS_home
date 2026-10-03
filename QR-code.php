@@ -1012,6 +1012,48 @@ require_once 'backend/authentication/SessionChecker.php';
 
                     </div>
 
+                    <!-- =================================================
+     CLEANING OF UNIT
+================================================== -->
+
+                    <div class="check-item">
+
+                      <div class="check-item-icon">
+                        <i class="bi bi-stars"></i>
+                      </div>
+
+                      <div class="check-item-content">
+
+                        <div class="check-item-title">
+                          Cleaning of Unit
+                        </div>
+
+                        <div class="check-item-description">
+                          Unit cleanliness condition
+                        </div>
+
+                      </div>
+
+                      <div class="form-check check-control">
+
+                        <!-- Send 0 when unchecked -->
+                        <input
+                          type="hidden"
+                          name="is_cleaning_of_unit_ok"
+                          value="0">
+
+                        <!-- Send 1 when checked -->
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          id="cleaningOfUnitCheck"
+                          name="is_cleaning_of_unit_ok"
+                          value="1">
+
+                      </div>
+
+                    </div>
+
 
                   </div>
 

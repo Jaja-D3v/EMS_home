@@ -22,6 +22,7 @@ function addInspectionChecklist(
     $is_cylinder_body_ok,
     $is_demarcation_line_ok,
     $is_signage_ok,
+    $is_cleaning_of_unit_ok,    
     $status,
     $branch
 ) {
@@ -48,16 +49,17 @@ function addInspectionChecklist(
                 is_cylinder_body_ok,
                 is_demarcation_line_ok,
                 is_signage_ok,
+                is_cleaning_of_unit_ok,
                 status,
                 branch
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = mysqli_prepare($conn, $sql);
 
     mysqli_stmt_bind_param(
         $stmt,
-        "ssssssssssiiiiiiiiiis",
+        "ssssssssssiiiiiiiiiiis",
         $extinguisher_code,
         $location,
         $capacity,
@@ -77,6 +79,7 @@ function addInspectionChecklist(
         $is_cylinder_body_ok,
         $is_demarcation_line_ok,
         $is_signage_ok,
+        $is_cleaning_of_unit_ok,
         $status,
         $branch
     );

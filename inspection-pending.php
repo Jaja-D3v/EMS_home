@@ -1280,6 +1280,46 @@ if ($result) {
 
                 </div>
 
+                <!-- CLEANING OF UNIT -->
+                <div class="col-12 col-md-6 col-lg-4">
+
+                  <div class="border rounded-4 p-3 shadow-sm h-100">
+
+                    <div class="d-flex align-items-center gap-3">
+
+                      <div
+                        class="bg-primary-subtle text-primary rounded-3 p-2 flex-shrink-0">
+                        <i class="bi bi-stars fs-5"></i>
+                      </div>
+
+                      <div class="flex-grow-1">
+
+                        <div class="fw-semibold">
+                          Cleaning of Unit
+                        </div>
+
+                        <small
+                          id="viewCleaningOfUnitText"
+                          class="text-success fw-semibold">
+                          Good
+                        </small>
+
+                      </div>
+
+                      <div
+                        id="viewCleaningOfUnitStatus"
+                        class="fs-4 text-success">
+
+                        <i class="bi bi-check-circle-fill"></i>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
               </div>
 
             </div>

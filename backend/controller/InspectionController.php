@@ -113,6 +113,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ? 1
             : 0;
 
+        $is_cleaning_of_unit_ok = isset($_POST['is_cleaning_of_unit_ok'])
+            ? 1
+            : 0;
+
 
         /*
         * STATUS RULE
@@ -164,6 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $is_cylinder_body_ok,
             $is_demarcation_line_ok,
             $is_signage_ok,
+            $is_cleaning_of_unit_ok,
             $status,
             $branch
         );
@@ -188,7 +193,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $Approver_name =  $_SESSION['EmployeeName'] ?? null;
 
         $extinguisher_code = trim($_POST['extinguisher_code'] ?? '');
-       
+
 
 
         if ($eval_stats == "Approved") {

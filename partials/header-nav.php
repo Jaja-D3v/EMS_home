@@ -1,4 +1,4 @@
-<header class="header header-sticky p-0 mb-4">
+<header class="header header-sticky p-0 mb-2">
   <div class="container-fluid border-bottom px-4">
     <button class="header-toggler" type="button" onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()" style="margin-inline-start: -14px">
       <svg class="icon icon-lg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">

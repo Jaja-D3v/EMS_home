@@ -491,96 +491,8 @@ async function viewInspection(inspectId, extinguisherCode) {
             const savedAction =
                 inspection.action_taken || "";
 
-
-            const otherAction =
-                actionTaken.parentElement.querySelector(
-                    'input[name="other_action"]'
-                );
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | ALWAYS RESET FIRST
-            |--------------------------------------------------------------------------
-            */
-
-            actionTaken.value = "";
-
-
-            if (otherAction) {
-
-                otherAction.value = "";
-
-                otherAction.classList.add(
-                    "d-none"
-                );
-
-                otherAction.required =
-                    false;
-
-            }
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | ONLY LOAD SAVED ACTION
-            | IF NOT PENDING
-            |--------------------------------------------------------------------------
-            */
-
-            if (
-                status !== "Pending" &&
-                savedAction !== ""
-            ) {
-
-                const standardActions = [
-
-                    "Refill",
-                    "Replacement of Parts",
-                    "Replacement of Unit"
-
-                ];
-
-
-                if (
-                    standardActions.includes(
-                        savedAction
-                    )
-                ) {
-
-                    actionTaken.value =
-                        savedAction;
-
-                } else {
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | CUSTOM ACTION
-                    |--------------------------------------------------------------------------
-                    */
-
-                    actionTaken.value =
-                        "Others";
-
-
-                    if (otherAction) {
-
-                        otherAction.value =
-                            savedAction;
-
-                        otherAction.classList.remove(
-                            "d-none"
-                        );
-
-                        otherAction.required =
-                            true;
-
-                    }
-
-                }
-
-            }
-
+            // Display the exact value saved in the database
+            actionTaken.value = savedAction;
         }
 
 
@@ -608,6 +520,12 @@ async function viewInspection(inspectId, extinguisherCode) {
         updateChecklistStatus(
             "Seal",
             inspection.is_seal_ok
+        );
+
+
+        updateChecklistStatus(
+            "CleaningOfUnit",
+            inspection.is_cleaning_of_unit_ok
         );
 
 
@@ -675,7 +593,8 @@ async function viewInspection(inspectId, extinguisherCode) {
             inspection.is_belt_ok,
             inspection.is_cylinder_body_ok,
             inspection.is_demarcation_line_ok,
-            inspection.is_signage_ok
+            inspection.is_signage_ok,
+            inspection.is_cleaning_of_unit_ok   
 
         ];
 
