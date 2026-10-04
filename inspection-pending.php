@@ -190,6 +190,7 @@ if ($result) {
               ?>
 
               <div class="col-12 col-md-auto">
+                
 
                 <select
                   class="form-select"
@@ -1359,7 +1360,7 @@ if ($result) {
                   <label
                     for="viewActionTaken"
                     class="form-label fw-semibold">
-                    Action Taken
+                    Select Action Taken
                   </label>
 
                   <select
@@ -1368,7 +1369,7 @@ if ($result) {
                     name="action_taken"
                     required>
 
-                    <option value="" selected>
+                    <option value="" selected disabled>
                       Select Action
                     </option>
 
@@ -1519,6 +1520,12 @@ if ($result) {
                 id="approveTargetDate"
                 value="">
 
+              <input
+                type="hidden"
+                name="condition_status"
+                id="approveConditionStatus"
+                value="">
+
               <button
                 type="submit"
                 class="btn btn-sm btn-success">
@@ -1581,6 +1588,12 @@ if ($result) {
                 id="rejectTargetDate"
                 value="">
 
+              <input
+                type="hidden"
+                name="condition_status"
+                id="rejectConditionStatus"
+                value="">
+
               <button
                 type="submit"
                 class="btn btn-sm btn-danger">
@@ -1614,6 +1627,7 @@ if ($result) {
 
     <?php include_once 'notification/session_timeout.php'; ?>
     <?php include_once 'notification/approve-fe-inspection-success.php'; ?>
+    <?php include_once 'notification/rejected-fe-inspection-success.php'; ?>
 
 </body>
 

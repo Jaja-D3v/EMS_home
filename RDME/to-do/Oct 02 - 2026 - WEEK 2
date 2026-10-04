@@ -22,15 +22,29 @@ _____________________________________________________________
 ## expiry module needs revision
 - revise expiry module 
 
-## need to add column cleaning of unit in inspection tbl                                        !imporrtant 
-
-# created at Hme
-- report generation
-- dropdown
+# REMARKS 
+- need to add sa database after inspections success 
 
 
 
 ____________________________________________________________DONE___________________________________________________________________________
+
+
+# created at Hme
+- report generation
+- dropdown
+## need to add column cleaning of unit in inspection tbl                                        !imporrtant 
+
+
+ALTER TABLE fire_extinguishers_tbl
+ADD COLUMN inspected_by VARCHAR(50) NULL;
+
+ALTER TABLE fire_extinguishers_tbl
+ADD COLUMN last_date_inspected DATETIME NULL;
+
+
+# condition status will change after approve the evaluation
+
 
 # inspection header 
 - change the header to inspection record 

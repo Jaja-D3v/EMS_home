@@ -170,7 +170,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $is_signage_ok,
             $is_cleaning_of_unit_ok,
             $status,
-            $branch
+            $branch,
+            $remarks
         );
         // Final redirect
         if ($success) {
@@ -193,6 +194,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $Approver_name =  $_SESSION['EmployeeName'] ?? null;
 
         $extinguisher_code = trim($_POST['extinguisher_code'] ?? '');
+        $condition_status = trim($_POST['condition_status'] ?? '');
 
 
 
@@ -221,13 +223,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $actionSuccess = updateCorrectiveAction($inspect_id, $action_taken, $target_date);
 
         // Final redirect
-        if ($statusSuccess && $actionSuccess) {
+        if ($statusSuccess && $actionSuccess && $eval_stats == "Approved") {
+
+            updateFireExtinguisherStatus($extinguisher_code, $condition_status);
 
             header(
                 "Location: ../../inspection-pending.php?approved_success=1"
             );
             exit;
-        }
+        }elseif ($statusSuccess && $actionSuccess && $eval_stats == "Rejected") {
+
+            header(
+                "Location: ../../inspection-pending.php?rejected_success=1"
+            );
+            exit;
+        } 
 
 
         header(

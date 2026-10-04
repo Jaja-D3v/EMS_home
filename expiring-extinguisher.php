@@ -186,23 +186,17 @@ require_once 'backend/authentication/SessionChecker.php';
 
                       if (selectedCondition === 'all') {
                         card.style.display = '';
-                      }
-
-                      else if (
+                      } else if (
                         selectedCondition === 'good' &&
                         condition === 'good'
                       ) {
                         card.style.display = '';
-                      }
-
-                      else if (
+                      } else if (
                         selectedCondition === 'not-good' &&
                         condition === 'not good'
                       ) {
                         card.style.display = '';
-                      }
-
-                      else {
+                      } else {
                         card.style.display = 'none';
                       }
 
@@ -239,7 +233,6 @@ require_once 'backend/authentication/SessionChecker.php';
                 </div>
 
                 <script>
-
                   const searchInput = document.querySelector(
                     'input[placeholder="Search..."]'
                   );
@@ -474,235 +467,251 @@ require_once 'backend/authentication/SessionChecker.php';
 
             ?>
 
-            <?php foreach ($info as $data): ?>
+            <?php if ($totalRecords === 0): ?>
 
-              <?php
-              $condition = $data['condition_status'];
+              <div class="card border-0 shadow-sm">
+                <div class="card-body text-center py-5">
+                  <i class="bi bi-inbox fs-1 text-body-secondary"></i>
+                  <h5 class="fw-semibold mt-3 mb-1">No Data Found</h5>
+                  <p class="text-body-secondary mb-0">
+                    No fire extinguishers are currently expiring soon.
+                  </p>
+                </div>
+              </div>
 
-              if ($condition === 'Good') {
-                $badgeClass = 'bg-success-subtle text-success';
-                $statusIcon = 'bi-check-circle-fill';
-              } else {
-                $badgeClass = 'bg-danger-subtle text-danger';
-                $statusIcon = 'bi-exclamation-circle-fill';
-              }
+            <?php else: ?>
 
-              $expirationBadge = null;
-              $expirationBadgeClass = '';
-              $expirationIcon = '';
+              <?php foreach ($info as $data): ?>
 
-              if (!empty($data['expiration_date'])) {
+                <?php
+                $condition = $data['condition_status'];
 
-                $today = new DateTime('today');
-                $expirationDate = new DateTime($data['expiration_date']);
-
-                $twoMonthsFromNow = (clone $today)->modify('+2 months');
-
-                if ($expirationDate < $today) {
-
-                  $expiredDays = $today->diff($expirationDate)->days;
-
-                  $expirationBadge = "Expired {$expiredDays} days ago";
-                  $expirationBadgeClass = 'bg-danger-subtle text-danger';
-                  $expirationIcon = 'bi-exclamation-triangle-fill';
-                } elseif ($expirationDate <= $twoMonthsFromNow) {
-
-                  $remainingDays = $today->diff($expirationDate)->days;
-
-                  $expirationBadge = "Expires in {$remainingDays} days";
-                  $expirationBadgeClass = 'bg-warning-subtle text-warning-emphasis';
-                  $expirationIcon = 'bi-hourglass-split';
+                if ($condition === 'Good') {
+                  $badgeClass = 'bg-success-subtle text-success';
+                  $statusIcon = 'bi-check-circle-fill';
+                } else {
+                  $badgeClass = 'bg-danger-subtle text-danger';
+                  $statusIcon = 'bi-exclamation-circle-fill';
                 }
-              }
-              ?>
 
-              <div class="card border border-primary-subtle shadow-sm mb-2 extinguisher-card overflow-hidden">
+                $expirationBadge = null;
+                $expirationBadgeClass = '';
+                $expirationIcon = '';
 
-                <div class="card-body p-2 p-md-3">
+                if (!empty($data['expiration_date'])) {
 
-                  <div class="d-flex align-items-center gap-3">
+                  $today = new DateTime('today');
+                  $expirationDate = new DateTime($data['expiration_date']);
 
-                    <div
-                      class="d-flex align-items-center justify-content-center
+                  $twoMonthsFromNow = (clone $today)->modify('+2 months');
+
+                  if ($expirationDate < $today) {
+
+                    $expiredDays = $today->diff($expirationDate)->days;
+
+                    $expirationBadge = "Expired {$expiredDays} days ago";
+                    $expirationBadgeClass = 'bg-danger-subtle text-danger';
+                    $expirationIcon = 'bi-exclamation-triangle-fill';
+                  } elseif ($expirationDate <= $twoMonthsFromNow) {
+
+                    $remainingDays = $today->diff($expirationDate)->days;
+
+                    $expirationBadge = "Expires in {$remainingDays} days";
+                    $expirationBadgeClass = 'bg-warning-subtle text-warning-emphasis';
+                    $expirationIcon = 'bi-hourglass-split';
+                  }
+                }
+                ?>
+
+                <div class="card border border-primary-subtle shadow-sm mb-2 extinguisher-card overflow-hidden">
+
+                  <div class="card-body p-2 p-md-3">
+
+                    <div class="d-flex align-items-center gap-3">
+
+                      <div
+                        class="d-flex align-items-center justify-content-center
                            bg-danger bg-opacity-10 text-danger
                            rounded-3 flex-shrink-0"
-                      style="width: 50px; height: 50px;">
+                        style="width: 50px; height: 50px;">
 
-                      <i class="bi bi-fire fs-4"></i>
+                        <i class="bi bi-fire fs-4"></i>
 
-                    </div>
-
-                    <div class="flex-grow-1 min-width-0">
-
-                      <div class="mb-1">
-                        <span
-                          class="badge bg-danger-subtle text-danger rounded-pill px-2 py-1"
-                          style="font-size: 0.65rem;">
-
-                          <i class="bi bi-shield-fill me-1"></i>
-                          Fire Safety Equipment
-
-                        </span>
                       </div>
 
-                      <div class="d-flex align-items-center gap-2 flex-wrap">
+                      <div class="flex-grow-1 min-width-0">
 
-                        <div class="fw-bold fs-5 lh-sm">
-                          Fire Extinguisher
+                        <div class="mb-1">
+                          <span
+                            class="badge bg-danger-subtle text-danger rounded-pill px-2 py-1"
+                            style="font-size: 0.65rem;">
+
+                            <i class="bi bi-shield-fill me-1"></i>
+                            Fire Safety Equipment
+
+                          </span>
                         </div>
 
-                        <span class="text-body-secondary small extinguisher-code">
-                          <?= htmlspecialchars($data['extinguisher_code']) ?>
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+
+                          <div class="fw-bold fs-5 lh-sm">
+                            Fire Extinguisher
+                          </div>
+
+                          <span class="text-body-secondary small extinguisher-code">
+                            <?= htmlspecialchars($data['extinguisher_code']) ?>
+                          </span>
+
+                        </div>
+
+                      </div>
+
+                      <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-sm-end gap-2">
+
+                        <span
+                          class="badge <?= $badgeClass ?> rounded-pill px-3 py-2 text-nowrap">
+
+                          <i class="bi <?= $statusIcon ?> me-1"></i>
+
+                          <?= htmlspecialchars($condition) ?>
+
                         </span>
+
+                        <?php if ($expirationBadge !== null): ?>
+
+                          <span
+                            class="badge <?= $expirationBadgeClass ?> rounded-pill px-3 py-2 text-nowrap">
+
+                            <i class="bi <?= $expirationIcon ?> me-1"></i>
+
+                            <?= htmlspecialchars($expirationBadge) ?>
+
+                          </span>
+
+                        <?php endif; ?>
 
                       </div>
 
                     </div>
 
-                    <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-sm-end gap-2">
+                    <div class="row g-2 g-md-3 mt-2 align-items-center">
 
-                      <span
-                        class="badge <?= $badgeClass ?> rounded-pill px-3 py-2 text-nowrap">
-
-                        <i class="bi <?= $statusIcon ?> me-1"></i>
-
-                        <?= htmlspecialchars($condition) ?>
-
-                      </span>
-
-                      <?php if ($expirationBadge !== null): ?>
-
-                        <span
-                          class="badge <?= $expirationBadgeClass ?> rounded-pill px-3 py-2 text-nowrap">
-
-                          <i class="bi <?= $expirationIcon ?> me-1"></i>
-
-                          <?= htmlspecialchars($expirationBadge) ?>
-
-                        </span>
-
-                      <?php endif; ?>
-
-                    </div>
-
-                  </div>
-
-                  <div class="row g-2 g-md-3 mt-2 align-items-center">
-
-                    <div class="col-6 col-md-2">
-                      <div class="d-flex align-items-center gap-2">
-                        <div
-                          class="d-flex align-items-center justify-content-center
+                      <div class="col-6 col-md-2">
+                        <div class="d-flex align-items-center gap-2">
+                          <div
+                            class="d-flex align-items-center justify-content-center
                             bg-danger bg-opacity-10 text-danger
                             rounded-3 flex-shrink-0"
-                          style="width: 32px; height: 32px;">
-                          <i class="bi bi-qr-code"></i>
-                        </div>
-
-                        <div class="min-width-0">
-                          <div class="text-body-secondary small lh-1">
-                            FE Code
+                            style="width: 32px; height: 32px;">
+                            <i class="bi bi-qr-code"></i>
                           </div>
-                          <div class="fw-semibold small text-truncate">
-                            <?= htmlspecialchars($data['extinguisher_code']) ?>
+
+                          <div class="min-width-0">
+                            <div class="text-body-secondary small lh-1">
+                              FE Code
+                            </div>
+                            <div class="fw-semibold small text-truncate">
+                              <?= htmlspecialchars($data['extinguisher_code']) ?>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div class="col-6 col-md-2">
-                      <div class="d-flex align-items-center gap-2">
-                        <div
-                          class="d-flex align-items-center justify-content-center
+                      <div class="col-6 col-md-2">
+                        <div class="d-flex align-items-center gap-2">
+                          <div
+                            class="d-flex align-items-center justify-content-center
                                 bg-primary bg-opacity-10 text-primary
                                 rounded-3 flex-shrink-0"
-                          style="width: 32px; height: 32px;">
-                          <i class="bi bi-box-seam"></i>
-                        </div>
-
-                        <div class="min-width-0">
-                          <div class="text-body-secondary small lh-1">
-                            Capacity
+                            style="width: 32px; height: 32px;">
+                            <i class="bi bi-box-seam"></i>
                           </div>
-                          <div class="fw-semibold small text-truncate">
-                            <?= htmlspecialchars($data['capacity']) ?>
+
+                          <div class="min-width-0">
+                            <div class="text-body-secondary small lh-1">
+                              Capacity
+                            </div>
+                            <div class="fw-semibold small text-truncate">
+                              <?= htmlspecialchars($data['capacity']) ?>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div class="col-6 col-md-2">
-                      <div class="d-flex align-items-center gap-2">
-                        <div
-                          class="d-flex align-items-center justify-content-center
+                      <div class="col-6 col-md-2">
+                        <div class="d-flex align-items-center gap-2">
+                          <div
+                            class="d-flex align-items-center justify-content-center
                             bg-warning bg-opacity-10 text-warning
                             rounded-3 flex-shrink-0"
-                          style="width: 32px; height: 32px;">
-                          <i class="bi bi-fire"></i>
-                        </div>
-
-                        <div class="min-width-0">
-                          <div class="text-body-secondary small lh-1">
-                            Type
+                            style="width: 32px; height: 32px;">
+                            <i class="bi bi-fire"></i>
                           </div>
 
-                          <div
-                            class="fw-semibold small text-truncate"
-                            title="<?= htmlspecialchars($data['type']) ?>">
-                            <?= htmlspecialchars($data['type']) ?>
+                          <div class="min-width-0">
+                            <div class="text-body-secondary small lh-1">
+                              Type
+                            </div>
+
+                            <div
+                              class="fw-semibold small text-truncate"
+                              title="<?= htmlspecialchars($data['type']) ?>">
+                              <?= htmlspecialchars($data['type']) ?>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div class="col-6 col-md-2">
-                      <div class="d-flex align-items-center gap-2">
-                        <div
-                          class="d-flex align-items-center justify-content-center
+                      <div class="col-6 col-md-2">
+                        <div class="d-flex align-items-center gap-2">
+                          <div
+                            class="d-flex align-items-center justify-content-center
                             bg-primary bg-opacity-10 text-primary
                             rounded-3 flex-shrink-0"
-                          style="width: 32px; height: 32px;">
-                          <i class="bi bi-geo-alt"></i>
-                        </div>
-
-                        <div class="min-width-0">
-                          <div class="text-body-secondary small lh-1">
-                            Location
+                            style="width: 32px; height: 32px;">
+                            <i class="bi bi-geo-alt"></i>
                           </div>
 
-                          <div class="fw-semibold small text-truncate extinguisher-location"
-                            title="<?= htmlspecialchars($data['location']) ?>">
-                            <?= htmlspecialchars($data['location']) ?>
+                          <div class="min-width-0">
+                            <div class="text-body-secondary small lh-1">
+                              Location
+                            </div>
+
+                            <div class="fw-semibold small text-truncate extinguisher-location"
+                              title="<?= htmlspecialchars($data['location']) ?>">
+                              <?= htmlspecialchars($data['location']) ?>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div class="col-6 col-md-2">
+                      <div class="col-6 col-md-2">
 
-                      <div class="d-flex align-items-center gap-2">
-
-                        <div
-                          class="d-flex align-items-center justify-content-center
-                                bg-success bg-opacity-10 text-success
-                                rounded-3 flex-shrink-0"
-                          style="width: 32px; height: 32px;">
-
-                          <i class="bi bi-building"></i>
-
-                        </div>
-
-                        <div class="min-width-0">
-
-                          <div class="text-body-secondary small lh-1">
-                            Branch
-                          </div>
+                        <div class="d-flex align-items-center gap-2">
 
                           <div
-                            class="fw-semibold small text-truncate"
-                            title="<?= htmlspecialchars($data['branch']) ?>">
+                            class="d-flex align-items-center justify-content-center
+                                bg-success bg-opacity-10 text-success
+                                rounded-3 flex-shrink-0"
+                            style="width: 32px; height: 32px;">
 
-                            <?= htmlspecialchars($data['branch']) ?>
+                            <i class="bi bi-building"></i>
+
+                          </div>
+
+                          <div class="min-width-0">
+
+                            <div class="text-body-secondary small lh-1">
+                              Branch
+                            </div>
+
+                            <div
+                              class="fw-semibold small text-truncate"
+                              title="<?= htmlspecialchars($data['branch']) ?>">
+
+                              <?= htmlspecialchars($data['branch']) ?>
+
+                            </div>
 
                           </div>
 
@@ -710,29 +719,28 @@ require_once 'backend/authentication/SessionChecker.php';
 
                       </div>
 
-                    </div>
+                      <div class="col-12 col-md-2">
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-primary w-100 px-3 view-extinguisher-btn"
+                          data-id="<?= htmlspecialchars($data['extinguisher_id']) ?>"
+                          data-bs-toggle="modal"
+                          data-bs-target="#viewFireExtinguisherModal">
 
-                    <div class="col-12 col-md-2">
-                      <button
-                        type="button"
-                        class="btn btn-sm btn-primary w-100 px-3 view-extinguisher-btn"
-                        data-id="<?= htmlspecialchars($data['extinguisher_id']) ?>"
-                        data-bs-toggle="modal"
-                        data-bs-target="#viewFireExtinguisherModal">
+                          <i class="bi bi-eye me-1"></i>
+                          View
 
-                        <i class="bi bi-eye me-1"></i>
-                        View
+                        </button>
+                      </div>
 
-                      </button>
                     </div>
 
                   </div>
 
                 </div>
 
-              </div>
-
-            <?php endforeach; ?>
+              <?php endforeach; ?>
+            <?php endif; ?>
 
             <?php if ($totalPages > 1): ?>
 
@@ -1918,9 +1926,7 @@ require_once 'backend/authentication/SessionChecker.php';
 
               addFireExtinguisherBtn.disabled = true;
 
-            }
-
-            else {
+            } else {
 
               isCodeDuplicate = false;
 

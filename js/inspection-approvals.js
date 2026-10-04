@@ -823,6 +823,13 @@ function setCorrectiveActionValues(
     type
 ) {
 
+    const conditionStatus = document.getElementById(
+    "viewInspectionConditionStatus" );
+
+    const conditionValue = conditionStatus
+        ? conditionStatus.textContent.trim()
+        : "";
+
     const actionSelect =
         document.getElementById(
             "viewActionTaken"
@@ -972,6 +979,14 @@ function setCorrectiveActionValues(
                 "approveTargetDate"
             );
 
+        const approveCondition = document.getElementById(
+            "approveConditionStatus"
+            );
+
+            if (approveCondition) {
+            approveCondition.value = conditionValue;
+            }
+
 
         if (approveAction) {
 
@@ -1023,6 +1038,13 @@ function setCorrectiveActionValues(
             document.getElementById(
                 "rejectTargetDate"
             );
+        const rejectCondition = document.getElementById(
+                "rejectConditionStatus"
+            );
+
+            if (rejectCondition) {
+                rejectCondition.value = conditionValue;
+            }
 
 
         if (rejectAction) {

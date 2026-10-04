@@ -10,441 +10,402 @@ $result = getAllFireExtinguishersCode();
 
 
 <!DOCTYPE html>
-<!--
-* CoreUI - Free Bootstrap Admin Template
-* @version v5.5.0
-* @link https://coreui.io/product/free-bootstrap-admin-template/
-* Copyright (c) 2026 creativeLabs Łukasz Holeczek
-* Licensed under MIT (https://github.com/coreui/coreui-free-bootstrap-admin-template/blob/main/LICENSE)
--->
-
 <html lang="en">
 <?php include 'partials/header.php'; ?>
 
 <body>
   <?php include 'partials/side-nav.php'; ?>
+
   <div class="wrapper d-flex flex-column min-vh-100">
     <?php include 'partials/header-nav.php'; ?>
 
-    <div class="container-fluid py-0">
+    <div class="main-content flex-grow-1">
+      <main class="container-fluid px-3 px-md-4 py-3">
 
-      <!-- Hero -->
-      <div class="card border-0 shadow-sm text-white mb-1 mt-0 overflow-hidden "
-        style="background: linear-gradient(135deg, #6d6d6d, #f4f3f3);">
-        <div class="card-body p-4">
-          <div class="row align-items-center g-3">
-            <div class="col-auto">
-              <div class="bg-secondary rounded-3 p-3 fs-3">
-                <i class="bi bi-qr-code-scan"></i>
+        <!-- PAGE HEADER -->
+        <div class="card border-0 shadow-sm rounded-4 mb-3 overflow-hidden">
+          <div class="card-body p-3 p-md-4 bg-light">
+
+            <div class="d-flex flex-column flex-md-row
+                        align-items-md-center
+                        justify-content-between
+                        gap-3">
+
+              <div class="d-flex align-items-center gap-3">
+
+                <div class="bg-primary-subtle text-primary
+                            rounded-4 d-flex align-items-center
+                            justify-content-center flex-shrink-0"
+                     style="width:56px;height:56px;">
+                  <i class="bi bi-qr-code-scan fs-3"></i>
+                </div>
+
+                <div>
+                  <h4 class="fw-bold mb-1 text-dark">
+                    Print QR Codes
+                  </h4>
+
+                  <p class="text-body-secondary mb-0 small">
+                    Select fire extinguishers to print their QR codes.
+                  </p>
+                </div>
+
               </div>
+
+              <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-primary-subtle text-primary
+                             rounded-pill px-3 py-2">
+                  <i class="bi bi-fire me-1"></i>
+                  Fire Extinguisher
+                </span>
+              </div>
+
             </div>
-            <div class="col">
-              <h2 class="fw-bold mb-1">
-                Print QR Code
-              </h2>
-              <p class="mb-0 text-white-50">
-                Select fire extinguishers to print their QR codes.
-              </p>
-            </div>
-            <div class="col-12 col-md-auto">
-            </div>
+
           </div>
         </div>
-      </div>
 
 
-      <!-- Table Card -->
-      <div class="card border-0 shadow-sm">
+        <!-- MAIN CARD -->
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
 
-        <!-- Toolbar -->
-        <div class="card-header bg-white border-0 p-3">
+          <!-- TOOLBAR -->
+          <div class="card-body border-bottom bg-white p-3">
 
-          <div class="row align-items-center g-3">
+            <div class="row align-items-center g-2">
 
-            <!-- Search -->
-            <div class="col-12 col-lg">
+              <!-- SEARCH -->
+              <div class="col-12 col-lg">
 
-              <div class="input-group">
+                <div class="input-group">
 
-                <span class="input-group-text bg-white">
-                  <i class="bi bi-search"></i>
-                </span>
+                  <span class="input-group-text bg-white border-end-0">
+                    <i class="bi bi-search text-body-secondary"></i>
+                  </span>
 
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="Search code or location..."
-                  id="qrSearch">
+                  <input
+                    type="text"
+                    class="form-control border-start-0 ps-0"
+                    placeholder="Search code or location..."
+                    id="qrSearch">
 
-              </div>
-
-            </div>
-
-
-            <!-- Branch Filter - ADMIN ONLY -->
-            <?php if (strtolower(trim($_SESSION['Role'] ?? '')) === 'admin'): ?>
-
-              <?php
-              // Branch ng naka-login na Admin
-              $adminBranch = trim($_SESSION['Branch'] ?? '');
-
-              // Kung may branch sa URL, iyon ang gagamitin.
-              // Kung wala, gamitin ang branch ng Admin.
-              $selectedBranch = $_GET['branch'] ?? $adminBranch;
-
-              // Kung walang branch sa session at wala rin sa URL,
-              // default sa All Branches
-              if (empty($selectedBranch)) {
-                $selectedBranch = 'all';
-              }
-
-              // Get all branches
-              $branches = getAllDropdownBranches();
-              ?>
-
-              <div class="col-12 col-md-auto">
-
-                <select
-                  class="form-select"
-                  id="branchFilter"
-                  style="min-width: 190px;">
-
-                  <!-- All Branches -->
-                  <option
-                    value="all"
-                    <?= $selectedBranch === 'all' ? 'selected' : '' ?>>
-                    All Branches
-                  </option>
-
-                  <?php if (!empty($branches)): ?>
-
-                    <?php foreach ($branches as $branch): ?>
-
-                      <option
-                        value="<?= htmlspecialchars($branch['value']) ?>"
-                        <?= $selectedBranch === $branch['value'] ? 'selected' : '' ?>>
-
-                        <?= htmlspecialchars($branch['value']) ?>
-
-                      </option>
-
-                    <?php endforeach; ?>
-
-                  <?php endif; ?>
-
-                </select>
+                </div>
 
               </div>
 
-            <?php endif; ?>
+
+              <!-- BRANCH FILTER - ADMIN ONLY -->
+              <?php if (strtolower(trim($_SESSION['Role'] ?? '')) === 'admin'): ?>
+
+                <?php
+                  $adminBranch = trim($_SESSION['Branch'] ?? '');
+
+                  $selectedBranch = $_GET['branch'] ?? $adminBranch;
+
+                  if (empty($selectedBranch)) {
+                    $selectedBranch = 'all';
+                  }
+
+                  $branches = getAllDropdownBranches();
+                ?>
+
+                <div class="col-12 col-md-auto">
+
+                  <select
+                    class="form-select"
+                    id="branchFilter"
+                    style="min-width:190px;">
+
+                    <option
+                      value="all"
+                      <?= $selectedBranch === 'all' ? 'selected' : '' ?>>
+                      All Branches
+                    </option>
+
+                    <?php if (!empty($branches)): ?>
+
+                      <?php foreach ($branches as $branch): ?>
+
+                        <option
+                          value="<?= htmlspecialchars($branch['value']) ?>"
+                          <?= $selectedBranch === $branch['value'] ? 'selected' : '' ?>>
+
+                          <?= htmlspecialchars($branch['value']) ?>
+
+                        </option>
+
+                      <?php endforeach; ?>
+
+                    <?php endif; ?>
+
+                  </select>
+
+                </div>
+
+              <?php endif; ?>
 
 
-            <script>
-              document.addEventListener('DOMContentLoaded', function() {
+              <script>
+                document.addEventListener('DOMContentLoaded', function() {
 
-                const branchFilter = document.getElementById('branchFilter');
+                  const branchFilter =
+                    document.getElementById('branchFilter');
 
-                if (!branchFilter) {
-                  return;
-                }
+                  if (!branchFilter) {
+                    return;
+                  }
 
-                branchFilter.addEventListener('change', function() {
+                  branchFilter.addEventListener('change', function() {
 
-                  const selectedBranch = this.value;
+                    const selectedBranch = this.value;
 
-                  const url = new URL(window.location.href);
+                    const url =
+                      new URL(window.location.href);
 
-                  // Always set the branch parameter.
-                  // This allows "all" to remain selected after reload.
-                  url.searchParams.set('branch', selectedBranch);
+                    url.searchParams.set(
+                      'branch',
+                      selectedBranch
+                    );
 
-                  // Reload page with selected branch
-                  window.location.href = url.toString();
+                    window.location.href =
+                      url.toString();
+
+                  });
 
                 });
+              </script>
 
-              });
-            </script>
+            </div>
 
           </div>
 
-        </div>
+
+          <!-- TABLE -->
+          <div class="table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
+
+              <thead class="table-light">
+
+                <tr>
+
+                  <th width="55" class="ps-3">
+
+                    <div class="form-check mb-0">
+
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="selectAll"
+                        onchange="toggleSelectAll(this)">
+
+                    </div>
+
+                  </th>
+
+                  <th class="text-uppercase small text-body-secondary">
+                    Extinguisher Code
+                  </th>
+
+                  <th class="text-uppercase small text-body-secondary">
+                    Type
+                  </th>
+
+                  <th class="text-uppercase small text-body-secondary">
+                    Location
+                  </th>
+
+                  <th class="text-uppercase small text-body-secondary">
+                    Branch
+                  </th>
+
+                  <th width="50"></th>
+
+                </tr>
+
+              </thead>
 
 
-        <script>
-          // SEARCH BY CODE OR LOCATION
-          const qrSearch = document.getElementById('qrSearch');
+              <tbody>
 
-          if (qrSearch) {
+                <?php if ($result->num_rows > 0): ?>
 
-            qrSearch.addEventListener('input', function() {
+                  <?php while ($row = $result->fetch_assoc()): ?>
 
-              const searchValue = this.value
-                .trim()
-                .toLowerCase();
+                    <tr>
 
-              const tbody = document.querySelector(
-                'table tbody'
-              );
+                      <!-- CHECKBOX -->
+                      <td class="ps-3">
 
-              const rows = tbody.querySelectorAll('tr');
+                        <input
+                          class="form-check-input extinguisher-checkbox"
+                          type="checkbox"
+                          value="<?= htmlspecialchars($row['extinguisher_code']) ?>"
+                          onchange="updateSelection()">
 
-              let hasResults = false;
-
-              rows.forEach(row => {
-
-                const checkbox = row.querySelector(
-                  '.extinguisher-checkbox'
-                );
-
-                // Skip empty/default rows
-                if (!checkbox) {
-                  return;
-                }
-
-                // Extinguisher code
-                const code = checkbox.value
-                  .toLowerCase();
-
-                // Location
-                const location = row.cells[3] ?
-                  row.cells[3].textContent
-                  .trim()
-                  .toLowerCase() :
-                  '';
-
-                const match =
-                  code.includes(searchValue) ||
-                  location.includes(searchValue);
-
-                if (match) {
-
-                  row.style.display = '';
-                  hasResults = true;
-
-                } else {
-
-                  row.style.display = 'none';
-
-                }
-
-              });
+                      </td>
 
 
-              // NO RESULTS
-              let noResultsRow = document.getElementById(
-                'qrNoResults'
-              );
+                      <!-- CODE -->
+                      <td>
 
-              if (!hasResults && searchValue !== '') {
+                        <div class="d-flex align-items-center gap-2">
 
-                if (!noResultsRow) {
+                          <div class="bg-danger-subtle text-danger
+                                      rounded-3 d-flex
+                                      align-items-center
+                                      justify-content-center"
+                               style="width:38px;height:38px;">
 
-                  noResultsRow = document.createElement('tr');
+                            <i class="bi bi-fire"></i>
 
-                  noResultsRow.id = 'qrNoResults';
+                          </div>
 
-                  noResultsRow.innerHTML = `
-                    <td
-                        colspan="5"
-                        class="text-center py-5 text-muted">
+                          <span class="fw-semibold">
+                            <?= htmlspecialchars($row['extinguisher_code']) ?>
+                          </span>
 
-                        <i class="bi bi-search fs-3 d-block mb-2"></i>
-
-                        <div class="fw-semibold">
-                            No results found
                         </div>
 
-                        <div class="small">
-                            No fire extinguisher matches
-                            your search.
-                        </div>
+                      </td>
 
-                    </td>
-                `;
 
-                  tbody.appendChild(noResultsRow);
+                      <!-- TYPE -->
+                      <td>
 
-                }
+                        <span class="badge
+                                     bg-primary-subtle
+                                     text-primary
+                                     rounded-pill px-3 py-2">
 
-              } else {
+                          <?= htmlspecialchars($row['type']) ?>
 
-                if (noResultsRow) {
-                  noResultsRow.remove();
-                }
+                        </span>
 
-              }
+                      </td>
 
-            });
 
-          }
-        </script>
-        
+                      <!-- LOCATION -->
+                      <td>
 
-        <!-- Table -->
-        <div class="table-responsive">
+                        <span class="text-body-secondary">
 
-          <table class="table table-hover align-middle mb-0">
+                          <i class="bi bi-geo-alt-fill
+                                    text-primary me-1"></i>
 
-            <thead class="table-light">
+                          <?= htmlspecialchars($row['location']) ?>
 
-              <tr>
+                        </span>
 
-                <th width="50">
+                      </td>
 
-                  <div class="form-check mb-0">
-                    <input
-                      class="form-check-input border border-secondary"
-                      type="checkbox"
-                      id="selectAll"
-                      onchange="toggleSelectAll(this)">
-                  </div>
 
-                </th>
+                      <!-- BRANCH -->
+                      <td>
 
-                <th> EXTINGUISHER CODE </th>
+                        <span class="text-body-secondary">
 
-                <th> TYPE </th>
+                          <i class="bi bi-building
+                                    text-primary me-1"></i>
 
-                <th> LOCATION </th>
+                          <?= htmlspecialchars($row['branch']) ?>
 
-                <th> BRANCH </th>
+                        </span>
 
-                <th width="80"></th>
+                      </td>
 
-              </tr>
 
-            </thead>
+                      <!-- ACTION -->
+                      <td></td>
 
-            <tbody>
+                    </tr>
 
-              <?php if ($result->num_rows > 0): ?>
+                  <?php endwhile; ?>
 
-                <?php while ($row = $result->fetch_assoc()): ?>
+                <?php else: ?>
 
                   <tr>
 
-                    <!-- Checkbox -->
-                    <td>
+                    <td
+                      colspan="6"
+                      class="text-center py-5">
 
-                      <input
-                        class="form-check-input border border-secondary extinguisher-checkbox"
-                        type="checkbox"
-                        value="<?= htmlspecialchars($row['extinguisher_code']) ?>"
-                        onchange="updateSelection()">
+                      <div class="bg-light rounded-circle
+                                  d-flex align-items-center
+                                  justify-content-center mx-auto mb-3"
+                           style="width:60px;height:60px;">
 
-                    </td>
-
-                    <!-- Extinguisher Code -->
-                    <td>
-
-                      <div class="d-flex align-items-center gap-2">
-
-                        <div class="bg-danger-subtle text-danger rounded-3 p-2">
-                          <i class="bi bi-fire"></i>
-                        </div>
-
-                        <strong>
-                          <?= htmlspecialchars($row['extinguisher_code']) ?>
-                        </strong>
+                        <i class="bi bi-fire
+                                  text-body-secondary fs-4"></i>
 
                       </div>
 
-                    </td>
+                      <div class="fw-semibold text-dark">
+                        No fire extinguishers found
+                      </div>
 
-
-                    <!-- Type -->
-                    <td>
-
-                      <span class="badge rounded-pill bg-primary-subtle text-primary">
-
-                        <?= htmlspecialchars($row['type']) ?>
-
-                      </span>
-
-                    </td>
-
-                    <!-- Location -->
-                    <td>
-
-                      <i class="bi bi-geo-alt-fill text-secondary me-1"></i>
-
-                      <?= htmlspecialchars($row['location']) ?>
-
-                    </td>
-
-                    <!-- Location -->
-                    <td>
-
-                      <i class="bi bi-geo-alt-fill text-secondary me-1"></i>
-
-                      <?= htmlspecialchars($row['branch']) ?>
-
-                    </td>
-
-                    <!-- Actions -->
-                    <td class="text-end">
+                      <div class="small text-body-secondary mt-1">
+                        There are no fire extinguishers available.
+                      </div>
 
                     </td>
 
                   </tr>
 
-                <?php endwhile; ?>
+                <?php endif; ?>
 
-              <?php else: ?>
+              </tbody>
 
-                <tr>
+            </table>
 
-                  <td
-                    colspan="5"
-                    class="text-center py-5 text-muted">
-
-                    No fire extinguishers found.
-
-                  </td>
-
-                </tr>
-
-              <?php endif; ?>
-
-            </tbody>
-
-          </table>
-
-        </div>
+          </div>
 
 
-        <!-- Selection Footer -->
-        <div id="selectionFooter" class="card-footer border-0 bg-primary-subtle rounded selection-footer">
+          <!-- SELECTION FOOTER -->
+          <div
+            id="selectionFooter"
+            class="bg-primary-subtle border-top p-3 d-none">
 
-          <div class="d-flex flex-column flex-md-row
-                justify-content-between
-                align-items-center
-                gap-3">
+            <div class="d-flex flex-column
+                        flex-md-row
+                        justify-content-between
+                        align-items-center
+                        gap-3">
 
-            <div class="text-primary fw-semibold text-center text-md-start">
-              <i class="bi bi-check-circle-fill me-1"></i>
-              <span id="selectedCount">0</span>
-              item(s) selected
-            </div>
+              <div class="text-primary fw-semibold">
 
-            <div class="d-flex flex-wrap gap-2 justify-content-center flex-shrink-0">
+                <i class="bi bi-check-circle-fill me-1"></i>
 
-              <button
-                type="button"
-                class="btn btn-light"
-                onclick="clearSelection()">
-                <i class="bi bi-x-lg me-1"></i>
-                Clear
-              </button>
+                <span id="selectedCount">0</span>
+                item(s) selected
 
-              <button
-                type="button"
-                class="btn btn-primary"
-                onclick="printSelected()">
-                <i class="bi bi-printer me-1"></i>
-                Print Selected
-              </button>
+              </div>
+
+
+              <div class="d-flex flex-wrap gap-2">
+
+                <button
+                  type="button"
+                  class="btn btn-light border rounded-3 px-3"
+                  onclick="clearSelection()">
+
+                  <i class="bi bi-x-lg me-1"></i>
+                  Clear
+
+                </button>
+
+
+                <button
+                  type="button"
+                  class="btn btn-primary rounded-3 px-3"
+                  onclick="printSelected()">
+
+                  <i class="bi bi-printer me-1"></i>
+                  Print Selected
+
+                </button>
+
+              </div>
 
             </div>
 
@@ -452,99 +413,386 @@ $result = getAllFireExtinguishersCode();
 
         </div>
 
-      </div>
-
+      </main>
     </div>
 
 
+    <!-- SEARCH / SELECTION JS -->
     <script>
-      function toggleSelectAll(source) {
 
-        document
-          .querySelectorAll('.extinguisher-checkbox')
-          .forEach(cb => {
-            cb.checked = source.checked;
-          });
+      // ==============================
+    // SEARCH
+    // ==============================
+    const qrSearch = document.getElementById('qrSearch');
 
-        updateSelection();
-      }
+    if (qrSearch) {
+
+      qrSearch.addEventListener('input', function () {
+
+        const searchValue =
+          this.value.trim().toLowerCase();
+
+        const tbody =
+          document.querySelector('table tbody');
+
+        const rows =
+          tbody.querySelectorAll(
+            'tr:not(#qrNoResults)'
+          );
+
+        let hasResults = false;
+
+        rows.forEach(row => {
+
+          const checkbox =
+            row.querySelector(
+              '.extinguisher-checkbox'
+            );
+
+          if (!checkbox) {
+            return;
+          }
+
+          const code =
+            checkbox.value.toLowerCase();
+
+          const location =
+            row.cells[3]
+              ? row.cells[3].textContent
+                  .trim()
+                  .toLowerCase()
+              : '';
+
+          const match =
+            searchValue === '' ||
+            code.includes(searchValue) ||
+            location.includes(searchValue);
+
+          if (match) {
+
+            row.classList.remove('d-none');
+
+            hasResults = true;
+
+          } else {
+
+            row.classList.add('d-none');
+
+            // Uncheck hidden items
+            checkbox.checked = false;
+
+          }
+
+        });
 
 
-      function updateSelection() {
+        // Reset Select All state
+        const selectAll =
+          document.getElementById('selectAll');
 
-        const selected =
-          document.querySelectorAll(
-            '.extinguisher-checkbox:checked'
-          ).length;
+        if (selectAll) {
 
-        const selectedCount =
-          document.getElementById('selectedCount');
+          selectAll.checked = false;
+          selectAll.indeterminate = false;
 
-        const selectionFooter =
-          document.getElementById('selectionFooter');
+        }
 
-        selectedCount.textContent = selected;
 
-        if (selected > 0) {
+        // ==============================
+        // NO RESULTS
+        // ==============================
+        let noResultsRow =
+          document.getElementById('qrNoResults');
 
-          selectionFooter.classList.add('show');
+        if (!hasResults && searchValue !== '') {
+
+          if (!noResultsRow) {
+
+            noResultsRow =
+              document.createElement('tr');
+
+            noResultsRow.id =
+              'qrNoResults';
+
+            noResultsRow.innerHTML = `
+              <td colspan="6"
+                  class="text-center py-5">
+
+                <div class="bg-light rounded-circle
+                            d-flex align-items-center
+                            justify-content-center
+                            mx-auto mb-3"
+                     style="width:60px;height:60px;">
+
+                  <i class="bi bi-search
+                            text-body-secondary fs-4"></i>
+
+                </div>
+
+                <div class="fw-semibold text-dark">
+                  No results found
+                </div>
+
+                <div class="small text-body-secondary mt-1">
+                  No fire extinguisher matches your search.
+                </div>
+
+              </td>
+            `;
+
+            tbody.appendChild(noResultsRow);
+
+          }
 
         } else {
 
-          selectionFooter.classList.remove('show');
+          if (noResultsRow) {
+            noResultsRow.remove();
+          }
 
         }
-      }
 
-      function clearSelection() {
-
-        document
-          .querySelectorAll('.extinguisher-checkbox')
-          .forEach(cb => {
-            cb.checked = false;
-          });
-
-        document.getElementById('selectAll').checked = false;
 
         updateSelection();
-      }
+
+      });
+
+    }
 
 
-      function printSelected() {
+    // ==============================
+    // SELECT ALL
+    // ==============================
+    function toggleSelectAll(source) {
 
-        const selected = [...document.querySelectorAll(
-          '.extinguisher-checkbox:checked'
-        )].map(cb => cb.value);
+      const rows =
+        document.querySelectorAll(
+          'table tbody tr:not(#qrNoResults)'
+        );
 
-        if (!selected.length) {
-          alert('Please select at least one fire extinguisher.');
+      rows.forEach(row => {
+
+        if (
+          row.classList.contains('d-none')
+        ) {
           return;
         }
 
-        window.location.href =
-          'helpers/print-qr.php?codes=' +
-          encodeURIComponent(selected.join(','));
+        const checkbox =
+          row.querySelector(
+            '.extinguisher-checkbox'
+          );
+
+        if (checkbox) {
+
+          checkbox.checked =
+            source.checked;
+
+        }
+
+      });
+
+      updateSelection();
+
+    }
+
+
+    // ==============================
+    // UPDATE SELECTION
+    // ==============================
+    function updateSelection() {
+
+      const checkboxes =
+        document.querySelectorAll(
+          '.extinguisher-checkbox'
+        );
+
+      const selected =
+        document.querySelectorAll(
+          '.extinguisher-checkbox:checked'
+        ).length;
+
+      const visibleCheckboxes =
+        Array.from(checkboxes)
+          .filter(cb => {
+
+            const row =
+              cb.closest('tr');
+
+            return row &&
+              !row.classList.contains('d-none');
+
+          });
+
+      const visibleSelected =
+        visibleCheckboxes.filter(
+          cb => cb.checked
+        ).length;
+
+
+      const selectedCount =
+        document.getElementById(
+          'selectedCount'
+        );
+
+      const selectionFooter =
+        document.getElementById(
+          'selectionFooter'
+        );
+
+      const selectAll =
+        document.getElementById(
+          'selectAll'
+        );
+
+
+      selectedCount.textContent =
+        selected;
+
+
+      if (selected > 0) {
+
+        selectionFooter.classList.remove(
+          'd-none'
+        );
+
+      } else {
+
+        selectionFooter.classList.add(
+          'd-none'
+        );
+
       }
+
+
+      if (
+        visibleCheckboxes.length > 0 &&
+        visibleSelected ===
+          visibleCheckboxes.length
+      ) {
+
+        selectAll.checked = true;
+        selectAll.indeterminate = false;
+
+      } else if (
+        visibleSelected > 0
+      ) {
+
+        selectAll.checked = false;
+        selectAll.indeterminate = true;
+
+      } else {
+
+        selectAll.checked = false;
+        selectAll.indeterminate = false;
+
+      }
+
+    }
+
+
+    // ==============================
+    // CLEAR SELECTION
+    // ==============================
+    function clearSelection() {
+
+      document
+        .querySelectorAll(
+          '.extinguisher-checkbox'
+        )
+        .forEach(cb => {
+
+          cb.checked = false;
+
+        });
+
+
+      const selectAll =
+        document.getElementById(
+          'selectAll'
+        );
+
+      selectAll.checked = false;
+      selectAll.indeterminate = false;
+
+
+      updateSelection();
+
+    }
+
+
+    // ==============================
+    // PRINT SELECTED
+    // ==============================
+    function printSelected() {
+
+      const selected = [
+        ...document.querySelectorAll(
+          '.extinguisher-checkbox:checked'
+        )
+      ].map(cb => cb.value);
+
+
+      if (!selected.length) {
+
+        alert(
+          'Please select at least one fire extinguisher.'
+        );
+
+        return;
+
+      }
+
+
+      window.location.href =
+        'helpers/print-qr.php?codes=' +
+        encodeURIComponent(
+          selected.join(',')
+        );
+
+    }
+
     </script>
 
-  </div>
-  </div>
-  <?php include 'partials/footer.php'; ?>
-  </div>
-  <!-- CoreUI and necessary plugins-->
-  <script src="vendors/@coreui/coreui/js/coreui.bundle.min.js"></script>
-  <script src="vendors/simplebar/js/simplebar.min.js"></script>
-  <script>
-    const header = document.querySelector("header.header");
 
-    document.addEventListener("scroll", () => {
-      if (header) {
-        header.classList.toggle("shadow-sm", document.documentElement.scrollTop > 0);
+    <?php include 'partials/footer.php'; ?>
+
+  </div>
+
+
+  <!-- CoreUI -->
+  <script src="vendors/@coreui/coreui/js/coreui.bundle.min.js"></script>
+
+  <script src="vendors/simplebar/js/simplebar.min.js"></script>
+
+
+  <script>
+
+    const header =
+      document.querySelector(
+        "header.header"
+      );
+
+    document.addEventListener(
+      "scroll",
+      () => {
+
+        if (header) {
+
+          header.classList.toggle(
+            "shadow-sm",
+            document.documentElement.scrollTop > 0
+          );
+
+        }
+
       }
-    });
+    );
+
   </script>
+
+
   <?php include_once 'notification/session_timeout.php'; ?>
 
 </body>
-
 </html>

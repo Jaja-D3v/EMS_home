@@ -22,12 +22,15 @@ function addInspectionChecklist(
     $is_cylinder_body_ok,
     $is_demarcation_line_ok,
     $is_signage_ok,
-    $is_cleaning_of_unit_ok,    
+    $is_cleaning_of_unit_ok,
     $status,
-    $branch
+    $branch,
+    $remarks
 ) {
+
     global $conn;
 
+    // 1. Insert inspection checklist
     $sql = "INSERT INTO inspection_checklist_tbl
             (
                 extinguisher_code,
@@ -84,8 +87,31 @@ function addInspectionChecklist(
         $branch
     );
 
-    return mysqli_stmt_execute($stmt);
+    if (!mysqli_stmt_execute($stmt)) {
+        return false;
+    }
+
+    // 2. Update fire_extinguishers_tbl
+    $updateSql = "UPDATE fire_extinguishers_tbl
+              SET remarks = ?,
+                  last_date_inspected = NOW(),
+                  inspected_by = ?
+              WHERE extinguisher_code = ?";
+
+    $updateStmt = mysqli_prepare($conn, $updateSql);
+
+    mysqli_stmt_bind_param(
+        $updateStmt,
+        "sss",
+        $remarks,
+        $inspected_by,
+        $extinguisher_code
+    );
+
+    return mysqli_stmt_execute($updateStmt);
 }
+
+
 // Get current logged-in branch
 function getBranch()
 {
@@ -145,11 +171,20 @@ function getInspectionCheckListById($id)
         return null;
     }
 
-    $sql = "SELECT *
-            FROM inspection_checklist_tbl
-            WHERE inspect_id = ?
-              AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
-            LIMIT 1";
+    $sql = "SELECT 
+            inspection_checklist_tbl.*,
+            fire_extinguishers_tbl.remarks
+        FROM inspection_checklist_tbl
+
+        LEFT JOIN fire_extinguishers_tbl
+            ON fire_extinguishers_tbl.extinguisher_code =
+               inspection_checklist_tbl.extinguisher_code
+
+        WHERE inspection_checklist_tbl.inspect_id = ?
+          AND LOWER(TRIM(inspection_checklist_tbl.branch)) =
+              LOWER(TRIM(?))
+
+        LIMIT 1";
 
     $stmt = mysqli_prepare($conn, $sql);
 
@@ -923,4 +958,34 @@ function getApprovedInspectionReports($ids)
     mysqli_stmt_close($stmt);
 
     return $inspections;
+}
+
+
+
+function updateFireExtinguisherStatus($extinguisher_code, $status)
+{
+    global $conn;
+
+    $sql = "UPDATE fire_extinguishers_tbl
+            SET condition_status = ?
+            WHERE extinguisher_code = ?";
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        return false;
+    }
+
+    mysqli_stmt_bind_param(
+        $stmt,
+        "ss",
+        $status,
+        $extinguisher_code
+    );
+
+    $success = mysqli_stmt_execute($stmt);
+
+    mysqli_stmt_close($stmt);
+
+    return $success;
 }
