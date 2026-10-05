@@ -190,7 +190,7 @@ if ($result) {
               ?>
 
               <div class="col-12 col-md-auto">
-                
+
 
                 <select
                   class="form-select"
@@ -293,9 +293,15 @@ if ($result) {
                     Status
                   </th>
 
-                  <th class="py-3 text-nowrap text-end pe-3">
-                    Actions
+                   <th class="py-3 text-nowrap">
+                    Branch
                   </th>
+
+                  <th class="py-3 text-nowrap text-end pe-3">
+                    Action
+                  </th>
+
+                  
 
                 </tr>
 
@@ -475,6 +481,17 @@ if ($result) {
                           ) ?>
 
                         </span>
+
+                      </td>
+
+
+                      <!-- branch -->
+
+                       <td>
+
+                        <?= htmlspecialchars(
+                          $inspection['branch'] ?? '—'
+                        ) ?>
 
                       </td>
 
@@ -1456,8 +1473,10 @@ if ($result) {
               <textarea
                 class="form-control"
                 id="viewRemarks"
+                name="remarks"
                 rows="4"
-                readonly></textarea>
+                readonly>
+              </textarea>
 
             </div>
 
@@ -1524,6 +1543,12 @@ if ($result) {
                 type="hidden"
                 name="condition_status"
                 id="approveConditionStatus"
+                value="">
+
+              <input
+                type="hidden"
+                name="remarks"
+                id="approveRemarks"
                 value="">
 
               <button

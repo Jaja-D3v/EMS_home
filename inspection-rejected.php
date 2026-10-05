@@ -288,6 +288,10 @@ if ($result) {
                   </th>
 
                   <th class="py-3 text-nowrap">
+                    Branch
+                  </th>
+
+                  <th class="py-3 text-nowrap">
                     Status
                   </th>
 
@@ -450,6 +454,16 @@ if ($result) {
                           —
 
                         <?php endif; ?>
+
+                      </td>
+
+                      <!-- branch -->
+
+                      <td>
+
+                        <?= htmlspecialchars(
+                          $inspection['branch'] ?? '—'
+                        ) ?>
 
                       </td>
 

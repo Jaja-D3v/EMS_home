@@ -15,6 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ? (int) $_GET['id']
             : 0;
 
+
+
         header('Content-Type: application/json');
 
         if ($id <= 0) {
@@ -29,6 +31,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         $inspection = getInspectionCheckListById($id);
+        // for debugg purposes
+        if (!$inspection) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Inspection record not found.',
+                'debug_id' => $id,
+                'debug_branch' => getBranch()
+            ]);
+            exit;
+        }
 
         if ($inspection) {
 
@@ -67,6 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $target_date_of_implementation = 'N/A';
         $remarks = $_POST['remarks'] ?? null;
         $branch = $_POST['branch'] ?? null;
+
 
 
 
@@ -184,17 +197,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($action == 'update_evaluation_status') {
 
         $inspect_id =  $_POST['inspect_id'] ?? null;
-
         $eval_stats = $_POST['evaluation_status'] ?? null;
-
         $action_taken = trim($_POST['action_taken'] ?? '');
-
         $target_date = $_POST['target_date_of_implementation'] ?? null;
-
         $Approver_name =  $_SESSION['EmployeeName'] ?? null;
-
         $extinguisher_code = trim($_POST['extinguisher_code'] ?? '');
         $condition_status = trim($_POST['condition_status'] ?? '');
+        $remarks = trim($_POST['remarks'] ?? '');
 
 
 
@@ -225,19 +234,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Final redirect
         if ($statusSuccess && $actionSuccess && $eval_stats == "Approved") {
 
-            updateFireExtinguisherStatus($extinguisher_code, $condition_status);
+            updateFireExtinguisherStatus($extinguisher_code, $condition_status, $remarks);
 
-            header(
-                "Location: ../../inspection-pending.php?approved_success=1"
-            );
+            header("Location: ../../inspection-pending.php?approved_success=1");
             exit;
-        }elseif ($statusSuccess && $actionSuccess && $eval_stats == "Rejected") {
+        } elseif ($statusSuccess && $actionSuccess && $eval_stats == "Rejected") {
 
             header(
                 "Location: ../../inspection-pending.php?rejected_success=1"
             );
             exit;
-        } 
+        }
 
 
         header(

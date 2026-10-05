@@ -290,6 +290,11 @@ if ($result) {
                     Date Inspected
                   </th>
 
+
+                  <th class="py-3 text-nowrap">
+                    Branch
+                  </th>
+
                   <th class="py-3 text-nowrap">
                     Status
                   </th>
@@ -458,6 +463,16 @@ if ($result) {
 
                       </td>
 
+                      <!-- branch -->
+
+                      <td>
+
+                        <?= htmlspecialchars(
+                          $inspection['branch'] ?? '—'
+                        ) ?>
+
+                      </td>
+
 
                       <!-- Status -->
 
@@ -477,6 +492,9 @@ if ($result) {
                         </span>
 
                       </td>
+
+
+
 
                       <!-- Actions -->
 

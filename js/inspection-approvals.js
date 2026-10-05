@@ -307,38 +307,32 @@ async function viewInspection(inspectId, extinguisherCode) {
 
         document.getElementById(
             "viewExtinguisherCode"
-        ).value =
-            inspection.extinguisher_code || "—";
+        ).value = inspection.extinguisher_code || "—";
 
 
         document.getElementById(
             "viewInspectionLocation"
-        ).value =
-            inspection.location || "—";
+        ).value =  inspection.location || "—";
 
 
         document.getElementById(
             "viewInspectionCapacity"
-        ).value =
-            inspection.capacity || "—";
+        ).value = inspection.capacity || "—";
 
 
         document.getElementById(
             "viewInspectionType"
-        ).value =
-            inspection.type || "—";
+        ).value = inspection.type || "—";
 
 
         document.getElementById(
             "viewInspectionClass"
-        ).value =
-            inspection.class || "—";
+        ).value = inspection.class || "—";
 
 
         document.getElementById(
             "viewInspectedBy"
-        ).value =
-            inspection.inspected_by || "—";
+        ).value = inspection.inspected_by || "—";
 
 
         /*
@@ -349,8 +343,7 @@ async function viewInspection(inspectId, extinguisherCode) {
 
         document.getElementById(
             "viewRemarks"
-        ).value =
-            inspection.remarks || "N/A";
+        ).value = inspection.remarks || "N/A";
 
 
         /*
@@ -594,7 +587,7 @@ async function viewInspection(inspectId, extinguisherCode) {
             inspection.is_cylinder_body_ok,
             inspection.is_demarcation_line_ok,
             inspection.is_signage_ok,
-            inspection.is_cleaning_of_unit_ok   
+            inspection.is_cleaning_of_unit_ok
 
         ];
 
@@ -824,7 +817,7 @@ function setCorrectiveActionValues(
 ) {
 
     const conditionStatus = document.getElementById(
-    "viewInspectionConditionStatus" );
+        "viewInspectionConditionStatus");
 
     const conditionValue = conditionStatus
         ? conditionStatus.textContent.trim()
@@ -981,11 +974,23 @@ function setCorrectiveActionValues(
 
         const approveCondition = document.getElementById(
             "approveConditionStatus"
-            );
+        );
 
-            if (approveCondition) {
+        const approveRemarks = document.getElementById(
+            "approveRemarks"
+        );
+
+        if (approveCondition) {
             approveCondition.value = conditionValue;
-            }
+        }
+
+        if (approveRemarks) {
+            const remarks = document.getElementById("viewRemarks");
+
+            approveRemarks.value = remarks
+                ? remarks.value.trim()
+                : "";
+        }
 
 
         if (approveAction) {
@@ -1039,12 +1044,12 @@ function setCorrectiveActionValues(
                 "rejectTargetDate"
             );
         const rejectCondition = document.getElementById(
-                "rejectConditionStatus"
-            );
+            "rejectConditionStatus"
+        );
 
-            if (rejectCondition) {
-                rejectCondition.value = conditionValue;
-            }
+        if (rejectCondition) {
+            rejectCondition.value = conditionValue;
+        }
 
 
         if (rejectAction) {
