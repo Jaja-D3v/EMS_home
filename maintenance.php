@@ -28,7 +28,7 @@ if (isset($_POST['action'])) {
 $data = $controller->index();
 
 $branchData = $data['branch'];
-$conditionData = $data['condition'];
+$placement = $data['placement'];
 $typeData = $data['type'];
 $fireClassData = $data['fire_class'];
 $capacityData = $data['capacity'];
@@ -304,7 +304,7 @@ $locationData = $data['location'];
 
 
                     <!-- =====================================================
-             CONDITION
+             PLACEMENT
         ====================================================== -->
 
                     <div class="col-xl-4 col-lg-6">
@@ -323,11 +323,11 @@ $locationData = $data['location'];
 
                                         <div>
                                             <h5 class="fw-bold mb-0">
-                                                Condition
+                                                Placement
                                             </h5>
 
                                             <small class="text-muted">
-                                                Manage condition options.
+                                                Manage placement options.
                                             </small>
                                         </div>
 
@@ -337,7 +337,7 @@ $locationData = $data['location'];
                                         class="btn btn-primary btn-sm"
                                         data-bs-toggle="modal"
                                         data-bs-target="#addModal"
-                                        onclick="setCategory('condition')">
+                                        onclick="setCategory('placement')">
 
                                         <i class="bi bi-plus-lg"></i>
                                         Add
@@ -356,10 +356,10 @@ $locationData = $data['location'];
                                         </span>
 
                                         <input type="text"
-                                            name="condition_search"
-                                            value="<?= htmlspecialchars($conditionData['search']) ?>"
+                                            name="placement_search"
+                                            value="<?= htmlspecialchars($placement['search']) ?>"
                                             class="form-control"
-                                            placeholder="Search condition...">
+                                            placeholder="Search placement...">
 
                                         <button class="btn btn-primary">
                                             Search
@@ -378,7 +378,7 @@ $locationData = $data['location'];
 
                                             <tr>
                                                 <th>#</th>
-                                                <th>Condition</th>
+                                                <th>Placement</th>
                                                 <th>Status</th>
                                                 <th class="text-end">Actions</th>
                                             </tr>
@@ -387,25 +387,25 @@ $locationData = $data['location'];
 
                                         <tbody>
 
-                                            <?php if (empty($conditionData['records'])): ?>
+                                            <?php if (empty($placement['records'])): ?>
 
                                                 <tr>
                                                     <td colspan="4"
                                                         class="text-center text-muted py-4">
 
-                                                        No condition found.
+                                                        No Placement found.
 
                                                     </td>
                                                 </tr>
 
                                             <?php else: ?>
 
-                                                <?php foreach ($conditionData['records'] as $index => $row): ?>
+                                                <?php foreach ($placement['records'] as $index => $row): ?>
 
                                                     <tr>
 
                                                         <td>
-                                                            <?= (($conditionData['page'] - 1) * 5) + $index + 1 ?>
+                                                            <?= (($placement['page'] - 1) * 5) + $index + 1 ?>
                                                         </td>
 
                                                         <td>
@@ -457,7 +457,7 @@ $locationData = $data['location'];
                                 </div>
 
 
-                                <?php if ($conditionData['total_pages'] > 1): ?>
+                                <?php if ($placement['total_pages'] > 1): ?>
 
                                     <nav class="mt-3">
 
@@ -465,15 +465,15 @@ $locationData = $data['location'];
 
                                             <?php for (
                                                 $i = 1;
-                                                $i <= $conditionData['total_pages'];
+                                                $i <= $placement['total_pages'];
                                                 $i++
                                             ): ?>
 
                                                 <li class="page-item
-                                        <?= $i == $conditionData['page'] ? 'active' : '' ?>">
+                                        <?= $i == $placement['page'] ? 'active' : '' ?>">
 
                                                     <a class="page-link px-2 py-1"
-                                                        href="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>?condition_page=<?= $i ?>&condition_search=<?= urlencode($conditionData['search']) ?>">
+                                                        href="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>?placement_page=<?= $i ?>&placement_search=<?= urlencode($placement['search']) ?>">
 
                                                         <?= $i ?>
 
@@ -1333,8 +1333,8 @@ $locationData = $data['location'];
                                     Branch
                                 </option>
 
-                                <option value="condition">
-                                    Condition
+                                <option value="placement">
+                                    Placement
                                 </option>
 
                                 <option value="type">

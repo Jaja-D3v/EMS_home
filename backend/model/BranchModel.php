@@ -9,7 +9,7 @@ function getAllBranches()
     $sql = "
         SELECT branch_id, branch_name
         FROM branches_tbl
-        WHERE status = 'Active'
+        WHERE status = 'active'
         ORDER BY branch_name ASC
     ";
 

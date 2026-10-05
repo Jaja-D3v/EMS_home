@@ -58,11 +58,8 @@ $totalPages = (int) ceil($totalRecords / $limit);
             <!-- Icon -->
             <div class="col-auto">
 
-              <div
-                class="bg-white bg-opacity-10 rounded-3 p-3 fs-3">
-
+              <div class="bg-white bg-opacity-10 rounded-3 p-3 fs-3">
                 <i class="bi bi-clock-history"></i>
-
               </div>
 
             </div>
@@ -236,9 +233,9 @@ $totalPages = (int) ceil($totalRecords / $limit);
             <div class="container-fluid px-3 px-md-4">
 
               <div class="d-flex flex-column flex-sm-row
-            justify-content-between
-            align-items-center
-            gap-2">
+                        justify-content-between
+                        align-items-center
+                        gap-2">
 
                 <!-- Showing -->
                 <div class="text-body-secondary small

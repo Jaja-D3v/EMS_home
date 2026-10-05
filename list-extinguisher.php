@@ -1,11 +1,12 @@
 <?php
 include './backend/controller/FireExtinguisherController.php';
-include './backend/controller/DropdownBranchController.php';
+include './backend/controller/DropdownController.php';
 include 'backend/controller/QRCodeGeneratorController.php';
 require_once 'backend/authentication/SessionChecker.php';
 
 
 $branchDropdown = getAllDropdownBranches();
+$branchDropdown = getAllPlacementDropdownController();
 
 ?>
 
@@ -32,11 +33,8 @@ $branchDropdown = getAllDropdownBranches();
     ?>
     <div class="container-fluid py-0">
 
-      <div class="card border-0 shadow-sm text-white mb-1 mt-0 overflow-hidden "
-        style="background: linear-gradient(135deg, #0f0870, #088af5);">
-
+      <div class="card border-0 shadow-sm text-white mb-1 mt-0 overflow-hidden " style="background: linear-gradient(135deg, #0f0870, #088af5);">
         <div class="card-body p-4">
-
           <div class="row align-items-center g-3">
 
             <!-- Icon -->
@@ -63,9 +61,7 @@ $branchDropdown = getAllDropdownBranches();
             </div>
 
           </div>
-
         </div>
-
       </div>
     </div>
 
@@ -379,17 +375,17 @@ $branchDropdown = getAllDropdownBranches();
                             'border rounded-3 text-center text-body-secondary py-5 px-3 my-3 shadow-sm';
 
                           noResult.innerHTML = `
-                        <div class="py-3">
-                            <i class="bi bi-search fs-1 d-block mb-3"></i>
+                            <div class="py-3">
+                                <i class="bi bi-search fs-1 d-block mb-3"></i>
 
-                            <div class="fw-semibold fs-6">
-                                No fire extinguishers found.
+                                <div class="fw-semibold fs-6">
+                                    No fire extinguishers found.
+                                </div>
+
+                                <small class="text-body-secondary">
+                                    No results match your search.
+                                </small>
                             </div>
-
-                            <small class="text-body-secondary">
-                                No results match your search.
-                            </small>
-                        </div>
                     `;
 
                           const cardContainer =
@@ -1258,9 +1254,20 @@ $branchDropdown = getAllDropdownBranches();
                           <option value="" selected disabled>
                             Select type
                           </option>
-                          <option value="Dry Chemical">Dry Chemical</option>
-                          <option value="AFFF">AFFF</option>
-                          <option value="HCFC">HCFC</option>
+
+                          <?php
+                          $types = getAllTypeDropdownController();
+
+                          if (!empty($types)):
+                            foreach ($types as $type):
+                          ?>
+                              <option value="<?= htmlspecialchars($type['value']) ?>">
+                                <?= htmlspecialchars($type['value']) ?>
+                              </option>
+                          <?php
+                            endforeach;
+                          endif;
+                          ?>
                         </select>
                       </div>
 
@@ -1271,20 +1278,29 @@ $branchDropdown = getAllDropdownBranches();
                           Capacity
                         </label>
 
-                        <input
-                          type="text"
-                          class="form-control"
+                        <select
+                          class="form-select"
                           id="capacity"
                           name="capacity"
-                          list="capacityOptions"
-                          placeholder="Select or type capacity"
                           required>
+                          <option value="" selected disabled>
+                            Select capacity
+                          </option>
 
-                        <datalist id="capacityOptions">
-                          <option value="10 lbs">
-                          <option value="20 lbs">
-                          <option value="50 lbs">
-                        </datalist>
+                          <?php
+                          $capacities = getAllCapacityDropdownController();
+
+                          if (!empty($capacities)):
+                            foreach ($capacities as $capacity):
+                          ?>
+                              <option value="<?= htmlspecialchars($capacity['value']) ?>">
+                                <?= htmlspecialchars($capacity['value']) ?>
+                              </option>
+                          <?php
+                            endforeach;
+                          endif;
+                          ?>
+                        </select>
                       </div>
 
 
@@ -1320,21 +1336,29 @@ $branchDropdown = getAllDropdownBranches();
                           Placement
                         </label>
 
-                        <input
-                          type="text"
+                        <select
                           id="placement"
                           name="placement"
-                          class="form-control"
-                          list="placementOptions"
-                          placeholder="Select or type placement"
+                          class="form-select"
                           required>
+                          <option value="" selected disabled>
+                            Select placement
+                          </option>
 
-                        <datalist id="placementOptions">
-                          <option value="Wall Mounted">
-                          <option value="Floor Standing">
-                          <option value="Cabinet">
-                          <option value="Vehicle">
-                        </datalist>
+                          <?php
+                          $placements = getAllPlacementDropdownController();
+
+                          if (!empty($placements)):
+                            foreach ($placements as $placement):
+                          ?>
+                              <option value="<?= htmlspecialchars($placement['value']) ?>">
+                                <?= htmlspecialchars($placement['value']) ?>
+                              </option>
+                          <?php
+                            endforeach;
+                          endif;
+                          ?>
+                        </select>
                       </div>
 
                       <!-- Location -->

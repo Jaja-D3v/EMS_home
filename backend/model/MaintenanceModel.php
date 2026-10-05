@@ -72,8 +72,7 @@ class MaintenanceModel
 
     public function getTotal($category, $search = '')
     {
-        $sql = "
-            SELECT COUNT(*) AS total
+        $sql = " SELECT COUNT(*) AS total
             FROM maintenance_dropdown_tbl
             WHERE category = ?
             AND status = 'active'

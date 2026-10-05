@@ -22,7 +22,7 @@ class MaintenanceController
     {
         $categories = [
             'branch',
-            'condition',
+            'placement',
             'type',
             'fire_class',
             'capacity',
@@ -33,36 +33,13 @@ class MaintenanceController
 
         foreach ($categories as $category) {
 
-            $page = isset($_GET[$category . '_page'])
-                ? max(1, (int) $_GET[$category . '_page'])
-                : 1;
-
-            $search = isset($_GET[$category . '_search'])
-                ? trim($_GET[$category . '_search'])
-                : '';
-
+            $page = isset($_GET[$category . '_page']) ? max(1, (int) $_GET[$category . '_page']) : 1;
+            $search = isset($_GET[$category . '_search']) ? trim($_GET[$category . '_search']) : '';
             $data[$category] = [
-                'records' => $this->model->getData(
-                    $category,
-                    $page,
-                    5,
-                    $search
-                ),
-
-                'total' => $this->model->getTotal(
-                    $category,
-                    $search
-                ),
-
+                'records' => $this->model->getData( $category, $page, 5, $search ),
+                'total' => $this->model->getTotal( $category, $search ),
                 'page' => $page,
-
-                'total_pages' => ceil(
-                    $this->model->getTotal(
-                        $category,
-                        $search
-                    ) / 5
-                ),
-
+                'total_pages' => ceil( $this->model->getTotal( $category, $search ) / 5 ),
                 'search' => $search
             ];
         }
@@ -96,7 +73,7 @@ class MaintenanceController
 
         $allowedCategories = [
             'branch',
-            'condition',
+            'placement',
             'type',
             'fire_class',
             'capacity',

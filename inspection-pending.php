@@ -2,7 +2,7 @@
 
 require_once 'backend/authentication/SessionChecker.php';
 require_once 'backend/controller/InspectionController.php';
-require_once 'backend/controller/DropdownBranchController.php';
+require_once 'backend/controller/DropdownController.php';
 
 $limit = 10;
 
