@@ -9,24 +9,20 @@ _____________________________________________________________
 ## Dashboard Module
 - Make total number cards clickable.                                                            #
 
-## Approve Inspection Module
-- Add generate report button (to generate report of the selected date and branch).              #
-- Generate report based on the selected date.                                                   #
-
 ## pagination
 - to all module that has list of data                                                           #
 
 ## implementation of dropdown
 - implement the maintainable dropdown to forms that has dropdowns
 
-## expiry module needs revision
-- revise expiry module 
 
 ## inspection list module
 - should the latest inspection will be get for creation of report
 
 
-## inspection approvals
+## list extinguisher
+- add who inspected it 
+- last date of inspection
 
 
 ## inspection view for SO na mag aapprove nung inspection 
@@ -67,3 +63,10 @@ ______________________________________________________________________
 - pending --  dapat na geget nya yung default location ni admin
 - approved --  dapat na geget nya yung default location ni admin
 - rejected --  dapat na geget nya yung default location ni admin
+
+## expiry module needs revision
+- revise expiry module 
+
+## Approve Inspection Module
+- Add generate report button (to generate report of the selected date and branch).              #DONE
+- Generate report based on the selected date.                                                   #DONE

@@ -97,7 +97,7 @@ async function viewInspection(inspectId, extinguisherCode) {
 
         document.getElementById(
             "viewInspectionLocation"
-        ).value =  inspection.location || "—";
+        ).value = inspection.location || "—";
 
 
         document.getElementById(
@@ -645,25 +645,7 @@ function setCorrectiveActionValues(
         "";
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | VALIDATE ACTION
-    |--------------------------------------------------------------------------
-    */
 
-    if (actionValue === "") {
-
-        alert(
-            "Please select an action."
-        );
-
-
-        actionSelect.focus();
-
-
-        return false;
-
-    }
 
 
     /*
@@ -711,25 +693,7 @@ function setCorrectiveActionValues(
     }
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | VALIDATE TARGET DATE
-    |--------------------------------------------------------------------------
-    */
 
-    if (targetDate.value === "") {
-
-        alert(
-            "Please select the target date of implementation."
-        );
-
-
-        targetDate.focus();
-
-
-        return false;
-
-    }
 
 
     /*
@@ -921,4 +885,39 @@ function confirmReject() {
         "This action will change the inspection status to Rejected."
     );
 
+}
+
+
+// for search ng approve pending na module 
+
+const inspectionSearch = document.getElementById("inspectionSearch");
+
+if (inspectionSearch) {
+    inspectionSearch.addEventListener("input", function () {
+        const searchValue = this.value.trim().toLowerCase();
+        const rows = document.querySelectorAll("#inspectionList .inspection-row");
+        const noSearchResult = document.getElementById("noSearchResult");
+
+        let visibleRows = 0;
+
+        rows.forEach(function (row) {
+            const feCode = row.dataset.feCode || "";
+            const location = row.dataset.location || "";
+
+            const matches =
+                feCode.includes(searchValue) ||
+                location.includes(searchValue);
+
+            row.style.display = matches ? "" : "none";
+
+            if (matches) {
+                visibleRows++;
+            }
+        });
+
+        if (noSearchResult) {
+            noSearchResult.style.display =
+                visibleRows === 0 ? "" : "none";
+        }
+    });
 }

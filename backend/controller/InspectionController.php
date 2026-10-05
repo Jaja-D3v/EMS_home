@@ -741,3 +741,10 @@ function getApprovedInspectionReportsController($ids)
 
     return getApprovedInspectionReports($ids);
 }
+
+// getAllApprovedApprovalIds
+
+function getAllApprovedApprovalIdsController($date = null, $branch = 'all')
+{
+    return getAllApprovedApprovalIds($date, $branch);
+}

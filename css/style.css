@@ -5036,6 +5036,7 @@ fieldset:disabled .btn {
   --cui-dropdown-header-color: #aab3c5;
 }
 
+
 .btn-group,
 .btn-group-vertical {
   position: relative;
@@ -17006,7 +17007,7 @@ fieldset:disabled .btn {
 
 /* Instructions */
 .scanner-instructions {
-  background:  #f5faff;
+  background: #f5faff;
   border: 1px solid #1e81b0;
 }
 
@@ -17029,9 +17030,9 @@ fieldset:disabled .btn {
 }
 
 .submenu-chevron {
-    transition: transform 0.25s ease;
+  transition: transform 0.25s ease;
 }
 
 .nav-link[aria-expanded="true"] .submenu-chevron {
-    transform: rotate(180deg);
+  transform: rotate(180deg);
 }

@@ -53,264 +53,6 @@ if ($result) {
 
     <?php include 'partials/header.php'; ?>
 
-    <style>
-        /* =========================================================
-           Inspection Rejected Page
-           Responsive Layout
-        ========================================================= */
-
-        .inspection-page {
-            padding-bottom: 80px;
-        }
-
-        /* Page Header */
-        .inspection-header {
-            border-radius: 0.75rem;
-        }
-
-        .inspection-header-icon {
-            width: 64px;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        /* Filter Card */
-        .inspection-filter-card {
-            border-radius: 0.75rem;
-        }
-
-        .inspection-filter-card .card-body {
-            padding: 1rem;
-        }
-
-        .inspection-filter-card .input-group,
-        .inspection-filter-card .form-select {
-            min-height: 42px;
-        }
-
-        .inspection-filter-card .input-group-text {
-            min-width: 44px;
-            justify-content: center;
-        }
-
-        /* Table */
-        .inspection-table-card {
-            border-radius: 0.75rem;
-            overflow: hidden;
-        }
-
-        .inspection-table-wrapper {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .inspection-table {
-            min-width: 900px;
-            margin-bottom: 0 !important;
-        }
-
-        .inspection-table th {
-            font-size: 0.82rem;
-            font-weight: 600;
-            white-space: nowrap;
-            vertical-align: middle;
-        }
-
-        .inspection-table td {
-            font-size: 0.9rem;
-            vertical-align: middle;
-        }
-
-        .inspection-table tbody tr {
-            height: 64px;
-        }
-
-        .inspection-table .status-badge {
-            white-space: nowrap;
-        }
-
-        .inspection-table .inspection-actions {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.35rem;
-        }
-
-        .inspection-table .inspection-actions .btn {
-            white-space: nowrap;
-        }
-
-        /* Empty/Search State */
-        .inspection-empty-state {
-            min-height: 220px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Pagination */
-        .inspection-pagination {
-            z-index: 1020;
-        }
-
-        .inspection-pagination-inner {
-            width: 100%;
-        }
-
-        .inspection-pagination .pagination {
-            margin-bottom: 0;
-        }
-
-        /* Prevent content from hiding behind fixed pagination */
-        .inspection-content {
-            padding-bottom: 90px;
-        }
-
-        /* Mobile */
-        @media (max-width: 991.98px) {
-
-            .inspection-header .card-body {
-                padding: 1.25rem;
-            }
-
-            .inspection-header-icon {
-                width: 56px;
-                height: 56px;
-                font-size: 1.6rem !important;
-            }
-
-            .inspection-header h2 {
-                font-size: 1.4rem;
-            }
-        }
-
-        @media (max-width: 767.98px) {
-
-            .inspection-page {
-                padding-left: 0.5rem;
-                padding-right: 0.5rem;
-            }
-
-            .inspection-header .card-body {
-                padding: 1rem;
-            }
-
-            .inspection-header .row {
-                align-items: center;
-            }
-
-            .inspection-header-icon {
-                width: 52px;
-                height: 52px;
-                padding: 0.75rem !important;
-                font-size: 1.4rem !important;
-            }
-
-            .inspection-header h2 {
-                font-size: 1.2rem;
-            }
-
-            .inspection-header p {
-                font-size: 0.85rem;
-            }
-
-            .inspection-filter-card .card-body {
-                padding: 0.85rem;
-            }
-
-            .inspection-table {
-                min-width: 900px;
-            }
-
-            .inspection-table th,
-            .inspection-table td {
-                padding-top: 0.75rem;
-                padding-bottom: 0.75rem;
-            }
-
-            .inspection-table .inspection-actions {
-                justify-content: flex-end;
-            }
-
-            .inspection-table .inspection-actions .btn {
-                font-size: 0.78rem;
-                padding: 0.3rem 0.55rem;
-            }
-
-            .inspection-pagination {
-                padding-top: 0.5rem !important;
-                padding-bottom: 0.5rem !important;
-            }
-
-            .inspection-pagination .container-fluid {
-                padding-left: 0.75rem !important;
-                padding-right: 0.75rem !important;
-            }
-        }
-
-        @media (max-width: 575.98px) {
-
-            .inspection-page {
-                padding-left: 0.25rem;
-                padding-right: 0.25rem;
-            }
-
-            .inspection-header {
-                margin-bottom: 0.75rem !important;
-            }
-
-            .inspection-header .row {
-                flex-wrap: nowrap;
-            }
-
-            .inspection-header-icon {
-                width: 46px;
-                height: 46px;
-                padding: 0.6rem !important;
-            }
-
-            .inspection-header h2 {
-                font-size: 1.05rem;
-            }
-
-            .inspection-header p {
-                font-size: 0.78rem;
-            }
-
-            .inspection-filter-card {
-                margin-bottom: 0.75rem !important;
-            }
-
-            .inspection-filter-card .card-body {
-                padding: 0.75rem;
-            }
-
-            .inspection-table-card {
-                border-radius: 0.6rem;
-            }
-
-            .inspection-table {
-                min-width: 880px;
-            }
-
-            .inspection-pagination-inner {
-                gap: 0.5rem !important;
-            }
-
-            .inspection-pagination .text-body-secondary {
-                font-size: 0.72rem;
-            }
-
-            .inspection-pagination .page-link {
-                padding: 0.3rem 0.55rem;
-            }
-        }
-    </style>
 
 </head>
 
@@ -328,12 +70,9 @@ if ($result) {
             <div class="inspection-page">
 
                 <!-- Page Header -->
-                <div
-                    class="card border-0 shadow-sm text-white mb-3 mt-0 overflow-hidden inspection-header"
-                    style="background: linear-gradient(135deg, #1e3dc8, #57f9ff);">
+                <div class="card border-0 shadow-sm text-white mb-3 mt-0 overflow-hidden inspection-header" style="background: linear-gradient(135deg, #1e3dc8, #57f9ff);">
 
                     <div class="card-body p-4">
-
                         <div class="row align-items-center g-3">
 
                             <div class="col-auto">
@@ -350,19 +89,16 @@ if ($result) {
                             <div class="col">
 
                                 <h2 class="fw-bold mb-1">
-                                    Inspection Record
+                                    Rejected Inspection Records
                                 </h2>
 
                                 <p class="mb-0 text-white-50">
-                                    Review and approve inspection reports.
+                                    Inspection reports that have been rejected.
                                 </p>
 
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
 
                 <!-- Filters -->
@@ -383,11 +119,7 @@ if ($result) {
 
                                     </span>
 
-                                    <input
-                                        type="text"
-                                        class="form-control"
-                                        id="inspectionSearch"
-                                        placeholder="Search by FE code or location...">
+                                    <input type="text" class="form-control" id="inspectionSearch" placeholder="Search by FE code or location...">
 
                                 </div>
 
@@ -430,23 +162,19 @@ if ($result) {
                             <?php if (strtolower(trim($_SESSION['Role'] ?? '')) === 'admin'): ?>
 
                                 <?php
-
-                                // Branch ng naka-login na Admin
+                                // Retrieve the branch assigned to the logged-in administrator.
                                 $adminBranch = trim($_SESSION['Branch'] ?? '');
 
-                                // Kung may branch sa URL, iyon ang gagamitin.
-                                // Kung wala, gamitin ang branch ng Admin.
+                                // Use the branch specified in the URL; otherwise, use the administrator's assigned branch.
                                 $selectedBranch = $_GET['branch'] ?? $adminBranch;
 
-                                // Kung walang branch sa session at wala rin sa URL,
-                                // default sa All Branches
+                                // Default to all branches if no branch is specified in the session or URL.
                                 if (empty($selectedBranch)) {
                                     $selectedBranch = 'all';
                                 }
 
-                                // Get all branches
+                                // Retrieve the available branches for the dropdown filter.
                                 $branches = getAllDropdownBranches();
-
                                 ?>
 
                                 <div class="col-12 col-md-6 col-lg-3">
@@ -483,7 +211,6 @@ if ($result) {
                                 </div>
 
                             <?php endif; ?>
-
                             <script>
                                 document.addEventListener('DOMContentLoaded', function() {
 
@@ -574,50 +301,29 @@ if ($result) {
 
                                                 case 'Approved':
 
-                                                    $statusClass =
-                                                        'bg-success-subtle text-success';
-
-                                                    $statusIcon =
-                                                        'bi-check-circle-fill';
-
-                                                    $statusFilterValue =
-                                                        'approved';
-
-                                                    $statusLabel =
-                                                        'Approved';
+                                                    $statusClass = 'bg-success-subtle text-success';
+                                                    $statusIcon = 'bi-check-circle-fill';
+                                                    $statusFilterValue = 'approved';
+                                                    $statusLabel = 'Approved';
 
                                                     break;
 
                                                 case 'Rejected':
 
-                                                    $statusClass =
-                                                        'bg-danger-subtle text-danger';
-
-                                                    $statusIcon =
-                                                        'bi-x-circle-fill';
-
-                                                    $statusFilterValue =
-                                                        'rejected';
-
-                                                    $statusLabel =
-                                                        'Rejected';
+                                                    $statusClass = 'bg-danger-subtle text-danger';
+                                                    $statusIcon = 'bi-x-circle-fill';
+                                                    $statusFilterValue = 'rejected';
+                                                    $statusLabel = 'Rejected';
 
                                                     break;
 
                                                 case 'Pending':
                                                 default:
 
-                                                    $statusClass =
-                                                        'bg-warning-subtle text-warning-emphasis';
-
-                                                    $statusIcon =
-                                                        'bi-clock';
-
-                                                    $statusFilterValue =
-                                                        'pending';
-
-                                                    $statusLabel =
-                                                        'Pending Approval';
+                                                    $statusClass = 'bg-warning-subtle text-warning-emphasis';
+                                                    $statusIcon = 'bi-clock';
+                                                    $statusFilterValue = 'pending';
+                                                    $statusLabel = 'Pending Approval';
 
                                                     break;
                                             }
@@ -636,7 +342,6 @@ if ($result) {
                                                         'Y-m-d',
                                                         $timestamp
                                                     );
-
                                                 }
                                             }
 
@@ -646,24 +351,24 @@ if ($result) {
                                                 class="inspection-row"
 
                                                 data-fe-code="<?= htmlspecialchars(
-                                                    strtolower(
-                                                        $inspection['extinguisher_code'] ?? ''
-                                                    )
-                                                ) ?>"
+                                                                    strtolower(
+                                                                        $inspection['extinguisher_code'] ?? ''
+                                                                    )
+                                                                ) ?>"
 
                                                 data-location="<?= htmlspecialchars(
-                                                    strtolower(
-                                                        $inspection['location'] ?? ''
-                                                    )
-                                                ) ?>"
+                                                                    strtolower(
+                                                                        $inspection['location'] ?? ''
+                                                                    )
+                                                                ) ?>"
 
                                                 data-status="<?= htmlspecialchars(
-                                                    $statusFilterValue
-                                                ) ?>"
+                                                                    $statusFilterValue
+                                                                ) ?>"
 
                                                 data-date="<?= htmlspecialchars(
-                                                    $inspectionDate
-                                                ) ?>">
+                                                                $inspectionDate
+                                                            ) ?>">
 
                                                 <!-- FE Code -->
                                                 <td class="ps-4">

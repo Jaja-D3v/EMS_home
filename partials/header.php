@@ -38,3 +38,249 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
  </head>
+
+ <style>
+    /* for inspection approve module */
+
+    .inspection-page {
+       padding-bottom: 80px;
+    }
+
+    .inspection-header {
+       border-radius: .75rem;
+    }
+
+    .inspection-header-icon {
+       width: 64px;
+       height: 64px;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       flex-shrink: 0;
+    }
+
+    .inspection-filter-card {
+       border-radius: .75rem;
+    }
+
+    .inspection-filter-card .card-body {
+       padding: 1rem;
+    }
+
+    .inspection-filter-card .input-group,
+    .inspection-filter-card .form-select {
+       min-height: 42px;
+    }
+
+    .inspection-filter-card .input-group-text {
+       min-width: 44px;
+       justify-content: center;
+    }
+
+    .inspection-table-card {
+       border-radius: .75rem;
+       overflow: hidden;
+    }
+
+    .inspection-table-wrapper {
+       width: 100%;
+       overflow-x: auto;
+       -webkit-overflow-scrolling: touch;
+    }
+
+    .inspection-table {
+       min-width: 900px;
+       margin-bottom: 0 !important;
+    }
+
+    .inspection-table th {
+       font-size: .82rem;
+       font-weight: 600;
+       white-space: nowrap;
+       vertical-align: middle;
+    }
+
+    .inspection-table td {
+       font-size: .9rem;
+       vertical-align: middle;
+    }
+
+    .inspection-table tbody tr {
+       height: 64px;
+    }
+
+    .inspection-table .status-badge {
+       white-space: nowrap;
+    }
+
+    .inspection-table .inspection-actions {
+       display: flex;
+       justify-content: flex-end;
+       align-items: center;
+       flex-wrap: wrap;
+       gap: .35rem;
+    }
+
+    .inspection-table .inspection-actions .btn {
+       white-space: nowrap;
+    }
+
+    .inspection-empty-state {
+       min-height: 220px;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+    }
+
+    .inspection-pagination {
+       z-index: 1020;
+    }
+
+    .inspection-pagination-inner {
+       width: 100%;
+    }
+
+    .inspection-pagination .pagination {
+       margin-bottom: 0;
+    }
+
+    .inspection-content {
+       padding-bottom: 90px;
+    }
+
+    @media (max-width:991.98px) {
+       .inspection-header .card-body {
+          padding: 1.25rem;
+       }
+
+       .inspection-header-icon {
+          width: 56px;
+          height: 56px;
+          font-size: 1.6rem !important;
+       }
+
+       .inspection-header h2 {
+          font-size: 1.4rem;
+       }
+    }
+
+    @media (max-width:767.98px) {
+       .inspection-page {
+          padding-left: .5rem;
+          padding-right: .5rem;
+       }
+
+       .inspection-header .card-body {
+          padding: 1rem;
+       }
+
+       .inspection-header .row {
+          align-items: center;
+       }
+
+       .inspection-header-icon {
+          width: 52px;
+          height: 52px;
+          padding: .75rem !important;
+          font-size: 1.4rem !important;
+       }
+
+       .inspection-header h2 {
+          font-size: 1.2rem;
+       }
+
+       .inspection-header p {
+          font-size: .85rem;
+       }
+
+       .inspection-filter-card .card-body {
+          padding: .85rem;
+       }
+
+       .inspection-table {
+          min-width: 900px;
+       }
+
+       .inspection-table th,
+       .inspection-table td {
+          padding-top: .75rem;
+          padding-bottom: .75rem;
+       }
+
+       .inspection-table .inspection-actions {
+          justify-content: flex-end;
+       }
+
+       .inspection-table .inspection-actions .btn {
+          font-size: .78rem;
+          padding: .3rem .55rem;
+       }
+
+       .inspection-pagination {
+          padding-top: .5rem !important;
+          padding-bottom: .5rem !important;
+       }
+
+       .inspection-pagination .container-fluid {
+          padding-left: .75rem !important;
+          padding-right: .75rem !important;
+       }
+    }
+
+    @media (max-width:575.98px) {
+       .inspection-page {
+          padding-left: .25rem;
+          padding-right: .25rem;
+       }
+
+       .inspection-header {
+          margin-bottom: .75rem !important;
+       }
+
+       .inspection-header .row {
+          flex-wrap: nowrap;
+       }
+
+       .inspection-header-icon {
+          width: 46px;
+          height: 46px;
+          padding: .6rem !important;
+       }
+
+       .inspection-header h2 {
+          font-size: 1.05rem;
+       }
+
+       .inspection-header p {
+          font-size: .78rem;
+       }
+
+       .inspection-filter-card {
+          margin-bottom: .75rem !important;
+       }
+
+       .inspection-filter-card .card-body {
+          padding: .75rem;
+       }
+
+       .inspection-table-card {
+          border-radius: .6rem;
+       }
+
+       .inspection-table {
+          min-width: 880px;
+       }
+
+       .inspection-pagination-inner {
+          gap: .5rem !important;
+       }
+
+       .inspection-pagination .text-body-secondary {
+          font-size: .72rem;
+       }
+
+       .inspection-pagination .page-link {
+          padding: .3rem .55rem;
+       }
+    }
+ </style>

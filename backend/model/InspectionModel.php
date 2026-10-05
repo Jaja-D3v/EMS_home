@@ -57,19 +57,18 @@ function addInspectionChecklist(
                 branch,
                 remarks
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            VALUES (?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = mysqli_prepare($conn, $sql);
 
     mysqli_stmt_bind_param(
         $stmt,
-        "ssssssssssiiiiiiiiiiiss",
+        "sssssssssiiiiiiiiiiiss",
         $extinguisher_code,
         $location,
         $capacity,
         $type,
         $class,
-        $date_inspected,
         $inspected_by,
         $verified_and_approved_by,
         $action_taken,
@@ -416,9 +415,59 @@ function getAllApprovedApproval(
     return $result;
 }
 
+// for generating report
+function getAllApprovedApprovalIds($date = null, $branch = 'all')
+{
+    global $conn;
+
+    $sql = "SELECT inspect_id
+            FROM inspection_checklist_tbl
+            WHERE evaluation_status = 'Approved'";
+
+    $types = "";
+    $params = [];
+
+    // Apply branch filter when a specific branch is selected.
+    if ($branch !== 'all' && !empty($branch)) {
+        $sql .= " AND LOWER(TRIM(branch)) = LOWER(TRIM(?))";
+        $types .= "s";
+        $params[] = $branch;
+    }
+
+    // Apply date filter when a specific date is selected.
+    if (!empty($date)) {
+        $sql .= " AND DATE(date_inspected) = ?";
+        $types .= "s";
+        $params[] = $date;
+    }
+
+    $sql .= " ORDER BY inspect_id DESC";
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        return [];
+    }
+
+    if (!empty($params)) {
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
+    }
+
+    mysqli_stmt_execute($stmt);
+
+    $result = mysqli_stmt_get_result($stmt);
+    $ids = [];
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $ids[] = (int) $row['inspect_id'];
+    }
+
+    return $ids;
+}
+
 
 // For count all approved approval
-function getApprovedApprovalCount( 
+function getApprovedApprovalCount(
     $branch = 'all'
 ) {
     global $conn;
