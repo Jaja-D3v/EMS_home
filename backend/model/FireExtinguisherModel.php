@@ -972,3 +972,173 @@ function restoreFireExtinguisher($id)
 
     return $success;
 }
+
+
+function getExpiry($limit = 10, $offset = 0)
+{
+    global $conn;
+
+    $limit = (int) $limit;
+    $offset = (int) $offset;
+
+    if ($limit < 1) {
+        $limit = 10;
+    }
+
+    if ($offset < 0) {
+        $offset = 0;
+    }
+
+    $role = strtolower(trim($_SESSION['Role'] ?? ''));
+    $sessionBranch = trim($_SESSION['Branch'] ?? '');
+
+    /*
+    |--------------------------------------------------------------------------
+    | BRANCH FILTER
+    |--------------------------------------------------------------------------
+    | Admin:
+    |   - Uses ?branch=...
+    |   - If no branch is selected, defaults to session branch
+    |
+    | Other roles:
+    |   - Always use session branch
+    */
+
+    if ($role === 'admin') {
+
+        $selectedBranch = trim(
+            $_GET['branch'] ?? $sessionBranch
+        );
+    } else {
+
+        $selectedBranch = $sessionBranch;
+    }
+
+    if ($selectedBranch === '') {
+        $selectedBranch = 'all';
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | GET DATA
+    |--------------------------------------------------------------------------
+    */
+
+    $sql = "
+        SELECT *
+        FROM fire_extinguishers_tbl
+        WHERE archived = 0
+          AND expiration_date >= CURDATE()
+          AND expiration_date <= DATE_ADD(CURDATE(), INTERVAL 2 MONTH)
+    ";
+
+    if (strtolower($selectedBranch) !== 'all') {
+
+        $sql .= "
+            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
+        ";
+    }
+
+    $sql .= "
+        ORDER BY expiration_date ASC
+        LIMIT ? OFFSET ?
+    ";
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        return [
+            'data' => [],
+            'total' => 0
+        ];
+    }
+
+    if (strtolower($selectedBranch) !== 'all') {
+
+        mysqli_stmt_bind_param(
+            $stmt,
+            "sii",
+            $selectedBranch,
+            $limit,
+            $offset
+        );
+    } else {
+
+        mysqli_stmt_bind_param(
+            $stmt,
+            "ii",
+            $limit,
+            $offset
+        );
+    }
+
+    mysqli_stmt_execute($stmt);
+
+    $result = mysqli_stmt_get_result($stmt);
+
+    $data = [];
+
+    if ($result) {
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $data[] = $row;
+        }
+    }
+
+    mysqli_stmt_close($stmt);
+
+    /*
+    |--------------------------------------------------------------------------
+    | GET TOTAL RECORDS
+    |--------------------------------------------------------------------------
+    */
+
+    $totalSql = "
+        SELECT COUNT(*) AS total
+        FROM fire_extinguishers_tbl
+        WHERE archived = 0
+          AND expiration_date >= CURDATE()
+          AND expiration_date <= DATE_ADD(CURDATE(), INTERVAL 2 MONTH)
+    ";
+
+    if (strtolower($selectedBranch) !== 'all') {
+
+        $totalSql .= "
+            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
+        ";
+    }
+
+    $totalStmt = mysqli_prepare($conn, $totalSql);
+
+    $total = 0;
+
+    if ($totalStmt) {
+
+        if (strtolower($selectedBranch) !== 'all') {
+
+            mysqli_stmt_bind_param(
+                $totalStmt,
+                "s",
+                $selectedBranch
+            );
+        }
+
+        mysqli_stmt_execute($totalStmt);
+
+        $totalResult = mysqli_stmt_get_result($totalStmt);
+
+        if ($totalResult) {
+
+            $totalRow = mysqli_fetch_assoc($totalResult);
+
+            $total = (int) ($totalRow['total'] ?? 0);
+        }
+
+        mysqli_stmt_close($totalStmt);
+    }
+
+    return [
+        'data' => $data,
+        'total' => $total
+    ];
+}

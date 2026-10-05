@@ -363,51 +363,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
 
-    // // =================================================
-    // // GET BY CODE
-    // // =================================================
-
-    // else if ($action === 'getByCode') {
-
-    //     header('Content-Type: application/json');
-
-    //     $code = trim($_GET['code'] ?? '');
-
-
-    //     if ($code === '') {
-
-    //         echo json_encode([
-    //             'success' => false,
-    //             'message' => 'Invalid QR code.'
-    //         ]);
-
-    //         exit;
-    //     }
-
-
-    //     $data = getFireExtinguisherByCode($code);
-
-
-    //     if (!$data) {
-
-    //         echo json_encode([
-    //             'success' => false,
-    //             'message' =>
-    //                 'Fire extinguisher not found.'
-    //         ]);
-
-    //         exit;
-    //     }
-
-
-    //     echo json_encode([
-    //         'success' => true,
-    //         'data' => $data
-    //     ]);
-
-    //     exit;
-    // }
-
 
     // =================================================
     // GET BRANCHES
@@ -602,6 +557,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         header(
             "Location: ../../list-extinguisher.php?error=delete_failed"
         );
+
+        exit;
+    }
+
+
+    if ($action === 'getExpiry') {
+
+        header('Content-Type: application/json');
+
+        $limit = isset($_GET['limit'])
+            ? (int) $_GET['limit']
+            : 10;
+
+        $offset = isset($_GET['offset'])
+            ? (int) $_GET['offset']
+            : 0;
+
+        if ($limit < 1) {
+            $limit = 10;
+        }
+
+        if ($offset < 0) {
+            $offset = 0;
+        }
+
+        $result = getExpiry($limit, $offset);
+
+        echo json_encode([
+            'success' => true,
+            'data' => $result['data'],
+            'total' => $result['total']
+        ]);
 
         exit;
     }

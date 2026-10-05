@@ -23,8 +23,7 @@ _____________________________________________________________
 - revise expiry module 
 
 
-## expiring soon 
-- dapat na geget nya yung default location ni admin
+
 
 ## inspection approvals
 - pending --  dapat na geget nya yung default location ni admin
@@ -56,3 +55,6 @@ ADD COLUMN last_date_inspected DATETIME NULL;
 - need to add sa database after inspections success #done
 
 - fix buggs 
+
+## expiring soon 
+- dapat na geget nya yung default location ni admin

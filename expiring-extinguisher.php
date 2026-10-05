@@ -376,7 +376,9 @@ require_once 'backend/authentication/SessionChecker.php';
 
             $limit = 10;
 
-            $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+            $page = isset($_GET['page'])
+              ? (int) $_GET['page']
+              : 1;
 
             if ($page < 1) {
               $page = 1;
@@ -384,84 +386,12 @@ require_once 'backend/authentication/SessionChecker.php';
 
             $offset = ($page - 1) * $limit;
 
-            global $conn;
 
-            $role = strtolower(trim($_SESSION['Role'] ?? ''));
-            $sessionBranch = trim($_SESSION['Branch'] ?? '');
+            // Get expiring fire extinguishers
+            $expiryResult = getExpiry($limit, $offset);
 
-            if ($role === 'admin') {
-              $selectedBranch = trim($_GET['branch'] ?? 'all');
-            } else {
-              $selectedBranch = $sessionBranch;
-            }
-
-            if ($selectedBranch === '') {
-              $selectedBranch = 'all';
-            }
-
-            $sql = "
-              SELECT *
-              FROM fire_extinguishers_tbl
-              WHERE archived = 0
-                AND expiration_date >= CURDATE()
-                AND expiration_date <= DATE_ADD(CURDATE(), INTERVAL 2 MONTH)
-            ";
-
-            if ($selectedBranch !== 'all') {
-              $sql .= "
-                AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
-              ";
-            }
-
-            $sql .= "
-              ORDER BY expiration_date ASC
-              LIMIT ? OFFSET ?
-            ";
-
-            $stmt = $conn->prepare($sql);
-
-            if ($stmt) {
-              if ($selectedBranch !== 'all') {
-                $stmt->bind_param("sii", $selectedBranch, $limit, $offset);
-              } else {
-                $stmt->bind_param("ii", $limit, $offset);
-              }
-
-              $stmt->execute();
-              $info = $stmt->get_result();
-            } else {
-              $info = false;
-            }
-
-            $totalSql = "
-              SELECT COUNT(*) AS total
-              FROM fire_extinguishers_tbl
-              WHERE archived = 0
-                AND expiration_date >= CURDATE()
-                AND expiration_date <= DATE_ADD(CURDATE(), INTERVAL 2 MONTH)
-            ";
-
-            if ($selectedBranch !== 'all') {
-              $totalSql .= "
-                AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
-              ";
-            }
-
-            $totalStmt = $conn->prepare($totalSql);
-
-            if ($totalStmt) {
-              if ($selectedBranch !== 'all') {
-                $totalStmt->bind_param("s", $selectedBranch);
-              }
-
-              $totalStmt->execute();
-              $totalResult = $totalStmt->get_result();
-              $totalRow = $totalResult->fetch_assoc();
-              $totalRecords = (int) ($totalRow['total'] ?? 0);
-              $totalStmt->close();
-            } else {
-              $totalRecords = 0;
-            }
+            $info = $expiryResult['data'];
+            $totalRecords = $expiryResult['total'];
 
             $totalPages = (int) ceil($totalRecords / $limit);
 
