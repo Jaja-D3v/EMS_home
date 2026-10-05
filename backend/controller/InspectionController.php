@@ -55,7 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 'success' => true,
                 'inspection' => $inspection
             ]);
-
         } else {
 
             http_response_code(404);
@@ -210,9 +209,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     |--------------------------------------------------------------------------
     | Update Evaluation Status
     |--------------------------------------------------------------------------
-    */
-
-    elseif ($action == 'update_evaluation_status') {
+    */ elseif ($action == 'update_evaluation_status') {
 
         $inspect_id = $_POST['inspect_id'] ?? null;
         $eval_stats = $_POST['evaluation_status'] ?? null;
@@ -229,7 +226,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($eval_stats == "Approved") {
 
             ApprovedBy($Approver_name, $inspect_id);
-
         } elseif ($eval_stats == "Rejected") {
 
             RejectedBy($Approver_name, $inspect_id);
@@ -286,7 +282,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             );
 
             exit;
-
         } elseif (
             $statusSuccess &&
             $actionSuccess &&
@@ -499,15 +494,19 @@ function getApprovedApprovals(
         trim($_SESSION['Role'] ?? '')
     );
 
-
     if ($role === 'admin') {
 
-        // Admin branch filter
-
-        $branch = trim(
-            $_GET['branch'] ?? 'all'
+        // Default to the Admin's assigned branch
+        $sessionBranch = trim(
+            $_SESSION['Branch'] ?? ''
         );
 
+        // Use the selected branch from the URL when available
+        $branch = trim(
+            $_GET['branch'] ?? $sessionBranch
+        );
+
+        // Use all branches if no branch is assigned
         if ($branch === '') {
             $branch = 'all';
         }
@@ -520,11 +519,9 @@ function getApprovedApprovals(
         );
     }
 
-
     if ($role === 'inspector') {
 
         // Restrict inspectors to their assigned branch
-
         $branch = trim(
             $_SESSION['Branch'] ?? ''
         );
@@ -541,10 +538,8 @@ function getApprovedApprovals(
         );
     }
 
-
     return false;
 }
-
 
 // Get Approved Approval Total
 
@@ -554,15 +549,19 @@ function getApprovedApprovalTotal($date = null)
         trim($_SESSION['Role'] ?? '')
     );
 
-
     if ($role === 'admin') {
 
-        // Admin branch filter
-
-        $branch = trim(
-            $_GET['branch'] ?? 'all'
+        // Default to the Admin's assigned branch
+        $sessionBranch = trim(
+            $_SESSION['Branch'] ?? ''
         );
 
+        // Use the selected branch from the URL when available
+        $branch = trim(
+            $_GET['branch'] ?? $sessionBranch
+        );
+
+        // Use all branches if no branch is assigned
         if ($branch === '') {
             $branch = 'all';
         }
@@ -573,11 +572,9 @@ function getApprovedApprovalTotal($date = null)
         );
     }
 
-
     if ($role === 'inspector') {
 
         // Restrict inspectors to their assigned branch
-
         $branch = trim(
             $_SESSION['Branch'] ?? ''
         );
@@ -592,10 +589,8 @@ function getApprovedApprovalTotal($date = null)
         );
     }
 
-
     return 0;
 }
-
 
 /*
 |--------------------------------------------------------------------------
@@ -615,15 +610,19 @@ function getRejectedApprovals(
         trim($_SESSION['Role'] ?? '')
     );
 
-
     if ($role === 'admin') {
 
-        // Admin branch filter
-
-        $branch = trim(
-            $_GET['branch'] ?? 'all'
+        // Default to the Admin's assigned branch
+        $sessionBranch = trim(
+            $_SESSION['Branch'] ?? ''
         );
 
+        // Use the selected branch from the URL when available
+        $branch = trim(
+            $_GET['branch'] ?? $sessionBranch
+        );
+
+        // Use all branches if no branch is assigned
         if ($branch === '') {
             $branch = 'all';
         }
@@ -636,11 +635,9 @@ function getRejectedApprovals(
         );
     }
 
-
     if ($role === 'inspector') {
 
         // Restrict inspectors to their assigned branch
-
         $branch = trim(
             $_SESSION['Branch'] ?? ''
         );
@@ -657,28 +654,29 @@ function getRejectedApprovals(
         );
     }
 
-
     return false;
 }
 
-
 // Get Rejected Approval Total
-
 function getRejectedApprovalTotal($date = null)
 {
     $role = strtolower(
         trim($_SESSION['Role'] ?? '')
     );
 
-
     if ($role === 'admin') {
 
-        // Admin branch filter
-
-        $branch = trim(
-            $_GET['branch'] ?? 'all'
+        // Default to the Admin's assigned branch
+        $sessionBranch = trim(
+            $_SESSION['Branch'] ?? ''
         );
 
+        // Use the selected branch from the URL when available
+        $branch = trim(
+            $_GET['branch'] ?? $sessionBranch
+        );
+
+        // Use all branches if no branch is assigned
         if ($branch === '') {
             $branch = 'all';
         }
@@ -689,11 +687,9 @@ function getRejectedApprovalTotal($date = null)
         );
     }
 
-
     if ($role === 'inspector') {
 
         // Restrict inspectors to their assigned branch
-
         $branch = trim(
             $_SESSION['Branch'] ?? ''
         );
@@ -708,10 +704,8 @@ function getRejectedApprovalTotal($date = null)
         );
     }
 
-
     return 0;
 }
-
 
 /*
 |--------------------------------------------------------------------------

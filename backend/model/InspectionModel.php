@@ -418,8 +418,7 @@ function getAllApprovedApproval(
 
 
 // For count all approved approval
-function getApprovedApprovalCount(
-    $date = null,
+function getApprovedApprovalCount( 
     $branch = 'all'
 ) {
     global $conn;
