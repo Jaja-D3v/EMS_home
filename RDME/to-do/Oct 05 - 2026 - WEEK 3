@@ -27,8 +27,7 @@ _____________________________________________________________
 
 
 ## inspection approvals
-- approved --  dapat na geget nya yung default location ni admin
-- rejected --  dapat na geget nya yung default location ni admin
+
 
 ## inspection view for SO na mag aapprove nung inspection 
 - dapat nullable yung dalawang action 
@@ -66,3 +65,5 @@ ______________________________________________________________________
 
 ## inspection approvals
 - pending --  dapat na geget nya yung default location ni admin
+- approved --  dapat na geget nya yung default location ni admin
+- rejected --  dapat na geget nya yung default location ni admin

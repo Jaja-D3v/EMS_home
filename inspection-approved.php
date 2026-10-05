@@ -391,23 +391,32 @@ if ($result) {
             </div>
             <!-- Date -->
             <div class="col-12 col-md-6 col-lg-3">
+
               <div class="input-group">
+
                 <span class="input-group-text bg-white">
+
                   <i class="bi bi-calendar3"></i>
+
                 </span>
+
                 <input
+                  type="date"
                   class="form-control"
                   id="inspectionDateFilter"
                   value="<?= htmlspecialchars($date ?? '') ?>"
                   onchange="
                   const selectedDate = this.value;
+
                   if (selectedDate) {
-                    window.location.href =
-                      'inspection-approved.php?page=1&date=' +
-                      encodeURIComponent(selectedDate);
+                      window.location.href =
+                          'inspection-rejected.php?page=1&date=' +
+                          encodeURIComponent(selectedDate);
                   } else {
-                    window.location.href =
-                      'inspection-approved.php?page=1';}">
+                      window.location.href =
+                          'inspection-rejected.php?page=1';
+                  }
+              ">
 
               </div>
 
