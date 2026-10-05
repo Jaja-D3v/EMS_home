@@ -1,21 +1,27 @@
 <?php
+
 require_once __DIR__ . '/../model/InspectionModel.php';
 require_once __DIR__ . '/../model/FireExtinguisherModel.php';
 require_once __DIR__ . '/ActivityLogController.php';
 require_once __DIR__ . '/../authentication/SessionChecker.php';
 
 
+/*
+|--------------------------------------------------------------------------
+| GET REQUESTS
+|--------------------------------------------------------------------------
+*/
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $action = $_GET['action'] ?? null;
 
+    // Get Inspection Details
     if ($action === 'get') {
 
         $id = isset($_GET['id'])
             ? (int) $_GET['id']
             : 0;
-
-
 
         header('Content-Type: application/json');
 
@@ -31,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         $inspection = getInspectionCheckListById($id);
-        // for debugg purposes
+
         if (!$inspection) {
             echo json_encode([
                 'success' => false,
@@ -39,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 'debug_id' => $id,
                 'debug_branch' => getBranch()
             ]);
+
             exit;
         }
 
@@ -48,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 'success' => true,
                 'inspection' => $inspection
             ]);
+
         } else {
 
             http_response_code(404);
@@ -63,10 +71,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 
+/*
+|--------------------------------------------------------------------------
+| POST REQUESTS
+|--------------------------------------------------------------------------
+*/
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
     $action = $_POST['action'] ?? null;
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Submit Inspection
+    |--------------------------------------------------------------------------
+    */
+
     if ($action == 'inspect') {
+
         $extinguisher_code = $_POST['extinguisher_code'] ?? null;
         $location = $_POST['location'] ?? null;
         $capacity = $_POST['capacity'] ?? null;
@@ -81,15 +104,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $branch = $_POST['branch'] ?? null;
 
 
+        // Inspection Checklist
 
-
-
-        /*
-        * Checklist
-        *
-        * TRUE  = Good 
-        * FALSE = Not Good
-        */
         $is_seal_ok = isset($_POST['is_seal_ok'])
             ? 1
             : 0;
@@ -131,20 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             : 0;
 
 
-        /*
-        * STATUS RULE
-        *
-        * FALSE kahit isa sa:
-        * - Pressure
-        * - Hose
-        * - Nozzle
-        * - Cylinder Body
-        *
-        * = Not Good
-        *
-        * Lahat TRUE
-        * = Good
-        */
+        // Determine Overall Status
 
         if (
             $is_pressure_ok &&
@@ -152,15 +155,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $is_nozzle_ok &&
             $is_cylinder_body_ok
         ) {
+
             $status = 1; // Good
+
         } else {
+
             $status = 0; // Not Good
         }
 
 
-        /*
-     * Save inspection checklist
-     */
+        // Save Inspection Checklist
+
         $success = addInspectionChecklist(
             $extinguisher_code,
             $location,
@@ -186,38 +191,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $branch,
             $remarks
         );
-        // Final redirect
+
+
+        // Redirect After Successful Submission
+
         if ($success) {
 
             header(
                 "Location: ../../QR-code.php?success-inspect=1"
             );
+
             exit;
         }
-    } elseif ($action == 'update_evaluation_status') {
+    }
 
-        $inspect_id =  $_POST['inspect_id'] ?? null;
+
+    /*
+    |--------------------------------------------------------------------------
+    | Update Evaluation Status
+    |--------------------------------------------------------------------------
+    */
+
+    elseif ($action == 'update_evaluation_status') {
+
+        $inspect_id = $_POST['inspect_id'] ?? null;
         $eval_stats = $_POST['evaluation_status'] ?? null;
         $action_taken = trim($_POST['action_taken'] ?? '');
         $target_date = $_POST['target_date_of_implementation'] ?? null;
-        $Approver_name =  $_SESSION['EmployeeName'] ?? null;
+        $Approver_name = $_SESSION['EmployeeName'] ?? null;
         $extinguisher_code = trim($_POST['extinguisher_code'] ?? '');
         $condition_status = trim($_POST['condition_status'] ?? '');
         $remarks = trim($_POST['remarks'] ?? '');
 
 
+        // Record Approval or Rejection
 
         if ($eval_stats == "Approved") {
 
-            ApprovedBy($Approver_name,  $inspect_id);
+            ApprovedBy($Approver_name, $inspect_id);
+
         } elseif ($eval_stats == "Rejected") {
 
             RejectedBy($Approver_name, $inspect_id);
         }
-        // this is for updating expiry date pag nag refill 
+
+
+        // Update Expiration Date After Refill
+
         if ($action_taken == 'Refill') {
 
             $exp_date = new DateTime($target_date);
+
             $exp_date->modify('+3 years');
 
             $exp_date = $exp_date->format('Y-m-d');
@@ -225,24 +249,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             updateExpiry($exp_date, $extinguisher_code);
         }
 
-        // Evaluation Status
-        $statusSuccess = updateEvalStats($inspect_id, $eval_stats);
 
-        // Corrective Action
-        $actionSuccess = updateCorrectiveAction($inspect_id, $action_taken, $target_date);
+        // Update Evaluation Status
 
-        // Final redirect
-        if ($statusSuccess && $actionSuccess && $eval_stats == "Approved") {
+        $statusSuccess = updateEvalStats(
+            $inspect_id,
+            $eval_stats
+        );
 
-            updateFireExtinguisherStatus($extinguisher_code, $condition_status, $remarks);
 
-            header("Location: ../../inspection-pending.php?approved_success=1");
+        // Update Corrective Action
+
+        $actionSuccess = updateCorrectiveAction(
+            $inspect_id,
+            $action_taken,
+            $target_date
+        );
+
+
+        // Redirect After Evaluation
+
+        if (
+            $statusSuccess &&
+            $actionSuccess &&
+            $eval_stats == "Approved"
+        ) {
+
+            updateFireExtinguisherStatus(
+                $extinguisher_code,
+                $condition_status,
+                $remarks
+            );
+
+            header(
+                "Location: ../../inspection-pending.php?approved_success=1"
+            );
+
             exit;
-        } elseif ($statusSuccess && $actionSuccess && $eval_stats == "Rejected") {
+
+        } elseif (
+            $statusSuccess &&
+            $actionSuccess &&
+            $eval_stats == "Rejected"
+        ) {
 
             header(
                 "Location: ../../inspection-pending.php?rejected_success=1"
             );
+
             exit;
         }
 
@@ -250,23 +304,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header(
             "Location: ../../inspection-pending.php?error=1"
         );
+
         exit;
     }
 }
 
 
+/*
+|--------------------------------------------------------------------------
+| Helper Functions
+|--------------------------------------------------------------------------
+*/
+
 function updateExpiry($exp_date, $extinguisherCode)
 {
-    return updateFireExtinguisherExpiryDate($exp_date, $extinguisherCode);
+    return updateFireExtinguisherExpiryDate(
+        $exp_date,
+        $extinguisherCode
+    );
 }
+
+
 function ApprovedBy($name, $inspectid)
 {
-    Approved_by($name, $inspectid);
+    Approved_by(
+        $name,
+        $inspectid
+    );
 }
+
+
 function RejectedBy($name, $inspectid)
 {
-    Rejected_by($name, $inspectid);
+    Rejected_by(
+        $name,
+        $inspectid
+    );
 }
+
 
 function getAllInspected()
 {
@@ -274,28 +349,40 @@ function getAllInspected()
 }
 
 
-// __________FOR PENDING APPROVAL__________________________________________
+/*
+|--------------------------------------------------------------------------
+| Pending Approval
+|--------------------------------------------------------------------------
+*/
+
+// Get Pending Approvals
+
+function getPendingApprovals(
+    $limit = 10,
+    $offset = 0,
+    $date = null
+) {
+
+    $role = strtolower(
+        trim($_SESSION['Role'] ?? '')
+    );
 
 
-// ============================================================
-// GET PENDING APPROVALS
-// ============================================================
-
-function getPendingApprovals($limit = 10, $offset = 0, $date = null)
-{
-    $role = strtolower(trim($_SESSION['Role'] ?? ''));
-
-    // ========================================================
-    // ADMIN
-    // ========================================================
     if ($role === 'admin') {
 
-        // Admin can select:
-        // ?branch=all
-        // ?branch=Laguna
-        // ?branch=Main Office
+        // Default to the Admin's assigned branch
 
-        $branch = trim($_GET['branch'] ?? 'all');
+        $sessionBranch = trim(
+            $_SESSION['Branch'] ?? ''
+        );
+
+        // Use the branch selected in the URL when available
+
+        $branch = trim(
+            $_GET['branch'] ?? $sessionBranch
+        );
+
+        // Use all branches when no branch is assigned
 
         if ($branch === '') {
             $branch = 'all';
@@ -310,12 +397,13 @@ function getPendingApprovals($limit = 10, $offset = 0, $date = null)
     }
 
 
-    // ========================================================
-    // INSPECTOR
-    // ========================================================
     if ($role === 'inspector') {
 
-        $branch = trim($_SESSION['Branch'] ?? '');
+        // Restrict inspectors to their assigned branch
+
+        $branch = trim(
+            $_SESSION['Branch'] ?? ''
+        );
 
         if ($branch === '') {
             return false;
@@ -334,21 +422,30 @@ function getPendingApprovals($limit = 10, $offset = 0, $date = null)
 }
 
 
-// ============================================================
-// GET PENDING APPROVAL TOTAL
-// ============================================================
+// Get Pending Approval Total
 
 function getPendingApprovalTotal($date = null)
 {
-    $role = strtolower(trim($_SESSION['Role'] ?? ''));
+    $role = strtolower(
+        trim($_SESSION['Role'] ?? '')
+    );
 
 
-    // ========================================================
-    // ADMIN
-    // ========================================================
     if ($role === 'admin') {
 
-        $branch = trim($_GET['branch'] ?? 'all');
+        // Default to the Admin's assigned branch
+
+        $sessionBranch = trim(
+            $_SESSION['Branch'] ?? ''
+        );
+
+        // Use the branch selected in the URL when available
+
+        $branch = trim(
+            $_GET['branch'] ?? $sessionBranch
+        );
+
+        // Use all branches when no branch is assigned
 
         if ($branch === '') {
             $branch = 'all';
@@ -361,12 +458,13 @@ function getPendingApprovalTotal($date = null)
     }
 
 
-    // ========================================================
-    // INSPECTOR
-    // ========================================================
     if ($role === 'inspector') {
 
-        $branch = trim($_SESSION['Branch'] ?? '');
+        // Restrict inspectors to their assigned branch
+
+        $branch = trim(
+            $_SESSION['Branch'] ?? ''
+        );
 
         if ($branch === '') {
             return 0;
@@ -382,24 +480,33 @@ function getPendingApprovalTotal($date = null)
     return 0;
 }
 
-// __________FOR APPROVED APPROVAL__________________________________________
 
-// ============================================================
-// GET APPROVED APPROVALS
-// ============================================================
+/*
+|--------------------------------------------------------------------------
+| Approved Approval
+|--------------------------------------------------------------------------
+*/
 
-function getApprovedApprovals($limit = 10, $offset = 0, $date = null)
-{
-    $role = strtolower(trim($_SESSION['Role'] ?? ''));
+// Get Approved Approvals
 
+function getApprovedApprovals(
+    $limit = 10,
+    $offset = 0,
+    $date = null
+) {
 
-    // ========================================================
-    // ADMIN
-    // ========================================================
+    $role = strtolower(
+        trim($_SESSION['Role'] ?? '')
+    );
+
 
     if ($role === 'admin') {
 
-        $branch = trim($_GET['branch'] ?? 'all');
+        // Admin branch filter
+
+        $branch = trim(
+            $_GET['branch'] ?? 'all'
+        );
 
         if ($branch === '') {
             $branch = 'all';
@@ -414,13 +521,13 @@ function getApprovedApprovals($limit = 10, $offset = 0, $date = null)
     }
 
 
-    // ========================================================
-    // INSPECTOR
-    // ========================================================
-
     if ($role === 'inspector') {
 
-        $branch = trim($_SESSION['Branch'] ?? '');
+        // Restrict inspectors to their assigned branch
+
+        $branch = trim(
+            $_SESSION['Branch'] ?? ''
+        );
 
         if ($branch === '') {
             return false;
@@ -439,19 +546,22 @@ function getApprovedApprovals($limit = 10, $offset = 0, $date = null)
 }
 
 
-// Get total number of pending approvals
+// Get Approved Approval Total
+
 function getApprovedApprovalTotal($date = null)
 {
-    $role = strtolower(trim($_SESSION['Role'] ?? ''));
+    $role = strtolower(
+        trim($_SESSION['Role'] ?? '')
+    );
 
-
-    // ========================================================
-    // ADMIN
-    // ========================================================
 
     if ($role === 'admin') {
 
-        $branch = trim($_GET['branch'] ?? 'all');
+        // Admin branch filter
+
+        $branch = trim(
+            $_GET['branch'] ?? 'all'
+        );
 
         if ($branch === '') {
             $branch = 'all';
@@ -464,13 +574,13 @@ function getApprovedApprovalTotal($date = null)
     }
 
 
-    // ========================================================
-    // INSPECTOR
-    // ========================================================
-
     if ($role === 'inspector') {
 
-        $branch = trim($_SESSION['Branch'] ?? '');
+        // Restrict inspectors to their assigned branch
+
+        $branch = trim(
+            $_SESSION['Branch'] ?? ''
+        );
 
         if ($branch === '') {
             return 0;
@@ -487,18 +597,32 @@ function getApprovedApprovalTotal($date = null)
 }
 
 
-// __________FOR REJECTED APPROVAL__________________________________________
-// ============================================================
-// GET REJECTED APPROVALS
-// ============================================================
-function getRejectedApprovals($limit = 10, $offset = 0, $date = null)
-{
-    $role = strtolower(trim($_SESSION['Role'] ?? ''));
+/*
+|--------------------------------------------------------------------------
+| Rejected Approval
+|--------------------------------------------------------------------------
+*/
 
-    // ADMIN
+// Get Rejected Approvals
+
+function getRejectedApprovals(
+    $limit = 10,
+    $offset = 0,
+    $date = null
+) {
+
+    $role = strtolower(
+        trim($_SESSION['Role'] ?? '')
+    );
+
+
     if ($role === 'admin') {
 
-        $branch = trim($_GET['branch'] ?? 'all');
+        // Admin branch filter
+
+        $branch = trim(
+            $_GET['branch'] ?? 'all'
+        );
 
         if ($branch === '') {
             $branch = 'all';
@@ -512,10 +636,14 @@ function getRejectedApprovals($limit = 10, $offset = 0, $date = null)
         );
     }
 
-    // INSPECTOR
+
     if ($role === 'inspector') {
 
-        $branch = trim($_SESSION['Branch'] ?? '');
+        // Restrict inspectors to their assigned branch
+
+        $branch = trim(
+            $_SESSION['Branch'] ?? ''
+        );
 
         if ($branch === '') {
             return false;
@@ -529,21 +657,27 @@ function getRejectedApprovals($limit = 10, $offset = 0, $date = null)
         );
     }
 
+
     return false;
 }
 
 
-// ============================================================
-// GET REJECTED APPROVAL TOTAL
-// ============================================================
+// Get Rejected Approval Total
+
 function getRejectedApprovalTotal($date = null)
 {
-    $role = strtolower(trim($_SESSION['Role'] ?? ''));
+    $role = strtolower(
+        trim($_SESSION['Role'] ?? '')
+    );
 
-    // ADMIN
+
     if ($role === 'admin') {
 
-        $branch = trim($_GET['branch'] ?? 'all');
+        // Admin branch filter
+
+        $branch = trim(
+            $_GET['branch'] ?? 'all'
+        );
 
         if ($branch === '') {
             $branch = 'all';
@@ -555,10 +689,14 @@ function getRejectedApprovalTotal($date = null)
         );
     }
 
-    // INSPECTOR
+
     if ($role === 'inspector') {
 
-        $branch = trim($_SESSION['Branch'] ?? '');
+        // Restrict inspectors to their assigned branch
+
+        $branch = trim(
+            $_SESSION['Branch'] ?? ''
+        );
 
         if ($branch === '') {
             return 0;
@@ -570,20 +708,36 @@ function getRejectedApprovalTotal($date = null)
         );
     }
 
+
     return 0;
 }
 
-// _______________UPDATE EVALUATION STATUS_____________
 
-function updateEvalStats($eval_id, $evalStatus)
-{
+/*
+|--------------------------------------------------------------------------
+| Evaluation Status
+|--------------------------------------------------------------------------
+*/
+
+function updateEvalStats(
+    $eval_id,
+    $evalStatus
+) {
+
     return updateEvaluationStatus(
         $eval_id,
         $evalStatus
     );
 }
 
-// for getting approved inspection reports based on the given IDs
+
+/*
+|--------------------------------------------------------------------------
+| Approved Inspection Reports
+|--------------------------------------------------------------------------
+*/
+
+// Retrieve Approved Inspection Reports
 
 function getApprovedInspectionReportsController($ids)
 {

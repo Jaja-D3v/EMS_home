@@ -210,22 +210,14 @@ function getAllPendingApproval(
 ) {
     global $conn;
 
-
     $sql = "SELECT *
             FROM inspection_checklist_tbl
             WHERE evaluation_status = 'Pending'";
 
-
     $types = "";
     $params = [];
 
-
-    // ========================================================
-    // BRANCH FILTER
-    // ========================================================
-
     if ($branch !== 'all' && !empty($branch)) {
-
         $sql .= "
             AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
         ";
@@ -234,13 +226,7 @@ function getAllPendingApproval(
         $params[] = $branch;
     }
 
-
-    // ========================================================
-    // DATE FILTER
-    // ========================================================
-
     if (!empty($date)) {
-
         $sql .= "
             AND DATE(date_inspected) = ?
         ";
@@ -249,32 +235,20 @@ function getAllPendingApproval(
         $params[] = $date;
     }
 
-
-    // ========================================================
-    // PAGINATION
-    // ========================================================
-
     $sql .= "
         ORDER BY inspect_id DESC
         LIMIT ? OFFSET ?
     ";
 
     $types .= "ii";
-
     $params[] = (int) $limit;
     $params[] = (int) $offset;
-
-
-    // ========================================================
-    // PREPARE
-    // ========================================================
 
     $stmt = mysqli_prepare($conn, $sql);
 
     if (!$stmt) {
         return false;
     }
-
 
     mysqli_stmt_bind_param(
         $stmt,
@@ -297,22 +271,14 @@ function getPendingApprovalCount(
 ) {
     global $conn;
 
-
     $sql = "SELECT COUNT(*) AS total
             FROM inspection_checklist_tbl
             WHERE evaluation_status = 'Pending'";
 
-
     $types = "";
     $params = [];
 
-
-    // ========================================================
-    // BRANCH FILTER
-    // ========================================================
-
     if ($branch !== 'all' && !empty($branch)) {
-
         $sql .= "
             AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
         ";
@@ -321,13 +287,7 @@ function getPendingApprovalCount(
         $params[] = $branch;
     }
 
-
-    // ========================================================
-    // DATE FILTER
-    // ========================================================
-
     if (!empty($date)) {
-
         $sql .= "
             AND DATE(date_inspected) = ?
         ";
@@ -336,31 +296,19 @@ function getPendingApprovalCount(
         $params[] = $date;
     }
 
-
-    // ========================================================
-    // PREPARE
-    // ========================================================
-
     $stmt = mysqli_prepare($conn, $sql);
 
     if (!$stmt) {
         return 0;
     }
 
-
-    // ========================================================
-    // BIND ONLY IF PARAMETERS EXIST
-    // ========================================================
-
     if (!empty($types)) {
-
         mysqli_stmt_bind_param(
             $stmt,
             $types,
             ...$params
         );
     }
-
 
     mysqli_stmt_execute($stmt);
 
@@ -369,7 +317,6 @@ function getPendingApprovalCount(
     $row = mysqli_fetch_assoc($result);
 
     mysqli_stmt_close($stmt);
-
 
     return (int) ($row['total'] ?? 0);
 }
