@@ -1,5 +1,5 @@
 
-Day 10   TO-DO                       STATUS
+Day 11   TO-DO                       STATUS
 _____________________________________________________________
 
 ## Fire Extinguisher Module
@@ -26,7 +26,14 @@ _____________________________________________________________
 - dapat nullable yung dalawang action 
 
 
+# TO REVISE DATE REFILLED
+- IF PARTIALLY REFIILED EXPIRATION MUST STAY AS IT WAS
+- IF REFIILED EXPIRATION DATE WILL BE SET 3 YEARS FROM THE REFILLED DATE 
 
+
+# FLOW OF DATA WHEN THE REQUEST WAS REJECTED
+- IF THE INSPECTION WAS REJECTED BABALIK YUNG DATA SA NAG INSPECT
+- 
 
 ____________________________________________________________DONE___________________________________________________________________________
 
@@ -45,24 +52,8 @@ ADD COLUMN last_date_inspected DATETIME NULL;
 
 
 # condition status will change after approve the evaluation
-______________________________________________________________________
 
-# REMARKS 
-- need to add sa database after inspections success #done
 
-- fix buggs 
 
-## expiring soon 
-- dapat na geget nya yung default location ni admin
 
-## inspection approvals
-- pending --  dapat na geget nya yung default location ni admin
-- approved --  dapat na geget nya yung default location ni admin
-- rejected --  dapat na geget nya yung default location ni admin
-
-## expiry module needs revision
-- revise expiry module 
-
-## Approve Inspection Module
-- Add generate report button (to generate report of the selected date and branch).              #DONE
-- Generate report based on the selected date.                                                   #DONE
+___________________________________________________________________________

@@ -82,8 +82,34 @@ foreach ($codes as $code) {
         'N'
     );
 
+    // EMS Logo
+    $logoPath = __DIR__ . '/../assets/img/EMS-LOGO-GRAY.png';
 
+    $pdf->Image(
+        $logoPath,
+        49,
+        22,
+        13,
+        13,
+        'PNG',
+        '',
+        '',
+        false,
+        300,
+        '',
+        false,
+        false,
+        0,
+        false,
+        false,
+        false
+    );
 
+    $infoX = 35;
+    $infoY = 9;
+    $infoWidth = 27;
+
+    // ems logo end
     $infoX = 35;
     $infoY = 9;
     $infoWidth = 27;

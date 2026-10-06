@@ -10,7 +10,7 @@
          width: auto;
          filter: drop-shadow(0 0 3px rgba(255,255,255,0.9))
                  drop-shadow(0 0 7px rgba(255,255,255,0.5));
-     ">
+          ">
 
       <div class="d-flex flex-column">
         <span class="fw-bold"
@@ -77,9 +77,7 @@
           <!-- Active Fire Extinguishers -->
           <li class="nav-item">
 
-            <a
-              class="nav-link"
-              href="list-extinguisher.php">
+            <a class="nav-link" href="list-extinguisher.php">
 
               <i class="bi bi-fire me-2"></i>
 
@@ -194,6 +192,7 @@
       </a>
 
     </li>
+    <?php if (strtolower(trim($_SESSION['Role'] ?? '')) === 'admin'): ?>
 
     <!-- Maintenance -->
     <li class="nav-item">
@@ -208,6 +207,8 @@
       </a>
 
     </li>
+    <?php endif; ?>
+
     <!-- end navigation -->
     </li>
     <li class="nav-divider"></li>

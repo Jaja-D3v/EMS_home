@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="css/vendors/simplebar.css">
     <!-- Main styles for this application-->
     <link href="css/style.css" rel="stylesheet">
-    <script src="js/color-modes.js"></script>
+    <!-- <script src="js/color-modes.js"></script> -->
     <!-- We use those styles to show code examples, you should remove them in your application.-->
     <!-- <link href="css/examples.css" rel="stylesheet">
     <script src="js/config.js"></script>

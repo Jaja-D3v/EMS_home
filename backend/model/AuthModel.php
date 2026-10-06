@@ -12,6 +12,8 @@ function loginUser($loginID)
             u.password,
             u.Role,
             u.EmployeeName,
+            u.what_system,
+            u.Status,
             j.Location
         FROM kane_users_login u
         LEFT JOIN kane_jobinfo j

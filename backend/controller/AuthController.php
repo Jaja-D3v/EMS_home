@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (
         $user &&
         $username === $user['LoginID'] &&
-        md5($password) === $user['password']
+        md5($password) === $user['password'] && $user['Status'] == '1' &&  ($user['what_system'] === 'KPEMS' || $user['what_system'] === 'KPAMS')
     ) {
 
         /*
@@ -33,6 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['Role'] = $user['Role'];
         $_SESSION['EmployeeName'] = $user['EmployeeName'];
         $_SESSION['Branch'] = $user['Location'];
+        $_SESSION['System'] = $user['what_system'];
+        $_SESSION['Status'] = $user['Status'];
 
         /*
          * Start inactivity timer

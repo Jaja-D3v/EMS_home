@@ -1888,28 +1888,32 @@ $branchDropdown = getAllPlacementDropdownController();
                       Close
                     </button>
 
-                    <button
-                      type="button"
-                      id="viewEditFireExtinguisherBtn"
-                      class="btn btn-warning px-4 edit-extinguisher-btn"
-                      data-id=""
-                      data-bs-toggle="modal"
-                      data-bs-target="#editFireExtinguisherModal">
+                    <?php if (strtolower(trim($_SESSION['Role'] ?? '')) === 'admin'): ?>
 
-                      <i class="bi bi-pencil me-1"></i>
-                      Edit
 
-                    </button>
+                      <button
+                        type="button"
+                        id="viewEditFireExtinguisherBtn"
+                        class="btn btn-warning px-4 edit-extinguisher-btn"
+                        data-id=""
+                        data-bs-toggle="modal"
+                        data-bs-target="#editFireExtinguisherModal">
 
-                    <a
-                      href="#"
-                      id="viewDeleteFireExtinguisherBtn"
-                      class="btn btn-danger px-3">
+                        <i class="bi bi-pencil me-1"></i>
+                        Edit
 
-                      <i class="bi bi-trash me-1"></i>
-                      Delete
+                      </button>
 
-                    </a>
+                      <a
+                        href="#"
+                        id="viewDeleteFireExtinguisherBtn"
+                        class="btn btn-danger px-3">
+
+                        <i class="bi bi-trash me-1"></i>
+                        Delete
+
+                      </a>
+                    <?php endif; ?>
 
                   </div>
 
@@ -2459,23 +2463,28 @@ $branchDropdown = getAllPlacementDropdownController();
             // STORE ID FOR EDIT / DELETE
             // ========================================
 
-            document.getElementById(
+            const editBtn = document.getElementById(
               'viewEditFireExtinguisherBtn'
-            ).dataset.id = data.extinguisher_id;
+            );
 
-
-            const viewDeleteBtn = document.getElementById(
+            const deleteBtn = document.getElementById(
               'viewDeleteFireExtinguisherBtn'
             );
 
-            viewDeleteBtn.href =
-              `backend/controller/FireExtinguisherController.php?action=delete&id=${data.extinguisher_id}`;
+            if (editBtn) {
+              editBtn.dataset.id = data.extinguisher_id;
+            }
 
-            viewDeleteBtn.onclick = function() {
-              return confirm(
-                'Are you sure you want to delete this fire extinguisher?'
-              );
-            };
+            if (deleteBtn) {
+              deleteBtn.href =
+                `backend/controller/FireExtinguisherController.php?action=delete&id=${data.extinguisher_id}`;
+
+              deleteBtn.onclick = function() {
+                return confirm(
+                  'Are you sure you want to delete this fire extinguisher?'
+                );
+              };
+            }
 
           })
 

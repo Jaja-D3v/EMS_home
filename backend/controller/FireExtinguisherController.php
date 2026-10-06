@@ -286,9 +286,7 @@ function updateExtinguisher(
 
     if ($success) {
 
-        $user_name =
-            $_SESSION['EmployeeName']
-            ?? 'error while getting employee name';
+        $user_name = $_SESSION['EmployeeName'] ?? 'error while getting employee name';
 
         createActivityLog(
             $user_name,
