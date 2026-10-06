@@ -27,10 +27,18 @@ function getRejectedInspections(
             action_taken,
             target_date_of_implementation,
             rejection_date
-        FROM inspection_checklist_tbl
+        FROM inspection_checklist_tbl AS i
         WHERE evaluation_status = 'Rejected'
         AND LOWER(TRIM(inspected_by)) = LOWER(TRIM(?))
         AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
+        AND inspect_id = (
+            SELECT i2.inspect_id
+            FROM inspection_checklist_tbl AS i2
+            WHERE LOWER(TRIM(i2.extinguisher_code)) =
+                  LOWER(TRIM(i.extinguisher_code))
+            ORDER BY i2.date_inspected DESC, i2.inspect_id DESC
+            LIMIT 1
+        )
     ";
 
     $types = 'ss';

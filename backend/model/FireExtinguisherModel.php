@@ -61,7 +61,8 @@ function getAll($limit, $offset)
                     created_at,
                     updated_at,
                     refilled_date,
-                    branch
+                    branch,
+                    last_date_inspected
                 FROM fire_extinguishers_tbl
                 WHERE archived = 0";
 

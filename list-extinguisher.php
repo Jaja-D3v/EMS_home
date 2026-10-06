@@ -386,7 +386,7 @@ $branchDropdown = getAllPlacementDropdownController();
                                     No results match your search.
                                 </small>
                             </div>
-                    `;
+                            `;
 
                           const cardContainer =
                             document.querySelector('.extinguisher-card')?.parentElement;
@@ -608,61 +608,86 @@ $branchDropdown = getAllPlacementDropdownController();
                   <div class="row g-2 g-md-3 mt-2 align-items-center">
 
                     <!-- FE Code -->
-                    <div class="col-6 col-md-2">
+                    <div class="col-6 col-md">
+
                       <div class="d-flex align-items-center gap-2">
+
                         <div
                           class="d-flex align-items-center justify-content-center
-                            bg-danger bg-opacity-10 text-danger
-                            rounded-3 flex-shrink-0"
+                       bg-danger bg-opacity-10 text-danger
+                       rounded-3 flex-shrink-0"
                           style="width: 32px; height: 32px;">
+
                           <i class="bi bi-qr-code"></i>
+
                         </div>
 
                         <div class="min-width-0">
+
                           <div class="text-body-secondary small lh-1">
                             FE Code
                           </div>
+
                           <div class="fw-semibold small text-truncate">
                             <?= htmlspecialchars($data['extinguisher_code']) ?>
                           </div>
+
                         </div>
+
                       </div>
+
                     </div>
 
+
                     <!-- Capacity -->
-                    <div class="col-6 col-md-2">
+                    <div class="col-6 col-md">
+
                       <div class="d-flex align-items-center gap-2">
+
                         <div
                           class="d-flex align-items-center justify-content-center
-                                bg-primary bg-opacity-10 text-primary
-                                rounded-3 flex-shrink-0"
+                       bg-primary bg-opacity-10 text-primary
+                       rounded-3 flex-shrink-0"
                           style="width: 32px; height: 32px;">
+
                           <i class="bi bi-box-seam"></i>
+
                         </div>
 
                         <div class="min-width-0">
+
                           <div class="text-body-secondary small lh-1">
                             Capacity
                           </div>
+
                           <div class="fw-semibold small text-truncate">
                             <?= htmlspecialchars($data['capacity']) ?>
                           </div>
+
                         </div>
+
                       </div>
+
                     </div>
 
+
                     <!-- Type -->
-                    <div class="col-6 col-md-2">
+                    <div class="col-6 col-md">
+
                       <div class="d-flex align-items-center gap-2">
+
                         <div
                           class="d-flex align-items-center justify-content-center
-                            bg-warning bg-opacity-10 text-warning
-                            rounded-3 flex-shrink-0"
+                       bg-warning bg-opacity-10 text-warning
+                       rounded-3 flex-shrink-0"
                           style="width: 32px; height: 32px;">
+
                           <i class="bi bi-fire"></i>
+
                         </div>
 
                         <div class="min-width-0">
+
                           <div class="text-body-secondary small lh-1">
                             Type
                           </div>
@@ -670,46 +695,63 @@ $branchDropdown = getAllPlacementDropdownController();
                           <div
                             class="fw-semibold small text-truncate"
                             title="<?= htmlspecialchars($data['type']) ?>">
+
                             <?= htmlspecialchars($data['type']) ?>
+
                           </div>
+
                         </div>
+
                       </div>
+
                     </div>
 
+
                     <!-- Location -->
-                    <div class="col-6 col-md-2">
+                    <div class="col-6 col-md">
+
                       <div class="d-flex align-items-center gap-2">
+
                         <div
                           class="d-flex align-items-center justify-content-center
-                            bg-primary bg-opacity-10 text-primary
-                            rounded-3 flex-shrink-0"
+                       bg-primary bg-opacity-10 text-primary
+                       rounded-3 flex-shrink-0"
                           style="width: 32px; height: 32px;">
+
                           <i class="bi bi-geo-alt"></i>
+
                         </div>
 
                         <div class="min-width-0">
+
                           <div class="text-body-secondary small lh-1">
                             Location
                           </div>
 
-                          <div class="fw-semibold small text-truncate extinguisher-location"
+                          <div
+                            class="fw-semibold small text-truncate extinguisher-location"
                             title="<?= htmlspecialchars($data['location']) ?>">
+
                             <?= htmlspecialchars($data['location']) ?>
+
                           </div>
+
                         </div>
+
                       </div>
+
                     </div>
 
-                    <!-- Class -->
 
-                    <div class="col-6 col-md-2">
+                    <!-- Branch -->
+                    <div class="col-6 col-md">
 
                       <div class="d-flex align-items-center gap-2">
 
                         <div
                           class="d-flex align-items-center justify-content-center
-                                bg-success bg-opacity-10 text-success
-                                rounded-3 flex-shrink-0"
+                       bg-success bg-opacity-10 text-success
+                       rounded-3 flex-shrink-0"
                           style="width: 32px; height: 32px;">
 
                           <i class="bi bi-building"></i>
@@ -736,11 +778,64 @@ $branchDropdown = getAllPlacementDropdownController();
 
                     </div>
 
+
+                    <!-- Last Inspected -->
+                    <div class="col-6 col-md">
+
+                      <div class="d-flex align-items-center gap-2">
+
+                        <div
+                          class="d-flex align-items-center justify-content-center
+                       bg-info bg-opacity-10 text-info
+                       rounded-3 flex-shrink-0"
+                          style="width: 32px; height: 32px;">
+
+                          <i class="bi bi-calendar-check"></i>
+
+                        </div>
+
+                        <div class="min-width-0">
+
+                          <div class="text-body-secondary small lh-1">
+                            Last Inspected
+                          </div>
+
+                          <div
+                            class="fw-semibold small text-truncate"
+                            title="<?= !empty($data['last_date_inspected'])
+                                      ? htmlspecialchars($data['last_date_inspected'])
+                                      : 'Not inspected' ?>">
+
+                            <?php if (!empty($data['last_date_inspected'])): ?>
+
+                              <?= htmlspecialchars(
+                                date(
+                                  'M d, Y',
+                                  strtotime($data['last_date_inspected'])
+                                )
+                              ) ?>
+
+                            <?php else: ?>
+
+                              N/A
+
+                            <?php endif; ?>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+
                     <!-- View -->
-                    <div class="col-12 col-md-2">
+                    <div class="col-12 col-md-auto">
+
                       <button
                         type="button"
-                        class="btn btn-sm btn-primary w-100 px-3 view-extinguisher-btn"
+                        class="btn btn-sm btn-primary w-100 px-4 view-extinguisher-btn"
                         data-id="<?= htmlspecialchars($data['extinguisher_id']) ?>"
                         data-bs-toggle="modal"
                         data-bs-target="#viewFireExtinguisherModal">
@@ -749,6 +844,7 @@ $branchDropdown = getAllPlacementDropdownController();
                         View
 
                       </button>
+
                     </div>
 
                   </div>

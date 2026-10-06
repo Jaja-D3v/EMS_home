@@ -98,7 +98,9 @@ $ertLogo     = __DIR__ . '/../assets/img/ERT-LOGO.jpg';
 // Prepare values displayed in the report header.
 $firstInspection = $inspections[0];
 
-$dateInspected = $firstInspection['date_inspected'] ?? '';
+$dateInspected = !empty($firstInspection['date_inspected'])
+    ? date('F j, Y', strtotime($firstInspection['date_inspected']))
+    : '';
 $inspectedBy   = $firstInspection['inspected_by'] ?? '';
 
 $approvedNames = [];

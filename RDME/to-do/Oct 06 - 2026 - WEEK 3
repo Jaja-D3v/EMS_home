@@ -57,3 +57,13 @@ ADD COLUMN last_date_inspected DATETIME NULL;
 ___________________________________________________________________________
 # added rejected inspection module for inspector 
 # design ui for rejected inspection rejected modal 
+# backend revisions
+# rejected inspection module
+- added fetch rejected 
+- pagination
+- search filter
+- date filter
+
+- added last inspected in view all fire ex
+- revise the query of get rejected in rejected module 
+
