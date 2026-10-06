@@ -861,169 +861,118 @@ $branchDropdown = getAllPlacementDropdownController();
 
             <?php endforeach; ?>
 
-            <?php if ($totalPages > 1): ?>
+            <!-- PAGINATION -->
+            <div class="card border border-primary-subtle shadow-sm rounded-3 mt-3">
 
-              <?php
-              $paginationParams = $_GET;
-              unset($paginationParams['page']);
+              <div class="card-footer bg-body border-0 px-3 py-3">
 
-              $previousParams = $paginationParams;
-              $previousParams['page'] = max(1, $page - 1);
+                <div class="d-flex flex-column flex-sm-row align-items-center justify-content-between gap-3">
 
-              $nextParams = $paginationParams;
-              $nextParams['page'] = min($totalPages, $page + 1);
-              ?>
+                  <small class="text-body-secondary" style="font-size: 12px;">
+                    <?php if ($totalRecords > 0): ?>
+                      Showing
+                      <strong class="text-body"><?= $offset + 1 ?></strong>
+                      to
+                      <strong class="text-body">
+                        <?= min($offset + $limit, $totalRecords) ?>
+                      </strong>
+                      of
+                      <strong class="text-body"><?= $totalRecords ?></strong>
+                      entries
+                    <?php else: ?>
+                      Showing 0 of 0 entries
+                    <?php endif; ?>
+                  </small>
 
-              <div class="mt-4">
+                  <?php if ($totalPages > 1): ?>
 
-                <div class="card border-0 shadow-sm rounded-4 ">
+                    <?php
+                    $currentPageUrl = basename($_SERVER['PHP_SELF']);
 
-                  <div class="card-body px-3 px-md-4 py-3">
+                    $paginationParams = $_GET;
+                    unset($paginationParams['page']);
 
-                    <div class="d-flex flex-column flex-sm-row align-items-center justify-content-between gap-3">
+                    $previousParams = $paginationParams;
+                    $previousParams['page'] = max(1, $page - 1);
 
-                      <!-- Showing -->
-                      <div class="text-body-secondary text-center text-sm-start">
-                        Showing
-                        <strong class="text-body">
-                          <?= min($offset + 1, $totalRecords) ?>
-                        </strong>
-                        -
-                        <strong class="text-body">
-                          <?= min($offset + $limit, $totalRecords) ?>
-                        </strong>
-                        of
-                        <strong class="text-body">
-                          <?= $totalRecords ?>
-                        </strong>
-                        activities
-                      </div>
+                    $nextParams = $paginationParams;
+                    $nextParams['page'] = min($totalPages, $page + 1);
+                    ?>
 
+                    <nav aria-label="Fire extinguisher pagination">
+                      <ul class="pagination pagination-sm mb-0">
 
-                      <!-- Pagination -->
-                      <nav aria-label="Fire extinguisher pagination">
-
-                        <ul class="pagination mb-0">
-
-                          <!-- Previous -->
-                          <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
+                        <!-- Previous -->
+                        <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
+                          <?php if ($page > 1): ?>
 
                             <a
-                              class="page-link rounded-3 me-1"
-                              href="list-extinguisher.php?<?= htmlspecialchars(http_build_query($previousParams)) ?>"
+                              class="page-link"
+                              href="<?= htmlspecialchars($currentPageUrl, ENT_QUOTES, 'UTF-8') ?>?<?= http_build_query($previousParams) ?>"
                               aria-label="Previous">
-
                               <i class="bi bi-chevron-left"></i>
-
+                              <span class="d-none d-sm-inline ms-1">Previous</span>
                             </a>
 
-                          </li>
+                          <?php else: ?>
 
+                            <span class="page-link">
+                              <i class="bi bi-chevron-left"></i>
+                              <span class="d-none d-sm-inline ms-1">Previous</span>
+                            </span>
+
+                          <?php endif; ?>
+                        </li>
+
+                        <!-- Page Numbers -->
+                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
 
                           <?php
-                          /*
-                          * Compact pagination:
-                          * Always show first page,
-                          * current page,
-                          * nearby pages,
-                          * last page.
-                          */
-
-                          $pagesToShow = [];
-
-                          if ($totalPages <= 7) {
-
-                            for ($i = 1; $i <= $totalPages; $i++) {
-                              $pagesToShow[] = $i;
-                            }
-                          } else {
-
-                            $pagesToShow[] = 1;
-
-                            if ($page > 4) {
-                              $pagesToShow[] = '...';
-                            }
-
-                            $start = max(2, $page - 1);
-                            $end = min($totalPages - 1, $page + 1);
-
-                            for ($i = $start; $i <= $end; $i++) {
-                              $pagesToShow[] = $i;
-                            }
-
-                            if ($page < $totalPages - 3) {
-                              $pagesToShow[] = '...';
-                            }
-
-                            $pagesToShow[] = $totalPages;
-                          }
+                          $pageParams = $paginationParams;
+                          $pageParams['page'] = $i;
                           ?>
 
-
-                          <!-- Page Numbers -->
-                          <?php foreach ($pagesToShow as $pageNumber): ?>
-
-                            <?php if ($pageNumber === '...'): ?>
-
-                              <li class="page-item disabled">
-
-                                <span class="page-link rounded-3 mx-1">
-                                  ...
-                                </span>
-
-                              </li>
-
-                            <?php else: ?>
-
-                              <?php
-                              $pageParams = $paginationParams;
-                              $pageParams['page'] = $pageNumber;
-                              ?>
-
-                              <li class="page-item <?= ($pageNumber == $page) ? 'active' : '' ?>">
-
-                                <a
-                                  class="page-link rounded-3 mx-1"
-                                  href="list-extinguisher.php?<?= htmlspecialchars(http_build_query($pageParams)) ?>">
-
-                                  <?= $pageNumber ?>
-
-                                </a>
-
-                              </li>
-
-                            <?php endif; ?>
-
-                          <?php endforeach; ?>
-
-
-                          <!-- Next -->
-                          <li class="page-item <?= ($page >= $totalPages) ? 'disabled' : '' ?>">
-
+                          <li class="page-item <?= $i === $page ? 'active' : '' ?>">
                             <a
-                              class="page-link rounded-3 ms-1"
-                              href="list-extinguisher.php?<?= htmlspecialchars(http_build_query($nextParams)) ?>"
-                              aria-label="Next">
-
-                              <i class="bi bi-chevron-right"></i>
-
+                              class="page-link"
+                              href="<?= htmlspecialchars($currentPageUrl, ENT_QUOTES, 'UTF-8') ?>?<?= http_build_query($pageParams) ?>">
+                              <?= $i ?>
                             </a>
-
                           </li>
 
-                        </ul>
+                        <?php endfor; ?>
 
-                      </nav>
+                        <!-- Next -->
+                        <li class="page-item <?= $page >= $totalPages ? 'disabled' : '' ?>">
+                          <?php if ($page < $totalPages): ?>
 
-                    </div>
+                            <a
+                              class="page-link"
+                              href="<?= htmlspecialchars($currentPageUrl, ENT_QUOTES, 'UTF-8') ?>?<?= http_build_query($nextParams) ?>"
+                              aria-label="Next">
+                              <span class="d-none d-sm-inline me-1">Next</span>
+                              <i class="bi bi-chevron-right"></i>
+                            </a>
 
-                  </div>
+                          <?php else: ?>
+
+                            <span class="page-link">
+                              <span class="d-none d-sm-inline me-1">Next</span>
+                              <i class="bi bi-chevron-right"></i>
+                            </span>
+
+                          <?php endif; ?>
+                        </li>
+
+                      </ul>
+                    </nav>
+
+                  <?php endif; ?>
 
                 </div>
 
               </div>
-
-            <?php endif; ?>
+            </div>
 
 
 
