@@ -157,6 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $extinguisher_code = trim($_POST['extinguisher_code'] ?? '');
         $condition_status = trim($_POST['condition_status'] ?? '');
         $remarks = trim($_POST['remarks'] ?? '');
+        $rejectReason = $_POST['reject_reason'] ?? '';
 
 
         // Record Approval or Rejection
@@ -187,7 +188,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $actionSuccess = updateCorrectiveAction(
             $inspect_id,
             $action_taken,
-            $target_date
+            $target_date,
+            $rejectReason
         );
 
         // Redirect After Evaluation

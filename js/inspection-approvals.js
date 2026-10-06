@@ -1,11 +1,4 @@
 
-
-/*
-|--------------------------------------------------------------------------
-| VIEW INSPECTION
-|--------------------------------------------------------------------------
-*/
-
 async function viewInspection(inspectId, extinguisherCode) {
 
     try {
@@ -868,24 +861,39 @@ function confirmApprove() {
 */
 
 function confirmReject() {
+    const rejectReason =
+        document.getElementById("rejectReason");
 
-    if (
-        !setCorrectiveActionValues(
-            "reject"
-        )
-    ) {
+    const rejectReasonInput =
+        document.getElementById("rejectReasonInput");
+
+    if (!rejectReason || !rejectReason.value.trim()) {
+        alert(
+            "Please provide a reason for rejecting this inspection."
+        );
+
+        if (rejectReason) {
+            rejectReason.focus();
+        }
 
         return false;
-
     }
 
+    if (rejectReasonInput) {
+        rejectReasonInput.value =
+            rejectReason.value.trim();
+    }
+
+    if (!setCorrectiveActionValues("reject")) {
+        return false;
+    }
 
     return confirm(
         "Are you sure you want to reject this inspection?\n\n" +
         "This action will change the inspection status to Rejected."
     );
-
 }
+
 
 
 // for search ng approve pending na module 

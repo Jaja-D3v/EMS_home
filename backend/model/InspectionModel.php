@@ -774,11 +774,11 @@ function Rejected_by($name, $id)
 
 
 
-
 function updateCorrectiveAction(
     $inspect_id,
     $action_taken,
-    $target_date
+    $target_date,
+    $rejection_reason
 ) {
     global $conn;
 
@@ -791,7 +791,8 @@ function updateCorrectiveAction(
     $sql = "UPDATE inspection_checklist_tbl
             SET
                 action_taken = ?,
-                target_date_of_implementation = ?
+                target_date_of_implementation = ?,
+                reject_reason = ?
             WHERE inspect_id = ?
               AND LOWER(TRIM(branch)) = LOWER(TRIM(?))";
 
@@ -803,9 +804,10 @@ function updateCorrectiveAction(
 
     mysqli_stmt_bind_param(
         $stmt,
-        "ssis",
+        "sssis",
         $action_taken,
         $target_date,
+        $rejection_reason,
         $inspect_id,
         $branch
     );

@@ -179,6 +179,17 @@
       </li>
     <?php endif; ?>
 
+    <!-- rejected inspection -->
+    <?php if (strtolower(trim($_SESSION['Role'] ?? '')) === 'inspector'): ?>
+      <li class="nav-item">
+        <a class="nav-link" href="rejected-inspection.php">
+         <i class="fa-solid fa-file-circle-xmark"></i>
+          Rejected Inspection
+        </a>
+
+      </li>
+    <?php endif; ?>
+
     <!-- Activity Log -->
     <li class="nav-item">
 
@@ -194,19 +205,19 @@
     </li>
     <?php if (strtolower(trim($_SESSION['Role'] ?? '')) === 'admin'): ?>
 
-    <!-- Maintenance -->
-    <li class="nav-item">
+      <!-- Maintenance -->
+      <li class="nav-item">
 
-      <a
-        class="nav-link"
-        href="maintenance.php">
+        <a
+          class="nav-link"
+          href="maintenance.php">
 
-        <i class="bi bi-tools me-2"></i>
-        Maintenance
+          <i class="bi bi-tools me-2"></i>
+          Maintenance
 
-      </a>
+        </a>
 
-    </li>
+      </li>
     <?php endif; ?>
 
     <!-- end navigation -->

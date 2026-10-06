@@ -75,17 +75,13 @@ require_once 'backend/authentication/SessionChecker.php';
 
                 </div>
 
-                <!-- IMPORTANT:
-                         Keep this ID exactly as scan-result
-                    -->
+                <!-- IMPORTANT: Keep this ID exactly as scan-result -->
                 <div id="scan-result" class="mt-3"></div>
-
 
                 <!-- Scanner Instructions -->
                 <div class="scanner-instructions rounded-3 p-3 mt-3">
 
                   <div class="row g-3">
-
                     <!-- Find -->
                     <div class="col-12 col-md-4">
 
@@ -171,136 +167,11 @@ require_once 'backend/authentication/SessionChecker.php';
         </div>
 
       </div>
+      <script src="js/QR-code.js"></script>
+    
+      <!-- inspection checklist modal -->
 
-      <script>
-        const scanner = new Html5Qrcode("qr-reader");
-
-        function startScanner() {
-
-          Html5Qrcode.getCameras()
-            .then(cameras => {
-
-              if (!cameras || cameras.length === 0) {
-
-                document.getElementById("scan-result").innerHTML = `
-                        <div class="alert alert-danger">
-                            No camera found on this device.
-                        </div>
-                    `;
-
-                return;
-              }
-
-              const cameraId = cameras[0].id;
-
-              scanner.start(
-                cameraId, {
-                  fps: 10,
-                  qrbox: {
-                    width: 350,
-                    height: 250
-                  }
-                },
-
-                qrCodeMessage => {
-
-                  if (qrCodeMessage) {
-
-                    fetch(
-                        `backend/controller/ScanQRCodeController.php?action=getFeInfo&code=${encodeURIComponent(qrCodeMessage)}`
-                      )
-                      .then(response => response.json())
-                      .then(result => {
-
-                        if (!result.success) {
-
-                          document.getElementById("scan-result").innerHTML = `
-                            <div class="alert alert-danger">
-                                <div class="fw-bold">
-                                    QR Code Validation
-                                </div>
-
-                                <div class="small text-body-secondary">
-                                    Invalid QR code. Fire extinguisher not found.
-                                </div>
-                            </div>
-                        `;
-
-                          return;
-                        }
-
-                        // Valid QR
-                        const data = result.data;
-
-                        document.getElementById("extinguisherCode").value = data.extinguisher_code;
-                        document.getElementById("inspectionLocation").value = data.location;
-                        document.getElementById("inspectionCapacity").value = data.capacity;
-                        document.getElementById("inspectionType").value = data.type;
-                        document.getElementById("inspectionClass").value = data.class;
-                        document.getElementById("inspectionBranch").value = data.branch;
-
-                        const inspectionModal = new bootstrap.Modal(
-                          document.getElementById("inspectionChecklistModal")
-                        );
-
-                        inspectionModal.show();
-
-                        // scanner.stop();
-                      })
-                      .catch(error => {
-
-                        console.error("Error:", error);
-
-                        document.getElementById("scan-result").innerHTML = `
-                            <div class="alert alert-danger">
-                                <div class="fw-bold">
-                                    QR Code Validation
-                                </div>
-
-                                <div class="small text-body-secondary">
-                                    Unable to validate QR code. Please try again.
-                                </div>
-                            </div>
-                        `;
-                      });
-                  }
-                },
-
-                errorMessage => {
-                  // QR not detected
-                }
-              );
-
-            })
-
-            .catch(() => {
-
-              document.getElementById("scan-result").innerHTML = `
-                    <div class="alert alert-danger">
-                        Camera access was denied or unavailable.
-                    </div>
-                `;
-
-            });
-        }
-
-        startScanner();
-      </script>
-
-      <!-- =========================
-            INSPECTION CHECKLIST MODAL
-        ========================== -->
-
-      <!-- =========================================================
-     INSPECTION CHECKLIST MODAL
-========================================================= -->
-
-      <div
-        class="modal fade"
-        id="inspectionChecklistModal"
-        tabindex="-1"
-        aria-labelledby="inspectionChecklistModalLabel"
-        aria-hidden="true">
+      <div class="modal fade" id="inspectionChecklistModal" tabindex="-1" aria-labelledby="inspectionChecklistModalLabel" aria-hidden="true">
 
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
 
