@@ -701,7 +701,12 @@ function updateEvaluationStatus($id, $evaluation_status)
     }
 
     $sql = "UPDATE inspection_checklist_tbl
-            SET evaluation_status = ?
+            SET evaluation_status = ?,
+                rejection_date = CASE
+                    WHEN LOWER(TRIM(?)) = 'rejected'
+                    THEN NOW()
+                    ELSE NULL
+                END
             WHERE inspect_id = ?
               AND LOWER(TRIM(branch)) = LOWER(TRIM(?))";
 
@@ -713,7 +718,8 @@ function updateEvaluationStatus($id, $evaluation_status)
 
     mysqli_stmt_bind_param(
         $stmt,
-        "sis",
+        "ssis",
+        $evaluation_status,
         $evaluation_status,
         $id,
         $branch
@@ -725,7 +731,6 @@ function updateEvaluationStatus($id, $evaluation_status)
 
     return $result;
 }
-
 
 function Approved_by($name, $id)
 {
