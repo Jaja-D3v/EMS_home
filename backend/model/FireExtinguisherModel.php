@@ -744,33 +744,76 @@ function getTotalFireExtinguishersModel()
 {
     global $conn;
 
-    $branch = getCurrentBranch();
+    $role = strtolower(trim($_SESSION['Role'] ?? ''));
 
-    if (empty($branch)) {
-        return 0;
+    if ($role === 'admin') {
+
+        if (
+            isset($_GET['branch']) &&
+            trim($_GET['branch']) !== ''
+        ) {
+            $branch = trim($_GET['branch']);
+        } else {
+            $branch = trim($_SESSION['Branch'] ?? '');
+        }
+
+        if ($branch === '') {
+            $branch = 'all';
+        }
+
+    } else {
+
+        $branch = trim($_SESSION['Branch'] ?? '');
+
+        if ($branch === '') {
+            return 0;
+        }
     }
 
-    $sql = "SELECT COUNT(*) AS total
+    if ($branch === 'all') {
+
+        $sql = "
+            SELECT COUNT(*) AS total
             FROM fire_extinguishers_tbl
             WHERE archived = 0
-              AND LOWER(TRIM(branch)) =
-                  LOWER(TRIM(?))";
+        ";
 
-    $stmt = mysqli_prepare($conn, $sql);
+        $stmt = mysqli_prepare($conn, $sql);
 
-    if (!$stmt) {
-        return 0;
+        if (!$stmt) {
+            return 0;
+        }
+
+    } else {
+
+        $sql = "
+            SELECT COUNT(*) AS total
+            FROM fire_extinguishers_tbl
+            WHERE archived = 0
+            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
+        ";
+
+        $stmt = mysqli_prepare($conn, $sql);
+
+        if (!$stmt) {
+            return 0;
+        }
+
+        mysqli_stmt_bind_param(
+            $stmt,
+            "s",
+            $branch
+        );
     }
-
-    mysqli_stmt_bind_param(
-        $stmt,
-        "s",
-        $branch
-    );
 
     mysqli_stmt_execute($stmt);
 
     $result = mysqli_stmt_get_result($stmt);
+
+    if (!$result) {
+        mysqli_stmt_close($stmt);
+        return 0;
+    }
 
     $row = mysqli_fetch_assoc($result);
 

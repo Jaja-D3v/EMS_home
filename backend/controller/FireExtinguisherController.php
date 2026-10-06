@@ -11,20 +11,6 @@ require_once __DIR__ . '/../authentication/SessionChecker.php';
 
 function getAllFireExtinguishers($limit = 10, $offset = 0)
 {
-    /*
-    |--------------------------------------------------------------------------
-    | IMPORTANT
-    |--------------------------------------------------------------------------
-    | The model handles the actual branch restriction.
-    |
-    | Admin:
-    |   ?branch=all       = all branches
-    |   ?branch=Laguna    = Laguna only
-    |
-    | Inspector:
-    |   always uses $_SESSION['Branch']
-    |--------------------------------------------------------------------------
-    */
 
     return getAll($limit, $offset);
 }
@@ -38,16 +24,6 @@ function getFireExtinguisherById($id)
 {
     return getById($id);
 }
-
-
-// =====================================================
-// Get fire extinguisher by code
-// =====================================================
-
-// function getFireExtinguisherByCode($code)
-// {
-//     return getByCode($code);
-// }
 
 
 // =====================================================

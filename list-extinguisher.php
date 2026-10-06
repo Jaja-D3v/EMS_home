@@ -473,6 +473,12 @@ $branchDropdown = getAllPlacementDropdownController();
 
             $totalPages = (int) ceil($totalRecords / $limit);
 
+            if ($totalPages > 0 && $page > $totalPages) {
+              $page = $totalPages;
+              $offset = ($page - 1) * $limit;
+
+              $info = getAllFireExtinguishers($limit, $offset);
+            }
             ?>
             <!-- Content here -->
             <?php foreach ($info as $data): ?>
@@ -857,79 +863,171 @@ $branchDropdown = getAllPlacementDropdownController();
 
             <?php if ($totalPages > 1): ?>
 
-              <div class="position-fixed bottom-0 start-0 end-0 bg-body border-top shadow py-2">
-                <div class="container-fluid px-2 px-sm-3 px-md-4">
+              <?php
+              $paginationParams = $_GET;
+              unset($paginationParams['page']);
 
-                  <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
+              $previousParams = $paginationParams;
+              $previousParams['page'] = max(1, $page - 1);
 
-                    <!-- Showing -->
-                    <div class="text-body-secondary small text-center text-sm-start">
-                      Showing
-                      <strong><?= min($offset + 1, $totalRecords) ?></strong>
-                      -
-                      <strong><?= min($offset + $limit, $totalRecords) ?></strong>
-                      of
-                      <strong><?= $totalRecords ?></strong>
-                      fire extinguishers
-                    </div>
+              $nextParams = $paginationParams;
+              $nextParams['page'] = min($totalPages, $page + 1);
+              ?>
 
-                    <!-- Pagination -->
-                    <nav aria-label="Fire extinguisher pagination">
-                      <ul class="pagination pagination-sm mb-0">
+              <div class="mt-4">
 
-                        <!-- Previous -->
-                        <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
-                          <a
-                            class="page-link px-2 px-sm-3"
-                            href="list-extinguisher.php?page=<?= max(1, $page - 1) ?>"
-                            aria-label="Previous">
+                <div class="card border-0 shadow-sm rounded-4 ">
 
-                            <i class="bi bi-chevron-left"></i>
+                  <div class="card-body px-3 px-md-4 py-3">
 
-                            <span class="d-none d-sm-inline ms-1">
-                              Previous
-                            </span>
-                          </a>
-                        </li>
+                    <div class="d-flex flex-column flex-sm-row align-items-center justify-content-between gap-3">
 
-                        <!-- Page Numbers -->
-                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                      <!-- Showing -->
+                      <div class="text-body-secondary text-center text-sm-start">
+                        Showing
+                        <strong class="text-body">
+                          <?= min($offset + 1, $totalRecords) ?>
+                        </strong>
+                        -
+                        <strong class="text-body">
+                          <?= min($offset + $limit, $totalRecords) ?>
+                        </strong>
+                        of
+                        <strong class="text-body">
+                          <?= $totalRecords ?>
+                        </strong>
+                        activities
+                      </div>
 
-                          <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+
+                      <!-- Pagination -->
+                      <nav aria-label="Fire extinguisher pagination">
+
+                        <ul class="pagination mb-0">
+
+                          <!-- Previous -->
+                          <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
+
                             <a
-                              class="page-link px-2 px-sm-3"
-                              href="list-extinguisher.php?page=<?= $i ?>">
-                              <?= $i ?>
+                              class="page-link rounded-3 me-1"
+                              href="list-extinguisher.php?<?= htmlspecialchars(http_build_query($previousParams)) ?>"
+                              aria-label="Previous">
+
+                              <i class="bi bi-chevron-left"></i>
+
                             </a>
+
                           </li>
 
-                        <?php endfor; ?>
 
-                        <!-- Next -->
-                        <li class="page-item <?= ($page >= $totalPages) ? 'disabled' : '' ?>">
-                          <a
-                            class="page-link px-2 px-sm-3"
-                            href="list-extinguisher.php?page=<?= min($totalPages, $page + 1) ?>"
-                            aria-label="Next">
+                          <?php
+                          /*
+                          * Compact pagination:
+                          * Always show first page,
+                          * current page,
+                          * nearby pages,
+                          * last page.
+                          */
 
-                            <span class="d-none d-sm-inline me-1">
-                              Next
-                            </span>
+                          $pagesToShow = [];
 
-                            <i class="bi bi-chevron-right"></i>
-                          </a>
-                        </li>
+                          if ($totalPages <= 7) {
 
-                      </ul>
-                    </nav>
+                            for ($i = 1; $i <= $totalPages; $i++) {
+                              $pagesToShow[] = $i;
+                            }
+                          } else {
+
+                            $pagesToShow[] = 1;
+
+                            if ($page > 4) {
+                              $pagesToShow[] = '...';
+                            }
+
+                            $start = max(2, $page - 1);
+                            $end = min($totalPages - 1, $page + 1);
+
+                            for ($i = $start; $i <= $end; $i++) {
+                              $pagesToShow[] = $i;
+                            }
+
+                            if ($page < $totalPages - 3) {
+                              $pagesToShow[] = '...';
+                            }
+
+                            $pagesToShow[] = $totalPages;
+                          }
+                          ?>
+
+
+                          <!-- Page Numbers -->
+                          <?php foreach ($pagesToShow as $pageNumber): ?>
+
+                            <?php if ($pageNumber === '...'): ?>
+
+                              <li class="page-item disabled">
+
+                                <span class="page-link rounded-3 mx-1">
+                                  ...
+                                </span>
+
+                              </li>
+
+                            <?php else: ?>
+
+                              <?php
+                              $pageParams = $paginationParams;
+                              $pageParams['page'] = $pageNumber;
+                              ?>
+
+                              <li class="page-item <?= ($pageNumber == $page) ? 'active' : '' ?>">
+
+                                <a
+                                  class="page-link rounded-3 mx-1"
+                                  href="list-extinguisher.php?<?= htmlspecialchars(http_build_query($pageParams)) ?>">
+
+                                  <?= $pageNumber ?>
+
+                                </a>
+
+                              </li>
+
+                            <?php endif; ?>
+
+                          <?php endforeach; ?>
+
+
+                          <!-- Next -->
+                          <li class="page-item <?= ($page >= $totalPages) ? 'disabled' : '' ?>">
+
+                            <a
+                              class="page-link rounded-3 ms-1"
+                              href="list-extinguisher.php?<?= htmlspecialchars(http_build_query($nextParams)) ?>"
+                              aria-label="Next">
+
+                              <i class="bi bi-chevron-right"></i>
+
+                            </a>
+
+                          </li>
+
+                        </ul>
+
+                      </nav>
+
+                    </div>
 
                   </div>
 
                 </div>
+
               </div>
 
             <?php endif; ?>
-          <?php include 'partials/edit-fire-extinguisher-modal.php'?>
+
+
+
+            <?php include 'partials/edit-fire-extinguisher-modal.php' ?>
             <!-- this form is for add new extinguisher -->
             <div
               class="modal fade"
