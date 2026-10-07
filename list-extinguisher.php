@@ -753,12 +753,7 @@ $branchDropdown = getAllPlacementDropdownController();
                     <div class="col-6 col-md">
 
                       <div class="d-flex align-items-center gap-2">
-
-                        <div
-                          class="d-flex align-items-center justify-content-center
-                       bg-success bg-opacity-10 text-success
-                       rounded-3 flex-shrink-0"
-                          style="width: 32px; height: 32px;">
+                        <div class="d-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-3 flex-shrink-0" style="width: 32px; height: 32px;">
 
                           <i class="bi bi-building"></i>
 
@@ -790,11 +785,7 @@ $branchDropdown = getAllPlacementDropdownController();
 
                       <div class="d-flex align-items-center gap-2">
 
-                        <div
-                          class="d-flex align-items-center justify-content-center
-                       bg-info bg-opacity-10 text-info
-                       rounded-3 flex-shrink-0"
-                          style="width: 32px; height: 32px;">
+                        <div class="d-flex align-items-center justify-content-center bg-info bg-opacity-10 text-info rounded-3 flex-shrink-0" style="width: 32px; height: 32px;">
 
                           <i class="bi bi-calendar-check"></i>
 
@@ -973,8 +964,6 @@ $branchDropdown = getAllPlacementDropdownController();
 
               </div>
             </div>
-
-
 
             <?php include 'partials/edit-fire-extinguisher-modal.php' ?>
             <!-- this form is for add new extinguisher -->

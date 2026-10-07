@@ -976,3 +976,69 @@ function updateFireExtinguisherStatus($extinguisher_code, $status, $remarks)
 
     return $success;
 }
+
+// get fire extinguisher for inventory report
+function getFireExtinguishersForInventoryReport($ids)
+{
+    global $conn;
+
+    if (empty($ids)) {
+        return [];
+    }
+
+    $placeholders = implode(
+        ',',
+        array_fill(0, count($ids), '?')
+    );
+
+    $sql = "
+        SELECT
+            extinguisher_code,
+            location,
+            capacity,
+            type,
+            class,
+            manufactured_date,
+            placement,
+            condition_status,
+            remarks,
+            branch
+
+        FROM fire_extinguishers_tbl
+
+        WHERE extinguisher_id IN ($placeholders)
+          AND archived = 0
+
+        ORDER BY extinguisher_id ASC
+    ";
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        return [];
+    }
+
+    $types = str_repeat('i', count($ids));
+
+    $ids = array_map('intval', $ids);
+
+    mysqli_stmt_bind_param(
+        $stmt,
+        $types,
+        ...$ids
+    );
+
+    mysqli_stmt_execute($stmt);
+
+    $result = mysqli_stmt_get_result($stmt);
+
+    $extinguishers = [];
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $extinguishers[] = $row;
+    }
+
+    mysqli_stmt_close($stmt);
+
+    return $extinguishers;
+}

@@ -1,0 +1,47 @@
+
+Day 12   TO-DO                       STATUS
+_____________________________________________________________
+
+## Fire Extinguisher Module
+- Add Near Expiry sorting.
+- add dropdown for storage and installed                                                        #
+
+## Dashboard Module
+- Make total number cards clickable.                                                            #
+
+## pagination
+- to all module that has list of data                                                           #
+
+## implementation of dropdown
+- implement the maintainable dropdown to forms that has dropdowns
+
+## inspection list module
+- should the latest inspection will be get for creation of report
+
+## list extinguisher
+- add who inspected it 
+- last date of inspection
+
+## inspection view for SO na mag aapprove nung inspection 
+- dapat nullable yung dalawang action 
+
+
+# TO REVISE DATE REFILLED
+- IF PARTIALLY REFIILED EXPIRATION MUST STAY AS IT WAS
+- IF REFIILED EXPIRATION DATE WILL BE SET 3 YEARS FROM THE REFILLED DATE 
+
+
+# FLOW OF DATA WHEN THE REQUEST WAS REJECTED
+- IF THE INSPECTION WAS REJECTED BABALIK YUNG DATA SA NAG INSPECT
+- 
+
+## create button in active fire extinguisher 
+- create generate inventory report button
+
+
+____________________________________________________________DONE___________________________________________________________________________
+
+
+# generate inventory report     
+- design pdf inventory report               #DONE
+

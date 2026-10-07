@@ -471,7 +471,7 @@ function updateEvalStats($eval_id, $evalStatus)
 }
 
 
-// Retrieve Approved Inspection Reports
+// Retrieve Approved Inspection for generate report 
 
 function getApprovedInspectionReportsController($ids)
 {
@@ -485,4 +485,13 @@ function getApprovedInspectionReportsController($ids)
 function getAllApprovedApprovalIdsController($date = null, $branch = 'all')
 {
     return getAllApprovedApprovalIds($date, $branch);
+}
+
+
+// for inventory report
+function getFireExtinguishersForInventoryReportController($ids)
+{
+    if (empty($ids)) return [];
+
+    return getFireExtinguishersForInventoryReport($ids);
 }
