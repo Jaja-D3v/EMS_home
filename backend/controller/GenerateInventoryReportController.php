@@ -5,9 +5,6 @@ require_once __DIR__ . '/../model/GenerateInventoryReportModel.php';
 session_start();
 
 $role = strtolower(trim($_SESSION['Role'] ?? ''));
-$branch = $_SESSION['Branch'];
-
-var_dump($role, $branch);
 
 if ($role === 'admin') {
 

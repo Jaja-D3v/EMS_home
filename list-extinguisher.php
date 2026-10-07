@@ -3,6 +3,7 @@ include './backend/controller/FireExtinguisherController.php';
 include './backend/controller/DropdownController.php';
 include 'backend/controller/QRCodeGeneratorController.php';
 require_once 'backend/authentication/SessionChecker.php';
+include_once 'notification/loading-for-generating-report.php';
 
 
 $branchDropdown = getAllDropdownBranches();
@@ -32,8 +33,12 @@ $branchDropdown = getAllDropdownBranches();
     ?>
     <div class="container-fluid py-0">
 
-      <div class="card border-0 shadow-sm text-white mb-1 mt-0 overflow-hidden " style="background: linear-gradient(135deg, #0f0870, #088af5);">
+      <div
+        class="card border-0 shadow-sm text-white mb-1 mt-0 overflow-hidden"
+        style="background: linear-gradient(135deg, #0f0870, #088af5);">
+
         <div class="card-body p-4">
+
           <div class="row align-items-center g-3">
 
             <!-- Icon -->
@@ -44,7 +49,6 @@ $branchDropdown = getAllDropdownBranches();
               </div>
 
             </div>
-
 
             <!-- Title & Description -->
             <div class="col">
@@ -57,20 +61,27 @@ $branchDropdown = getAllDropdownBranches();
                 Manage and monitor all active and registered fire extinguishers.
               </p>
 
+            </div>
+
+            <!-- Generate Report -->
+            <div class="col-12 col-md-auto">
+
               <button
                 type="button"
-                class="btn btn-primary"
+                class="btn btn-light px-3 py-2 w-100"
                 id="generateInventoryReportBtn">
                 <i class="bi bi-file-earmark-pdf me-1"></i>
                 Generate Inventory Report
               </button>
 
-
             </div>
 
           </div>
+
         </div>
+
       </div>
+
     </div>
 
     <div class="body flex-grow-1">
@@ -2406,31 +2417,48 @@ $branchDropdown = getAllDropdownBranches();
 
 
     // this script is for generate inventory report button
-    const generateInventoryReportBtn = document.getElementById(
-      'generateInventoryReportBtn'
-    );
+    
+      const generateInventoryReportBtn = document.getElementById(
+        'generateInventoryReportBtn'
+      );
 
     if (generateInventoryReportBtn) {
 
-      generateInventoryReportBtn.addEventListener('click', function() {
+      const extinguisherCards = document.querySelectorAll(
+        '.extinguisher-card'
+      );
 
-        const branchFilter = document.getElementById('branchFilter');
+      // Disable report button when there are no fire extinguishers
+      generateInventoryReportBtn.disabled =
+        extinguisherCards.length === 0;
 
-        const branch = branchFilter ?
-          branchFilter.value :
-          'all';
+      generateInventoryReportBtn.addEventListener(
+        'click',
+        function(event) {
 
-        const url = new URL(
-          'backend/controller/GenerateInventoryReportController.php',
-          window.location.href
-        );
+          const branchFilter =
+            document.getElementById('branchFilter');
 
-        url.searchParams.set('branch', branch);
+          const branch = branchFilter ?
+            branchFilter.value :
+            'all';
 
-        window.open(url.toString(), '_blank');
+          const reportUrl = new URL(
+            'backend/controller/GenerateInventoryReportController.php',
+            window.location.href
+          );
 
-      });
+          reportUrl.searchParams.set(
+            'branch',
+            branch
+          );
 
+          generateReport(
+            event,
+            reportUrl.toString()
+          );
+        }
+      );
     }
   </script>
   <?php include_once 'notification/session_timeout.php'; ?>
