@@ -61,7 +61,7 @@
 
         <i class="fa-solid fa-fire-extinguisher me-2"></i>
 
-        <span>Fire Extinguisher List</span>
+        <span>Fire Extinguisher</span>
 
         <i class="bi bi-chevron-down ms-auto submenu-chevron"></i>
       </a>

@@ -8,11 +8,45 @@ require_once __DIR__ . '/../authentication/SessionChecker.php';
 // =====================================================
 // Get paginated fire extinguishers
 // =====================================================
+function getAllFireExtinguishers(
+    $limit = 10,
+    $offset = 0,
+    $placementType = 'all',
+    $conditionType = 'all'
+) {
+    $role = strtolower(
+        trim($_SESSION['Role'] ?? '')
+    );
 
-function getAllFireExtinguishers($limit = 10, $offset = 0)
-{
+    // =====================================================
+    // ADMIN
+    // =====================================================
 
-    return getAll($limit, $offset);
+    if ($role === 'admin') {
+
+        return getAll(
+            $limit,
+            $offset,
+            $placementType,
+            $conditionType
+        );
+    }
+
+    // =====================================================
+    // INSPECTOR
+    // =====================================================
+
+    if ($role === 'inspector') {
+
+        return getAll(
+            $limit,
+            $offset,
+            $placementType,
+            $conditionType
+        );
+    }
+
+    return false;
 }
 
 
@@ -583,12 +617,15 @@ function getNextFireExtinguisherCode($branch)
 // GET TOTAL FIRE EXTINGUISHERS
 // =====================================================
 
-function getTotalFireExtinguishers()
-{
-    return getTotalFireExtinguishersModel();
+function getTotalFireExtinguishers(
+    $placementType = 'all',
+    $conditionType = 'all'
+) {
+    return getTotalFireExtinguishersModel(
+        $placementType,
+        $conditionType
+    );
 }
-
-
 function getAllArchiveFireExtinguishers(
     $limit = 10,
     $offset = 0

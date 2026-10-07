@@ -6,7 +6,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
 
 $branchDropdown = getAllDropdownBranches();
-$branchDropdown = getAllPlacementDropdownController();
 
 ?>
 
@@ -88,9 +87,64 @@ $branchDropdown = getAllPlacementDropdownController();
                     id="conditionFilter"
                     class="form-select border-start-0 ps-1"
                     aria-label="Filter by condition">
-                    <option value="all">All Conditions</option>
-                    <option value="good">Good Condition</option>
-                    <option value="not-good">Not Good</option>
+
+                    <option value="all"
+                      <?= ($_GET['condition'] ?? 'all') === 'all'
+                        ? 'selected'
+                        : '' ?>>
+                      All Conditions
+                    </option>
+
+                    <option value="good"
+                      <?= ($_GET['condition'] ?? '') === 'good'
+                        ? 'selected'
+                        : '' ?>>
+                      Good Condition
+                    </option>
+
+                    <option value="not-good"
+                      <?= ($_GET['condition'] ?? '') === 'not-good'
+                        ? 'selected'
+                        : '' ?>>
+                      Not Good
+                    </option>
+
+                  </select>
+                </div>
+              </div>
+
+              <!-- Placement Type Filter -->
+              <div>
+                <div class="input-group">
+                  <span class="input-group-text bg-body border-end-0">
+                    <i class="bi bi-pin-map text-primary"></i>
+                  </span>
+
+                  <select
+                    id="placementTypeFilter"
+                    class="form-select border-start-0 ps-1">
+
+                    <option value="all"
+                      <?= ($_GET['placement'] ?? 'all') === 'all'
+                        ? 'selected'
+                        : '' ?>>
+                      All Placement Types
+                    </option>
+
+                    <option value="installed"
+                      <?= ($_GET['placement'] ?? '') === 'installed'
+                        ? 'selected'
+                        : '' ?>>
+                      Installed
+                    </option>
+
+                    <option value="spare"
+                      <?= ($_GET['placement'] ?? '') === 'spare'
+                        ? 'selected'
+                        : '' ?>>
+                      Spare
+                    </option>
+
                   </select>
                 </div>
               </div>
@@ -179,70 +233,6 @@ $branchDropdown = getAllPlacementDropdownController();
                   });
 
                 });
-              </script>
-
-              <script>
-                const conditionFilter = document.getElementById('conditionFilter');
-
-                if (conditionFilter) {
-
-                  conditionFilter.addEventListener('change', function() {
-
-                    const selectedCondition = this.value;
-
-                    const cards = document.querySelectorAll('.extinguisher-card');
-
-                    cards.forEach(card => {
-
-                      // Get all badges inside the card
-                      const badges = card.querySelectorAll('.badge');
-
-                      let condition = '';
-
-                      badges.forEach(badge => {
-
-                        const text = badge.textContent
-                          .trim()
-                          .toLowerCase();
-
-                        // Find the actual condition badge
-                        if (text === 'good' || text === 'not good') {
-                          condition = text;
-                        }
-
-                      });
-
-                      // Show all
-                      if (selectedCondition === 'all') {
-                        card.style.display = '';
-                      }
-
-                      // Good Condition
-                      else if (
-                        selectedCondition === 'good' &&
-                        condition === 'good'
-                      ) {
-                        card.style.display = '';
-                      }
-
-                      // Not Good
-                      else if (
-                        selectedCondition === 'not-good' &&
-                        condition === 'not good'
-                      ) {
-                        card.style.display = '';
-                      }
-
-                      // Hide non-matching cards
-                      else {
-                        card.style.display = 'none';
-                      }
-
-                    });
-
-                  });
-
-                }
               </script>
 
 
@@ -467,17 +457,62 @@ $branchDropdown = getAllPlacementDropdownController();
 
             $offset = ($page - 1) * $limit;
 
-            $info = getAllFireExtinguishers($limit, $offset);
 
-            $totalRecords = getTotalFireExtinguishers();
+            // ============================================================
+            // PLACEMENT TYPE FILTER
+            // ============================================================
 
-            $totalPages = (int) ceil($totalRecords / $limit);
+            $placementType = strtolower(
+              trim($_GET['placement'] ?? 'all')
+            );
+
+            $conditionType = strtolower(
+              trim($_GET['condition'] ?? 'all')
+            );
+
+
+            // ============================================================
+            // GET FIRE EXTINGUISHERS
+            // ============================================================
+
+            $info = getAllFireExtinguishers(
+              $limit,
+              $offset,
+              $placementType,
+              $conditionType
+            );
+
+
+            // ============================================================
+            // GET FILTERED TOTAL
+            // ============================================================
+
+            $totalRecords = getTotalFireExtinguishers(
+              $placementType,
+              $conditionType
+            );
+
+            $totalPages = (int) ceil(
+              $totalRecords / $limit
+            );
+
+
+            // ============================================================
+            // PREVENT INVALID PAGE
+            // ============================================================
 
             if ($totalPages > 0 && $page > $totalPages) {
+
               $page = $totalPages;
+
               $offset = ($page - 1) * $limit;
 
-              $info = getAllFireExtinguishers($limit, $offset);
+              $info = getAllFireExtinguishers(
+                $limit,
+                $offset,
+                $placementType,
+                $conditionType
+              );
             }
             ?>
             <!-- Content here -->
@@ -527,7 +562,9 @@ $branchDropdown = getAllPlacementDropdownController();
               }
               ?>
 
-              <div class="card border border-primary-subtle shadow-sm mb-2 extinguisher-card overflow-hidden">
+              <div
+                class="card border border-primary-subtle shadow-sm mb-2 extinguisher-card overflow-hidden"
+                data-placement="<?= htmlspecialchars($data['placement'] ?? '') ?>">
 
                 <div class="card-body p-2 p-md-3">
 
@@ -718,12 +755,7 @@ $branchDropdown = getAllPlacementDropdownController();
 
                       <div class="d-flex align-items-center gap-2">
 
-                        <div
-                          class="d-flex align-items-center justify-content-center
-                       bg-primary bg-opacity-10 text-primary
-                       rounded-3 flex-shrink-0"
-                          style="width: 32px; height: 32px;">
-
+                        <div class="d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-3 flex-shrink-0" style="width: 32px; height: 32px;">
                           <i class="bi bi-geo-alt"></i>
 
                         </div>
@@ -1517,9 +1549,7 @@ $branchDropdown = getAllPlacementDropdownController();
 
                         <!-- Location -->
                         <div class="col-12 col-md-6">
-
                           <div class="border rounded-3 p-3 h-100">
-
                             <label class="form-label small text-body-secondary mb-1">
                               <i class="bi bi-geo-alt me-1 text-primary"></i>
                               Location
@@ -1532,11 +1562,8 @@ $branchDropdown = getAllPlacementDropdownController();
                               readonly>
 
                           </div>
-
                         </div>
-
                       </div>
-
                     </div>
 
 
@@ -1626,15 +1653,13 @@ $branchDropdown = getAllPlacementDropdownController();
 
                     </div>
 
-
                     <!-- Remarks -->
                     <div>
 
                       <div class="d-flex align-items-center gap-2 mb-2">
 
                         <div
-                          class="d-flex align-items-center justify-content-center
-                     bg-secondary bg-opacity-10 text-secondary rounded-3"
+                          class="d-flex align-items-center justify-content-center bg-secondary bg-opacity-10 text-secondary rounded-3"
                           style="width: 32px; height: 32px;">
                           <i class="bi bi-chat-left-text"></i>
                         </div>
@@ -2290,6 +2315,83 @@ $branchDropdown = getAllPlacementDropdownController();
       });
 
     });
+  </script>
+
+  <script>
+    // ========================================
+    // FILTER BY PLACEMENT TYPE
+    // ========================================
+
+    const placementTypeFilter =
+      document.getElementById(
+        'placementTypeFilter'
+      );
+
+    if (placementTypeFilter) {
+
+      placementTypeFilter.addEventListener(
+        'change',
+        function() {
+
+          const url =
+            new URL(window.location.href);
+
+          // Set selected placement.
+          url.searchParams.set(
+            'placement',
+            this.value
+          );
+
+          // Reset to page 1 after changing filter.
+          url.searchParams.set(
+            'page',
+            '1'
+          );
+
+          window.location.href =
+            url.toString();
+        }
+      );
+    }
+  </script>
+
+  <script>
+    // ============================================================
+    // CONDITION TYPE FILTER
+    // ============================================================
+
+    const conditionFilter = document.getElementById(
+      'conditionFilter'
+    );
+
+    if (conditionFilter) {
+
+      conditionFilter.addEventListener(
+        'change',
+        function() {
+
+          const url = new URL(
+            window.location.href
+          );
+
+          // Set selected condition
+          url.searchParams.set(
+            'condition',
+            this.value
+          );
+
+          // Reset pagination to page 1
+          url.searchParams.set(
+            'page',
+            '1'
+          );
+
+          // Reload with the selected filter
+          window.location.href =
+            url.toString();
+        }
+      );
+    }
   </script>
   <?php include_once 'notification/session_timeout.php'; ?>
 

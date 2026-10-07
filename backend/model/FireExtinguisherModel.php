@@ -12,108 +12,136 @@ function getCurrentBranch()
 // GET ALL FIRE EXTINGUISHERS
 // =====================================================
 
-function getAll($limit, $offset)
-{
+function getAll(
+    $limit,
+    $offset,
+    $placementType = 'all',
+    $conditionType = 'all'
+) {
     global $conn;
 
-    $role = strtolower(trim($_SESSION['Role'] ?? ''));
+    $role = strtolower(
+        trim($_SESSION['Role'] ?? '')
+    );
 
-    /*
-    |--------------------------------------------------------------------------
-    | ADMIN
-    |--------------------------------------------------------------------------
-    | Admin:
-    | - All branches by default
-    | - Optional ?branch=Laguna
-    |--------------------------------------------------------------------------
-    */
+
+    // ========================================================
+    // ADMIN
+    // ========================================================
 
     if ($role === 'admin') {
 
-        // Selected branch from dropdown
-        if (
-            isset($_GET['branch']) &&
-            trim($_GET['branch']) !== ''
-        ) {
-            $branch = trim($_GET['branch']);
-        } else {
-            // Default = Admin's assigned branch
-            $branch = trim($_SESSION['Branch'] ?? '');
-        }
+        $branch = trim(
+            $_GET['branch'] ?? 'all'
+        );
 
-        // If no branch is assigned, show all
-        if ($branch === '') {
-            $branch = 'all';
-        }
+        $sql = "
+            SELECT
+                extinguisher_id,
+                extinguisher_code,
+                type,
+                capacity,
+                location,
+                manufactured_date,
+                class,
+                placement,
+                condition_status,
+                remarks,
+                expiration_date,
+                created_at,
+                updated_at,
+                refilled_date,
+                branch
+            FROM fire_extinguishers_tbl
+            WHERE archived = 0
+        ";
 
-        $sql = "SELECT
-                    extinguisher_id,
-                    extinguisher_code,
-                    type,
-                    capacity,
-                    location,
-                    manufactured_date,
-                    class,
-                    placement,
-                    condition_status,
-                    remarks,
-                    expiration_date,
-                    created_at,
-                    updated_at,
-                    refilled_date,
-                    branch,
-                    last_date_inspected
-                FROM fire_extinguishers_tbl
-                WHERE archived = 0";
+        $params = [];
+        $types = '';
 
-        /*
-        | ADMIN BRANCH FILTER
-        */
 
-        if ($branch !== 'all') {
+        // ====================================================
+        // BRANCH FILTER
+        // ====================================================
+
+        if ($branch !== 'all' && $branch !== '') {
 
             $sql .= "
-                AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
+                AND LOWER(TRIM(branch))
+                    = LOWER(TRIM(?))
             ";
 
-            $sql .= "
-                ORDER BY extinguisher_id DESC
-                LIMIT ? OFFSET ?
-            ";
-
-            $stmt = mysqli_prepare($conn, $sql);
-
-            if (!$stmt) {
-                return false;
-            }
-
-            mysqli_stmt_bind_param(
-                $stmt,
-                "sii",
-                $branch,
-                $limit,
-                $offset
-            );
-        } else {
-
-            $sql .= "
-                ORDER BY extinguisher_id DESC
-                LIMIT ? OFFSET ?
-            ";
-
-            $stmt = mysqli_prepare($conn, $sql);
-
-            if (!$stmt) {
-                return false;
-            }
-
-            mysqli_stmt_bind_param(
-                $stmt,
-                "ii",
-                $limit,
-                $offset
-            );
+            $params[] = $branch;
+            $types .= 's';
         }
+
+
+        // ====================================================
+        // PLACEMENT TYPE FILTER
+        //
+        // Storage = Spare
+        // Anything else = Installed
+        // ====================================================
+
+        if ($placementType === 'spare') {
+
+            $sql .= "
+                AND LOWER(TRIM(placement)) = 'storage'
+            ";
+        } elseif ($placementType === 'installed') {
+
+            $sql .= "
+                AND LOWER(TRIM(placement)) <> 'storage'
+            ";
+        }
+
+        // ========================================================
+        // CONDITION FILTER
+        // ========================================================
+
+        if ($conditionType === 'good') {
+
+            $sql .= "
+        AND LOWER(TRIM(condition_status)) = 'good'
+    ";
+        } elseif ($conditionType === 'not-good') {
+
+            $sql .= "
+        AND LOWER(TRIM(condition_status)) = 'not good'
+    ";
+        }
+
+
+        // ====================================================
+        // PAGINATION
+        // ====================================================
+
+        $sql .= "
+            ORDER BY extinguisher_id DESC
+            LIMIT ? OFFSET ?
+        ";
+
+        $params[] = $limit;
+        $params[] = $offset;
+
+        $types .= 'ii';
+
+
+        $stmt = mysqli_prepare(
+            $conn,
+            $sql
+        );
+
+        if (!$stmt) {
+            return false;
+        }
+
+
+        mysqli_stmt_bind_param(
+            $stmt,
+            $types,
+            ...$params
+        );
 
         mysqli_stmt_execute($stmt);
 
@@ -121,56 +149,92 @@ function getAll($limit, $offset)
     }
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | INSPECTOR
-    |--------------------------------------------------------------------------
-    | Inspector can ONLY see their own branch.
-    |--------------------------------------------------------------------------
-    */
+    // ========================================================
+    // INSPECTOR
+    // ========================================================
 
     if ($role === 'inspector') {
 
-        $branch = getCurrentBranch();
+        $branch = trim(
+            $_SESSION['Branch'] ?? ''
+        );
 
-        if (empty($branch)) {
+        if ($branch === '') {
             return false;
         }
 
-        $sql = "SELECT
-                    extinguisher_id,
-                    extinguisher_code,
-                    type,
-                    capacity,
-                    location,
-                    manufactured_date,
-                    class,
-                    placement,
-                    condition_status,
-                    remarks,
-                    expiration_date,
-                    created_at,
-                    updated_at,
-                    refilled_date,
-                    branch
-                FROM fire_extinguishers_tbl
-                WHERE archived = 0
-                  AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
-                ORDER BY extinguisher_id DESC
-                LIMIT ? OFFSET ?";
 
-        $stmt = mysqli_prepare($conn, $sql);
+        $sql = "
+            SELECT
+                extinguisher_id,
+                extinguisher_code,
+                type,
+                capacity,
+                location,
+                manufactured_date,
+                class,
+                placement,
+                condition_status,
+                remarks,
+                expiration_date,
+                created_at,
+                updated_at,
+                refilled_date,
+                branch
+            FROM fire_extinguishers_tbl
+            WHERE archived = 0
+              AND LOWER(TRIM(branch))
+                    = LOWER(TRIM(?))
+        ";
+
+        $params = [];
+        $types = 's';
+
+        $params[] = $branch;
+
+
+        // ====================================================
+        // PLACEMENT TYPE FILTER
+        // ====================================================
+
+        if ($placementType === 'spare') {
+
+            $sql .= "
+                AND LOWER(TRIM(placement)) = 'storage'
+            ";
+        } elseif ($placementType === 'installed') {
+
+            $sql .= "
+                AND LOWER(TRIM(placement)) <> 'storage'
+            ";
+        }
+
+
+        $sql .= "
+            ORDER BY extinguisher_id DESC
+            LIMIT ? OFFSET ?
+        ";
+
+        $params[] = $limit;
+        $params[] = $offset;
+
+        $types .= 'ii';
+
+
+        $stmt = mysqli_prepare(
+            $conn,
+            $sql
+        );
 
         if (!$stmt) {
             return false;
         }
 
+
         mysqli_stmt_bind_param(
             $stmt,
-            "sii",
-            $branch,
-            $limit,
-            $offset
+            $types,
+            ...$params
         );
 
         mysqli_stmt_execute($stmt);
@@ -181,7 +245,6 @@ function getAll($limit, $offset)
 
     return false;
 }
-
 
 // =====================================================
 // GET FIRE EXTINGUISHER BY ID
@@ -739,89 +802,148 @@ function update_status($status, $ext_code)
 // =====================================================
 // GET TOTAL FIRE EXTINGUISHERS
 // =====================================================
-
-function getTotalFireExtinguishersModel()
-{
+function getTotalFireExtinguishersModel(
+    $placementType = 'all',
+    $conditionType = 'all'
+) {
     global $conn;
 
-    $role = strtolower(trim($_SESSION['Role'] ?? ''));
+    $role = strtolower(
+        trim($_SESSION['Role'] ?? '')
+    );
+
+    // ========================================================
+    // DETERMINE BRANCH BASED ON ROLE
+    // ========================================================
 
     if ($role === 'admin') {
 
-        if (
-            isset($_GET['branch']) &&
-            trim($_GET['branch']) !== ''
-        ) {
-            $branch = trim($_GET['branch']);
-        } else {
-            $branch = trim($_SESSION['Branch'] ?? '');
-        }
+        $branch = trim(
+            $_GET['branch'] ?? 'all'
+        );
+    } elseif ($role === 'inspector') {
 
-        if ($branch === '') {
-            $branch = 'all';
-        }
-
+        $branch = trim(
+            $_SESSION['Branch'] ?? ''
+        );
     } else {
 
-        $branch = trim($_SESSION['Branch'] ?? '');
-
-        if ($branch === '') {
-            return 0;
-        }
+        return 0;
     }
 
-    if ($branch === 'all') {
 
-        $sql = "
-            SELECT COUNT(*) AS total
-            FROM fire_extinguishers_tbl
-            WHERE archived = 0
+    // ========================================================
+    // BASE QUERY
+    // ========================================================
+
+    $sql = "
+        SELECT COUNT(*) AS total
+        FROM fire_extinguishers_tbl
+        WHERE archived = 0
+    ";
+
+    $params = [];
+    $types = '';
+
+
+    // ========================================================
+    // BRANCH FILTER
+    // ========================================================
+
+    if ($branch !== 'all' && $branch !== '') {
+
+        $sql .= "
+            AND LOWER(TRIM(branch))
+                = LOWER(TRIM(?))
         ";
 
-        $stmt = mysqli_prepare($conn, $sql);
+        $params[] = $branch;
+        $types .= 's';
+    }
 
-        if (!$stmt) {
-            return 0;
-        }
 
-    } else {
+    // ========================================================
+    // PLACEMENT TYPE FILTER
+    //
+    // Storage = Spare
+    // Anything else = Installed
+    // ========================================================
 
-        $sql = "
-            SELECT COUNT(*) AS total
-            FROM fire_extinguishers_tbl
-            WHERE archived = 0
-            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
+    if ($placementType === 'spare') {
+
+        $sql .= "
+            AND LOWER(TRIM(placement)) = 'storage'
         ";
+    } elseif ($placementType === 'installed') {
 
-        $stmt = mysqli_prepare($conn, $sql);
+        $sql .= "
+            AND LOWER(TRIM(placement)) <> 'storage'
+        ";
+    }
 
-        if (!$stmt) {
-            return 0;
-        }
+
+    // ========================================================
+    // CONDITION FILTER
+    // ========================================================
+
+    if ($conditionType === 'good') {
+
+        $sql .= "
+            AND LOWER(TRIM(condition_status)) = 'good'
+        ";
+    } elseif ($conditionType === 'not-good') {
+
+        $sql .= "
+            AND LOWER(TRIM(condition_status)) = 'not good'
+        ";
+    }
+
+
+    // ========================================================
+    // PREPARE
+    // ========================================================
+
+    $stmt = mysqli_prepare(
+        $conn,
+        $sql
+    );
+
+    if (!$stmt) {
+        return 0;
+    }
+
+
+    // ========================================================
+    // BIND PARAMETERS
+    // ========================================================
+
+    if (!empty($params)) {
 
         mysqli_stmt_bind_param(
             $stmt,
-            "s",
-            $branch
+            $types,
+            ...$params
         );
     }
+
+
+    // ========================================================
+    // EXECUTE
+    // ========================================================
 
     mysqli_stmt_execute($stmt);
 
     $result = mysqli_stmt_get_result($stmt);
 
-    if (!$result) {
-        mysqli_stmt_close($stmt);
-        return 0;
-    }
-
     $row = mysqli_fetch_assoc($result);
 
     mysqli_stmt_close($stmt);
 
-    return (int) ($row['total'] ?? 0);
-}
 
+    return (int) (
+        $row['total'] ?? 0
+    );
+}
 
 // =====================================================
 // GET ALL DELETED FIRE EXTINGUISHERS
