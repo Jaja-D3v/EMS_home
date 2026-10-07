@@ -2,13 +2,13 @@
 include './backend/controller/FireExtinguisherController.php';
 include 'backend/controller/QRCodeGeneratorController.php';
 include 'backend/controller/DropdownController.php';
-
 require_once 'backend/authentication/SessionChecker.php';
+
+$search = trim($_GET['search'] ?? '');
 
 ?>
 
 <!DOCTYPE html>
-
 <html lang="en">
 <?php include 'partials/header.php'; ?>
 
@@ -17,9 +17,6 @@ require_once 'backend/authentication/SessionChecker.php';
   <div class="wrapper d-flex flex-column min-vh-100">
     <?php
     include 'partials/header-nav.php';
-    include_once 'notification/updated_fe_success.php';
-    include_once 'notification/delete_fe_success.php';
-    include_once 'notification/added_fe_success.php';
     ?>
     <div class="container-fluid py-0">
 
@@ -71,13 +68,35 @@ require_once 'backend/authentication/SessionChecker.php';
                     <i class="bi bi-funnel text-primary"></i>
                   </span>
 
+                  <?php
+                  $selectedCondition = strtolower(
+                    trim($_GET['condition'] ?? 'all')
+                  );
+                  ?>
+
                   <select
                     id="conditionFilter"
                     class="form-select border-start-0 ps-1"
                     aria-label="Filter by condition">
-                    <option value="all">All Conditions</option>
-                    <option value="good">Good Condition</option>
-                    <option value="not-good">Not Good</option>
+
+                    <option
+                      value="all"
+                      <?= $selectedCondition === 'all' ? 'selected' : '' ?>>
+                      All Conditions
+                    </option>
+
+                    <option
+                      value="good"
+                      <?= $selectedCondition === 'good' ? 'selected' : '' ?>>
+                      Good Condition
+                    </option>
+
+                    <option
+                      value="not-good"
+                      <?= $selectedCondition === 'not-good' ? 'selected' : '' ?>>
+                      Not Good
+                    </option>
+
                   </select>
                 </div>
               </div>
@@ -98,10 +117,7 @@ require_once 'backend/authentication/SessionChecker.php';
 
                 <div class="col-12 col-md-auto">
 
-                  <select
-                    class="form-select"
-                    id="branchFilter"
-                    style="min-width: 190px;">
+                  <select class="form-select" id="branchFilter" style="min-width: 190px;">
 
                     <option
                       value="all"
@@ -146,8 +162,13 @@ require_once 'backend/authentication/SessionChecker.php';
 
                     const url = new URL(window.location.href);
 
+                    // Update selected branch
                     url.searchParams.set('branch', selectedBranch);
 
+                    // Reset pagination to page 1
+                    url.searchParams.set('page', '1');
+
+                    // Reload page using the new branch and page
                     window.location.href = url.toString();
 
                   });
@@ -164,43 +185,17 @@ require_once 'backend/authentication/SessionChecker.php';
 
                     const selectedCondition = this.value;
 
-                    const cards = document.querySelectorAll('.extinguisher-card');
+                    const url = new URL(window.location.href);
 
-                    cards.forEach(card => {
+                    if (selectedCondition === 'all') {
+                      url.searchParams.delete('condition');
+                    } else {
+                      url.searchParams.set('condition', selectedCondition);
+                    }
 
-                      const badges = card.querySelectorAll('.badge');
+                    url.searchParams.set('page', '1');
 
-                      let condition = '';
-
-                      badges.forEach(badge => {
-
-                        const text = badge.textContent
-                          .trim()
-                          .toLowerCase();
-
-                        if (text === 'good' || text === 'not good') {
-                          condition = text;
-                        }
-
-                      });
-
-                      if (selectedCondition === 'all') {
-                        card.style.display = '';
-                      } else if (
-                        selectedCondition === 'good' &&
-                        condition === 'good'
-                      ) {
-                        card.style.display = '';
-                      } else if (
-                        selectedCondition === 'not-good' &&
-                        condition === 'not good'
-                      ) {
-                        card.style.display = '';
-                      } else {
-                        card.style.display = 'none';
-                      }
-
-                    });
+                    window.location.href = url.toString();
 
                   });
 
@@ -209,165 +204,8 @@ require_once 'backend/authentication/SessionChecker.php';
 
               <div class="d-flex flex-column flex-md-row gap-2 ms-lg-auto">
 
-                <button
-                  type="button"
-                  class="btn btn-primary text-nowrap"
-                  data-bs-toggle="modal"
-                  data-bs-target="#addFireExtinguisherModal">
-                  <i class="bi bi-plus-lg me-1"></i>
-                  Add Fire Extinguisher
-                </button>
-
-                <div class="input-group">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Search...">
-
-                  <button
-                    id="searchFireExtinguisherBtn"
-                    class="btn btn-primary"
-                    type="button">
-                    Search
-                  </button>
-                </div>
-
-                <script>
-                  const searchInput = document.querySelector(
-                    'input[placeholder="Search..."]'
-                  );
-
-                  const searchButton = document.getElementById(
-                    'searchFireExtinguisherBtn'
-                  );
-
-                  if (searchInput) {
-
-                    function performSearch() {
-
-                      const searchValue = searchInput.value
-                        .trim()
-                        .toLowerCase();
-
-                      const cards = document.querySelectorAll(
-                        '.extinguisher-card'
-                      );
-
-                      let visibleCount = 0;
-
-                      cards.forEach(card => {
-
-                        const codeElement = card.querySelector(
-                          '.extinguisher-code'
-                        );
-
-                        const code = codeElement ?
-                          codeElement.textContent.trim().toLowerCase() :
-                          '';
-
-                        const locationElement = card.querySelector(
-                          '.extinguisher-location'
-                        );
-
-                        const location = locationElement ?
-                          locationElement.textContent.trim().toLowerCase() :
-                          '';
-
-                        const match =
-                          searchValue === '' ||
-                          code.includes(searchValue) ||
-                          location.includes(searchValue);
-
-                        if (match) {
-
-                          card.style.display = '';
-                          visibleCount++;
-
-                        } else {
-
-                          card.style.display = 'none';
-
-                        }
-
-                      });
-
-                      let noResult = document.getElementById(
-                        'noSearchResult'
-                      );
-
-                      if (visibleCount === 0 && searchValue !== '') {
-
-                        if (!noResult) {
-
-                          noResult = document.createElement('div');
-
-                          noResult.id = 'noSearchResult';
-
-                          noResult.className =
-                            'border rounded-3 text-center text-body-secondary py-5 px-3 my-3 shadow-sm';
-
-                          noResult.innerHTML = `
-                        <div class="py-3">
-                            <i class="bi bi-search fs-1 d-block mb-3"></i>
-
-                            <div class="fw-semibold fs-6">
-                                No fire extinguishers found.
-                            </div>
-
-                            <small class="text-body-secondary">
-                                No results match your search.
-                            </small>
-                        </div>
-                    `;
-
-                          const cardContainer =
-                            document.querySelector('.extinguisher-card')?.parentElement;
-
-                          if (cardContainer) {
-                            cardContainer.appendChild(noResult);
-                          }
-                        }
-
-                        noResult.style.display = '';
-
-                      } else if (noResult) {
-
-                        noResult.style.display = 'none';
-
-                      }
-                    }
-
-                    searchInput.addEventListener(
-                      'input',
-                      performSearch
-                    );
-
-                    if (searchButton) {
-
-                      searchButton.addEventListener(
-                        'click',
-                        performSearch
-                      );
-
-                    }
-
-                    searchInput.addEventListener(
-                      'keydown',
-                      function(event) {
-
-                        if (event.key === 'Enter') {
-
-                          event.preventDefault();
-
-                          performSearch();
-
-                        }
-
-                      }
-                    );
-
-                  }
-                </script>
+               
+                <!-- searxh js -->
 
               </div>
 
@@ -388,7 +226,16 @@ require_once 'backend/authentication/SessionChecker.php';
 
 
             // Get expiring fire extinguishers
-            $expiryResult = getExpiry($limit, $offset);
+            $condition = strtolower(trim($_GET['condition'] ?? 'all'));
+
+            $condition = strtolower(trim($_GET['condition'] ?? 'all'));
+
+            $expiryResult = getExpiry(
+              $limit,
+              $offset,
+              $search,
+              $condition
+            );
 
             $info = $expiryResult['data'];
             $totalRecords = $expiryResult['total'];
@@ -396,6 +243,8 @@ require_once 'backend/authentication/SessionChecker.php';
             $totalPages = (int) ceil($totalRecords / $limit);
 
             ?>
+
+            <div id="expiringExtinguisherResults">
 
             <?php if ($totalRecords === 0): ?>
 
@@ -672,389 +521,184 @@ require_once 'backend/authentication/SessionChecker.php';
               <?php endforeach; ?>
             <?php endif; ?>
 
-            <?php if ($totalPages > 1): ?>
+                        </div>
 
-              <div class="position-fixed bottom-0 start-0 end-0 bg-body border-top shadow py-2">
-                <div class="container-fluid px-2 px-sm-3 px-md-4">
+            <div id="expiringExtinguisherPagination">
 
-                  <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
+            <!-- PAGINATION -->
+            <div class="card border border-primary-subtle shadow-sm rounded-3 mt-3">
 
-                    <div class="text-body-secondary small text-center text-sm-start">
+              <div class="card-footer bg-body border-0 px-3 py-3">
+
+                <div class="d-flex flex-column flex-sm-row align-items-center justify-content-between gap-3">
+
+                  <!-- ENTRY INFORMATION -->
+                  <small class="text-body-secondary" style="font-size: 12px;">
+
+                    <?php if ($totalRecords > 0): ?>
+
                       Showing
-                      <strong><?= min($offset + 1, $totalRecords) ?></strong>
-                      -
-                      <strong><?= min($offset + $limit, $totalRecords) ?></strong>
+                      <strong class="text-body">
+                        <?= $offset + 1 ?>
+                      </strong>
+                      to
+                      <strong class="text-body">
+                        <?= min($offset + $limit, $totalRecords) ?>
+                      </strong>
                       of
-                      <strong><?= $totalRecords ?></strong>
-                      fire extinguishers
-                    </div>
+                      <strong class="text-body">
+                        <?= $totalRecords ?>
+                      </strong>
+                      entries
+
+                    <?php else: ?>
+
+                      Showing 0 of 0 entries
+
+                    <?php endif; ?>
+
+                  </small>
+
+
+                  <!-- PAGINATION -->
+                  <?php if ($totalPages > 1): ?>
+
+                    <?php
+                    $currentPageUrl = basename($_SERVER['PHP_SELF']);
+
+                    $paginationParams = $_GET;
+                    unset($paginationParams['page']);
+
+                    $previousParams = $paginationParams;
+                    $previousParams['page'] = max(1, $page - 1);
+
+                    $nextParams = $paginationParams;
+                    $nextParams['page'] = min($totalPages, $page + 1);
+                    ?>
 
                     <nav aria-label="Fire extinguisher pagination">
+
                       <ul class="pagination pagination-sm mb-0">
 
-                        <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
-                          <a
-                            class="page-link px-2 px-sm-3"
-                            href="list-extinguisher.php?page=<?= max(1, $page - 1) ?>"
-                            aria-label="Previous">
+                        <!-- PREVIOUS -->
+                        <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
 
-                            <i class="bi bi-chevron-left"></i>
+                          <?php if ($page > 1): ?>
 
-                            <span class="d-none d-sm-inline ms-1">
-                              Previous
+                            <a
+                              class="page-link"
+                              href="<?= htmlspecialchars(
+                                      $currentPageUrl,
+                                      ENT_QUOTES,
+                                      'UTF-8'
+                                    ) ?>?<?= http_build_query($previousParams) ?>"
+                              aria-label="Previous">
+
+                              <i class="bi bi-chevron-left"></i>
+
+                              <span class="d-none d-sm-inline ms-1">
+                                Previous
+                              </span>
+
+                            </a>
+
+                          <?php else: ?>
+
+                            <span class="page-link">
+
+                              <i class="bi bi-chevron-left"></i>
+
+                              <span class="d-none d-sm-inline ms-1">
+                                Previous
+                              </span>
+
                             </span>
-                          </a>
+
+                          <?php endif; ?>
+
                         </li>
 
+
+                        <!-- PAGE NUMBERS -->
                         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
 
-                          <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+                          <?php
+                          $pageParams = $paginationParams;
+                          $pageParams['page'] = $i;
+                          ?>
+
+                          <li class="page-item <?= $i === $page ? 'active' : '' ?>">
+
                             <a
-                              class="page-link px-2 px-sm-3"
-                              href="list-extinguisher.php?page=<?= $i ?>">
+                              class="page-link"
+                              href="<?= htmlspecialchars(
+                                      $currentPageUrl,
+                                      ENT_QUOTES,
+                                      'UTF-8'
+                                    ) ?>?<?= http_build_query($pageParams) ?>">
+
                               <?= $i ?>
+
                             </a>
+
                           </li>
 
                         <?php endfor; ?>
 
-                        <li class="page-item <?= ($page >= $totalPages) ? 'disabled' : '' ?>">
-                          <a
-                            class="page-link px-2 px-sm-3"
-                            href="list-extinguisher.php?page=<?= min($totalPages, $page + 1) ?>"
-                            aria-label="Next">
 
-                            <span class="d-none d-sm-inline me-1">
-                              Next
+                        <!-- NEXT -->
+                        <li class="page-item <?= $page >= $totalPages ? 'disabled' : '' ?>">
+
+                          <?php if ($page < $totalPages): ?>
+
+                            <a
+                              class="page-link"
+                              href="<?= htmlspecialchars(
+                                      $currentPageUrl,
+                                      ENT_QUOTES,
+                                      'UTF-8'
+                                    ) ?>?<?= http_build_query($nextParams) ?>"
+                              aria-label="Next">
+
+                              <span class="d-none d-sm-inline me-1">
+                                Next
+                              </span>
+
+                              <i class="bi bi-chevron-right"></i>
+
+                            </a>
+
+                          <?php else: ?>
+
+                            <span class="page-link">
+
+                              <span class="d-none d-sm-inline me-1">
+                                Next
+                              </span>
+
+                              <i class="bi bi-chevron-right"></i>
+
                             </span>
 
-                            <i class="bi bi-chevron-right"></i>
-                          </a>
+                          <?php endif; ?>
+
                         </li>
 
                       </ul>
+
                     </nav>
 
-                  </div>
-
-                </div>
-              </div>
-
-            <?php endif; ?>
-
-            <div
-              class="modal fade"
-              id="editFireExtinguisherModal"
-              tabindex="-1"
-              aria-labelledby="editFireExtinguisherModalLabel"
-              aria-hidden="true">
-
-              <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-
-                <div class="modal-content rounded-4 border-0 shadow">
-
-                  <div class="modal-header px-4 py-3">
-
-                    <div>
-                      <h5
-                        class="modal-title fw-semibold mb-1"
-                        id="editFireExtinguisherModalLabel">
-                        Edit Fire Extinguisher
-                      </h5>
-
-                      <small class="text-body-secondary">
-                        Update the fire extinguisher information below.
-                      </small>
-                    </div>
-
-                    <button
-                      type="button"
-                      class="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close">
-                    </button>
-
-                  </div>
-
-                  <div class="modal-body px-4 py-4">
-
-                    <form
-                      id="editFireExtinguisherForm"
-                      class="row g-3"
-                      action="backend/controller/FireExtinguisherController.php"
-                      method="post">
-
-                      <input
-                        type="hidden"
-                        name="action"
-                        value="update">
-
-                      <input
-                        type="hidden"
-                        id="editExtinguisherId"
-                        name="extinguisher_id">
-
-                      <div class="col-md-6">
-
-                        <label
-                          for="editExtinguisherCode"
-                          class="form-label">
-                          Fire Extinguisher Code
-                        </label>
-
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="editExtinguisherCode"
-                          name="extinguisher_code"
-                          value=" "
-                          readonly
-                          required>
-
-                      </div>
-
-                      <div class="col-md-6">
-
-                        <label
-                          for="editType"
-                          class="form-label">
-                          Type
-                        </label>
-
-                        <select
-                          id="editType"
-                          name="type"
-                          class="form-select"
-                          required>
-
-                          <option
-                            value=""
-                            selected
-                            readonly>
-
-                          </option>
-
-                          <option value="Dry Chemical">Dry Chemical</option>
-                          <option value="AFFF">AFFF</option>
-                          <option value="HCFC">HCFC</option>
-                        </select>
-
-                      </div>
-
-                      <div class="col-md-4">
-
-                        <label
-                          for="editCapacity"
-                          class="form-label">
-                          Capacity
-                        </label>
-
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="editCapacity"
-                          name="capacity"
-                          list="editCapacityOptions"
-                          value="  "
-                          required>
-
-                        <datalist id="editCapacityOptions">
-                          <option value="10 lbs">
-                          <option value="20 lbs">
-                          <option value="50 lbs">
-                        </datalist>
-
-                      </div>
-
-                      <div class="col-md-4">
-
-                        <label
-                          for="editClass"
-                          class="form-label">
-                          Fire Class
-                        </label>
-
-                        <select
-                          id="editClass"
-                          name="class"
-                          class="form-select"
-                          required>
-
-                          <option
-                            value=" "
-                            selected>
-
-                          </option>
-
-                          <option value="AB">AB</option>
-                          <option value="ABC">ABC</option>
-                          <option value="BC">BC</option>
-                          <option value="A">A</option>
-                          <option value="B">B</option>
-                          <option value="C">C</option>
-                          <option value="D">D</option>
-
-                        </select>
-
-                      </div>
-
-                      <div class="col-md-4">
-
-                        <label
-                          for="editPlacement"
-                          class="form-label">
-                          Placement
-                        </label>
-
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="editPlacement"
-                          name="placement"
-                          list="editPlacementOptions"
-                          value=" "
-                          required>
-
-                        <datalist id="editPlacementOptions">
-                          <option value="Wall Mounted">
-                          <option value="Floor Standing">
-                          <option value="Cabinet">
-                          <option value="Vehicle">
-                        </datalist>
-
-                      </div>
-
-                      <div class="col-md-8">
-
-                        <label
-                          for="editLocation"
-                          class="form-label">
-                          Location
-                        </label>
-
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="editLocation"
-                          name="location"
-                          value=" "
-                          required>
-
-                      </div>
-
-                      <div class="col-md-4">
-
-                        <label
-                          for="editConditionStatus"
-                          class="form-label">
-                          Condition
-                        </label>
-
-                        <select
-                          id="editConditionStatus"
-                          name="condition_status"
-                          class="form-select"
-                          required>
-
-                          <option
-                            value=" "
-                            selected>
-
-                          </option>
-
-                          <option value="Good">Good</option>
-                          <option value="Not Good">Not Good</option>
-
-                        </select>
-
-                      </div>
-
-                      <div class="col-md-6">
-
-                        <label
-                          for="editManufacturedDate"
-                          class="form-label">
-                          Manufactured Date
-                        </label>
-
-                        <input
-                          type="date"
-                          class="form-control"
-                          id="editManufacturedDate"
-                          name="manufactured_date"
-                          value=""
-                          readonly>
-
-                      </div>
-
-                      <div class="col-md-6">
-
-                        <label
-                          for="editExpirationDate"
-                          class="form-label">
-                          Expiration Date
-                        </label>
-
-                        <input
-                          type="date"
-                          class="form-control"
-                          id="editExpirationDate"
-                          name="expiration_date"
-                          value=" "
-                          readonly
-                          required>
-
-                        <small class="text-body-secondary">
-                          Automatically calculated as 3 years from manufactured date.
-                        </small>
-
-                      </div>
-
-                      <div class="col-12">
-
-                        <label
-                          for="editRemarks"
-                          class="form-label">
-                          Remarks
-                        </label>
-
-                        <textarea
-                          class="form-control"
-                          id="editRemarks"
-                          name="remarks"
-                          rows="2"
-                          placeholder="Additional remarks (optional)"> </textarea>
-
-                      </div>
-
-                    </form>
-
-                  </div>
-
-                  <div class="modal-footer px-4 py-3">
-
-                    <button
-                      type="button"
-                      class="btn btn-light border"
-                      data-bs-dismiss="modal">
-                      Cancel
-                    </button>
-
-                    <button
-                      type="submit"
-                      form="editFireExtinguisherForm"
-                      class="btn btn-warning px-4">
-                      <i class="bi bi-check-lg me-1"></i>
-                      Update Info
-                    </button>
-
-                  </div>
+                  <?php endif; ?>
 
                 </div>
 
               </div>
 
             </div>
+
+            </div>
+
+       
 
             <div
               class="modal fade"
@@ -1636,16 +1280,10 @@ require_once 'backend/authentication/SessionChecker.php';
 
                       <div class="border rounded-3 p-3 bg-light-subtle">
 
-                        <textarea
-                          class="form-control-plaintext text-body-secondary p-0"
-                          id="viewRemarks"
-                          rows="2"
-                          readonly></textarea>
+                        <textarea class="form-control-plaintext text-body-secondary p-0" id="viewRemarks" rows="2" readonly></textarea>
 
                       </div>
-
                     </div>
-
                   </div>
 
                   <div class="modal-footer border-0 bg-light-subtle px-3 px-md-4 py-3">
@@ -1656,29 +1294,6 @@ require_once 'backend/authentication/SessionChecker.php';
                       data-bs-dismiss="modal">
                       Close
                     </button>
-
-                    <button
-                      type="button"
-                      id="viewEditFireExtinguisherBtn"
-                      class="btn btn-warning px-4 edit-extinguisher-btn"
-                      data-id=""
-                      data-bs-toggle="modal"
-                      data-bs-target="#editFireExtinguisherModal">
-
-                      <i class="bi bi-pencil me-1"></i>
-                      Edit
-
-                    </button>
-
-                    <a
-                      href="#"
-                      id="viewDeleteFireExtinguisherBtn"
-                      class="btn btn-danger px-3">
-
-                      <i class="bi bi-trash me-1"></i>
-                      Delete
-
-                    </a>
 
                   </div>
 
@@ -2049,116 +1664,117 @@ require_once 'backend/authentication/SessionChecker.php';
 
     }
 
-    document.querySelectorAll('.view-extinguisher-btn').forEach(button => {
+    const expiringExtinguisherResults =
+      document.getElementById('expiringExtinguisherResults');
 
-      button.addEventListener('click', function() {
+    if (expiringExtinguisherResults) {
 
-        const id = this.dataset.id;
+      expiringExtinguisherResults.addEventListener(
+        'click',
+        function(event) {
 
-        fetch(
-            `backend/controller/FireExtinguisherController.php?action=get&id=${id}`
-          )
+          const button =
+            event.target.closest('.view-extinguisher-btn');
 
-          .then(response => {
+          if (!button) {
+            return;
+          }
 
-            if (!response.ok) {
-              throw new Error('Failed to fetch fire extinguisher.');
-            }
+          const id = button.dataset.id;
 
-            return response.json();
+          fetch(
+              `backend/controller/FireExtinguisherController.php?action=get&id=${id}`
+            )
 
-          })
+            .then(response => {
 
-          .then(result => {
+              if (!response.ok) {
+                throw new Error(
+                  'Failed to fetch fire extinguisher.'
+                );
+              }
 
-            if (!result.success) {
+              return response.json();
+
+            })
+
+            .then(result => {
+
+              if (!result.success) {
+
+                alert(
+                  result.message ||
+                  'Failed to load fire extinguisher.'
+                );
+
+                return;
+              }
+
+              const data = result.data;
+
+              document.getElementById(
+                'viewExtinguisherCode'
+              ).value = data.extinguisher_code ?? '';
+
+              document.getElementById(
+                'viewType'
+              ).value = data.type ?? '';
+
+              document.getElementById(
+                'viewCapacity'
+              ).value = data.capacity ?? '';
+
+              document.getElementById(
+                'viewClass'
+              ).value = data.class ?? '';
+
+              document.getElementById(
+                'viewPlacement'
+              ).value = data.placement ?? '';
+
+              document.getElementById(
+                'viewLocation'
+              ).value = data.location ?? '';
+
+              document.getElementById(
+                'viewConditionStatus'
+              ).value = data.condition_status ?? '';
+
+              document.getElementById(
+                'viewManufacturedDate'
+              ).value = data.manufactured_date ?? '';
+
+              document.getElementById(
+                'viewLastRefilledDate'
+              ).value = data.refilled_date ?? '';
+
+              document.getElementById(
+                'viewExpirationDate'
+              ).value = data.expiration_date ?? '';
+
+              document.getElementById(
+                'viewRemarks'
+              ).value = data.remarks ?? '';
+
+             
+
+              
+            })
+
+            .catch(error => {
+
+              console.error(error);
 
               alert(
-                result.message ||
-                'Failed to load fire extinguisher.'
+                'Something went wrong while loading fire extinguisher.'
               );
 
-              return;
-            }
+            });
 
-            const data = result.data;
+        }
+      );
 
-            document.getElementById(
-              'viewExtinguisherCode'
-            ).value = data.extinguisher_code ?? '';
-
-            document.getElementById(
-              'viewType'
-            ).value = data.type ?? '';
-
-            document.getElementById(
-              'viewCapacity'
-            ).value = data.capacity ?? '';
-
-            document.getElementById(
-              'viewClass'
-            ).value = data.class ?? '';
-
-            document.getElementById(
-              'viewPlacement'
-            ).value = data.placement ?? '';
-
-            document.getElementById(
-              'viewLocation'
-            ).value = data.location ?? '';
-
-            document.getElementById(
-              'viewConditionStatus'
-            ).value = data.condition_status ?? '';
-
-            document.getElementById(
-              'viewManufacturedDate'
-            ).value = data.manufactured_date ?? '';
-
-            document.getElementById(
-              'viewLastRefilledDate'
-            ).value = data.refilled_date ?? '';
-
-            document.getElementById(
-              'viewExpirationDate'
-            ).value = data.expiration_date ?? '';
-
-            document.getElementById(
-              'viewRemarks'
-            ).value = data.remarks ?? '';
-
-            document.getElementById(
-              'viewEditFireExtinguisherBtn'
-            ).dataset.id = data.extinguisher_id;
-
-            const viewDeleteBtn = document.getElementById(
-              'viewDeleteFireExtinguisherBtn'
-            );
-
-            viewDeleteBtn.href =
-              `backend/controller/FireExtinguisherController.php?action=delete&id=${data.extinguisher_id}`;
-
-            viewDeleteBtn.onclick = function() {
-              return confirm(
-                'Are you sure you want to delete this fire extinguisher?'
-              );
-            };
-
-          })
-
-          .catch(error => {
-
-            console.error(error);
-
-            alert(
-              'Something went wrong while loading fire extinguisher.'
-            );
-
-          });
-
-      });
-
-    });
+    }
   </script>
   <?php include_once 'notification/session_timeout.php'; ?>
 

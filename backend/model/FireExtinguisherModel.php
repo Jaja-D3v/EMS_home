@@ -11,12 +11,12 @@ function getCurrentBranch()
 // =====================================================
 // GET ALL FIRE EXTINGUISHERS
 // =====================================================
-
 function getAll(
     $limit,
     $offset,
     $placementType = 'all',
-    $conditionType = 'all'
+    $conditionType = 'all',
+    $search = ''
 ) {
     global $conn;
 
@@ -95,6 +95,7 @@ function getAll(
             ";
         }
 
+
         // ========================================================
         // CONDITION FILTER
         // ========================================================
@@ -102,13 +103,37 @@ function getAll(
         if ($conditionType === 'good') {
 
             $sql .= "
-        AND LOWER(TRIM(condition_status)) = 'good'
-    ";
+                AND LOWER(TRIM(condition_status)) = 'good'
+            ";
         } elseif ($conditionType === 'not-good') {
 
             $sql .= "
-        AND LOWER(TRIM(condition_status)) = 'not good'
-    ";
+                AND LOWER(TRIM(condition_status)) = 'not good'
+            ";
+        }
+
+
+        // ====================================================
+        // SEARCH
+        // ====================================================
+
+        if ($search !== '') {
+
+            $sql .= "
+                AND (
+                    LOWER(TRIM(extinguisher_code))
+                        LIKE LOWER(TRIM(?))
+                    OR LOWER(TRIM(location))
+                        LIKE LOWER(TRIM(?))
+                )
+            ";
+
+            $searchValue = '%' . $search . '%';
+
+            $params[] = $searchValue;
+            $params[] = $searchValue;
+
+            $types .= 'ss';
         }
 
 
@@ -210,6 +235,30 @@ function getAll(
         }
 
 
+        // ====================================================
+        // SEARCH
+        // ====================================================
+
+        if ($search !== '') {
+
+            $sql .= "
+                AND (
+                    LOWER(TRIM(extinguisher_code))
+                        LIKE LOWER(TRIM(?))
+                    OR LOWER(TRIM(location))
+                        LIKE LOWER(TRIM(?))
+                )
+            ";
+
+            $searchValue = '%' . $search . '%';
+
+            $params[] = $searchValue;
+            $params[] = $searchValue;
+
+            $types .= 'ss';
+        }
+
+
         $sql .= "
             ORDER BY extinguisher_id DESC
             LIMIT ? OFFSET ?
@@ -245,7 +294,6 @@ function getAll(
 
     return false;
 }
-
 // =====================================================
 // GET FIRE EXTINGUISHER BY ID
 // =====================================================
@@ -1140,8 +1188,12 @@ function restoreFireExtinguisher($id)
 }
 
 
-function getExpiry($limit = 10, $offset = 0)
-{
+function getExpiry(
+    $limit = 10,
+    $offset = 0,
+    $search = '',
+    $condition = 'all'
+) {
     global $conn;
 
     $limit = (int) $limit;
@@ -1155,20 +1207,24 @@ function getExpiry($limit = 10, $offset = 0)
         $offset = 0;
     }
 
+    $search = trim($search);
+    $condition = strtolower(trim($condition));
+
     $role = strtolower(trim($_SESSION['Role'] ?? ''));
     $sessionBranch = trim($_SESSION['Branch'] ?? '');
 
-    /*
-    |--------------------------------------------------------------------------
-    | BRANCH FILTER
-    |--------------------------------------------------------------------------
-    | Admin:
-    |   - Uses ?branch=...
-    |   - If no branch is selected, defaults to session branch
-    |
-    | Other roles:
-    |   - Always use session branch
-    */
+    /**
+     * |--------------------------------------------------------------------------
+     * | BRANCH FILTER
+     * |--------------------------------------------------------------------------
+     * | Admin:
+     * |   - Uses ?branch=...
+     * |   - If no branch is selected, defaults to session branch
+     * |
+     * | Other roles:
+     * |   - Always use session branch
+     * |--------------------------------------------------------------------------
+     */
 
     if ($role === 'admin') {
 
@@ -1184,11 +1240,11 @@ function getExpiry($limit = 10, $offset = 0)
         $selectedBranch = 'all';
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | GET DATA
-    |--------------------------------------------------------------------------
-    */
+    /**
+     * |--------------------------------------------------------------------------
+     * | GET DATA
+     * |--------------------------------------------------------------------------
+     */
 
     $sql = "
         SELECT *
@@ -1198,6 +1254,44 @@ function getExpiry($limit = 10, $offset = 0)
           AND expiration_date <= DATE_ADD(CURDATE(), INTERVAL 2 MONTH)
     ";
 
+    /*
+     * SEARCH FILTER
+     */
+    if ($search !== '') {
+
+        $sql .= "
+            AND (
+                extinguisher_code LIKE ?
+                OR type LIKE ?
+                OR capacity LIKE ?
+                OR class LIKE ?
+                OR location LIKE ?
+                OR branch LIKE ?
+            )
+        ";
+    }
+
+    /*
+     * CONDITION FILTER
+     */
+    if ($condition !== 'all') {
+
+        if ($condition === 'good') {
+
+            $sql .= "
+                AND LOWER(TRIM(condition_status)) = 'good'
+            ";
+        } elseif ($condition === 'not-good') {
+
+            $sql .= "
+                AND LOWER(TRIM(condition_status)) <> 'good'
+            ";
+        }
+    }
+
+    /*
+     * BRANCH FILTER
+     */
     if (strtolower($selectedBranch) !== 'all') {
 
         $sql .= "
@@ -1219,23 +1313,63 @@ function getExpiry($limit = 10, $offset = 0)
         ];
     }
 
-    if (strtolower($selectedBranch) !== 'all') {
+    /*
+     * BIND PARAMETERS
+     */
+    if ($search !== '') {
 
-        mysqli_stmt_bind_param(
-            $stmt,
-            "sii",
-            $selectedBranch,
-            $limit,
-            $offset
-        );
+        $searchValue = '%' . $search . '%';
+
+        if (strtolower($selectedBranch) !== 'all') {
+
+            mysqli_stmt_bind_param(
+                $stmt,
+                "sssssssii",
+                $searchValue,
+                $searchValue,
+                $searchValue,
+                $searchValue,
+                $searchValue,
+                $searchValue,
+                $selectedBranch,
+                $limit,
+                $offset
+            );
+        } else {
+
+            mysqli_stmt_bind_param(
+                $stmt,
+                "ssssssii",
+                $searchValue,
+                $searchValue,
+                $searchValue,
+                $searchValue,
+                $searchValue,
+                $searchValue,
+                $limit,
+                $offset
+            );
+        }
     } else {
 
-        mysqli_stmt_bind_param(
-            $stmt,
-            "ii",
-            $limit,
-            $offset
-        );
+        if (strtolower($selectedBranch) !== 'all') {
+
+            mysqli_stmt_bind_param(
+                $stmt,
+                "sii",
+                $selectedBranch,
+                $limit,
+                $offset
+            );
+        } else {
+
+            mysqli_stmt_bind_param(
+                $stmt,
+                "ii",
+                $limit,
+                $offset
+            );
+        }
     }
 
     mysqli_stmt_execute($stmt);
@@ -1253,11 +1387,11 @@ function getExpiry($limit = 10, $offset = 0)
 
     mysqli_stmt_close($stmt);
 
-    /*
-    |--------------------------------------------------------------------------
-    | GET TOTAL RECORDS
-    |--------------------------------------------------------------------------
-    */
+    /**
+     * |--------------------------------------------------------------------------
+     * | GET TOTAL RECORDS
+     * |--------------------------------------------------------------------------
+     */
 
     $totalSql = "
         SELECT COUNT(*) AS total
@@ -1267,6 +1401,44 @@ function getExpiry($limit = 10, $offset = 0)
           AND expiration_date <= DATE_ADD(CURDATE(), INTERVAL 2 MONTH)
     ";
 
+    /*
+     * SEARCH FILTER
+     */
+    if ($search !== '') {
+
+        $totalSql .= "
+            AND (
+                extinguisher_code LIKE ?
+                OR type LIKE ?
+                OR capacity LIKE ?
+                OR class LIKE ?
+                OR location LIKE ?
+                OR branch LIKE ?
+            )
+        ";
+    }
+
+    /*
+     * CONDITION FILTER
+     */
+    if ($condition !== 'all') {
+
+        if ($condition === 'good') {
+
+            $totalSql .= "
+                AND LOWER(TRIM(condition_status)) = 'good'
+            ";
+        } elseif ($condition === 'not-good') {
+
+            $totalSql .= "
+                AND LOWER(TRIM(condition_status)) <> 'good'
+            ";
+        }
+    }
+
+    /*
+     * BRANCH FILTER
+     */
     if (strtolower($selectedBranch) !== 'all') {
 
         $totalSql .= "
@@ -1280,13 +1452,49 @@ function getExpiry($limit = 10, $offset = 0)
 
     if ($totalStmt) {
 
-        if (strtolower($selectedBranch) !== 'all') {
+        /*
+         * BIND TOTAL PARAMETERS
+         */
+        if ($search !== '') {
 
-            mysqli_stmt_bind_param(
-                $totalStmt,
-                "s",
-                $selectedBranch
-            );
+            $searchValue = '%' . $search . '%';
+
+            if (strtolower($selectedBranch) !== 'all') {
+
+                mysqli_stmt_bind_param(
+                    $totalStmt,
+                    "sssssss",
+                    $searchValue,
+                    $searchValue,
+                    $searchValue,
+                    $searchValue,
+                    $searchValue,
+                    $searchValue,
+                    $selectedBranch
+                );
+            } else {
+
+                mysqli_stmt_bind_param(
+                    $totalStmt,
+                    "ssssss",
+                    $searchValue,
+                    $searchValue,
+                    $searchValue,
+                    $searchValue,
+                    $searchValue,
+                    $searchValue
+                );
+            }
+        } else {
+
+            if (strtolower($selectedBranch) !== 'all') {
+
+                mysqli_stmt_bind_param(
+                    $totalStmt,
+                    "s",
+                    $selectedBranch
+                );
+            }
         }
 
         mysqli_stmt_execute($totalStmt);

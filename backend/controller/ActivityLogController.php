@@ -19,7 +19,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if ($action === 'getAll') {
 
         header('Content-Type: application/json');
-
         $result = getActivityLogs();
 
         if (!$result) {
