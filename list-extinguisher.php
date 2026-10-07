@@ -57,6 +57,15 @@ $branchDropdown = getAllDropdownBranches();
                 Manage and monitor all active and registered fire extinguishers.
               </p>
 
+              <button
+                type="button"
+                class="btn btn-primary"
+                id="generateInventoryReportBtn">
+                <i class="bi bi-file-earmark-pdf me-1"></i>
+                Generate Inventory Report
+              </button>
+
+
             </div>
 
           </div>
@@ -1361,6 +1370,7 @@ $branchDropdown = getAllDropdownBranches();
                         </small>
                       </div>
 
+
                     </div>
 
                     <button
@@ -2391,6 +2401,36 @@ $branchDropdown = getAllDropdownBranches();
             url.toString();
         }
       );
+    }
+
+
+
+    // this script is for generate inventory report button
+    const generateInventoryReportBtn = document.getElementById(
+      'generateInventoryReportBtn'
+    );
+
+    if (generateInventoryReportBtn) {
+
+      generateInventoryReportBtn.addEventListener('click', function() {
+
+        const branchFilter = document.getElementById('branchFilter');
+
+        const branch = branchFilter ?
+          branchFilter.value :
+          'all';
+
+        const url = new URL(
+          'backend/controller/GenerateInventoryReportController.php',
+          window.location.href
+        );
+
+        url.searchParams.set('branch', branch);
+
+        window.open(url.toString(), '_blank');
+
+      });
+
     }
   </script>
   <?php include_once 'notification/session_timeout.php'; ?>

@@ -19,8 +19,7 @@ _____________________________________________________________
 - IF THE INSPECTION WAS REJECTED BABALIK YUNG DATA SA NAG INSPECT
 - 
 
-## create button in active fire extinguisher 
-- create generate inventory report button
+
 
 
 ____________________________________________________________DONE___________________________________________________________________________
@@ -37,5 +36,6 @@ ____________________________________________________________DONE________________
 ## inspection view for SO na mag aapprove nung inspection 
 - dapat nullable yung dalawang action                 #DONE
 
-
+## create button in active fire extinguisher 
+- create generate inventory report button functional #done
 

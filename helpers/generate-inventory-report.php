@@ -921,7 +921,7 @@ $rowHeight = 8;
 
 // setting nunber row per page 
 $firstPageRows = 30;
-$otherPageRows = 40;
+$otherPageRows = 34;
 
 /* --------------------------------------------------------------------------*
 

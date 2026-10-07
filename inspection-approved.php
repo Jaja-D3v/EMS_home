@@ -143,8 +143,7 @@ include 'partials/header.php';
                   class="form-control"
                   id="inspectionDateFilter"
                   value="<?= htmlspecialchars($date ?? '') ?>"
-                  onchange="
-                            const selectedDate = this.value;
+                  onchange=" const selectedDate = this.value;
 
                             if (selectedDate) {
                                 window.location.href =
