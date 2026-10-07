@@ -956,16 +956,13 @@ foreach ($inspections as $record) {
         } else {
 
             $installedBad++;
-
             $noGoodRecords[] = $record;
         }
     }
 }
 
 /* --------------------------------------------------------------------------*
-
 * * Render report.*
-
 * * -------------------------------------------------------------------------- */
 
 $pdf->AddPage('P', 'A4');
@@ -981,36 +978,22 @@ drawReportHeader(
 
 );
 
-
-
 $dataY = drawInventoryTableHeader(
 
     $pdf,
-
     $tableX,
-
     $tableStartY,
-
     $widths
 
 );
 
-
-
 $rowNumber = 1;
-
 $pageRowCount = 0;
 
-
-
 /*
-
 * * We render data based on the available space instead of hard-coding the*
-
 * * number of rows in the actual report. This prevents overlap on different*
-
 * * data sets.*
-
 * */
 
 $totalRecords = count($inspections);
@@ -1041,7 +1024,6 @@ foreach ($inspections as $record) {
     if ($pageRowCount >= $currentPageLimit) {
 
         $pdf->AddPage('P', 'A4');
-
         $pageNumber++;
 
         // Page number for succeeding pages.
@@ -1080,24 +1062,16 @@ foreach ($inspections as $record) {
     $pageRowCount++;
 }
 
-
 /* --------------------------------------------------------------------------*
-
 * * Summary and closing sections.*
-
 * * -------------------------------------------------------------------------- */
 
-
-
 $summaryY = $dataY + 4;
-
-
 
 if ($summaryY + 60 > 202) {
 
     $pdf->AddPage('P', 'A4');
     drawPageNumber($pdf);
-
     $summaryY = 15;
 }
 
@@ -1106,56 +1080,35 @@ if ($summaryY + 60 > 202) {
 $summaryBottom = drawSummary(
 
     $pdf,
-
     3,
-
     $summaryY,
-
     $installedGood,
-
     $installedBad,
-
     $spareGood,
-
     $spareBad
 
 );
 
-
-
 $detailsY = $summaryBottom + 7;
-
-
 
 $detailsBottom = drawNoGoodDetails(
 
     $pdf,
-
     3,
-
     $detailsY,
-
     $noGoodRecords
 
 );
 
 
-
 /*
-
 * * Prepared by must always use the currently logged-in user.*
-
 * * Do not get this value from the inspection records.*
-
 * */
 
 $preparedBy = isset($_SESSION['EmployeeName'])
-
     ? trim((string) $_SESSION['EmployeeName'])
-
     : '';
-
-
 
 if ($preparedBy === '') {
 
@@ -1167,29 +1120,19 @@ if ($preparedBy === '') {
 drawPreparedBy(
 
     $pdf,
-
     $marginLeft,
-
     $detailsBottom + 7,
-
     $preparedBy
 
 );
 
-
-
 /* --------------------------------------------------------------------------*
-
 * * Output.*
-
 * * -------------------------------------------------------------------------- */
-
-
 
 $pdf->Output(
 
     'fire-extinguisher-inventory-report.pdf',
-
     'I'
 
 );

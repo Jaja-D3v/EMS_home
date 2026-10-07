@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          */
         $_SESSION['id'] = $user['id'];
         $_SESSION['LoginID'] = $user['LoginID'];
-        $_SESSION['Role'] = $user['Role'];
+        $role =  $_SESSION['Role'] = $user['Role'];
         $_SESSION['EmployeeName'] = $user['EmployeeName'];
         $_SESSION['Branch'] = $user['Location'];
         $_SESSION['System'] = $user['what_system'];
@@ -51,20 +51,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             header('Content-Type: application/json');
 
-            echo json_encode([
-                'success' => true,
-                'message' => 'Login successful',
-                'redirect' => '/EMS_Home/dashboard.php'
-            ]);
 
-            exit();
+            if ($role == 'Inspector') {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Login successful',
+                    'redirect' => '/EMS_Home/dashboard.php'
+                ]);
+
+                exit();
+               
+            } elseif ($role == 'Admin') {
+                  echo json_encode([
+                    'success' => true,
+                    'message' => 'Login successful',
+                    'redirect' => '/EMS_Home/authentication/system-selector.php'
+                ]);
+
+                exit();
+            }
         }
 
         /*
          * Normal login fallback
          */
-        header('Location: /EMS_Home/dashboard.php');
-        exit();
+
+        if ($role == 'Inspector') {
+            header('Location: /EMS_Home/dashboard.php');
+            exit();
+        } elseif ($role == 'Admin') {
+            header('Location: /EMS_Home/authentication/system-selector.php');
+            exit();
+        }
     } else {
 
         /*

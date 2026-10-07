@@ -40,6 +40,137 @@
  </head>
 
  <style>
+    /* for  QR generate report */
+    .qr-page {
+       padding: 0.75rem 0;
+    }
+
+    .qr-header {
+       margin-bottom: 0.75rem !important;
+       border: 1px solid #e9ecef !important;
+       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06) !important;
+    }
+
+    .qr-header .card-body {
+       padding: 1rem 1.25rem !important;
+    }
+
+    .qr-header-icon {
+       width: 48px !important;
+       height: 48px !important;
+    }
+
+    .qr-header h4 {
+       font-size: 1.05rem;
+    }
+
+    .qr-header p {
+       font-size: 0.78rem;
+    }
+
+    .qr-main-card {
+       border: 1px solid #e9ecef !important;
+       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06) !important;
+    }
+
+    .qr-toolbar {
+       padding: 0.75rem 1rem !important;
+       border-bottom: 1px solid #e9ecef !important;
+    }
+
+    .qr-toolbar .form-control,
+    .qr-toolbar .form-select,
+    .qr-toolbar .input-group-text {
+       min-height: 38px;
+       border-color: #dee2e6;
+    }
+
+    .qr-table-wrapper {
+       overflow-x: auto;
+    }
+
+    .qr-table {
+       min-width: 760px;
+       margin-bottom: 0 !important;
+       border-collapse: separate;
+       border-spacing: 0;
+    }
+
+    .qr-table thead th {
+       padding: 0.65rem 0.75rem;
+       background: #f8f9fa !important;
+       border-bottom: 1px solid #dee2e6;
+       color: #6c757d !important;
+       font-size: 0.75rem;
+       font-weight: 600;
+       white-space: nowrap;
+       vertical-align: middle;
+    }
+
+    .qr-table tbody td {
+       padding: 0.7rem 0.75rem;
+       border-bottom: 1px solid #edf0f2;
+       font-size: 0.85rem;
+       color: #212529;
+       vertical-align: middle;
+    }
+
+    .qr-table tbody tr:last-child td {
+       border-bottom: 0;
+    }
+
+    .qr-table tbody tr:hover {
+       background: #f8fafc;
+    }
+
+    .qr-table .code-icon {
+       width: 32px !important;
+       height: 32px !important;
+       flex-shrink: 0;
+    }
+
+    .qr-table .type-badge {
+       font-size: 0.72rem;
+       padding: 0.35rem 0.6rem !important;
+    }
+
+    .qr-selection-footer {
+       padding: 0.7rem 1rem !important;
+       border-top: 1px solid #dee2e6 !important;
+    }
+
+    .qr-selection-footer .btn {
+       font-size: 0.8rem;
+       padding: 0.4rem 0.7rem;
+    }
+
+    @media (max-width: 767.98px) {
+       .qr-page {
+          padding: 0.5rem 0;
+       }
+
+       .qr-header .card-body {
+          padding: 0.85rem 1rem !important;
+       }
+
+       .qr-header .badge {
+          display: none;
+       }
+
+       .qr-toolbar {
+          padding: 0.65rem 0.75rem !important;
+       }
+
+       .qr-table {
+          min-width: 700px;
+       }
+
+       .qr-table thead th,
+       .qr-table tbody td {
+          padding: 0.6rem 0.65rem;
+       }
+    }
+
     /* for inspection approve module */
 
     .inspection-page {
