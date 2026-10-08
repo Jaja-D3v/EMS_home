@@ -32,7 +32,7 @@ function getAll(
     if ($role === 'admin') {
 
         $branch = trim(
-            $_GET['branch'] ?? 'all'
+            $_GET['branch'] ?? $_SESSION['Branch']
         );
 
         $sql = "
@@ -867,7 +867,7 @@ function getTotalFireExtinguishersModel(
     if ($role === 'admin') {
 
         $branch = trim(
-            $_GET['branch'] ?? 'all'
+            $_GET['branch'] ?? $_SESSION['Branch']
         );
     } elseif ($role === 'inspector') {
 

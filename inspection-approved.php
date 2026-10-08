@@ -137,17 +137,23 @@ include 'partials/header.php';
                   class="form-control"
                   id="inspectionDateFilter"
                   value="<?= htmlspecialchars($date ?? '') ?>"
-                  onchange=" const selectedDate = this.value;
+                  onchange="
+                          var selectedDate = this.value;
+                          var branchFilter = document.getElementById('branchFilter');
+                          var branch = branchFilter ? branchFilter.value : '';
 
-                            if (selectedDate) {
-                                window.location.href =
-                                    'inspection-approved.php?page=1&date=' +
-                                    encodeURIComponent(selectedDate);
-                            } else {
-                                window.location.href =
-                                    'inspection-approved.php?page=1';
-                            }
-                        ">
+                          var url = 'inspection-approved.php?page=1';
+
+                          if (selectedDate !== '') {
+                              url += '&date=' + encodeURIComponent(selectedDate);
+                          }
+
+                          if (branch !== '') {
+                              url += '&branch=' + encodeURIComponent(branch);
+                          }
+
+                          window.location.href = url;
+                      ">
               </div>
             </div>
 

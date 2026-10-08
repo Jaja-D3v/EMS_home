@@ -250,10 +250,10 @@ function drawReportHeader(
     if (is_file($companyLogo)) {
         $pdf->Image(
             $companyLogo,
-            $marginLeft,
+            7,
             5,
-            55,
-            15,
+            60,
+            10,
             '',
             '',
             '',
@@ -901,8 +901,8 @@ $pdf->SetMargins(
 $pdf->SetAutoPageBreak(false, $marginBottom);
 
 /* Assets. */
-$companyLogo = __DIR__ . '/../assets/img/KPPI-LOGO.jpg';
-$ertLogo = __DIR__ . '/../assets/img/ERT-LOGO.jpg';
+$companyLogo = __DIR__ . '/../assets/img/KPPI-LOGO.webp';
+$ertLogo = __DIR__ . '/../assets/img/ERT-LOGO.webp';
 
 /* Report date. */
 $firstInspection = $inspections[0];

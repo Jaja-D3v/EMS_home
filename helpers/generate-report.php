@@ -24,6 +24,26 @@ if (empty($ids)) {
 // Retrieve approved inspection records through the controller layer.
 $inspections = getApprovedInspectionReportsController($ids);
 
+$branch = 'All Branches';
+
+if (!empty($inspections)) {
+    $branches = array();
+
+    foreach ($inspections as $inspection) {
+        if (isset($inspection['branch']) && trim($inspection['branch']) !== '') {
+            $branches[] = trim($inspection['branch']);
+        }
+    }
+
+    $branches = array_unique($branches);
+
+    if (count($branches) === 1) {
+        $branch = reset($branches);
+    } elseif (count($branches) > 1) {
+        $branch = 'All Branches';
+    }
+}
+
 if (empty($inspections)) {
     die('No approved inspection records found.');
 }
@@ -92,15 +112,123 @@ $pdf->SetAutoPageBreak(
 $pdf->AddPage('L', 'A4');
 
 // Define report assets.
-$companyLogo = __DIR__ . '/../assets/img/KPPI-LOGO.jpg';
-$ertLogo     = __DIR__ . '/../assets/img/ERT-LOGO.jpg';
+$companyLogo = __DIR__ . '/../assets/img/KPPI-LOGO.webp';
+$ertLogo     = __DIR__ . '/../assets/img/ERT-LOGO.webp';
 
 // Prepare values displayed in the report header.
-$firstInspection = $inspections[0];
+// ========================================================
+// FORMAT DATE INSPECTED
+// ========================================================
 
-$dateInspected = !empty($firstInspection['date_inspected'])
-    ? date('F j, Y', strtotime($firstInspection['date_inspected']))
-    : '';
+$inspectionDates = array();
+
+foreach ($inspections as $inspection) {
+
+    if (
+        isset($inspection['date_inspected']) &&
+        trim($inspection['date_inspected']) !== ''
+    ) {
+        $timestamp = strtotime($inspection['date_inspected']);
+
+        if ($timestamp !== false) {
+            $inspectionDates[] = $timestamp;
+        }
+    }
+}
+
+$dateInspected = '';
+
+$branches = array();
+
+foreach ($inspections as $inspection) {
+
+    if (
+        isset($inspection['branch']) &&
+        trim($inspection['branch']) !== ''
+    ) {
+        $branches[] = trim($inspection['branch']);
+    }
+}
+
+$branches = array_unique($branches);
+
+$branch = !empty($branches)
+    ? implode(', ', $branches)
+    : 'All Branches';
+
+if (!empty($inspectionDates)) {
+
+    // Remove duplicate dates
+    $inspectionDates = array_unique($inspectionDates);
+
+    // Get unique date + month + year combinations
+    $dateGroups = array();
+
+    foreach ($inspectionDates as $timestamp) {
+
+        $year  = date('Y', $timestamp);
+        $month = date('n', $timestamp);
+        $day   = date('j', $timestamp);
+
+        $key = $year . '-' . $month;
+
+        if (!isset($dateGroups[$key])) {
+            $dateGroups[$key] = array(
+                'year'  => $year,
+                'month' => $month,
+                'days'  => array()
+            );
+        }
+
+        $dateGroups[$key]['days'][] = $day;
+    }
+
+    // Sort by year/month
+    ksort($dateGroups);
+
+    $formattedDates = array();
+
+    foreach ($dateGroups as $group) {
+
+        $days = array_unique($group['days']);
+        sort($days);
+
+        // Same exact day
+        if (count($days) === 1) {
+
+            $formattedDates[] =
+                date(
+                    'M. j, Y',
+                    mktime(
+                        0,
+                        0,
+                        0,
+                        (int) $group['month'],
+                        (int) $days[0],
+                        (int) $group['year']
+                    )
+                );
+        } else {
+
+            // Same month/year but different days
+            $formattedDates[] =
+                date(
+                    'M. Y',
+                    mktime(
+                        0,
+                        0,
+                        0,
+                        (int) $group['month'],
+                        1,
+                        (int) $group['year']
+                    )
+                );
+        }
+    }
+
+    $dateInspected = implode(', ', $formattedDates);
+}
+
 $inspectedBy   = $firstInspection['inspected_by'] ?? '';
 
 $approvedNames = [];
@@ -156,6 +284,7 @@ function drawReportHeader(
     $dateInspected,
     $inspectedBy,
     $approvedBy,
+    $branch,
     $marginLeft,
     $marginTop
 ) {
@@ -166,9 +295,9 @@ function drawReportHeader(
     $headerY = 8;
 
     $logoX = 10;
-    $logoY = 5;
+    $logoY = 12;
     $logoW = 55;
-    $logoH = 25;
+    $logoH = 9;
 
     $titleX = 64;
     $titleY = 10;
@@ -643,6 +772,24 @@ function drawReportHeader(
         $font,
         '',
         7
+    );
+
+    // ========================================================
+    // BRANCH
+    // ========================================================
+
+    $pdf->SetFont('helvetica', 'B', 8);
+    $pdf->SetTextColor(70, 70, 70);
+
+    $pdf->SetXY($marginLeft, 25);
+
+    $pdf->Cell(
+        0,
+        5,
+        'Branch: ' . $branch,
+        0,
+        1,
+        'L'
     );
 }
 
@@ -1252,6 +1399,7 @@ drawReportHeader(
     $dateInspected,
     $inspectedBy,
     $approvedBy,
+    $branch,
     $marginLeft,
     $marginTop
 );
@@ -1284,6 +1432,7 @@ foreach ($inspections as $data) {
             $dateInspected,
             $inspectedBy,
             $approvedBy,
+            $branch,
             $marginLeft,
             $marginTop
         );
@@ -1327,6 +1476,7 @@ if (($dataY + 15) > (297 - $marginBottom)) {
         $dateInspected,
         $inspectedBy,
         $approvedBy,
+        $branch,
         $marginLeft,
         $marginTop
     );

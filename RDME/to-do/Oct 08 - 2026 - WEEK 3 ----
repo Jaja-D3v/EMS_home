@@ -14,6 +14,9 @@ _____________________________________________________________
 ## inspection list module
 - should the latest inspection will be get for creation of report
 
+
+bugg: pag nasa approve inspection module pag nag popup yung timer na tatakloban nung data pati yung table para nagiging pop up
+
 ____________________________________________________________DONE___________________________________________________________________________
 
 
@@ -37,5 +40,7 @@ ____________________________________________________________DONE________________
 - backend fix only retrieve all the latest records in approved #DONE
 - backend fix only retrieve all the latest records in reject #DONE
 - implemented maintainable dropdown for edit fe and for add #DONE
+- optimize the generation of report from 30 secs down to 10 secs
+- added branch in inspection report
 
 
