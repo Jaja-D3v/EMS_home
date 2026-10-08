@@ -254,7 +254,7 @@ include 'partials/header.php';
 
           <div
             class="bg-body border-top shadow-sm py-2 inspection-pagination"
-            style="position: sticky; bottom: 0; z-index: 1080;">
+            style="position: sticky; bottom: 0; z-index: 1;">
 
             <table class="table table-hover align-middle inspection-table">
 
@@ -493,7 +493,7 @@ include 'partials/header.php';
         <!-- Pagination -->
         <div
           class="position-fixed bottom-0 start-0 end-0 bg-body border-top shadow-sm py-2 inspection-pagination"
-          style="z-index: 1020;">
+          style="z-index: 1;">
 
           <div class="container-fluid px-3 px-md-4">
 
