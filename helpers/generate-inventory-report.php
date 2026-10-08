@@ -34,6 +34,26 @@ if (empty($ids)) {
 
 $inspections = getFireExtinguishersForInventoryReportController($ids);
 
+$branch = 'All Branches';
+
+if (!empty($inspections)) {
+    $branches = array();
+
+    foreach ($inspections as $inspection) {
+        if (isset($inspection['branch']) && trim($inspection['branch']) !== '') {
+            $branches[] = trim($inspection['branch']);
+        }
+    }
+
+    $branches = array_unique($branches);
+
+    if (count($branches) === 1) {
+        $branch = reset($branches);
+    } elseif (count($branches) > 1) {
+        $branch = 'All Branches';
+    }
+}
+
 if (empty($inspections)) {
 
     die('No approved inspection records found.');
@@ -214,6 +234,7 @@ function drawReportHeader(
     $companyLogo,
     $ertLogo,
     $asOfDate,
+    $branch,
     $marginLeft,
     $marginRight
 
@@ -248,6 +269,22 @@ function drawReportHeader(
 
         );
     }
+
+
+
+
+    /* branch */
+    $pdf->SetFont('helvetica', 'B', 8);
+    $pdf->SetTextColor(70, 70, 70);
+    $pdf->SetXY($marginLeft, 35);
+    $pdf->Cell(
+        55,
+        5,
+        'Branch: ' . $branch,
+        0,
+        0,
+        'L'
+    );
 
 
 
@@ -973,6 +1010,7 @@ drawReportHeader(
     $companyLogo,
     $ertLogo,
     $asOfDate,
+    $branch,
     $marginLeft,
     $marginRight
 

@@ -19,7 +19,7 @@ _____________________________________________________________
 - IF THE INSPECTION WAS REJECTED BABALIK YUNG DATA SA NAG INSPECT
 - 
 
-# adding branch label on generated report
+
 
 
 ____________________________________________________________DONE___________________________________________________________________________
@@ -40,4 +40,5 @@ ____________________________________________________________DONE________________
 - create generate inventory report button functional #done
 
 - added pagination in print qr code module #DONE
+- added branch label on generate inventory report #done
 
