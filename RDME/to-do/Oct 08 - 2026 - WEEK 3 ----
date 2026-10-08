@@ -20,7 +20,6 @@ _____________________________________________________________
 - 
 
 
-- backend fix only retrieve all the latest records in pending 
 - backend fix only retrieve all the latest records in approved
 
 ____________________________________________________________DONE___________________________________________________________________________
@@ -42,4 +41,8 @@ ____________________________________________________________DONE________________
 
 - added pagination in print qr code module #DONE
 - added branch label on generate inventory report #done
+- backend fix only retrieve all the latest records in pending #DONE
+- backend fix only retrieve all the latest records in approved #DONE
+- backend fix only retrieve all the latest records in reject #DONE
+
 

@@ -487,7 +487,6 @@ function getAllApprovedApprovalIdsController($date = null, $branch = 'all')
     return getAllApprovedApprovalIds($date, $branch);
 }
 
-
 // for inventory report
 function getFireExtinguishersForInventoryReportController($ids)
 {

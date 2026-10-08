@@ -51,8 +51,7 @@ if ($date === '') {
   $date = null;
 }
 
-$branch = $_GET['branch'] ?? 'all';
-
+$branch = $_GET['branch'] ?? $_SESSION['Branch'];
 $approvedReportIds = getAllApprovedApprovalIdsController($date, $branch);
 $approvedReportIdString = implode(',', $approvedReportIds);
 ?>
@@ -72,16 +71,11 @@ $approvedReportIdString = implode(',', $approvedReportIds);
 include 'partials/header.php';
 ?>
 
-
-
 <body>
 
   <?php include 'partials/side-nav.php'; ?>
-
   <div class="wrapper d-flex flex-column min-vh-100">
-
     <?php include 'partials/header-nav.php'; ?>
-
     <div class="container-fluid py-0 inspection-content">
 
       <!-- Page Header -->
@@ -172,9 +166,7 @@ include 'partials/header.php';
               ?>
 
               <div class="col-12 col-md-6 col-lg-3">
-                <select
-                  class="form-select w-100"
-                  id="branchFilter">
+                <select class="form-select w-100" id="branchFilter">
 
                   <option
                     value="all"
@@ -254,7 +246,9 @@ include 'partials/header.php';
 
         <div class="card-body p-0">
 
-          <div class="table-responsive inspection-table-wrapper">
+          <div
+            class="bg-body border-top shadow-sm py-2 inspection-pagination"
+            style="position: sticky; bottom: 0; z-index: 1080;">
 
             <table class="table table-hover align-middle inspection-table">
 
