@@ -18,3 +18,7 @@ function getAllCapacityDropdownController(){
 function getAllTypeDropdownController(){
     return getAllTypeDropdown();
 }
+
+function getAllClassDropdownController(){
+    return getAllClassDropdown();
+}

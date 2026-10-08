@@ -1159,13 +1159,20 @@ $branchDropdown = getAllDropdownBranches();
                           <option value="" selected disabled>
                             Select class
                           </option>
-                          <option value="AB">AB</option>
-                          <option value="ABC">ABC</option>
-                          <option value="BC">BC</option>
-                          <option value="A">A</option>
-                          <option value="B">B</option>
-                          <option value="C">C</option>
-                          <option value="D">D</option>
+
+                          <?php
+                          $classes = getAllClassDropdownController();
+
+                          if (!empty($classes)):
+                            foreach ($classes as $class):
+                          ?>
+                              <option value="<?= htmlspecialchars($class['value']) ?>">
+                                <?= htmlspecialchars($class['value']) ?>
+                              </option>
+                          <?php
+                            endforeach;
+                          endif;
+                          ?>
 
                         </select>
                       </div>

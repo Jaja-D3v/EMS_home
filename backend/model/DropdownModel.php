@@ -106,3 +106,30 @@ function getAllTypeDropdown()
 
     return $types;
 }
+
+function getAllClassDropdown()
+{
+    global $conn;
+
+    $sql = "
+        SELECT value
+        FROM maintenance_dropdown_tbl
+        WHERE category = 'fire_class'
+        AND status = 'active'
+        ORDER BY value ASC
+    ";
+
+    $result = mysqli_query($conn, $sql);
+
+    if (!$result) {
+        return [];
+    }
+
+    $capacities = [];
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $capacities[] = $row;
+    }
+
+    return $capacities;
+}
