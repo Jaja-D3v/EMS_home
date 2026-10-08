@@ -121,6 +121,7 @@ include './backend/controller/DropdownController.php';
                         <!-- Branch Filter - ADMIN ONLY -->
                         <?php if (strtolower(trim($_SESSION['Role'] ?? '')) === 'admin'): ?>
 
+
                             <?php
                             // Branch ng naka-login na Admin
                             $adminBranch = trim($_SESSION['Branch'] ?? '');
@@ -1191,17 +1192,20 @@ include './backend/controller/DropdownController.php';
                             Close
 
                         </button>
+                        <?php if (strtolower(trim($_SESSION['Role'] ?? '')) === 'admin'): ?>
+                            <button
+                                type="button"
+                                id="restoreDeletedFireExtinguisherBtn"
+                                class="btn btn-success px-4"
+                                data-id="">
 
-                        <button
-                            type="button"
-                            id="restoreDeletedFireExtinguisherBtn"
-                            class="btn btn-success px-4"
-                            data-id="">
+                                <i class="bi bi-arrow-counterclockwise me-1"></i>
+                                Restore
 
-                            <i class="bi bi-arrow-counterclockwise me-1"></i>
-                            Restore
+                            </button>
 
-                        </button>
+                        <?php endif; ?>
+
 
                     </div>
 
@@ -1216,9 +1220,34 @@ include './backend/controller/DropdownController.php';
 
                     const id = this.dataset.id;
 
-                    fetch(
-                            `backend/controller/FireExtinguisherController.php?action=getDeleted&id=${id}`
-                        )
+                    const card = this.closest('.extinguisher-card');
+
+                    const codeElement = card ?
+                        card.querySelector('.extinguisher-code') :
+                        null;
+
+                    const extinguisherCode = codeElement ?
+                        codeElement.textContent.trim() :
+                        '';
+
+                    const url =
+                        `backend/controller/FireExtinguisherController.php` +
+                        `?action=getDeleted` +
+                        `&id=${encodeURIComponent(id)}` +
+                        `&code=${encodeURIComponent(extinguisherCode)}`;
+
+                    // Ilagay ang ID at extinguisher code sa browser URL
+                    const browserUrl = new URL(window.location.href);
+
+                    // browserUrl.searchParams.set('id', id);
+                    browserUrl.searchParams.set('code', extinguisherCode);
+
+                    window.history.replaceState({},
+                        '',
+                        browserUrl.toString()
+                    );
+
+                    fetch(url)
 
                         .then(response => {
 
@@ -1307,18 +1336,19 @@ include './backend/controller/DropdownController.php';
                             ).value = data.remarks ?? '';
 
                             // Set ID for Restore button
-                            document.getElementById('restoreDeletedFireExtinguisherBtn').dataset.id =
-                                data.extinguisher_id;
+                            const restoreButton = document.getElementById(
+                                'restoreDeletedFireExtinguisherBtn'
+                            );
 
+                            if (restoreButton) {
+                                restoreButton.dataset.id = data.extinguisher_id;
+                                restoreButton.dataset.code = data.extinguisher_code;
+                            }
                         })
 
                         .catch(error => {
 
                             console.error(error);
-
-                            alert(
-                                'Something went wrong while loading fire extinguisher.'
-                            );
 
                         });
 
@@ -1348,8 +1378,13 @@ include './backend/controller/DropdownController.php';
                         return;
                     }
 
+                    const code = this.dataset.code || '';
+
                     window.location.href =
-                        `backend/controller/FireExtinguisherController.php?action=restore&id=${id}`;
+                        `backend/controller/FireExtinguisherController.php` +
+                        `?action=restore` +
+                        `&id=${encodeURIComponent(id)}` +
+                        `&code=${encodeURIComponent(code)}`;
 
                 });
         </script>

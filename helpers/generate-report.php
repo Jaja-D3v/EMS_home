@@ -229,7 +229,22 @@ if (!empty($inspectionDates)) {
     $dateInspected = implode(', ', $formattedDates);
 }
 
-$inspectedBy   = $firstInspection['inspected_by'] ?? '';
+$inspectedNames = array();
+
+foreach ($inspections as $inspection) {
+    $name = trim($inspection['inspected_by'] ?? '');
+
+    if (
+        $name !== '' &&
+        !in_array($name, $inspectedNames, true)
+    ) {
+        $inspectedNames[] = $name;
+    }
+}
+
+$inspectedBy = implode("\n", $inspectedNames);
+
+
 
 $approvedNames = [];
 
@@ -673,9 +688,9 @@ function drawReportHeader(
                 9
             );
 
-            if ($i === 2) {
+            if ($i === 1 || $i === 2) {
 
-                $approvedLines = preg_split(
+                $nameLines = preg_split(
                     '/\R+/',
                     trim($item[1])
                 );
@@ -684,11 +699,11 @@ function drawReportHeader(
 
                 $currentY = $infoY + $labelH + 1.5;
 
-                foreach ($approvedLines as $approvedLine) {
+                foreach ($nameLines as $nameLine) {
 
-                    $approvedLine = trim($approvedLine);
+                    $nameLine = trim($nameLine);
 
-                    if ($approvedLine === '') {
+                    if ($nameLine === '') {
                         continue;
                     }
 
@@ -700,7 +715,7 @@ function drawReportHeader(
                     $pdf->Cell(
                         $infoColW - 2,
                         $lineH,
-                        $approvedLine,
+                        $nameLine,
                         0,
                         0,
                         'C'

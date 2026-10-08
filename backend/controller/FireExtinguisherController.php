@@ -658,6 +658,8 @@ function getTotalDeletedFireExtinguishers()
 if ($action === 'restore') {
 
     $id = (int)($_GET['id'] ?? 0);
+    $code = ($_GET['code'] ?? 'unable to get code');
+
 
     if ($id <= 0) {
         header("Location: ../../archived-extinguisher.php?error=invalid_id");
@@ -667,6 +669,14 @@ if ($action === 'restore') {
     $success = restoreFireExtinguisher($id);
 
     if ($success) {
+
+        $user_name = $_SESSION['EmployeeName'] ?? 'error while getting employee name';
+
+        createActivityLog(
+            $user_name,
+            "Restored Fire Extinguisher",
+            "Restored fire extinguisher $code"
+        );
         header("Location: ../../archived-extinguisher.php?success=restored");
         exit;
     }

@@ -1082,7 +1082,7 @@ $locationData = $data['location'];
                     <!-- =====================================================
              LOCATION / AREA
         ====================================================== -->
-
+<!-- 
                     <div class="col-xl-4 col-lg-6">
 
                         <div class="card h-100 border border-primary-subtle shadow rounded-3 mt-3">
@@ -1269,7 +1269,7 @@ $locationData = $data['location'];
 
                         </div>
 
-                    </div>
+                    </div> -->
 
                 </div>
 

@@ -48,46 +48,79 @@ $totalPages = (int) ceil($totalRecords / $limit);
 
         <div class="card border-0 shadow-sm rounded-4 mb-3">
           <div class="card-body p-3 p-md-4">
-            <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center justify-content-between gap-4">
 
+            <div class="d-flex flex-column flex-lg-row align-items-start justify-content-between gap-4">
+
+              <!-- TITLE -->
               <div class="d-flex align-items-center gap-3">
                 <div class="d-flex align-items-center justify-content-center bg-success-subtle text-success rounded-4 flex-shrink-0 p-3">
                   <i class="bi bi-clock-history fs-4"></i>
                 </div>
+
                 <div class="min-width-0">
-                  <h2 class="fw-bold mb-1 fs-4">Activity Logs</h2>
-                  <p class="text-body-secondary mb-0 small">Track system activities, user actions, and recent fire extinguisher updates.</p>
+                  <h2 class="fw-bold mb-1 fs-4">
+                    Activity Logs
+                  </h2>
+
+                  <p class="text-body-secondary mb-0 small">
+                    Track system activities, user actions, and recent fire extinguisher updates.
+                  </p>
                 </div>
               </div>
 
-              <div class="d-flex flex-column flex-sm-row align-items-stretch gap-2 w-100 w-lg-auto">
-                <form method="GET" class="d-flex flex-grow-1">
-                  <div class="input-group">
-                    <span class="input-group-text bg-body border-end-0">
-                      <i class="bi bi-calendar3 text-primary"></i>
+              <!-- RIGHT SIDE -->
+              <div class="d-flex flex-column align-items-lg-end gap-2 w-100 w-lg-auto">
+
+                <!-- DATE + TOTAL -->
+                <div class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center justify-content-end gap-2">
+
+                  <!-- DATE -->
+                  <form method="GET" class="d-flex">
+                    <div class="input-group">
+                      <span class="input-group-text bg-body border-end-0">
+                        <i class="bi bi-calendar3 text-primary"></i>
+                      </span>
+
+                      <input
+                        type="date"
+                        name="date"
+                        value="<?= htmlspecialchars($date) ?>"
+                        class="form-control border-start-0 fw-semibold"
+                        onchange="this.form.submit()">
+                    </div>
+                  </form>
+
+                  <!-- TOTAL -->
+                  <div class="d-flex align-items-center justify-content-center gap-2 bg-body-tertiary border rounded-3 px-3 py-2 text-body-secondary small text-nowrap">
+
+                    <i class="bi bi-list-ul text-success"></i>
+
+                    <span>
+                      <?php if (!empty($date)): ?>
+                        <?= $totalRecords ?> activities
+                      <?php else: ?>
+                        <?= $totalRecords ?> total activities
+                      <?php endif; ?>
                     </span>
-                    <input type="date" name="date" value="<?= htmlspecialchars($date) ?>" class="form-control border-start-0 fw-semibold" onchange="this.form.submit()">
-                  </div>
-                </form>
 
-                <div class="d-flex align-items-center gap-2 bg-body-tertiary border rounded-3 px-3 py-2 text-body-secondary small text-nowrap">
-                  <i class="bi bi-list-ul text-success"></i>
-                  <span>
-                    <?php if (!empty($date)): ?>
-                      <?= $totalRecords ?> activities
-                    <?php else: ?>
-                      <?= $totalRecords ?> total activities
-                    <?php endif; ?>
-                  </span>
+                  </div>
+
                 </div>
+
+                <!-- SELECTED DATE -->
+                <?php if (!empty($date)): ?>
+                  <div class="small text-body-secondary text-lg-end">
+                    Showing activities for
+                    <strong>
+                      <?= date('F d, Y', strtotime($date)) ?>
+                    </strong>
+                  </div>
+                <?php endif; ?>
+
               </div>
+
             </div>
 
-            <?php if (!empty($date)): ?>
-              <div class="small text-body-secondary mt-3">
-                Showing activities for <strong><?= date('F d, Y', strtotime($date)) ?></strong>
-              </div>
-            <?php endif; ?>
           </div>
         </div>
 

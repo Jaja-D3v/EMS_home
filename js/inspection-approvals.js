@@ -113,6 +113,11 @@ async function viewInspection(inspectId, extinguisherCode) {
         ).value = inspection.inspected_by || "—";
 
 
+         document.getElementById(
+            "viewVerifiedAndApprovedBy"
+        ).value = inspection.verified_and_approved_by || "—";
+
+
         /*
         |--------------------------------------------------------------------------
         | REMARKS
@@ -247,7 +252,7 @@ async function viewInspection(inspectId, extinguisherCode) {
 
         const actionTaken =
             document.getElementById(
-                "viewActionTaken"
+                "viewActionTaken" 
             );
 
 
