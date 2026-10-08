@@ -95,10 +95,10 @@ if ($result) {
               </div>
               <div class="col">
                 <h2 class="fw-bold mb-1">
-                  Inspection Record
+                 Pending Inspection Record
                 </h2>
                 <p class="mb-0 text-white-50">
-                  Review and approve inspection reports.
+                  Pending inspection reports.
                 </p>
               </div>
             </div>

@@ -594,52 +594,25 @@ function setCorrectiveActionValues(
     type
 ) {
 
-    const conditionStatus = document.getElementById(
-        "viewInspectionConditionStatus");
-
-    const conditionValue = conditionStatus
-        ? conditionStatus.textContent.trim()
-        : "";
-
-    const actionSelect =
-        document.getElementById(
-            "viewActionTaken"
-        );
-
-
-    const targetDate =
-        document.getElementById(
-            "viewTargetDate"
-        );
+    const conditionStatus = document.getElementById( "viewInspectionConditionStatus");
+    const conditionValue = conditionStatus ? conditionStatus.textContent.trim() : "";
+    const actionSelect = document.getElementById( "viewActionTaken" );
+    const targetDate = document.getElementById( "viewTargetDate" );
 
 
     if (!actionSelect || !targetDate) {
 
-        alert(
-            "Corrective Action fields are missing."
-        );
+        alert( "Corrective Action fields are missing." );
 
         return false;
 
     }
 
 
-    const otherAction =
-        actionSelect.parentElement.querySelector(
-            'input[name="other_action"]'
-        );
+    const otherAction = actionSelect.parentElement.querySelector( 'input[name="other_action"]' );
 
-
-    let actionValue =
-        actionSelect.value;
-
-
-    let customAction =
-        "";
-
-
-
-
+    let actionValue = actionSelect.value;
+    let customAction = "";
 
     /*
     |--------------------------------------------------------------------------
@@ -649,18 +622,12 @@ function setCorrectiveActionValues(
 
     if (actionValue === "Others") {
 
-        customAction =
-            otherAction
-                ? otherAction.value.trim()
-                : "";
+        customAction = otherAction ? otherAction.value.trim() : "";
 
 
         if (customAction === "") {
 
-            alert(
-                "Please specify the other action."
-            );
-
+            alert( "Please specify the other action." );
 
             if (otherAction) {
 
@@ -680,14 +647,8 @@ function setCorrectiveActionValues(
         |--------------------------------------------------------------------------
         */
 
-        actionValue =
-            customAction;
-
+        actionValue = customAction;
     }
-
-
-
-
 
     /*
     |--------------------------------------------------------------------------
@@ -697,30 +658,11 @@ function setCorrectiveActionValues(
 
     if (type === "approve") {
 
-        const approveAction =
-            document.getElementById(
-                "approveActionTaken"
-            );
-
-
-        const approveOther =
-            document.getElementById(
-                "approveOtherAction"
-            );
-
-
-        const approveDate =
-            document.getElementById(
-                "approveTargetDate"
-            );
-
-        const approveCondition = document.getElementById(
-            "approveConditionStatus"
-        );
-
-        const approveRemarks = document.getElementById(
-            "approveRemarks"
-        );
+        const approveAction = document.getElementById( "approveActionTaken" );
+        const approveOther = document.getElementById( "approveOtherAction" );
+        const approveDate = document.getElementById( "approveTargetDate" );
+        const approveCondition = document.getElementById( "approveConditionStatus" );
+        const approveRemarks = document.getElementById( "approveRemarks" );
 
         if (approveCondition) {
             approveCondition.value = conditionValue;
@@ -728,33 +670,22 @@ function setCorrectiveActionValues(
 
         if (approveRemarks) {
             const remarks = document.getElementById("viewRemarks");
-
-            approveRemarks.value = remarks
-                ? remarks.value.trim()
-                : "";
+            approveRemarks.value = remarks ? remarks.value.trim() : "";
         }
-
 
         if (approveAction) {
 
-            approveAction.value =
-                actionValue;
-
+            approveAction.value = actionValue;
         }
-
 
         if (approveOther) {
 
-            approveOther.value =
-                customAction;
-
+            approveOther.value = customAction;
         }
-
 
         if (approveDate) {
 
-            approveDate.value =
-                targetDate.value;
+            approveDate.value = targetDate.value;
 
         }
 
@@ -770,24 +701,16 @@ function setCorrectiveActionValues(
     if (type === "reject") {
 
         const rejectAction =
-            document.getElementById(
-                "rejectActionTaken"
-            );
+            document.getElementById( "rejectActionTaken" );
 
 
         const rejectOther =
-            document.getElementById(
-                "rejectOtherAction"
-            );
+            document.getElementById( "rejectOtherAction" );
 
 
         const rejectDate =
-            document.getElementById(
-                "rejectTargetDate"
-            );
-        const rejectCondition = document.getElementById(
-            "rejectConditionStatus"
-        );
+            document.getElementById( "rejectTargetDate" );
+        const rejectCondition = document.getElementById( "rejectConditionStatus" );
 
         if (rejectCondition) {
             rejectCondition.value = conditionValue;
@@ -796,24 +719,19 @@ function setCorrectiveActionValues(
 
         if (rejectAction) {
 
-            rejectAction.value =
-                actionValue;
+            rejectAction.value = actionValue;
 
         }
 
 
         if (rejectOther) {
-
-            rejectOther.value =
-                customAction;
+            rejectOther.value = customAction;
 
         }
 
 
         if (rejectDate) {
-
-            rejectDate.value =
-                targetDate.value;
+            rejectDate.value = targetDate.value;
 
         }
 
@@ -823,8 +741,6 @@ function setCorrectiveActionValues(
     return true;
 
 }
-
-
 
 /*
 |--------------------------------------------------------------------------
@@ -844,15 +760,12 @@ function confirmApprove() {
 
     }
 
-
     return confirm(
         "Are you sure you want to approve this inspection?\n\n" +
         "This action will change the inspection status to Approved."
     );
 
 }
-
-
 
 /*
 |--------------------------------------------------------------------------
@@ -861,16 +774,12 @@ function confirmApprove() {
 */
 
 function confirmReject() {
-    const rejectReason =
-        document.getElementById("rejectReason");
+    const rejectReason = document.getElementById("rejectReason");
 
-    const rejectReasonInput =
-        document.getElementById("rejectReasonInput");
+    const rejectReasonInput = document.getElementById("rejectReasonInput");
 
     if (!rejectReason || !rejectReason.value.trim()) {
-        alert(
-            "Please provide a reason for rejecting this inspection."
-        );
+        alert( "Please provide a reason for rejecting this inspection." );
 
         if (rejectReason) {
             rejectReason.focus();

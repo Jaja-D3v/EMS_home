@@ -6,3 +6,5 @@ https://freefrontend.com/bootstrap-login-forms/ -> for templates
 https://storyset.com/search?q=login -> for vector templates   note:need ng attribution
 
 https://colorlib.com/wp/template/login-form-08/ -> login form 
+
+https://cloudconvert.com/jpg-to-webp
