@@ -1,5 +1,5 @@
-<?php 
-require_once '../backend/authentication/SessionChecker.php'; 
+<?php
+require_once '../backend/authentication/SessionChecker.php';
 ?>
 
 <!DOCTYPE html>
@@ -18,7 +18,7 @@ require_once '../backend/authentication/SessionChecker.php';
 <body class="dark-mode">
     <div class="page-container">
 
-     
+
         <header class=" topbar d-flex justify-content-between align-items-center ">
 
             <!-- BRAND -->
@@ -230,20 +230,11 @@ require_once '../backend/authentication/SessionChecker.php';
 
 
 
-        /* ==========================================
-           DARK / LIGHT MODE
-
-           DEFAULT = DARK
-        ========================================== */
-
-        const body =
-            document.body;
-
-
+        /*  DARK / LIGHT MODE  DEFAULT = DARK  */
+        const body = document.body;
         const themeToggle = document.getElementById("themeToggle");
         const themeIcon = document.getElementById("themeIcon");
         themeToggle.addEventListener("click", function() {
-
 
             body.classList.toggle("dark-mode");
             const isDarkMode = body.classList.contains("dark-mode");
@@ -262,8 +253,6 @@ require_once '../backend/authentication/SessionChecker.php';
 
         });
     </script>
-
-
 </body>
 
 </html>
