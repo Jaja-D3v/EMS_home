@@ -271,8 +271,14 @@ $branchDropdown = getAllDropdownBranches();
                 <div class="input-group">
                   <input
                     type="text"
+                    id="fireExtinguisherSearchInput"
                     class="form-control"
-                    placeholder="Search...">
+                    placeholder="Search..."
+                    value="<?= htmlspecialchars(
+                              $_GET['search'] ?? '',
+                              ENT_QUOTES,
+                              'UTF-8'
+                            ) ?>">
 
                   <button
                     id="searchFireExtinguisherBtn"
@@ -282,185 +288,7 @@ $branchDropdown = getAllDropdownBranches();
                   </button>
                 </div>
 
-                <script>
-                  // ========================================
-                  // SEARCH BY FE CODE OR LOCATION
-                  // ========================================
 
-                  const searchInput = document.querySelector(
-                    'input[placeholder="Search..."]'
-                  );
-
-                  const searchButton = document.getElementById(
-                    'searchFireExtinguisherBtn'
-                  );
-
-                  if (searchInput) {
-
-                    function performSearch() {
-
-                      const searchValue = searchInput.value
-                        .trim()
-                        .toLowerCase();
-
-                      const cards = document.querySelectorAll(
-                        '.extinguisher-card'
-                      );
-
-                      let visibleCount = 0;
-
-                      cards.forEach(card => {
-
-                        // ========================================
-                        // GET FE CODE
-                        // ========================================
-
-                        const codeElement = card.querySelector(
-                          '.extinguisher-code'
-                        );
-
-                        const code = codeElement ?
-                          codeElement.textContent.trim().toLowerCase() :
-                          '';
-
-
-                        // ========================================
-                        // GET LOCATION
-                        // ========================================
-
-                        const locationElement = card.querySelector(
-                          '.extinguisher-location'
-                        );
-
-                        const location = locationElement ?
-                          locationElement.textContent.trim().toLowerCase() :
-                          '';
-
-
-                        // ========================================
-                        // SEARCH FE CODE OR LOCATION
-                        // ========================================
-
-                        const match =
-                          searchValue === '' ||
-                          code.includes(searchValue) ||
-                          location.includes(searchValue);
-
-
-                        // ========================================
-                        // SHOW / HIDE CARD
-                        // ========================================
-
-                        if (match) {
-
-                          card.style.display = '';
-                          visibleCount++;
-
-                        } else {
-
-                          card.style.display = 'none';
-
-                        }
-
-                      });
-
-
-                      // ========================================
-                      // NO RESULT FOUND
-                      // ========================================
-
-                      let noResult = document.getElementById(
-                        'noSearchResult'
-                      );
-
-                      if (visibleCount === 0 && searchValue !== '') {
-
-                        if (!noResult) {
-
-                          noResult = document.createElement('div');
-
-                          noResult.id = 'noSearchResult';
-
-                          noResult.className =
-                            'border rounded-3 text-center text-body-secondary py-5 px-3 my-3 shadow-sm';
-
-                          noResult.innerHTML = `
-                            <div class="py-3">
-                                <i class="bi bi-search fs-1 d-block mb-3"></i>
-
-                                <div class="fw-semibold fs-6">
-                                    No fire extinguishers found.
-                                </div>
-
-                                <small class="text-body-secondary">
-                                    No results match your search.
-                                </small>
-                            </div>
-                            `;
-
-                          const cardContainer =
-                            document.querySelector('.extinguisher-card')?.parentElement;
-
-                          if (cardContainer) {
-                            cardContainer.appendChild(noResult);
-                          }
-                        }
-
-                        noResult.style.display = '';
-
-                      } else if (noResult) {
-
-                        noResult.style.display = 'none';
-
-                      }
-                    }
-
-
-                    // ========================================
-                    // LIVE SEARCH
-                    // ========================================
-
-                    searchInput.addEventListener(
-                      'input',
-                      performSearch
-                    );
-
-
-                    // ========================================
-                    // SEARCH BUTTON
-                    // ========================================
-
-                    if (searchButton) {
-
-                      searchButton.addEventListener(
-                        'click',
-                        performSearch
-                      );
-
-                    }
-
-
-                    // ========================================
-                    // ENTER KEY
-                    // ========================================
-
-                    searchInput.addEventListener(
-                      'keydown',
-                      function(event) {
-
-                        if (event.key === 'Enter') {
-
-                          event.preventDefault();
-
-                          performSearch();
-
-                        }
-
-                      }
-                    );
-
-                  }
-                </script>
 
               </div>
 
@@ -490,6 +318,8 @@ $branchDropdown = getAllDropdownBranches();
               trim($_GET['condition'] ?? 'all')
             );
 
+            $search = trim($_GET['search'] ?? '');
+
 
             // ============================================================
             // GET FIRE EXTINGUISHERS
@@ -499,7 +329,8 @@ $branchDropdown = getAllDropdownBranches();
               $limit,
               $offset,
               $placementType,
-              $conditionType
+              $conditionType,
+              $search
             );
 
 
@@ -509,7 +340,8 @@ $branchDropdown = getAllDropdownBranches();
 
             $totalRecords = getTotalFireExtinguishers(
               $placementType,
-              $conditionType
+              $conditionType,
+              $search
             );
 
             $totalPages = (int) ceil(
@@ -531,266 +363,240 @@ $branchDropdown = getAllDropdownBranches();
                 $limit,
                 $offset,
                 $placementType,
-                $conditionType
+                $conditionType,
+                $search
               );
             }
             ?>
-            <!-- Content here -->
-            <?php foreach ($info as $data): ?>
+            
+            <div id="inventoryResults">
+              <!-- Content here -->
+              <?php foreach ($info as $data): ?>
 
-              <?php
-              $condition = $data['condition_status'];
+                <?php
+                $condition = $data['condition_status'];
 
-              if ($condition === 'Good') {
-                $badgeClass = 'bg-success-subtle text-success';
-                $statusIcon = 'bi-check-circle-fill';
-              } else {
-                $badgeClass = 'bg-danger-subtle text-danger';
-                $statusIcon = 'bi-exclamation-circle-fill';
-              }
-
-              // ___expiration and running days
-              $expirationBadge = null;
-              $expirationBadgeClass = '';
-              $expirationIcon = '';
-
-              if (!empty($data['expiration_date'])) {
-
-                $today = new DateTime('today');
-                $expirationDate = new DateTime($data['expiration_date']);
-
-                // Two months from today
-                $twoMonthsFromNow = (clone $today)->modify('+2 months');
-
-                if ($expirationDate < $today) {
-
-                  // Already expired
-                  $expiredDays = $today->diff($expirationDate)->days;
-
-                  $expirationBadge = "Expired {$expiredDays} days ago";
-                  $expirationBadgeClass = 'bg-danger-subtle text-danger';
-                  $expirationIcon = 'bi-exclamation-triangle-fill';
-                } elseif ($expirationDate <= $twoMonthsFromNow) {
-
-                  // Within 2 months before expiration
-                  $remainingDays = $today->diff($expirationDate)->days;
-
-                  $expirationBadge = "Expires in {$remainingDays} days";
-                  $expirationBadgeClass = 'bg-warning-subtle text-warning-emphasis';
-                  $expirationIcon = 'bi-hourglass-split';
+                if ($condition === 'Good') {
+                  $badgeClass = 'bg-success-subtle text-success';
+                  $statusIcon = 'bi-check-circle-fill';
+                } else {
+                  $badgeClass = 'bg-danger-subtle text-danger';
+                  $statusIcon = 'bi-exclamation-circle-fill';
                 }
-              }
-              ?>
 
-              <div
-                class="card border border-primary-subtle shadow-sm mb-2 extinguisher-card overflow-hidden"
-                data-placement="<?= htmlspecialchars($data['placement'] ?? '') ?>">
+                // ___expiration and running days
+                $expirationBadge = null;
+                $expirationBadgeClass = '';
+                $expirationIcon = '';
 
-                <div class="card-body p-2 p-md-3">
+                if (!empty($data['expiration_date'])) {
 
-                  <!-- ============================= -->
-                  <!-- TOP SECTION -->
-                  <!-- ============================= -->
-                  <div class="d-flex align-items-center gap-3">
+                  $today = new DateTime('today');
+                  $expirationDate = new DateTime($data['expiration_date']);
 
-                    <!-- Icon -->
-                    <div
-                      class="d-flex align-items-center justify-content-center
+                  // Two months from today
+                  $twoMonthsFromNow = (clone $today)->modify('+2 months');
+
+                  if ($expirationDate < $today) {
+
+                    // Already expired
+                    $expiredDays = $today->diff($expirationDate)->days;
+
+                    $expirationBadge = "Expired {$expiredDays} days ago";
+                    $expirationBadgeClass = 'bg-danger-subtle text-danger';
+                    $expirationIcon = 'bi-exclamation-triangle-fill';
+                  } elseif ($expirationDate <= $twoMonthsFromNow) {
+
+                    // Within 2 months before expiration
+                    $remainingDays = $today->diff($expirationDate)->days;
+
+                    $expirationBadge = "Expires in {$remainingDays} days";
+                    $expirationBadgeClass = 'bg-warning-subtle text-warning-emphasis';
+                    $expirationIcon = 'bi-hourglass-split';
+                  }
+                }
+                ?>
+
+                <div
+                  class="card border border-primary-subtle shadow-sm mb-2 extinguisher-card overflow-hidden"
+                  data-placement="<?= htmlspecialchars($data['placement'] ?? '') ?>">
+
+                  <div class="card-body p-2 p-md-3">
+
+                    <!-- ============================= -->
+                    <!-- TOP SECTION -->
+                    <!-- ============================= -->
+                    <div class="d-flex align-items-center gap-3">
+
+                      <!-- Icon -->
+                      <div
+                        class="d-flex align-items-center justify-content-center
                            bg-danger bg-opacity-10 text-danger
                            rounded-3 flex-shrink-0"
-                      style="width: 50px; height: 50px;">
+                        style="width: 50px; height: 50px;">
 
-                      <i class="bi bi-fire fs-4"></i>
+                        <i class="bi bi-fire fs-4"></i>
 
-                    </div>
-
-
-                    <!-- Title -->
-                    <div class="flex-grow-1 min-width-0">
-
-                      <div class="mb-1">
-                        <span
-                          class="badge bg-danger-subtle text-danger rounded-pill px-2 py-1"
-                          style="font-size: 0.65rem;">
-
-                          <i class="bi bi-shield-fill me-1"></i>
-                          Fire Safety Equipment
-
-                        </span>
                       </div>
 
-                      <div class="d-flex align-items-center gap-2 flex-wrap">
 
-                        <div class="fw-bold fs-5 lh-sm">
-                          Fire Extinguisher
+                      <!-- Title -->
+                      <div class="flex-grow-1 min-width-0">
+
+                        <div class="mb-1">
+                          <span
+                            class="badge bg-danger-subtle text-danger rounded-pill px-2 py-1"
+                            style="font-size: 0.65rem;">
+
+                            <i class="bi bi-shield-fill me-1"></i>
+                            Fire Safety Equipment
+
+                          </span>
                         </div>
 
-                        <span class="text-body-secondary small extinguisher-code">
-                          <?= htmlspecialchars($data['extinguisher_code']) ?>
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+
+                          <div class="fw-bold fs-5 lh-sm">
+                            Fire Extinguisher
+                          </div>
+
+                          <span class="text-body-secondary small extinguisher-code">
+                            <?= htmlspecialchars($data['extinguisher_code']) ?>
+                          </span>
+
+                        </div>
+
+                      </div>
+
+
+                      <!-- Status -->
+                      <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-sm-end gap-2">
+
+                        <!-- Condition -->
+                        <span
+                          class="badge <?= $badgeClass ?> rounded-pill px-3 py-2 text-nowrap">
+
+                          <i class="bi <?= $statusIcon ?> me-1"></i>
+
+                          <?= htmlspecialchars($condition) ?>
+
                         </span>
+
+                        <!-- Expiration -->
+                        <?php if ($expirationBadge !== null): ?>
+
+                          <span
+                            class="badge <?= $expirationBadgeClass ?> rounded-pill px-3 py-2 text-nowrap">
+
+                            <i class="bi <?= $expirationIcon ?> me-1"></i>
+
+                            <?= htmlspecialchars($expirationBadge) ?>
+
+                          </span>
+
+                        <?php endif; ?>
 
                       </div>
 
                     </div>
 
+                    <!-- ============================= -->
+                    <!-- DETAILS + ACTION -->
+                    <!-- ============================= -->
+                    <div class="row g-2 g-md-3 mt-2 align-items-center">
 
-                    <!-- Status -->
-                    <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-sm-end gap-2">
+                      <!-- FE Code -->
+                      <div class="col-6 col-md">
 
-                      <!-- Condition -->
-                      <span
-                        class="badge <?= $badgeClass ?> rounded-pill px-3 py-2 text-nowrap">
+                        <div class="d-flex align-items-center gap-2">
 
-                        <i class="bi <?= $statusIcon ?> me-1"></i>
-
-                        <?= htmlspecialchars($condition) ?>
-
-                      </span>
-
-                      <!-- Expiration -->
-                      <?php if ($expirationBadge !== null): ?>
-
-                        <span
-                          class="badge <?= $expirationBadgeClass ?> rounded-pill px-3 py-2 text-nowrap">
-
-                          <i class="bi <?= $expirationIcon ?> me-1"></i>
-
-                          <?= htmlspecialchars($expirationBadge) ?>
-
-                        </span>
-
-                      <?php endif; ?>
-
-                    </div>
-
-                  </div>
-
-                  <!-- ============================= -->
-                  <!-- DETAILS + ACTION -->
-                  <!-- ============================= -->
-                  <div class="row g-2 g-md-3 mt-2 align-items-center">
-
-                    <!-- FE Code -->
-                    <div class="col-6 col-md">
-
-                      <div class="d-flex align-items-center gap-2">
-
-                        <div
-                          class="d-flex align-items-center justify-content-center
+                          <div
+                            class="d-flex align-items-center justify-content-center
                        bg-danger bg-opacity-10 text-danger
                        rounded-3 flex-shrink-0"
-                          style="width: 32px; height: 32px;">
+                            style="width: 32px; height: 32px;">
 
-                          <i class="bi bi-qr-code"></i>
+                            <i class="bi bi-qr-code"></i>
 
-                        </div>
-
-                        <div class="min-width-0">
-
-                          <div class="text-body-secondary small lh-1">
-                            FE Code
                           </div>
 
-                          <div class="fw-semibold small text-truncate">
-                            <?= htmlspecialchars($data['extinguisher_code']) ?>
+                          <div class="min-width-0">
+
+                            <div class="text-body-secondary small lh-1">
+                              FE Code
+                            </div>
+
+                            <div class="fw-semibold small text-truncate">
+                              <?= htmlspecialchars($data['extinguisher_code']) ?>
+                            </div>
+
                           </div>
 
                         </div>
 
                       </div>
 
-                    </div>
 
+                      <!-- Capacity -->
+                      <div class="col-6 col-md">
 
-                    <!-- Capacity -->
-                    <div class="col-6 col-md">
+                        <div class="d-flex align-items-center gap-2">
 
-                      <div class="d-flex align-items-center gap-2">
-
-                        <div
-                          class="d-flex align-items-center justify-content-center
+                          <div
+                            class="d-flex align-items-center justify-content-center
                        bg-primary bg-opacity-10 text-primary
                        rounded-3 flex-shrink-0"
-                          style="width: 32px; height: 32px;">
+                            style="width: 32px; height: 32px;">
 
-                          <i class="bi bi-box-seam"></i>
+                            <i class="bi bi-box-seam"></i>
 
-                        </div>
-
-                        <div class="min-width-0">
-
-                          <div class="text-body-secondary small lh-1">
-                            Capacity
                           </div>
 
-                          <div class="fw-semibold small text-truncate">
-                            <?= htmlspecialchars($data['capacity']) ?>
+                          <div class="min-width-0">
+
+                            <div class="text-body-secondary small lh-1">
+                              Capacity
+                            </div>
+
+                            <div class="fw-semibold small text-truncate">
+                              <?= htmlspecialchars($data['capacity']) ?>
+                            </div>
+
                           </div>
 
                         </div>
 
                       </div>
 
-                    </div>
 
+                      <!-- Type -->
+                      <div class="col-6 col-md">
 
-                    <!-- Type -->
-                    <div class="col-6 col-md">
+                        <div class="d-flex align-items-center gap-2">
 
-                      <div class="d-flex align-items-center gap-2">
-
-                        <div
-                          class="d-flex align-items-center justify-content-center
+                          <div
+                            class="d-flex align-items-center justify-content-center
                        bg-warning bg-opacity-10 text-warning
                        rounded-3 flex-shrink-0"
-                          style="width: 32px; height: 32px;">
+                            style="width: 32px; height: 32px;">
 
-                          <i class="bi bi-fire"></i>
-
-                        </div>
-
-                        <div class="min-width-0">
-
-                          <div class="text-body-secondary small lh-1">
-                            Type
-                          </div>
-
-                          <div
-                            class="fw-semibold small text-truncate"
-                            title="<?= htmlspecialchars($data['type']) ?>">
-
-                            <?= htmlspecialchars($data['type']) ?>
+                            <i class="bi bi-fire"></i>
 
                           </div>
 
-                        </div>
+                          <div class="min-width-0">
 
-                      </div>
+                            <div class="text-body-secondary small lh-1">
+                              Type
+                            </div>
 
-                    </div>
+                            <div
+                              class="fw-semibold small text-truncate"
+                              title="<?= htmlspecialchars($data['type']) ?>">
 
+                              <?= htmlspecialchars($data['type']) ?>
 
-                    <!-- Location -->
-                    <div class="col-6 col-md">
-
-                      <div class="d-flex align-items-center gap-2">
-
-                        <div class="d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-3 flex-shrink-0" style="width: 32px; height: 32px;">
-                          <i class="bi bi-geo-alt"></i>
-
-                        </div>
-
-                        <div class="min-width-0">
-
-                          <div class="text-body-secondary small lh-1">
-                            Location
-                          </div>
-
-                          <div
-                            class="fw-semibold small text-truncate extinguisher-location"
-                            title="<?= htmlspecialchars($data['location']) ?>">
-
-                            <?= htmlspecialchars($data['location']) ?>
+                            </div>
 
                           </div>
 
@@ -798,77 +604,30 @@ $branchDropdown = getAllDropdownBranches();
 
                       </div>
 
-                    </div>
 
+                      <!-- Location -->
+                      <div class="col-6 col-md">
 
-                    <!-- Branch -->
-                    <div class="col-6 col-md">
+                        <div class="d-flex align-items-center gap-2">
 
-                      <div class="d-flex align-items-center gap-2">
-                        <div class="d-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-3 flex-shrink-0" style="width: 32px; height: 32px;">
-
-                          <i class="bi bi-building"></i>
-
-                        </div>
-
-                        <div class="min-width-0">
-
-                          <div class="text-body-secondary small lh-1">
-                            Branch
-                          </div>
-
-                          <div
-                            class="fw-semibold small text-truncate"
-                            title="<?= htmlspecialchars($data['branch']) ?>">
-
-                            <?= htmlspecialchars($data['branch']) ?>
+                          <div class="d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-3 flex-shrink-0" style="width: 32px; height: 32px;">
+                            <i class="bi bi-geo-alt"></i>
 
                           </div>
 
-                        </div>
+                          <div class="min-width-0">
 
-                      </div>
+                            <div class="text-body-secondary small lh-1">
+                              Location
+                            </div>
 
-                    </div>
+                            <div
+                              class="fw-semibold small text-truncate extinguisher-location"
+                              title="<?= htmlspecialchars($data['location']) ?>">
 
+                              <?= htmlspecialchars($data['location']) ?>
 
-                    <!-- Last Inspected -->
-                    <div class="col-6 col-md">
-
-                      <div class="d-flex align-items-center gap-2">
-
-                        <div class="d-flex align-items-center justify-content-center bg-info bg-opacity-10 text-info rounded-3 flex-shrink-0" style="width: 32px; height: 32px;">
-
-                          <i class="bi bi-calendar-check"></i>
-
-                        </div>
-
-                        <div class="min-width-0">
-
-                          <div class="text-body-secondary small lh-1">
-                            Last Inspected
-                          </div>
-
-                          <div
-                            class="fw-semibold small text-truncate"
-                            title="<?= !empty($data['last_date_inspected'])
-                                      ? htmlspecialchars($data['last_date_inspected'])
-                                      : 'Not inspected' ?>">
-
-                            <?php if (!empty($data['last_date_inspected'])): ?>
-
-                              <?= htmlspecialchars(
-                                date(
-                                  'M d, Y',
-                                  strtotime($data['last_date_inspected'])
-                                )
-                              ) ?>
-
-                            <?php else: ?>
-
-                              N/A
-
-                            <?php endif; ?>
+                            </div>
 
                           </div>
 
@@ -876,23 +635,101 @@ $branchDropdown = getAllDropdownBranches();
 
                       </div>
 
-                    </div>
+
+                      <!-- Branch -->
+                      <div class="col-6 col-md">
+
+                        <div class="d-flex align-items-center gap-2">
+                          <div class="d-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-3 flex-shrink-0" style="width: 32px; height: 32px;">
+
+                            <i class="bi bi-building"></i>
+
+                          </div>
+
+                          <div class="min-width-0">
+
+                            <div class="text-body-secondary small lh-1">
+                              Branch
+                            </div>
+
+                            <div
+                              class="fw-semibold small text-truncate"
+                              title="<?= htmlspecialchars($data['branch']) ?>">
+
+                              <?= htmlspecialchars($data['branch']) ?>
+
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                      </div>
 
 
-                    <!-- View -->
-                    <div class="col-12 col-md-auto">
+                      <!-- Last Inspected -->
+                      <div class="col-6 col-md">
 
-                      <button
-                        type="button"
-                        class="btn btn-sm btn-primary w-100 px-4 view-extinguisher-btn"
-                        data-id="<?= htmlspecialchars($data['extinguisher_id']) ?>"
-                        data-bs-toggle="modal"
-                        data-bs-target="#viewFireExtinguisherModal">
+                        <div class="d-flex align-items-center gap-2">
 
-                        <i class="bi bi-eye me-1"></i>
-                        View
+                          <div class="d-flex align-items-center justify-content-center bg-info bg-opacity-10 text-info rounded-3 flex-shrink-0" style="width: 32px; height: 32px;">
 
-                      </button>
+                            <i class="bi bi-calendar-check"></i>
+
+                          </div>
+
+                          <div class="min-width-0">
+
+                            <div class="text-body-secondary small lh-1">
+                              Last Inspected
+                            </div>
+
+                            <div
+                              class="fw-semibold small text-truncate"
+                              title="<?= !empty($data['last_date_inspected'])
+                                        ? htmlspecialchars($data['last_date_inspected'])
+                                        : 'Not inspected' ?>">
+
+                              <?php if (!empty($data['last_date_inspected'])): ?>
+
+                                <?= htmlspecialchars(
+                                  date(
+                                    'M d, Y',
+                                    strtotime($data['last_date_inspected'])
+                                  )
+                                ) ?>
+
+                              <?php else: ?>
+
+                                N/A
+
+                              <?php endif; ?>
+
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+
+                      <!-- View -->
+                      <div class="col-12 col-md-auto">
+
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-primary w-100 px-4 view-extinguisher-btn"
+                          data-id="<?= htmlspecialchars($data['extinguisher_id']) ?>"
+                          data-bs-toggle="modal"
+                          data-bs-target="#viewFireExtinguisherModal">
+
+                          <i class="bi bi-eye me-1"></i>
+                          View
+
+                        </button>
+
+                      </div>
 
                     </div>
 
@@ -900,12 +737,11 @@ $branchDropdown = getAllDropdownBranches();
 
                 </div>
 
-              </div>
-
-            <?php endforeach; ?>
+              <?php endforeach; ?>
+            </div>
 
             <!-- PAGINATION -->
-            <div class="card border border-primary-subtle shadow-sm rounded-3 mt-3">
+            <div id="inventoryPagination" class="card border border-primary-subtle shadow-sm rounded-3 mt-3">
 
               <div class="card-footer bg-body border-0 px-3 py-3">
 
@@ -1808,7 +1644,237 @@ $branchDropdown = getAllDropdownBranches();
   <script src="vendors/simplebar/js/simplebar.min.js"></script>
   <script src="js/list-extinguisher.js"></script>
 
+  <script>
+    (function() {
+      const searchInput = document.getElementById(
+        'fireExtinguisherSearchInput'
+      );
+
+      const searchButton = document.getElementById(
+        'searchFireExtinguisherBtn'
+      );
+
+      if (!searchInput || !searchButton) {
+        return;
+      }
+
+      // =====================================================
+      // UPDATE URL WHILE TYPING
+      // Hindi pa ito magre-request ng search results.
+      // =====================================================
+
+      function updateSearchUrl() {
+        const url = new URL(window.location.href);
+        const searchValue = searchInput.value.trim();
+
+        if (searchValue !== '') {
+          url.searchParams.set('search', searchValue);
+        } else {
+          url.searchParams.delete('search');
+        }
+
+        // Bawat bagong search ay magsisimula sa page 1.
+        url.searchParams.delete('page');
+
+        window.history.replaceState({},
+          '',
+          url.toString()
+        );
+      }
+
+      searchInput.addEventListener('input', function() {
+        updateSearchUrl();
+
+    
+        if (searchInput.value.trim() === '') {
+          loadInventoryResults(window.location.href);
+        }
+      });
+
+      // =====================================================
+      // FETCH SERVER-SIDE RESULTS WITHOUT PAGE RELOAD
+      // =====================================================
+
+      async function loadInventoryResults(requestUrl) {
+        const originalButtonText = searchButton.innerHTML;
+
+        searchButton.disabled = true;
+        searchButton.innerHTML =
+          '<span class="spinner-border spinner-border-sm me-1" ' +
+          'aria-hidden="true"></span> Searching...';
+
+        try {
+          const response = await fetch(requestUrl, {
+            method: 'GET',
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest'
+            },
+            credentials: 'same-origin'
+          });
+
+          if (!response.ok) {
+            throw new Error(
+              'Request failed. HTTP status: ' + response.status
+            );
+          }
+
+          const html = await response.text();
+
+          const parser = new DOMParser();
+
+          const parsedDocument = parser.parseFromString(
+            html,
+            'text/html'
+          );
+
+          const newResults = parsedDocument.querySelector(
+            '#inventoryResults'
+          );
+
+          const newPagination = parsedDocument.querySelector(
+            '#inventoryPagination'
+          );
+
+          const currentResults = document.querySelector(
+            '#inventoryResults'
+          );
+
+          const currentPagination = document.querySelector(
+            '#inventoryPagination'
+          );
+
+          if (
+            !newResults ||
+            !newPagination ||
+            !currentResults ||
+            !currentPagination
+          ) {
+            throw new Error(
+              'Hindi makita ang inventory results o pagination wrapper.'
+            );
+          }
+
+          // Palitan lamang ang cards.
+          currentResults.innerHTML = newResults.innerHTML;
+
+          // Kapag walang matching records, magpakita ng empty state.
+          if (
+            !currentResults.querySelector('.extinguisher-card')
+          ) {
+            currentResults.innerHTML = `
+                    <div class="border rounded-3 text-center
+                                text-body-secondary py-5 px-3 my-3 shadow-sm">
+                        <div class="py-3">
+                            <i class="bi bi-search fs-1 d-block mb-3"></i>
+
+                            <div class="fw-semibold fs-6">
+                                No fire extinguishers found.
+                            </div>
+
+                            <small class="text-body-secondary">
+                                No results match your search or filters.
+                            </small>
+                        </div>
+                    </div>
+                `;
+          }
+
+          // Palitan ang entry count at pagination links.
+          currentPagination.replaceWith(
+            newPagination.cloneNode(true)
+          );
+
+        } catch (error) {
+          console.error(
+            'Inventory search error:',
+            error
+          );
+
+          alert(
+            'Hindi ma-load ang search results. ' +
+            'Pakisubukan ulit.'
+          );
+
+        } finally {
+          searchButton.disabled = false;
+          searchButton.innerHTML = originalButtonText;
+        }
+      }
+
+      // =====================================================
+      // SEARCH BUTTON
+      // =====================================================
+
+      searchButton.addEventListener('click', function() {
+        updateSearchUrl();
+
+        loadInventoryResults(
+          window.location.href
+        );
+      });
+
+      // =====================================================
+      // ENTER KEY
+      // =====================================================
+
+      searchInput.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+
+          updateSearchUrl();
+
+          loadInventoryResults(
+            window.location.href
+          );
+        }
+      });
+
+      // =====================================================
+      // AJAX PAGINATION
+      // =====================================================
+
+      document.addEventListener('click', function(event) {
+        const pageLink = event.target.closest(
+          '#inventoryPagination a.page-link[href]'
+        );
+
+        if (!pageLink) {
+          return;
+        }
+
+        event.preventDefault();
+
+        const targetUrl = new URL(
+          pageLink.href,
+          window.location.origin
+        );
+
+        window.history.pushState({},
+          '',
+          targetUrl.toString()
+        );
+
+        loadInventoryResults(
+          targetUrl.toString()
+        );
+      });
+
+      // =====================================================
+      // BROWSER BACK / FORWARD
+      // =====================================================
+
+      window.addEventListener('popstate', function() {
+        loadInventoryResults(
+          window.location.href
+        );
+      });
+
+    })();
+  </script>
+
+
   <?php include_once 'notification/session_timeout.php'; ?>
 
 </body>
+
 </html>

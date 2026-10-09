@@ -341,9 +341,7 @@ function getById($id)
             return false;
         }
 
-        $sql .= "
-            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
-        ";
+        $sql .= " AND LOWER(TRIM(branch)) = LOWER(TRIM(?)) ";
     }
 
 
@@ -852,7 +850,8 @@ function update_status($status, $ext_code)
 // =====================================================
 function getTotalFireExtinguishersModel(
     $placementType = 'all',
-    $conditionType = 'all'
+    $conditionType = 'all',
+    $search = ''
 ) {
     global $conn;
 
@@ -945,6 +944,33 @@ function getTotalFireExtinguishersModel(
             AND LOWER(TRIM(condition_status)) = 'not good'
         ";
     }
+
+
+    // ========================================================
+    // SEARCH FILTER FOR TOTAL COUNT
+    // ========================================================
+
+    $search = trim($search);
+
+    if ($search !== '') {
+
+        $sql .= "
+            AND (
+                LOWER(TRIM(extinguisher_code))
+                    LIKE LOWER(TRIM(?))
+                OR LOWER(TRIM(location))
+                    LIKE LOWER(TRIM(?))
+            )
+        ";
+
+        $searchValue = '%' . $search . '%';
+
+        $params[] = $searchValue;
+        $params[] = $searchValue;
+
+        $types .= 'ss';
+    }
+
 
 
     // ========================================================

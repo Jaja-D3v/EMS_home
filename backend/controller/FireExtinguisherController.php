@@ -12,7 +12,8 @@ function getAllFireExtinguishers(
     $limit = 10,
     $offset = 0,
     $placementType = 'all',
-    $conditionType = 'all'
+    $conditionType = 'all',
+    $search = ''
 ) {
     $role = strtolower(
         trim($_SESSION['Role'] ?? '')
@@ -28,7 +29,8 @@ function getAllFireExtinguishers(
             $limit,
             $offset,
             $placementType,
-            $conditionType
+            $conditionType,
+            $search
         );
     }
 
@@ -42,7 +44,8 @@ function getAllFireExtinguishers(
             $limit,
             $offset,
             $placementType,
-            $conditionType
+            $conditionType,
+            $search
         );
     }
 
@@ -619,13 +622,17 @@ function getNextFireExtinguisherCode($branch)
 
 function getTotalFireExtinguishers(
     $placementType = 'all',
-    $conditionType = 'all'
+    $conditionType = 'all',
+    $search = ''
 ) {
     return getTotalFireExtinguishersModel(
         $placementType,
-        $conditionType
+        $conditionType,
+        $search
     );
 }
+
+
 function getAllArchiveFireExtinguishers(
     $limit = 10,
     $offset = 0
