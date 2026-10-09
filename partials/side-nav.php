@@ -2,17 +2,17 @@
   <div class="sidebar-header border-bottom">
 
     <div class="sidebar-brand d-flex align-items-center justify-content-center gap-2">
-      <img src="assets/img/EMS-LOGO.png"
+      <img src="assets/img/KPFEMS.png"
         alt="Equipment Management System"
         class="img-fluid"
         style="
-         max-height: 40px;
+         max-height: 70px;
          width: auto;
          filter: drop-shadow(0 0 3px rgba(255,255,255,0.9))
                  drop-shadow(0 0 7px rgba(255,255,255,0.5));
           ">
 
-      <div class="d-flex flex-column">
+      <!-- <div class="d-flex flex-column">
         <span class="fw-bold"
           style="font-size: 0.95rem; letter-spacing: 1px; color: #ffffff;">
           EQUIPMENT
@@ -21,7 +21,7 @@
           style="font-size: 0.65rem; letter-spacing: 1px; color: #ffffff;">
           MANAGEMENT SYSTEM
         </span>
-      </div>
+      </div> -->
     </div>
 
     <button class="btn-close d-lg-none" type="button" data-coreui-theme="dark" aria-label="Close" onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()"></button>

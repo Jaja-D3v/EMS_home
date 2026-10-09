@@ -9,6 +9,8 @@ require_once '../backend/authentication/SessionChecker.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IMS | Safety Management System</title>
+    <link rel="icon" type="image/x-icon" href="../assets/img/IMS.ico">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../css/system-selector.css">
@@ -119,30 +121,33 @@ require_once '../backend/authentication/SessionChecker.php';
             <!-- FIRE EQUIPMENT -->
             <div class="col-lg-4 col-md-6">
                 <a href="../dashboard.php" class="text-decoration-none">
-                    <div class="system-card fire-card ">
-                        <div class="system-icon fire-icon">
-                            <img src="../assets/img/EMS-LOGO.png" alt="EMS Logo" width="auto" height="80">
+                    <div class="system-card fire-card">
+
+                        <div class="kpfems-logo-container">
+                            <img
+                                src="../assets/img/KPFEMS.png"
+                                alt="KPFEMS Logo"
+                                class="kpfems-logo">
                         </div>
 
                         <h2 class="system-title">
-                            Equipment
-                            <br>
+                            Equipment<br>
                             Management
                         </h2>
-
 
                         <p class="system-description">
                             Fire equipment, inspections,
                             QR code management, and approvals
                         </p>
 
-
                         <div class="system-arrow">
                             <i class="bi bi-arrow-right"></i>
                         </div>
+
                     </div>
                 </a>
             </div>
+
 
             <!-- ACCIDENT MANAGEMENT -->
             <div class="col-lg-4 col-md-6">
@@ -253,6 +258,40 @@ require_once '../backend/authentication/SessionChecker.php';
 
         });
     </script>
+
+    <style>
+        .kpfems-logo-container {
+            display: flex;
+            justify-content: flex-end;
+            width: 100%;
+            margin-bottom: 1rem;
+            overflow: visible;
+        }
+
+        .kpfems-logo {
+            height: 80px;
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+            transform: translateX(-130px);
+        }
+
+        /* Tablet */
+        @media (max-width: 991.98px) {
+            .kpfems-logo {
+                height: 70px;
+                transform: translateX(-60px);
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 575.98px) {
+            .kpfems-logo {
+                height: 60px;
+                transform: translateX(0);
+            }
+        }
+    </style>
 </body>
 
 </html>

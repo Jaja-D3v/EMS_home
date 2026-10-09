@@ -24,6 +24,7 @@ if (isset($_SESSION['id'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IMS Safety Management System</title>
 
+  <link rel="icon" type="image/x-icon" href="../assets/img/IMS.ico">
   <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -239,4 +240,5 @@ if (isset($_SESSION['id'])) {
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"> </script>
   <script src="../js/login.js"> </script>
 </body>
+
 </html>
