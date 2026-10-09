@@ -1,4 +1,6 @@
-<?php require_once '../backend/authentication/SessionChecker.php'; ?>
+<?php 
+require_once '../backend/authentication/SessionChecker.php'; 
+?>
 
 <!DOCTYPE html>
 <html lang="en">

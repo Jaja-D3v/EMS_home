@@ -25,7 +25,6 @@ async function viewInspection(inspectId, extinguisherCode) {
             approveInspectId.value = inspectId;
         }
 
-
         if (rejectInspectId) {
 
             rejectInspectId.value = inspectId;
@@ -41,7 +40,6 @@ async function viewInspection(inspectId, extinguisherCode) {
         if (rejectExtinguisherCode) {
             rejectExtinguisherCode.value = extinguisherCode || "";
         }
-
 
         /*  BASIC INFORMATION  */
         document.getElementById("viewExtinguisherCode").value = inspection.extinguisher_code || "—";
@@ -241,10 +239,7 @@ function updateChecklistStatus(
 
 }
 
-
-
 /* CORRECTIVE ACTION - OTHERS */
-
 document.addEventListener(
     "DOMContentLoaded",
     function () {
@@ -309,7 +304,6 @@ function setCorrectiveActionValues(type)
     let customAction = "";
 
     /*  OTHERS */
-
     if (actionValue === "Others") {
 
         customAction = otherAction ? otherAction.value.trim() : "";
@@ -370,12 +364,7 @@ function setCorrectiveActionValues(type)
     }
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | REJECT
-    |--------------------------------------------------------------------------
-    */
-
+    /* REJECT */
     if (type === "reject") {
 
         const rejectAction = document.getElementById("rejectActionTaken");

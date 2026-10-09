@@ -91,38 +91,23 @@
           <!-- Expiring Soon -->
           <li class="nav-item">
 
-            <a
-              class="nav-link"
-              href="expiring-extinguisher.php">
-
+            <a class="nav-link" href="expiring-extinguisher.php">
               <i class="bi bi-hourglass-split me-2"></i>
-
               Expiring Soon
-
             </a>
-
           </li>
 
 
           <!-- Archived -->
           <li class="nav-item">
 
-            <a
-              class="nav-link"
-              href="archived-extinguisher.php">
-
+            <a class="nav-link" href="archived-extinguisher.php">
               <i class="bi bi-trash3 me-2"></i>
-
               Deleted
-
             </a>
-
           </li>
-
         </ul>
-
       </div>
-
     </li>
     <?php
     $currentStatus = $_GET['status'] ?? '';
@@ -147,33 +132,26 @@
           <i class="bi bi-chevron-down ms-auto submenu-chevron"></i>
         </a>
 
-        <div
-          class="collapse"
-          id="inspectionApprovalMenu">
-
+        <div class="collapse" id="inspectionApprovalMenu">
           <ul class="nav flex-column ms-3">
-
             <li class="nav-item">
               <a class="nav-link" href="inspection-pending.php">
                 <i class="bi bi-hourglass-split me-2"></i>
                 Pending
               </a>
             </li>
-
             <li class="nav-item">
               <a class="nav-link" href="inspection-approved.php">
                 <i class="bi bi-check-circle me-2"></i>
                 Approved
               </a>
             </li>
-
             <li class="nav-item">
               <a class="nav-link" href="inspection-rejected.php">
                 <i class="bi bi-x-circle me-2"></i>
                 Rejected
               </a>
             </li>
-
           </ul>
         </div>
       </li>
@@ -186,7 +164,6 @@
          <i class="fa-solid fa-file-circle-xmark"></i>
           Rejected Inspection
         </a>
-
       </li>
     <?php endif; ?>
 
@@ -208,10 +185,7 @@
       <!-- Maintenance -->
       <li class="nav-item">
 
-        <a
-          class="nav-link"
-          href="maintenance.php">
-
+        <a class="nav-link" href="maintenance.php">
           <i class="bi bi-tools me-2"></i>
           Maintenance
 
