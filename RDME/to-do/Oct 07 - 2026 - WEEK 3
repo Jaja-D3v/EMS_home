@@ -26,7 +26,7 @@ ____________________________________________________________DONE________________
 
 
 # generate inventory report             
-- design pdf inventory report                          #DONE
+- design pdf inventory report                          
 
 # list extinguisher
 - implemented placement type dropdown
@@ -34,10 +34,11 @@ ____________________________________________________________DONE________________
 - last date of inspection to list extinguisher
 
 ## inspection view for SO na mag aapprove nung inspection 
-- dapat nullable yung dalawang action                 #DONE
+- dapat nullable yung dalawang action                 
 
 ## create button in active fire extinguisher 
-- create generate inventory report button functional #done
+- create generate inventory report button functional 
 
-- added pagination in print qr code module #DONE
+- added pagination in print qr code module 
 
+Implemented inventory report PDF design, improved extinguisher listing with placement type dropdown and pagination, added the last inspection date, updated inspection approval actions, enabled inventory report generation, and added pagination to the QR code printing module.

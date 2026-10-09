@@ -48,7 +48,7 @@ ADD COLUMN last_date_inspected DATETIME NULL;
 ______________________________________________________________________
 
 # REMARKS 
-- need to add sa database after inspections success #done
+- need to add sa database after inspections success 
 
 - fix buggs 
 
@@ -64,5 +64,8 @@ ______________________________________________________________________
 - revise expiry module 
 
 ## Approve Inspection Module
-- Add generate report button (to generate report of the selected date and branch).              #DONE
-- Generate report based on the selected date.                                                   #DONE
+- Add generate report button (to generate report of the selected date and branch).              
+- Generate report based on the selected date.                                                  
+
+
+Completed system enhancements, bug fixes, and improvements to inspection monitoring, expiry tracking, branch filtering, and report generation.

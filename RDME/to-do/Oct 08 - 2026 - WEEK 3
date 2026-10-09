@@ -19,7 +19,7 @@ ____________________________________________________________DONE________________
 
 
 # generate inventory report             
-- design pdf inventory report                          #DONE
+- design pdf inventory report                          
 
 # list extinguisher
 - implemented placement type dropdown
@@ -27,21 +27,21 @@ ____________________________________________________________DONE________________
 - last date of inspection to list extinguisher
 
 ## inspection view for SO na mag aapprove nung inspection 
-- dapat nullable yung dalawang action                 #DONE
+- dapat nullable yung dalawang action                 
 
 ## create button in active fire extinguisher 
-- create generate inventory report button functional #done
+- create generate inventory report button functional 
 
-- added pagination in print qr code module #DONE
-- added branch label on generate inventory report #done
-- backend fix only retrieve all the latest records in pending #DONE
-- backend fix only retrieve all the latest records in approved #DONE
-- backend fix only retrieve all the latest records in reject #DONE
-- implemented maintainable dropdown for edit fe and for add #DONE
+- added pagination in print qr code module 
+- added branch label on generate inventory report 
+- backend fix only retrieve all the latest records in pending 
+- backend fix only retrieve all the latest records in approved 
+- backend fix only retrieve all the latest records in reject 
+- implemented maintainable dropdown for edit fe and for add 
 - optimize the generation of report from 30 secs down to 10 secs
 - added branch in inspection report
 
-bugg: pag nasa approve inspection module pag nag popup yung timer na tatakloban nung data pati yung table para nagiging pop up #FIXED
+bugg: pag nasa approve inspection module pag nag popup yung timer na tatakloban nung data pati yung table para nagiging pop up 
 
-
+Enhanced inventory and inspection reporting, improved extinguisher management and pagination, optimized report generation from 30 seconds to 10 seconds, updated backend filtering to retrieve only the latest inspection records, and improved dropdown functionality. Fixed report branch labeling and inspection approval data handling, with a remaining issue involving the timer popup overlapping the table.
 
