@@ -248,7 +248,7 @@ include 'partials/header.php';
       </div>
 
       <!-- Inspection Table -->
-      <div class="card border-0 shadow-sm inspection-table-card">
+      <div class="card border-0 shadow-sm inspection-table-card mb-5">
 
         <div class="card-body p-0">
 

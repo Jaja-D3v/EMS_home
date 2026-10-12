@@ -13,6 +13,15 @@ _____________________________________________________________
 
 - search for Approved Inspection Record
 
+# added my inspections module for inspector 
+- fix bugg for fetching pagination and and total in head is not match
+
+- search in inspection approved
+- search in inspection rejected
+- search in inspection deleted
+
+- may bugg sa search ng active extinguisher 
+
 
 
 ____________________________________________________________DONE___________________________________________________________________________
@@ -22,3 +31,8 @@ ____________________________________________________________DONE________________
 - redesign side nav                     #done
 - fix pagination in archived extinguisher #done
 - added notification for restored success #done
+
+# added my inspections module for inspector 
+- create inspection UI for my inspections
+- implemented backend 
+- created fetch 

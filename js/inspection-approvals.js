@@ -49,6 +49,7 @@ async function viewInspection(inspectId, extinguisherCode) {
         document.getElementById("viewInspectionClass").value = inspection.class || "—";
         document.getElementById("viewInspectedBy").value = inspection.inspected_by || "—";
         document.getElementById("viewVerifiedAndApprovedBy").value = inspection.verified_and_approved_by || "—";
+        document.getElementById("viewActionTaken").value = inspection.action_taken || "—";
 
         /* REMARKS */
         document.getElementById("viewRemarks").value = inspection.remarks || "N/A";
@@ -115,21 +116,45 @@ async function viewInspection(inspectId, extinguisherCode) {
         `;
 
         /* CORRECTIVE ACTION */
-        const actionTaken = document.getElementById("viewActionTaken");
+        const actionSelect = document.getElementById("action_taken");
+        const otherAction = document.getElementById("other_action");
         const targetDate = document.getElementById("viewTargetDate");
 
-        if (actionTaken) {
-
+        if (actionSelect) {
             const savedAction = inspection.action_taken || "";
 
-            // Display the exact value saved in the database
-            actionTaken.value = savedAction;
+            const standardActions = [
+                "Refill",
+                "Replacement of Parts",
+                "Replacement of Unit"
+            ];
+
+            if (standardActions.includes(savedAction)) {
+                actionSelect.value = savedAction;
+
+                if (otherAction) {
+                    otherAction.value = "";
+                    otherAction.classList.add("d-none");
+                    otherAction.style.display = "none";
+                    otherAction.required = false;
+                }
+            } else if (savedAction) {
+                actionSelect.value = "Others";
+
+                if (otherAction) {
+                    otherAction.value = savedAction;
+                    otherAction.classList.remove("d-none");
+                    otherAction.style.display = "block";
+                    otherAction.required = true;
+                }
+            } else {
+                actionSelect.value = "";
+            }
         }
 
-        /*  TARGET DATE  */
         if (targetDate) {
-
-            targetDate.value = inspection.target_date_of_implementation || "";
+            targetDate.value =
+                inspection.target_date_of_implementation || "";
         }
 
         /*  CHECKLIST STATUS  */
@@ -239,170 +264,129 @@ function updateChecklistStatus(
 
 }
 
-/* CORRECTIVE ACTION - OTHERS */
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+// for others selection 
 
-        const actionTaken =
-            document.getElementById(
-                "viewActionTaken"
-            );
-
-
-        if (!actionTaken) {
-            return;
-        }
-
-
-        actionTaken.addEventListener(
-            "change",
-            function () {
-
-                const otherAction = this.parentElement.querySelector( 'input[name="other_action"]' );
-
-                if (!otherAction) {
-                    return;
-                }
-
-
-                if (this.value === "Others") {
-
-                    otherAction.classList.remove( "d-none" );
-                    otherAction.required = true;
-
-                } else {
-
-                    otherAction.classList.add( "d-none" );
-                    otherAction.required = false;
-                    otherAction.value = "";
-                }
-
-            }
-        );
-
+document.addEventListener("change", function (event) {
+    if (event.target.id !== "action_taken") {
+        return;
     }
-);
+
+    const actionTaken = event.target;
+    const container = actionTaken.closest(".col-12");
+    const otherAction = container?.querySelector(
+        'input[name="other_action"]'
+    );
+
+    if (!otherAction) {
+        console.error("Hindi makita ang input[name='other_action'].");
+        return;
+    }
+
+    if (actionTaken.value === "Others") {
+        otherAction.classList.remove("d-none");
+        otherAction.style.display = "block";
+        otherAction.required = true;
+        otherAction.focus();
+    } else {
+        otherAction.classList.add("d-none");
+        otherAction.style.display = "none";
+        otherAction.required = false;
+        otherAction.value = "";
+    }
+});
 
 /* SET CORRECTIVE ACTION VALUES */
-function setCorrectiveActionValues(type) 
-{
-    const conditionStatus = document.getElementById("viewInspectionConditionStatus");
-    const conditionValue = conditionStatus ? conditionStatus.textContent.trim() : "";
-    const actionSelect = document.getElementById("viewActionTaken");
+function setCorrectiveActionValues(type) {
+    const conditionStatus = document.getElementById(
+        "viewInspectionConditionStatus"
+    );
+
+    const conditionValue = conditionStatus
+        ? conditionStatus.textContent.trim()
+        : "";
+
+    // Correct IDs from Section 3
+    const actionSelect = document.getElementById("action_taken");
+    const otherAction = document.getElementById("other_action");
     const targetDate = document.getElementById("viewTargetDate");
 
     if (!actionSelect || !targetDate) {
-
         alert("Corrective Action fields are missing.");
         return false;
-
     }
 
-    const otherAction = actionSelect.parentElement.querySelector('input[name="other_action"]');
     let actionValue = actionSelect.value;
     let customAction = "";
 
-    /*  OTHERS */
-    if (actionValue === "Others") {
+    // Validate action selection
+    if (!actionValue) {
+        alert("Please select an action taken.");
+        actionSelect.focus();
+        return false;
+    }
 
+    // Handle Others
+    if (actionValue === "Others") {
         customAction = otherAction ? otherAction.value.trim() : "";
 
-        if (customAction === "") {
-
+        if (!customAction) {
             alert("Please specify the other action.");
 
             if (otherAction) {
-
                 otherAction.focus();
-
             }
 
             return false;
-
         }
 
-        /* SAVE CUSTOM ACTION AS ACTION TAKEN */
+        // Save the custom text as action_taken
         actionValue = customAction;
     }
 
-    /*  APPROVE */
-
+    // APPROVE
     if (type === "approve") {
-
         const approveAction = document.getElementById("approveActionTaken");
         const approveOther = document.getElementById("approveOtherAction");
         const approveDate = document.getElementById("approveTargetDate");
         const approveCondition = document.getElementById("approveConditionStatus");
         const approveRemarks = document.getElementById("approveRemarks");
 
-        if (approveCondition) {
-            approveCondition.value = conditionValue;
-        }
+        if (approveAction) approveAction.value = actionValue;
+        if (approveOther) approveOther.value = customAction;
+        if (approveDate) approveDate.value = targetDate.value;
+        if (approveCondition) approveCondition.value = conditionValue;
 
         if (approveRemarks) {
             const remarks = document.getElementById("viewRemarks");
             approveRemarks.value = remarks ? remarks.value.trim() : "";
         }
-
-        if (approveAction) {
-
-            approveAction.value = actionValue;
-        }
-
-        if (approveOther) {
-
-            approveOther.value = customAction;
-        }
-
-        if (approveDate) {
-
-            approveDate.value = targetDate.value;
-
-        }
-
     }
 
-
-    /* REJECT */
+    // REJECT
     if (type === "reject") {
-
         const rejectAction = document.getElementById("rejectActionTaken");
         const rejectOther = document.getElementById("rejectOtherAction");
         const rejectDate = document.getElementById("rejectTargetDate");
         const rejectCondition = document.getElementById("rejectConditionStatus");
 
-        if (rejectCondition) {
-            rejectCondition.value = conditionValue;
-        }
-
-        if (rejectAction) {
-            rejectAction.value = actionValue;
-        }
-
-        if (rejectOther) {
-            rejectOther.value = customAction;
-        }
-
-        if (rejectDate) {
-            rejectDate.value = targetDate.value;
-        }
+        if (rejectAction) rejectAction.value = actionValue;
+        if (rejectOther) rejectOther.value = customAction;
+        if (rejectDate) rejectDate.value = targetDate.value;
+        if (rejectCondition) rejectCondition.value = conditionValue;
     }
 
     return true;
-
 }
 
 /*  APPROVE CONFIRMATION */
 function confirmApprove() {
 
-    if ( !setCorrectiveActionValues( "approve" ) ) 
-    {
+    if (!setCorrectiveActionValues("approve")) {
         return false;
     }
 
-    return confirm( "Are you sure you want to approve this inspection?\n\n" + 
-        "This action will change the inspection status to Approved." );
+    return confirm("Are you sure you want to approve this inspection?\n\n" +
+        "This action will change the inspection status to Approved.");
 }
 
 /* REJECT CONFIRMATION */

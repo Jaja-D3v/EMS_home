@@ -16882,7 +16882,8 @@ fieldset:disabled .btn {
 .fa-bell,
 .fa-file-signature,
 .fa-list-check,
-.fa-file-circle-xmark {
+.fa-file-circle-xmark,
+.fa-magnifying-glass-chart {
   margin-right: 10px;
 }
 

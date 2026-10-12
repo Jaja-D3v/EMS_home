@@ -123,6 +123,29 @@
                 </span>
               </div>
             </div>
+
+            <!-- Acrion taken  -->
+            <div class="col-12 col-md-6 col-lg-4">
+              <label class="form-label fw-semibold">
+                Action Taken
+              </label>
+              <input type="text" class="form-control" id="viewActionTaken" readonly>
+            </div>
+
+
+            <!-- Verified and Approved By -->
+            <div class="col-12 col-md-6 col-lg-4">
+              <!-- <label class="form-label fw-semibold">
+                Verified and Approved By
+              </label> -->
+              <input
+                type="text"
+                class="form-control"
+                id="viewVerifiedAndApprovedBy"
+                readonly
+                hidden>
+            </div>
+
           </div>
         </div>
 
@@ -417,30 +440,26 @@
             <!-- Action Taken -->
             <div class="col-12 col-md-6">
               <label
-                for="viewActionTaken"
+                for="action_taken"
                 class="form-label fw-semibold">
                 Select Action Taken
               </label>
-              <select class="form-select" id="viewActionTaken" name="action_taken">
-                <option value="" selected disabled>
-                  Select Action
-                </option>
-                <option value="Refill">
-                  Refill
-                </option>
-                <option value="Replacement of Parts">
-                  Replacement of Parts
-                </option>
-                <option value="Replacement of Unit">
-                  Replacement of Unit
-                </option>
-                <option value="Others">
-                  Others
-                </option>
+              <select class="form-select" id="action_taken" name="action_taken">
+                <option value="" selected disabled>Select Action</option>
+                <option value="Refill">Refill</option>
+                <option value="Replacement of Parts">Replacement of Parts</option>
+                <option value="Replacement of Unit">Replacement of Unit</option>
+                <option value="Others">Others</option>
               </select>
 
               <!-- Custom Action -->
-              <input type="text" class="form-control mt-2 d-none" name="other_action" placeholder="Specify other action">
+              <input
+                type="text"
+                class="form-control mt-2 d-none"
+                name="other_action"
+                id="other_action"
+                placeholder="Specify other action"
+                style="display: none;">
             </div>
 
             <!-- Target Date -->

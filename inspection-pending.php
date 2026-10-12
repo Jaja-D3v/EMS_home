@@ -515,17 +515,11 @@ if ($result) {
     
 
     <!-- CoreUI and Required Plugins -->
-
     <script src="vendors/@coreui/coreui/js/coreui.bundle.min.js"></script>
-
     <script src="./js/inspection-approvals.js"></script>
-
     <script src="vendors/simplebar/js/simplebar.min.js"></script>
-
     <?php include_once 'notification/session_timeout.php'; ?>
-
     <?php include_once 'notification/approve-fe-inspection-success.php'; ?>
-
     <?php include_once 'notification/rejected-fe-inspection-success.php'; ?>
 
 </body>
