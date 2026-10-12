@@ -6,7 +6,12 @@ function getAllBranchDropdown()
 {
     global $conn;
 
-    $sql = "SELECT * FROM maintenance_dropdown_tbl WHERE category = 'branch'";
+    $sql = "SELECT * FROM maintenance_dropdown_tbl 
+    WHERE category = 'branch'
+    AND status = 'active'
+    ORDER BY value ASC
+
+    ";
 
     $result = mysqli_query($conn, $sql);
 

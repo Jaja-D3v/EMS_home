@@ -840,7 +840,6 @@ function getTotalFireExtinguishersModel(
     if ($conditionType === 'good') {
 
         $sql .= " AND LOWER(TRIM(condition_status)) = 'good' ";
-
     } elseif ($conditionType === 'not-good') {
 
         $sql .= " AND LOWER(TRIM(condition_status)) = 'not good' ";
@@ -986,16 +985,31 @@ function getAllDeletedFireExtinguishers($limit, $offset)
 function getAllDeletedFireExtinguishersModel()
 {
     global $conn;
-    $branch = $_SESSION['Branch'] ?? null;
-    if (empty($branch)) {
-        return 0;
+
+    $role = strtolower(trim($_SESSION['Role'] ?? ''));
+
+    if ($role === 'admin') {
+        $branch = trim($_GET['branch'] ?? $_SESSION['Branch'] ?? '');
+
+        if ($branch === '') {
+            $branch = 'all';
+        }
+    } else {
+        $branch = trim($_SESSION['Branch'] ?? '');
     }
 
     $sql = "SELECT COUNT(*) AS total
             FROM fire_extinguishers_tbl
-            WHERE archived = 1
-              AND LOWER(TRIM(branch)) =
-                  LOWER(TRIM(?))";
+            WHERE archived = 1";
+
+    $params = [];
+    $types = '';
+
+    if ($branch !== 'all' && $branch !== '') {
+        $sql .= " AND LOWER(TRIM(branch)) = LOWER(TRIM(?))";
+        $params[] = $branch;
+        $types .= 's';
+    }
 
     $stmt = mysqli_prepare($conn, $sql);
 
@@ -1003,18 +1017,20 @@ function getAllDeletedFireExtinguishersModel()
         return 0;
     }
 
-    mysqli_stmt_bind_param(
-        $stmt,
-        "s",
-        $branch
-    );
+    if (!empty($params)) {
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
+    }
 
     mysqli_stmt_execute($stmt);
+
     $result = mysqli_stmt_get_result($stmt);
     $row = mysqli_fetch_assoc($result);
+
     mysqli_stmt_close($stmt);
+
     return (int) ($row['total'] ?? 0);
 }
+
 
 // fet all archived fire extinguisher
 function getDeletedFireExtinguisherById($id)
@@ -1162,11 +1178,9 @@ function getExpiry(
         if ($condition === 'good') {
 
             $sql .= " AND LOWER(TRIM(condition_status)) = 'good' ";
-
         } elseif ($condition === 'not-good') {
 
             $sql .= " AND LOWER(TRIM(condition_status)) <> 'good' ";
-
         }
     }
 
@@ -1303,11 +1317,9 @@ function getExpiry(
         if ($condition === 'good') {
 
             $totalSql .= " AND LOWER(TRIM(condition_status)) = 'good' ";
-
         } elseif ($condition === 'not-good') {
 
             $totalSql .= " AND LOWER(TRIM(condition_status)) <> 'good' ";
-
         }
     }
 

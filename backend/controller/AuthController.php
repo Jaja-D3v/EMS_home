@@ -24,7 +24,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          * Regenerate session ID after successful login
          */
         session_regenerate_id(true);
-
         /*
          * Store authenticated user information
          */

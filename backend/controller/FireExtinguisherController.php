@@ -544,25 +544,29 @@ function getTotalFireExtinguishers(
     );
 }
 
-
-function getAllArchiveFireExtinguishers(
-    $limit = 10,
-    $offset = 0
-) {
-    $role = strtolower(trim($_SESSION['Role'] ?? ''));
-
-    if ($role === 'admin') {
-        $branch = trim($_GET['branch'] ?? 'all');
-    } else {
-        $branch = trim($_SESSION['Branch'] ?? '');
-    }
-
-    return getAllDeletedFireExtinguishers(
-        $limit,
-        $offset,
-        $branch
-    );
+function getAllDeletedFireExtinguishersController($limit, $offset){
+    return getAllDeletedFireExtinguishers($limit, $offset);
 }
+
+
+// function getAllArchiveFireExtinguishers(
+//     $limit = 10,
+//     $offset = 0
+// ) {
+//     $role = strtolower(trim($_SESSION['Role'] ?? ''));
+
+//     if ($role === 'admin') {
+//         $branch = trim($_GET['branch'] ?? 'all');
+//     } else {
+//         $branch = trim($_SESSION['Branch'] ?? '');
+//     }
+
+//     return getAllDeletedFireExtinguishers(
+//         $limit,
+//         $offset,
+//         $branch
+//     );
+// }
 
 
 // GET TOTAL DELETED FIRE EXTINGUISHERS
