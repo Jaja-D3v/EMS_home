@@ -561,116 +561,119 @@ $branchDropdown = getAllDropdownBranches();
                 </div>
 
               <?php endforeach; ?>
-            </div>
 
-            <!-- PAGINATION -->
-            <div id="inventoryPagination" class="card border border-primary-subtle shadow-sm rounded-3 mt-3">
-              <div class="card-footer bg-body border-0 px-3 py-3">
-                <div class="d-flex flex-column flex-sm-row align-items-center justify-content-between gap-3">
-                  <small class="text-body-secondary" style="font-size: 12px;">
-                    <?php if ($totalRecords > 0): ?>
-                      Showing
-                      <strong class="text-body"><?= $offset + 1 ?></strong>
-                      to
-                      <strong class="text-body">
-                        <?= min($offset + $limit, $totalRecords) ?>
-                      </strong>
-                      of
-                      <strong class="text-body"><?= $totalRecords ?></strong>
-                      entries
-                    <?php else: ?>
-                      Showing 0 of 0 entries
-                    <?php endif; ?>
-                  </small>
 
-                  <?php if ($totalPages > 1): ?>
+              <!-- PAGINATION -->
+              <div id="inventoryPagination" class="card border border-primary-subtle shadow-sm rounded-3 mt-3">
+                <div class="card-footer bg-body border-0 px-3 py-3">
+                  <div class="d-flex flex-column flex-sm-row align-items-center justify-content-between gap-3">
+                    <small class="text-body-secondary" style="font-size: 12px;">
+                      <?php if ($totalRecords > 0): ?>
+                        Showing
+                        <strong class="text-body"><?= $offset + 1 ?></strong>
+                        to
+                        <strong class="text-body">
+                          <?= min($offset + $limit, $totalRecords) ?>
+                        </strong>
+                        of
+                        <strong class="text-body"><?= $totalRecords ?></strong>
+                        entries
+                      <?php else: ?>
+                        Showing 0 of 0 entries
+                      <?php endif; ?>
+                    </small>
 
-                    <?php
-                    $currentPageUrl = basename($_SERVER['PHP_SELF']);
+                    <?php if ($totalPages > 1): ?>
 
-                    $paginationParams = $_GET;
-                    unset($paginationParams['page']);
+                      <?php
+                      $currentPageUrl = basename($_SERVER['PHP_SELF']);
 
-                    $previousParams = $paginationParams;
-                    $previousParams['page'] = max(1, $page - 1);
+                      $paginationParams = $_GET;
+                      unset($paginationParams['page']);
 
-                    $nextParams = $paginationParams;
-                    $nextParams['page'] = min($totalPages, $page + 1);
-                    ?>
+                      $previousParams = $paginationParams;
+                      $previousParams['page'] = max(1, $page - 1);
 
-                    <nav aria-label="Fire extinguisher pagination">
-                      <ul class="pagination pagination-sm mb-0">
+                      $nextParams = $paginationParams;
+                      $nextParams['page'] = min($totalPages, $page + 1);
+                      ?>
 
-                        <!-- Previous -->
-                        <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
-                          <?php if ($page > 1): ?>
+                      <nav aria-label="Fire extinguisher pagination">
+                        <ul class="pagination pagination-sm mb-0">
 
-                            <a
-                              class="page-link"
-                              href="<?= htmlspecialchars($currentPageUrl, ENT_QUOTES, 'UTF-8') ?>?<?= http_build_query($previousParams) ?>"
-                              aria-label="Previous">
-                              <i class="bi bi-chevron-left"></i>
-                              <span class="d-none d-sm-inline ms-1">Previous</span>
-                            </a>
+                          <!-- Previous -->
+                          <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
+                            <?php if ($page > 1): ?>
 
-                          <?php else: ?>
+                              <a
+                                class="page-link"
+                                href="<?= htmlspecialchars($currentPageUrl, ENT_QUOTES, 'UTF-8') ?>?<?= http_build_query($previousParams) ?>"
+                                aria-label="Previous">
+                                <i class="bi bi-chevron-left"></i>
+                                <span class="d-none d-sm-inline ms-1">Previous</span>
+                              </a>
 
-                            <span class="page-link">
-                              <i class="bi bi-chevron-left"></i>
-                              <span class="d-none d-sm-inline ms-1">Previous</span>
-                            </span>
+                            <?php else: ?>
 
-                          <?php endif; ?>
-                        </li>
+                              <span class="page-link">
+                                <i class="bi bi-chevron-left"></i>
+                                <span class="d-none d-sm-inline ms-1">Previous</span>
+                              </span>
 
-                        <!-- Page Numbers -->
-                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-
-                          <?php
-                          $pageParams = $paginationParams;
-                          $pageParams['page'] = $i;
-                          ?>
-
-                          <li class="page-item <?= $i === $page ? 'active' : '' ?>">
-                            <a
-                              class="page-link"
-                              href="<?= htmlspecialchars($currentPageUrl, ENT_QUOTES, 'UTF-8') ?>?<?= http_build_query($pageParams) ?>">
-                              <?= $i ?>
-                            </a>
+                            <?php endif; ?>
                           </li>
 
-                        <?php endfor; ?>
+                          <!-- Page Numbers -->
+                          <?php for ($i = 1; $i <= $totalPages; $i++): ?>
 
-                        <!-- Next -->
-                        <li class="page-item <?= $page >= $totalPages ? 'disabled' : '' ?>">
-                          <?php if ($page < $totalPages): ?>
+                            <?php
+                            $pageParams = $paginationParams;
+                            $pageParams['page'] = $i;
+                            ?>
 
-                            <a
-                              class="page-link"
-                              href="<?= htmlspecialchars($currentPageUrl, ENT_QUOTES, 'UTF-8') ?>?<?= http_build_query($nextParams) ?>"
-                              aria-label="Next">
-                              <span class="d-none d-sm-inline me-1">Next</span>
-                              <i class="bi bi-chevron-right"></i>
-                            </a>
+                            <li class="page-item <?= $i === $page ? 'active' : '' ?>">
+                              <a
+                                class="page-link"
+                                href="<?= htmlspecialchars($currentPageUrl, ENT_QUOTES, 'UTF-8') ?>?<?= http_build_query($pageParams) ?>">
+                                <?= $i ?>
+                              </a>
+                            </li>
 
-                          <?php else: ?>
+                          <?php endfor; ?>
 
-                            <span class="page-link">
-                              <span class="d-none d-sm-inline me-1">Next</span>
-                              <i class="bi bi-chevron-right"></i>
-                            </span>
+                          <!-- Next -->
+                          <li class="page-item <?= $page >= $totalPages ? 'disabled' : '' ?>">
+                            <?php if ($page < $totalPages): ?>
 
-                          <?php endif; ?>
-                        </li>
+                              <a
+                                class="page-link"
+                                href="<?= htmlspecialchars($currentPageUrl, ENT_QUOTES, 'UTF-8') ?>?<?= http_build_query($nextParams) ?>"
+                                aria-label="Next">
+                                <span class="d-none d-sm-inline me-1">Next</span>
+                                <i class="bi bi-chevron-right"></i>
+                              </a>
 
-                      </ul>
-                    </nav>
+                            <?php else: ?>
 
-                  <?php endif; ?>
+                              <span class="page-link">
+                                <span class="d-none d-sm-inline me-1">Next</span>
+                                <i class="bi bi-chevron-right"></i>
+                              </span>
 
+                            <?php endif; ?>
+                          </li>
+
+                        </ul>
+                      </nav>
+
+                    <?php endif; ?>
+
+                  </div>
                 </div>
               </div>
             </div>
+
+
 
             <?php include 'partials/edit-fire-extinguisher-modal.php' ?>
             <!-- this form is for add new extinguisher -->
