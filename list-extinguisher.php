@@ -5,9 +5,7 @@ include 'backend/controller/QRCodeGeneratorController.php';
 require_once 'backend/authentication/SessionChecker.php';
 include_once 'notification/loading-for-generating-report.php';
 
-
 $branchDropdown = getAllDropdownBranches();
-
 ?>
 
 <!DOCTYPE html>
@@ -33,26 +31,20 @@ $branchDropdown = getAllDropdownBranches();
     ?>
     <div class="container-fluid py-0">
 
-      <div
-        class="card border-0 shadow-sm text-white mb-1 mt-0 overflow-hidden"
-        style="background: linear-gradient(135deg, #0f0870, #088af5);">
+      <div class="card border-0 shadow-sm text-white mb-1 mt-0 overflow-hidden" style="background: linear-gradient(135deg, #0f0870, #088af5);">
 
         <div class="card-body p-4">
-
           <div class="row align-items-center g-3">
 
             <!-- Icon -->
             <div class="col-auto">
-
               <div class="bg-white bg-opacity-10 rounded-3 p-3 fs-3">
                 <i class="bi bi-fire"></i>
               </div>
-
             </div>
 
             <!-- Title & Description -->
             <div class="col">
-
               <h2 class="fw-bold mb-1">
                 Active Fire Extinguishers
               </h2>
@@ -60,12 +52,10 @@ $branchDropdown = getAllDropdownBranches();
               <p class="mb-0 text-white-50">
                 Manage and monitor all active and registered fire extinguishers.
               </p>
-
             </div>
 
             <!-- Generate Report -->
             <div class="col-12 col-md-auto">
-
               <button
                 type="button"
                 class="btn btn-light px-3 py-2 w-100"
@@ -73,27 +63,18 @@ $branchDropdown = getAllDropdownBranches();
                 <i class="bi bi-file-earmark-pdf me-1"></i>
                 Generate Inventory Report
               </button>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
-
     </div>
 
     <div class="body flex-grow-1">
       <div class="container-fluid py-0">
         <div class="container py-4">
-
           <div class="row justify-content-center">
 
             <!-- Content -->
-
-
-
             <div class="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center gap-3 mb-3">
 
               <!-- Sort - Left -->
@@ -176,17 +157,10 @@ $branchDropdown = getAllDropdownBranches();
                 <?php
                 // Branch ng naka-login na Admin
                 $adminBranch = trim($_SESSION['Branch'] ?? '');
-
-                // Kung may branch sa URL, iyon ang gagamitin.
-                // Kung wala, gamitin ang branch ng Admin.
                 $selectedBranch = $_GET['branch'] ?? $adminBranch;
-
-                // Kung walang branch sa session at wala rin sa URL,
-                // default sa All Branches
                 if (empty($selectedBranch)) {
                   $selectedBranch = 'all';
                 }
-
                 // Get all branches
                 $branches = getAllDropdownBranches();
                 ?>
@@ -212,49 +186,15 @@ $branchDropdown = getAllDropdownBranches();
                         <option
                           value="<?= htmlspecialchars($branch['value']) ?>"
                           <?= $selectedBranch === $branch['value'] ? 'selected' : '' ?>>
-
                           <?= htmlspecialchars($branch['value']) ?>
-
                         </option>
 
                       <?php endforeach; ?>
 
                     <?php endif; ?>
-
                   </select>
-
                 </div>
-
               <?php endif; ?>
-
-
-              <script>
-                document.addEventListener('DOMContentLoaded', function() {
-
-                  const branchFilter = document.getElementById('branchFilter');
-
-                  if (!branchFilter) {
-                    return;
-                  }
-
-                  branchFilter.addEventListener('change', function() {
-
-                    const selectedBranch = this.value;
-
-                    const url = new URL(window.location.href);
-
-                    // Always set the branch parameter.
-                    // This allows "all" to remain selected after reload.
-                    url.searchParams.set('branch', selectedBranch);
-
-                    // Reload page with selected branch
-                    window.location.href = url.toString();
-
-                  });
-
-                });
-              </script>
-
 
               <!-- Add + Search - Right -->
               <div class="d-flex flex-column flex-md-row gap-2 ms-lg-auto">
@@ -280,23 +220,16 @@ $branchDropdown = getAllDropdownBranches();
                               'UTF-8'
                             ) ?>">
 
-                  <button
-                    id="searchFireExtinguisherBtn"
-                    class="btn btn-primary"
-                    type="button">
+                  <button id="searchFireExtinguisherBtn" class="btn btn-primary" type="button">
                     Search
                   </button>
                 </div>
 
-
-
               </div>
-
             </div>
             <?php
 
             $limit = 10;
-
             $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
 
             if ($page < 1) {
@@ -305,26 +238,12 @@ $branchDropdown = getAllDropdownBranches();
 
             $offset = ($page - 1) * $limit;
 
-
-            // ============================================================
             // PLACEMENT TYPE FILTER
-            // ============================================================
-
-            $placementType = strtolower(
-              trim($_GET['placement'] ?? 'all')
-            );
-
-            $conditionType = strtolower(
-              trim($_GET['condition'] ?? 'all')
-            );
-
+            $placementType = strtolower(trim($_GET['placement'] ?? 'all'));
+            $conditionType = strtolower(trim($_GET['condition'] ?? 'all'));
             $search = trim($_GET['search'] ?? '');
 
-
-            // ============================================================
             // GET FIRE EXTINGUISHERS
-            // ============================================================
-
             $info = getAllFireExtinguishers(
               $limit,
               $offset,
@@ -333,11 +252,7 @@ $branchDropdown = getAllDropdownBranches();
               $search
             );
 
-
-            // ============================================================
             // GET FILTERED TOTAL
-            // ============================================================
-
             $totalRecords = getTotalFireExtinguishers(
               $placementType,
               $conditionType,
@@ -348,17 +263,11 @@ $branchDropdown = getAllDropdownBranches();
               $totalRecords / $limit
             );
 
-
-            // ============================================================
             // PREVENT INVALID PAGE
-            // ============================================================
-
             if ($totalPages > 0 && $page > $totalPages) {
 
               $page = $totalPages;
-
               $offset = ($page - 1) * $limit;
-
               $info = getAllFireExtinguishers(
                 $limit,
                 $offset,
@@ -368,7 +277,7 @@ $branchDropdown = getAllDropdownBranches();
               );
             }
             ?>
-            
+
             <div id="inventoryResults">
               <!-- Content here -->
               <?php foreach ($info as $data): ?>
@@ -417,15 +326,12 @@ $branchDropdown = getAllDropdownBranches();
                 }
                 ?>
 
-                <div
-                  class="card border border-primary-subtle shadow-sm mb-2 extinguisher-card overflow-hidden"
+                <div class="card border border-primary-subtle shadow-sm mb-2 extinguisher-card overflow-hidden"
                   data-placement="<?= htmlspecialchars($data['placement'] ?? '') ?>">
 
                   <div class="card-body p-2 p-md-3">
 
-                    <!-- ============================= -->
                     <!-- TOP SECTION -->
-                    <!-- ============================= -->
                     <div class="d-flex align-items-center gap-3">
 
                       <!-- Icon -->
@@ -439,18 +345,15 @@ $branchDropdown = getAllDropdownBranches();
 
                       </div>
 
-
                       <!-- Title -->
                       <div class="flex-grow-1 min-width-0">
 
                         <div class="mb-1">
-                          <span
-                            class="badge bg-danger-subtle text-danger rounded-pill px-2 py-1"
+                          <span class="badge bg-danger-subtle text-danger rounded-pill px-2 py-1"
                             style="font-size: 0.65rem;">
 
                             <i class="bi bi-shield-fill me-1"></i>
                             Fire Safety Equipment
-
                           </span>
                         </div>
 
@@ -465,21 +368,15 @@ $branchDropdown = getAllDropdownBranches();
                           </span>
 
                         </div>
-
                       </div>
-
 
                       <!-- Status -->
                       <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-sm-end gap-2">
 
                         <!-- Condition -->
-                        <span
-                          class="badge <?= $badgeClass ?> rounded-pill px-3 py-2 text-nowrap">
-
+                        <span class="badge <?= $badgeClass ?> rounded-pill px-3 py-2 text-nowrap">
                           <i class="bi <?= $statusIcon ?> me-1"></i>
-
                           <?= htmlspecialchars($condition) ?>
-
                         </span>
 
                         <!-- Expiration -->
@@ -487,17 +384,11 @@ $branchDropdown = getAllDropdownBranches();
 
                           <span
                             class="badge <?= $expirationBadgeClass ?> rounded-pill px-3 py-2 text-nowrap">
-
                             <i class="bi <?= $expirationIcon ?> me-1"></i>
-
                             <?= htmlspecialchars($expirationBadge) ?>
-
                           </span>
-
                         <?php endif; ?>
-
                       </div>
-
                     </div>
 
                     <!-- ============================= -->
@@ -507,53 +398,34 @@ $branchDropdown = getAllDropdownBranches();
 
                       <!-- FE Code -->
                       <div class="col-6 col-md">
-
                         <div class="d-flex align-items-center gap-2">
-
-                          <div
-                            class="d-flex align-items-center justify-content-center
-                       bg-danger bg-opacity-10 text-danger
-                       rounded-3 flex-shrink-0"
+                          <div class="d-flex align-items-center justify-content-center bg-danger bg-opacity-10 text-danger rounded-3 flex-shrink-0"
                             style="width: 32px; height: 32px;">
-
                             <i class="bi bi-qr-code"></i>
-
                           </div>
 
                           <div class="min-width-0">
-
                             <div class="text-body-secondary small lh-1">
                               FE Code
                             </div>
-
                             <div class="fw-semibold small text-truncate">
                               <?= htmlspecialchars($data['extinguisher_code']) ?>
                             </div>
-
                           </div>
-
                         </div>
-
                       </div>
 
 
                       <!-- Capacity -->
                       <div class="col-6 col-md">
-
                         <div class="d-flex align-items-center gap-2">
 
-                          <div
-                            class="d-flex align-items-center justify-content-center
-                       bg-primary bg-opacity-10 text-primary
-                       rounded-3 flex-shrink-0"
+                          <div class="d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-3 flex-shrink-0"
                             style="width: 32px; height: 32px;">
-
                             <i class="bi bi-box-seam"></i>
-
                           </div>
 
                           <div class="min-width-0">
-
                             <div class="text-body-secondary small lh-1">
                               Capacity
                             </div>
@@ -561,31 +433,21 @@ $branchDropdown = getAllDropdownBranches();
                             <div class="fw-semibold small text-truncate">
                               <?= htmlspecialchars($data['capacity']) ?>
                             </div>
-
                           </div>
-
                         </div>
-
                       </div>
 
 
                       <!-- Type -->
                       <div class="col-6 col-md">
-
                         <div class="d-flex align-items-center gap-2">
 
-                          <div
-                            class="d-flex align-items-center justify-content-center
-                       bg-warning bg-opacity-10 text-warning
-                       rounded-3 flex-shrink-0"
+                          <div class="d-flex align-items-center justify-content-center bg-warning bg-opacity-10 text-warning rounded-3 flex-shrink-0"
                             style="width: 32px; height: 32px;">
-
                             <i class="bi bi-fire"></i>
-
                           </div>
 
                           <div class="min-width-0">
-
                             <div class="text-body-secondary small lh-1">
                               Type
                             </div>
@@ -597,11 +459,8 @@ $branchDropdown = getAllDropdownBranches();
                               <?= htmlspecialchars($data['type']) ?>
 
                             </div>
-
                           </div>
-
                         </div>
-
                       </div>
 
 
@@ -612,42 +471,30 @@ $branchDropdown = getAllDropdownBranches();
 
                           <div class="d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-3 flex-shrink-0" style="width: 32px; height: 32px;">
                             <i class="bi bi-geo-alt"></i>
-
                           </div>
 
                           <div class="min-width-0">
-
                             <div class="text-body-secondary small lh-1">
                               Location
                             </div>
-
                             <div
                               class="fw-semibold small text-truncate extinguisher-location"
                               title="<?= htmlspecialchars($data['location']) ?>">
-
                               <?= htmlspecialchars($data['location']) ?>
-
                             </div>
-
                           </div>
 
                         </div>
-
                       </div>
-
 
                       <!-- Branch -->
                       <div class="col-6 col-md">
-
                         <div class="d-flex align-items-center gap-2">
                           <div class="d-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-3 flex-shrink-0" style="width: 32px; height: 32px;">
-
                             <i class="bi bi-building"></i>
-
                           </div>
 
                           <div class="min-width-0">
-
                             <div class="text-body-secondary small lh-1">
                               Branch
                             </div>
@@ -655,31 +502,20 @@ $branchDropdown = getAllDropdownBranches();
                             <div
                               class="fw-semibold small text-truncate"
                               title="<?= htmlspecialchars($data['branch']) ?>">
-
                               <?= htmlspecialchars($data['branch']) ?>
-
                             </div>
-
                           </div>
-
                         </div>
-
                       </div>
-
 
                       <!-- Last Inspected -->
                       <div class="col-6 col-md">
-
                         <div class="d-flex align-items-center gap-2">
-
                           <div class="d-flex align-items-center justify-content-center bg-info bg-opacity-10 text-info rounded-3 flex-shrink-0" style="width: 32px; height: 32px;">
-
                             <i class="bi bi-calendar-check"></i>
-
                           </div>
 
                           <div class="min-width-0">
-
                             <div class="text-body-secondary small lh-1">
                               Last Inspected
                             </div>
@@ -691,7 +527,6 @@ $branchDropdown = getAllDropdownBranches();
                                         : 'Not inspected' ?>">
 
                               <?php if (!empty($data['last_date_inspected'])): ?>
-
                                 <?= htmlspecialchars(
                                   date(
                                     'M d, Y',
@@ -700,41 +535,29 @@ $branchDropdown = getAllDropdownBranches();
                                 ) ?>
 
                               <?php else: ?>
-
                                 N/A
-
                               <?php endif; ?>
 
                             </div>
-
                           </div>
-
                         </div>
-
                       </div>
-
 
                       <!-- View -->
                       <div class="col-12 col-md-auto">
-
                         <button
                           type="button"
                           class="btn btn-sm btn-primary w-100 px-4 view-extinguisher-btn"
                           data-id="<?= htmlspecialchars($data['extinguisher_id']) ?>"
                           data-bs-toggle="modal"
                           data-bs-target="#viewFireExtinguisherModal">
-
                           <i class="bi bi-eye me-1"></i>
                           View
-
                         </button>
-
                       </div>
 
                     </div>
-
                   </div>
-
                 </div>
 
               <?php endforeach; ?>
@@ -742,11 +565,8 @@ $branchDropdown = getAllDropdownBranches();
 
             <!-- PAGINATION -->
             <div id="inventoryPagination" class="card border border-primary-subtle shadow-sm rounded-3 mt-3">
-
               <div class="card-footer bg-body border-0 px-3 py-3">
-
                 <div class="d-flex flex-column flex-sm-row align-items-center justify-content-between gap-3">
-
                   <small class="text-body-secondary" style="font-size: 12px;">
                     <?php if ($totalRecords > 0): ?>
                       Showing
@@ -849,7 +669,6 @@ $branchDropdown = getAllDropdownBranches();
                   <?php endif; ?>
 
                 </div>
-
               </div>
             </div>
 
@@ -862,7 +681,6 @@ $branchDropdown = getAllDropdownBranches();
               aria-labelledby="addFireExtinguisherModalLabel"
               aria-hidden="true">
               <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-
                 <div class="modal-content rounded-4 border-0 shadow">
 
                   <!-- Header -->
@@ -884,7 +702,6 @@ $branchDropdown = getAllDropdownBranches();
                       aria-label="Close"></button>
                   </div>
 
-
                   <!-- Body -->
                   <div class="modal-body px-4 py-4">
 
@@ -897,7 +714,6 @@ $branchDropdown = getAllDropdownBranches();
                         type="hidden"
                         name="action"
                         value="add-new-extinguisher">
-
 
                       <!-- Fire Extinguisher Code -->
                       <div class="col-md-6">
@@ -915,7 +731,6 @@ $branchDropdown = getAllDropdownBranches();
 
                         <div id="extinguisherCodeFeedback" class="small mt-1"></div>
                       </div>
-
 
                       <!-- Type -->
                       <div class="col-md-6">
@@ -948,7 +763,6 @@ $branchDropdown = getAllDropdownBranches();
                         </select>
                       </div>
 
-
                       <!-- Capacity -->
                       <div class="col-md-4">
                         <label for="capacity" class="form-label">
@@ -980,18 +794,13 @@ $branchDropdown = getAllDropdownBranches();
                         </select>
                       </div>
 
-
                       <!-- Class -->
                       <div class="col-md-4">
                         <label for="fireClass" class="form-label">
                           Fire Class
                         </label>
 
-                        <select
-                          id="fireClass"
-                          name="class"
-                          class="form-select"
-                          required>
+                        <select id="fireClass" name="class" class="form-select" required>
                           <option value="" selected disabled>
                             Select class
                           </option>
@@ -1013,18 +822,13 @@ $branchDropdown = getAllDropdownBranches();
                         </select>
                       </div>
 
-
                       <!-- Placement -->
                       <div class="col-md-4">
                         <label for="placement" class="form-label">
                           Placement
                         </label>
 
-                        <select
-                          id="placement"
-                          name="placement"
-                          class="form-select"
-                          required>
+                        <select id="placement" name="placement" class="form-select" required>
                           <option value="" selected disabled>
                             Select placement
                           </option>
@@ -1066,22 +870,16 @@ $branchDropdown = getAllDropdownBranches();
                           Condition
                         </label>
 
-                        <select
-                          id="conditionStatus"
-                          name="condition_status"
-                          class="form-select"
-                          required>
+                        <select id="conditionStatus" name="condition_status" class="form-select" required>
 
                           <option value="" selected disabled>
                             Select condition
                           </option>
-
                           <option value="Good">Good</option>
                           <option value="Not Good">Not Good</option>
 
                         </select>
                       </div>
-
 
                       <!-- Manufactured Date -->
                       <div class="col-md-6">
@@ -1095,7 +893,6 @@ $branchDropdown = getAllDropdownBranches();
                           id="manufacturedDate"
                           name="manufactured_date">
                       </div>
-
 
                       <!-- Expiration Date -->
                       <div class="col-md-6">
@@ -1117,13 +914,7 @@ $branchDropdown = getAllDropdownBranches();
                         <label for="branch" class="form-label">
                           Branch
                         </label>
-
-                        <select
-                          id="branch"
-                          name="branch"
-                          class="form-select"
-                          required
-                          onchange="generateFireExtinguisherCode()">
+                        <select id="branch" name="branch" class="form-select" required onchange="generateFireExtinguisherCode()">
                           <option value="" selected disabled>
                             Select branch
                           </option>
@@ -1175,13 +966,10 @@ $branchDropdown = getAllDropdownBranches();
                           <i class="bi bi-plus-lg me-1"></i>
                           Add Fire Extinguisher
                         </button>
-
                       </div>
-
                     </form>
 
                   </div>
-
                 </div>
               </div>
             </div>
@@ -1189,25 +977,15 @@ $branchDropdown = getAllDropdownBranches();
             <!-- this is for view modal -->
 
             <!-- View Fire Extinguisher Modal -->
-            <div
-              class="modal fade"
-              id="viewFireExtinguisherModal"
-              tabindex="-1"
-              aria-labelledby="viewFireExtinguisherModalLabel"
-              aria-hidden="true">
+            <div class="modal fade" id="viewFireExtinguisherModal" tabindex="-1" aria-labelledby="viewFireExtinguisherModalLabel" aria-hidden="true">
 
               <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-
                 <div class="modal-content rounded-4 border-0 shadow-lg overflow-hidden">
 
                   <!-- Header -->
                   <div class="modal-header border-0 bg-danger-subtle px-4 py-3">
-
                     <div class="d-flex align-items-center gap-3">
-
-                      <div
-                        class="d-flex align-items-center justify-content-center
-                   bg-danger text-white rounded-3 flex-shrink-0"
+                      <div class="d-flex align-items-center justify-content-center bg-danger text-white rounded-3 flex-shrink-0"
                         style="width: 46px; height: 46px;">
                         <i class="bi bi-fire fs-4"></i>
                       </div>
@@ -1223,8 +1001,6 @@ $branchDropdown = getAllDropdownBranches();
                           View complete fire extinguisher information.
                         </small>
                       </div>
-
-
                     </div>
 
                     <button
@@ -1233,7 +1009,6 @@ $branchDropdown = getAllDropdownBranches();
                       data-bs-dismiss="modal"
                       aria-label="Close">
                     </button>
-
                   </div>
 
 
@@ -1242,23 +1017,17 @@ $branchDropdown = getAllDropdownBranches();
 
                     <!-- Equipment Summary -->
                     <div class="card border-0 bg-light-subtle rounded-4 mb-3">
-
                       <div class="card-body p-3">
-
                         <div class="row align-items-center g-3">
 
                           <!-- Code -->
                           <div class="col-12 col-md-7">
-
                             <div class="text-body-secondary small mb-1">
                               Fire Extinguisher Code
                             </div>
 
                             <div class="d-flex align-items-center gap-2">
-
-                              <div
-                                class="d-flex align-items-center justify-content-center
-                           bg-danger bg-opacity-10 text-danger rounded-3"
+                              <div class="d-flex align-items-center justify-content-center bg-danger bg-opacity-10 text-danger rounded-3"
                                 style="width: 36px; height: 36px;">
                                 <i class="bi bi-qr-code"></i>
                               </div>
@@ -1268,46 +1037,32 @@ $branchDropdown = getAllDropdownBranches();
                                 class="form-control-plaintext fw-bold fs-4 p-0"
                                 id="viewExtinguisherCode"
                                 readonly>
-
                             </div>
-
                           </div>
 
 
                           <!-- Condition -->
                           <div class="col-12 col-md-5">
-
                             <div class="text-body-secondary small mb-1">
                               Current Condition
                             </div>
-
                             <div class="d-flex align-items-center">
-
                               <input
                                 type="text"
                                 class="form-control-plaintext fw-bold p-0"
                                 id="viewConditionStatus"
                                 readonly>
-
                             </div>
-
                           </div>
-
                         </div>
-
                       </div>
-
                     </div>
 
 
                     <!-- Basic Information -->
                     <div class="mb-3">
-
                       <div class="d-flex align-items-center gap-2 mb-2">
-
-                        <div
-                          class="d-flex align-items-center justify-content-center
-                     bg-primary bg-opacity-10 text-primary rounded-3"
+                        <div class="d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-3"
                           style="width: 32px; height: 32px;">
                           <i class="bi bi-info-circle"></i>
                         </div>
@@ -1329,9 +1084,7 @@ $branchDropdown = getAllDropdownBranches();
 
                         <!-- Type -->
                         <div class="col-12 col-md-6">
-
                           <div class="border rounded-3 p-3 h-100">
-
                             <label class="form-label small text-body-secondary mb-1">
                               <i class="bi bi-fire me-1 text-warning"></i>
                               Type
@@ -1342,17 +1095,13 @@ $branchDropdown = getAllDropdownBranches();
                               class="form-control-plaintext fw-semibold p-0"
                               id="viewType"
                               readonly>
-
                           </div>
-
                         </div>
 
 
                         <!-- Capacity -->
                         <div class="col-6 col-md-3">
-
                           <div class="border rounded-3 p-3 h-100">
-
                             <label class="form-label small text-body-secondary mb-1">
                               <i class="bi bi-box-seam me-1 text-primary"></i>
                               Capacity
@@ -1365,15 +1114,12 @@ $branchDropdown = getAllDropdownBranches();
                               readonly>
 
                           </div>
-
                         </div>
 
 
                         <!-- Fire Class -->
                         <div class="col-6 col-md-3">
-
                           <div class="border rounded-3 p-3 h-100">
-
                             <label class="form-label small text-body-secondary mb-1">
                               <i class="bi bi-shield-check me-1 text-success"></i>
                               Fire Class
@@ -1386,15 +1132,11 @@ $branchDropdown = getAllDropdownBranches();
                               readonly>
 
                           </div>
-
                         </div>
-
 
                         <!-- Placement -->
                         <div class="col-12 col-md-6">
-
                           <div class="border rounded-3 p-3 h-100">
-
                             <label class="form-label small text-body-secondary mb-1">
                               <i class="bi bi-pin-map me-1 text-danger"></i>
                               Placement
@@ -1407,7 +1149,6 @@ $branchDropdown = getAllDropdownBranches();
                               readonly>
 
                           </div>
-
                         </div>
 
 
@@ -1433,12 +1174,8 @@ $branchDropdown = getAllDropdownBranches();
 
                     <!-- Important Dates -->
                     <div class="mb-3">
-
                       <div class="d-flex align-items-center gap-2 mb-2">
-
-                        <div
-                          class="d-flex align-items-center justify-content-center
-                     bg-warning bg-opacity-10 text-warning rounded-3"
+                        <div class="d-flex align-items-center justify-content-center bg-warning bg-opacity-10 text-warning rounded-3"
                           style="width: 32px; height: 32px;">
                           <i class="bi bi-calendar3"></i>
                         </div>
@@ -1452,9 +1189,7 @@ $branchDropdown = getAllDropdownBranches();
                             Manufacturing and expiration information
                           </small>
                         </div>
-
                       </div>
-
 
                       <div class="row g-2">
 
@@ -1488,10 +1223,8 @@ $branchDropdown = getAllDropdownBranches();
                           </div>
                         </div>
 
-
                         <!-- Expiration Date -->
                         <div class="col-12 col-md-6">
-
                           <div class="border rounded-3 p-3">
 
                             <label class="form-label small text-body-secondary mb-1">
@@ -1510,11 +1243,8 @@ $branchDropdown = getAllDropdownBranches();
                             </small>
 
                           </div>
-
                         </div>
-
                       </div>
-
                     </div>
 
                     <!-- Remarks -->
@@ -1537,9 +1267,7 @@ $branchDropdown = getAllDropdownBranches();
                             Additional information
                           </small>
                         </div>
-
                       </div>
-
 
                       <div class="border rounded-3 p-3 bg-light-subtle">
 
@@ -1548,13 +1276,9 @@ $branchDropdown = getAllDropdownBranches();
                           id="viewRemarks"
                           rows="2"
                           readonly></textarea>
-
                       </div>
-
                     </div>
-
                   </div>
-
 
                   <!-- Footer -->
                   <div class="modal-footer border-0 bg-light-subtle px-3 px-md-4 py-3">
@@ -1589,290 +1313,23 @@ $branchDropdown = getAllDropdownBranches();
 
                         <i class="bi bi-trash me-1"></i>
                         Delete
-
                       </a>
                     <?php endif; ?>
 
                   </div>
-
                 </div>
-
               </div>
-
             </div>
-            <script>
-              // LOGIC FOR EXPIRATION DATE AUTO FILL BASED ON MANUFACTURE DATE
-              const manufacturedDate = document.getElementById('manufacturedDate');
-              const expirationDate = document.getElementById('expirationDate');
-
-              manufacturedDate.addEventListener('change', function() {
-
-                if (!this.value) {
-                  expirationDate.value = '';
-                  return;
-                }
-
-                const date = new Date(this.value + 'T00:00:00');
-
-                // Add 3 years
-                date.setFullYear(date.getFullYear() + 3);
-
-                // Format to YYYY-MM-DD
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-
-                expirationDate.value = `${year}-${month}-${day}`;
-              });
-            </script>
-            <!-- end form is for add new extinguisher -->
-
-
-            <!-- End content -->
-
           </div>
         </div>
       </div>
     </div>
     <?php include 'partials/footer.php'; ?>
   </div>
-
-
-
   <!-- CoreUI and necessary plugins-->
   <script src="vendors/@coreui/coreui/js/coreui.bundle.min.js"></script>
   <script src="vendors/simplebar/js/simplebar.min.js"></script>
   <script src="js/list-extinguisher.js"></script>
-
-  <script>
-    (function() {
-      const searchInput = document.getElementById(
-        'fireExtinguisherSearchInput'
-      );
-
-      const searchButton = document.getElementById(
-        'searchFireExtinguisherBtn'
-      );
-
-      if (!searchInput || !searchButton) {
-        return;
-      }
-
-      // =====================================================
-      // UPDATE URL WHILE TYPING
-      // Hindi pa ito magre-request ng search results.
-      // =====================================================
-
-      function updateSearchUrl() {
-        const url = new URL(window.location.href);
-        const searchValue = searchInput.value.trim();
-
-        if (searchValue !== '') {
-          url.searchParams.set('search', searchValue);
-        } else {
-          url.searchParams.delete('search');
-        }
-
-        // Bawat bagong search ay magsisimula sa page 1.
-        url.searchParams.delete('page');
-
-        window.history.replaceState({},
-          '',
-          url.toString()
-        );
-      }
-
-      searchInput.addEventListener('input', function() {
-        updateSearchUrl();
-
-    
-        if (searchInput.value.trim() === '') {
-          loadInventoryResults(window.location.href);
-        }
-      });
-
-      // =====================================================
-      // FETCH SERVER-SIDE RESULTS WITHOUT PAGE RELOAD
-      // =====================================================
-
-      async function loadInventoryResults(requestUrl) {
-        const originalButtonText = searchButton.innerHTML;
-
-        searchButton.disabled = true;
-        searchButton.innerHTML =
-          '<span class="spinner-border spinner-border-sm me-1" ' +
-          'aria-hidden="true"></span> Searching...';
-
-        try {
-          const response = await fetch(requestUrl, {
-            method: 'GET',
-            headers: {
-              'X-Requested-With': 'XMLHttpRequest'
-            },
-            credentials: 'same-origin'
-          });
-
-          if (!response.ok) {
-            throw new Error(
-              'Request failed. HTTP status: ' + response.status
-            );
-          }
-
-          const html = await response.text();
-
-          const parser = new DOMParser();
-
-          const parsedDocument = parser.parseFromString(
-            html,
-            'text/html'
-          );
-
-          const newResults = parsedDocument.querySelector(
-            '#inventoryResults'
-          );
-
-          const newPagination = parsedDocument.querySelector(
-            '#inventoryPagination'
-          );
-
-          const currentResults = document.querySelector(
-            '#inventoryResults'
-          );
-
-          const currentPagination = document.querySelector(
-            '#inventoryPagination'
-          );
-
-          if (
-            !newResults ||
-            !newPagination ||
-            !currentResults ||
-            !currentPagination
-          ) {
-            throw new Error(
-              'Hindi makita ang inventory results o pagination wrapper.'
-            );
-          }
-
-          // Palitan lamang ang cards.
-          currentResults.innerHTML = newResults.innerHTML;
-
-          // Kapag walang matching records, magpakita ng empty state.
-          if (
-            !currentResults.querySelector('.extinguisher-card')
-          ) {
-            currentResults.innerHTML = `
-                    <div class="border rounded-3 text-center
-                                text-body-secondary py-5 px-3 my-3 shadow-sm">
-                        <div class="py-3">
-                            <i class="bi bi-search fs-1 d-block mb-3"></i>
-
-                            <div class="fw-semibold fs-6">
-                                No fire extinguishers found.
-                            </div>
-
-                            <small class="text-body-secondary">
-                                No results match your search or filters.
-                            </small>
-                        </div>
-                    </div>
-                `;
-          }
-
-          // Palitan ang entry count at pagination links.
-          currentPagination.replaceWith(
-            newPagination.cloneNode(true)
-          );
-
-        } catch (error) {
-          console.error(
-            'Inventory search error:',
-            error
-          );
-
-          alert(
-            'Hindi ma-load ang search results. ' +
-            'Pakisubukan ulit.'
-          );
-
-        } finally {
-          searchButton.disabled = false;
-          searchButton.innerHTML = originalButtonText;
-        }
-      }
-
-      // =====================================================
-      // SEARCH BUTTON
-      // =====================================================
-
-      searchButton.addEventListener('click', function() {
-        updateSearchUrl();
-
-        loadInventoryResults(
-          window.location.href
-        );
-      });
-
-      // =====================================================
-      // ENTER KEY
-      // =====================================================
-
-      searchInput.addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {
-          event.preventDefault();
-
-          updateSearchUrl();
-
-          loadInventoryResults(
-            window.location.href
-          );
-        }
-      });
-
-      // =====================================================
-      // AJAX PAGINATION
-      // =====================================================
-
-      document.addEventListener('click', function(event) {
-        const pageLink = event.target.closest(
-          '#inventoryPagination a.page-link[href]'
-        );
-
-        if (!pageLink) {
-          return;
-        }
-
-        event.preventDefault();
-
-        const targetUrl = new URL(
-          pageLink.href,
-          window.location.origin
-        );
-
-        window.history.pushState({},
-          '',
-          targetUrl.toString()
-        );
-
-        loadInventoryResults(
-          targetUrl.toString()
-        );
-      });
-
-      // =====================================================
-      // BROWSER BACK / FORWARD
-      // =====================================================
-
-      window.addEventListener('popstate', function() {
-        loadInventoryResults(
-          window.location.href
-        );
-      });
-
-    })();
-  </script>
-
-
   <?php include_once 'notification/session_timeout.php'; ?>
 
 </body>

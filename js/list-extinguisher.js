@@ -651,3 +651,266 @@ if (generateInventoryReportBtn) {
         }
     );
 }
+
+
+(function () {
+    const searchInput = document.getElementById(
+        'fireExtinguisherSearchInput'
+    );
+
+    const searchButton = document.getElementById(
+        'searchFireExtinguisherBtn'
+    );
+
+    if (!searchInput || !searchButton) {
+        return;
+    }
+
+    // =====================================================
+    // UPDATE URL WHILE TYPING
+    // Hindi pa ito magre-request ng search results.
+    // =====================================================
+
+    function updateSearchUrl() {
+        const url = new URL(window.location.href);
+        const searchValue = searchInput.value.trim();
+
+        if (searchValue !== '') {
+            url.searchParams.set('search', searchValue);
+        } else {
+            url.searchParams.delete('search');
+        }
+
+        // Bawat bagong search ay magsisimula sa page 1.
+        url.searchParams.delete('page');
+
+        window.history.replaceState({},
+            '',
+            url.toString()
+        );
+    }
+
+    searchInput.addEventListener('input', function () {
+        updateSearchUrl();
+
+
+        if (searchInput.value.trim() === '') {
+            loadInventoryResults(window.location.href);
+        }
+    });
+
+    // =====================================================
+    // FETCH SERVER-SIDE RESULTS WITHOUT PAGE RELOAD
+    // =====================================================
+
+    async function loadInventoryResults(requestUrl) {
+        const originalButtonText = searchButton.innerHTML;
+
+        searchButton.disabled = true;
+        searchButton.innerHTML =
+            '<span class="spinner-border spinner-border-sm me-1" ' +
+            'aria-hidden="true"></span> Searching...';
+
+        try {
+            const response = await fetch(requestUrl, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin'
+            });
+
+            if (!response.ok) {
+                throw new Error(
+                    'Request failed. HTTP status: ' + response.status
+                );
+            }
+
+            const html = await response.text();
+
+            const parser = new DOMParser();
+
+            const parsedDocument = parser.parseFromString(
+                html,
+                'text/html'
+            );
+
+            const newResults = parsedDocument.querySelector(
+                '#inventoryResults'
+            );
+
+            const newPagination = parsedDocument.querySelector(
+                '#inventoryPagination'
+            );
+
+            const currentResults = document.querySelector(
+                '#inventoryResults'
+            );
+
+            const currentPagination = document.querySelector(
+                '#inventoryPagination'
+            );
+
+            if (
+                !newResults ||
+                !newPagination ||
+                !currentResults ||
+                !currentPagination
+            ) {
+                throw new Error(
+                    'Hindi makita ang inventory results o pagination wrapper.'
+                );
+            }
+
+            // Palitan lamang ang cards.
+            currentResults.innerHTML = newResults.innerHTML;
+
+            // Kapag walang matching records, magpakita ng empty state.
+            if (
+                !currentResults.querySelector('.extinguisher-card')
+            ) {
+                currentResults.innerHTML = `
+                    <div class="border rounded-3 text-center
+                                text-body-secondary py-5 px-3 my-3 shadow-sm">
+                        <div class="py-3">
+                            <i class="bi bi-search fs-1 d-block mb-3"></i>
+
+                            <div class="fw-semibold fs-6">
+                                No fire extinguishers found.
+                            </div>
+
+                            <small class="text-body-secondary">
+                                No results match your search or filters.
+                            </small>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // for search filter
+            currentPagination.replaceWith(
+                newPagination.cloneNode(true)
+            );
+
+        } catch (error) {
+            console.error(
+                'Inventory search error:',
+                error
+            );
+
+            alert(
+                'Hindi ma-load ang search results. ' +
+                'Pakisubukan ulit.'
+            );
+
+        } finally {
+            searchButton.disabled = false;
+            searchButton.innerHTML = originalButtonText;
+        }
+    }
+
+
+
+    searchButton.addEventListener('click', function () {
+        updateSearchUrl();
+
+        loadInventoryResults(
+            window.location.href
+        );
+    });
+
+
+
+    searchInput.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+
+            updateSearchUrl();
+
+            loadInventoryResults(
+                window.location.href
+            );
+        }
+    });
+
+
+    // ajax pagination
+    document.addEventListener('click', function (event) {
+        const pageLink = event.target.closest(
+            '#inventoryPagination a.page-link[href]'
+        );
+
+        if (!pageLink) {
+            return;
+        }
+
+        event.preventDefault();
+
+        const targetUrl = new URL(
+            pageLink.href,
+            window.location.origin
+        );
+
+        window.history.pushState({},
+            '',
+            targetUrl.toString()
+        );
+
+        loadInventoryResults(
+            targetUrl.toString()
+        );
+    });
+
+    // page back
+    window.addEventListener('popstate', function () {
+        loadInventoryResults(
+            window.location.href
+        );
+    });
+
+})();
+
+
+// LOGIC FOR EXPIRATION DATE AUTO FILL BASED ON MANUFACTURE DATE
+const manufacturedDate = document.getElementById('manufacturedDate');
+const expirationDate = document.getElementById('expirationDate');
+
+manufacturedDate.addEventListener('change', function () {
+
+    if (!this.value) {
+        expirationDate.value = '';
+        return;
+    }
+
+    const date = new Date(this.value + 'T00:00:00');
+
+    // Add 3 years
+    date.setFullYear(date.getFullYear() + 3);
+
+    // Format to YYYY-MM-DD
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    expirationDate.value = `${year}-${month}-${day}`;
+});
+
+
+// branch filter
+document.addEventListener('DOMContentLoaded', function () {
+    const branchFilter = document.getElementById('branchFilter');
+
+    if (!branchFilter) {
+        return;
+    }
+
+    branchFilter.addEventListener('change', function () {
+
+        const selectedBranch = this.value;
+        const url = new URL(window.location.href);
+        url.searchParams.set('branch', selectedBranch);
+        window.location.href = url.toString();
+
+    });
+
+});
