@@ -346,7 +346,7 @@ include './backend/controller/DropdownController.php';
 
                         <!-- NO DATA -->
                         <?php if (empty($info)): ?>
-                            <div  class="border rounded-3 text-center text-body-secondary py-5 px-3 my-3 shadow-sm">
+                            <div class="border rounded-3 text-center text-body-secondary py-5 px-3 my-3 shadow-sm">
                                 <div class="py-3">
                                     <i class="bi bi-trash3 fs-1 d-block mb-3"></i>
                                     <div class="fw-semibold fs-6">
@@ -369,7 +369,7 @@ include './backend/controller/DropdownController.php';
                             deletedSearchInput.addEventListener('input', function() {
 
                                 const searchValue = this.value.trim().toLowerCase();
-                                const cards = document.querySelectorAll( '#deletedExtinguisherContainer .extinguisher-card' );
+                                const cards = document.querySelectorAll('#deletedExtinguisherContainer .extinguisher-card');
 
                                 let visibleCount = 0;
 
@@ -401,7 +401,7 @@ include './backend/controller/DropdownController.php';
                     </script>
 
                     <!-- PAGINATION -->
-                    <?php if ($totalPages > 1): ?>
+                    <?php if ($totalRecords >= 0): ?>
 
                         <div class="card border shadow-sm mt-3 mb-4">
                             <div class="card-body py-3">
@@ -951,6 +951,7 @@ include './backend/controller/DropdownController.php';
         });
     </script>
     <?php include_once 'notification/session_timeout.php'; ?>
+    <?php include_once 'notification/restored_fe_success.php'; ?>
 
 </body>
 

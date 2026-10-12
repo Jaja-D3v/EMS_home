@@ -597,10 +597,10 @@ if ($action === 'restore') {
             "Restored Fire Extinguisher",
             "Restored fire extinguisher $code"
         );
-        header("Location: ../../archived-extinguisher.php?success=restored");
+        header("Location: ../../archived-extinguisher.php?success-restored=1");
         exit;
     }
 
-    header("Location: ../../archived-extinguisher.php?error=restore_failed");
+    header("Location: ../../archived-extinguisher.php?error-restore=0");
     exit;
 }

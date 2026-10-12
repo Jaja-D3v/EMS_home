@@ -103,13 +103,9 @@
      */
 
      let width = 100;
-
      const timer = setInterval(function() {
-
        width -= 100 / 60;
-
-       successProgress.style.width =
-         width + '%';
+       successProgress.style.width = width + '%';
 
 
        /*
