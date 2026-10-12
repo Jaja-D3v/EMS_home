@@ -36,10 +36,14 @@
         Dashboard
       </a>
 
-      <a class="nav-link" href="QR-code.php">
-        <i class="fa-solid fa-qrcode"></i>
-        Scan QR CODE
-      </a>
+      <?php if (strtolower(trim($_SESSION['Role'] ?? '')) === 'inspector'): ?>
+        <a class="nav-link" href="QR-code.php">
+          <i class="fa-solid fa-qrcode"></i>
+          Scan QR CODE
+        </a>
+      <?php endif; ?>
+
+
       <?php if (strtolower(trim($_SESSION['Role'] ?? '')) === 'admin'): ?>
         <a class="nav-link" href="QR-generator.php">
           <i class="fa-solid fa-qrcode"></i>
@@ -161,7 +165,7 @@
     <?php if (strtolower(trim($_SESSION['Role'] ?? '')) === 'inspector'): ?>
       <li class="nav-item">
         <a class="nav-link" href="rejected-inspection.php">
-         <i class="fa-solid fa-file-circle-xmark"></i>
+          <i class="fa-solid fa-file-circle-xmark"></i>
           Rejected Inspection
         </a>
       </li>
