@@ -19,10 +19,7 @@ function getAllFireExtinguishers(
         trim($_SESSION['Role'] ?? '')
     );
 
-    // =====================================================
     // ADMIN
-    // =====================================================
-
     if ($role === 'admin') {
 
         return getAll(
@@ -34,10 +31,7 @@ function getAllFireExtinguishers(
         );
     }
 
-    // =====================================================
     // INSPECTOR
-    // =====================================================
-
     if ($role === 'inspector') {
 
         return getAll(
@@ -52,29 +46,18 @@ function getAllFireExtinguishers(
     return false;
 }
 
-
-// =====================================================
 // Get fire extinguisher by ID
-// =====================================================
-
 function getFireExtinguisherById($id)
 {
     return getById($id);
 }
 
-
-// =====================================================
 // Check code / Get next code
-// =====================================================
-
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $action = $_GET['action'] ?? '';
 
-
-    // =================================================
     // CHECK FIRE EXTINGUISHER CODE
-    // =================================================
     if ($action === 'checkCode') {
 
         header('Content-Type: application/json');
@@ -122,11 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     }
 
-
-    // =================================================
     // GET NEXT FIRE EXTINGUISHER CODE
-    // =================================================
-
     if ($action === 'getNextCode') {
 
         header('Content-Type: application/json');
@@ -188,11 +167,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 
-// =====================================================
 // Controller function for creating/adding
 // new fire extinguisher
-// =====================================================
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $ext_code = $_POST['extinguisher_code'] ?? null;
@@ -223,10 +199,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $added_by = $_SESSION['EmployeeName'] ?? null;
 
 
-    // =================================================
     // ADD
-    // =================================================
-
     if ($action == 'add-new-extinguisher') {
 
         addNewExtinguisher(
@@ -246,7 +219,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // UPDATE
-
     else if ($action == 'update') {
 
         updateExtinguisher(
@@ -267,7 +239,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 // UPDATE EXTINGUISHER
-
 function updateExtinguisher(
     $id,
     $code,
@@ -318,20 +289,14 @@ function updateExtinguisher(
 }
 
 
-// =====================================================
 // GET - fetch fire extinguisher for edit modal
 // & get by code for fire extinguisher
-// =====================================================
-
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $action = $_GET['action'] ?? null;
 
 
-    // =================================================
     // GET BY ID
-    // =================================================
-
     if ($action === 'get') {
 
         $ext_id = $_GET['id'] ?? null;
@@ -373,12 +338,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     }
 
-
-
-    // =================================================
     // GET BRANCHES
-    // =================================================
-
     else if ($action === 'getBranches') {
 
         header('Content-Type: application/json');
@@ -412,11 +372,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 
         $result = mysqli_query($conn, $sql);
-
-
         $branches = [];
-
-
         if ($result) {
 
             while ($row = mysqli_fetch_assoc($result)) {
@@ -424,8 +380,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $branches[] = $row['branch'];
             }
         }
-
-
         echo json_encode([
             'success' => true,
             'data' => $branches
@@ -435,11 +389,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-
-// =====================================================
 // ADD NEW EXTINGUISHER
-// =====================================================
-
 function addNewExtinguisher(
     $code,
     $type,
@@ -496,15 +446,10 @@ function addNewExtinguisher(
     return $success;
 }
 
-
-// =====================================================
 // DELETE FIRE EXTINGUISHER
-// =====================================================
-
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $action = $_GET['action'] ?? '';
-
 
     if ($action === 'delete') {
 
@@ -520,10 +465,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             exit;
         }
 
-
-        $data =
-            getFireExtinguisherById($ext_id);
-
+        $data = getFireExtinguisherById($ext_id);
 
         if (!$data) {
 
@@ -534,41 +476,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             exit;
         }
 
-
-        $code =
-            $data['extinguisher_code'];
-
-
-        $success =
-            deleteFireExtinguisherById($ext_id);
+        $code =  $data['extinguisher_code'];
+        $success =  deleteFireExtinguisherById($ext_id);
 
 
         if ($success) {
 
-            $user_name =
-                $_SESSION['EmployeeName']
-                ?? 'error while getting employee name';
-
-
-            createActivityLog(
-                $user_name,
-                "Delete Fire Extinguisher",
-                "Deleted fire extinguisher $code"
-            );
-
-
-            header(
-                "Location: ../../list-extinguisher.php?success-delete=1"
-            );
-
+            $user_name = $_SESSION['EmployeeName'] ?? 'error while getting employee name';
+            createActivityLog( $user_name, "Delete Fire Extinguisher", "Deleted fire extinguisher $code" );
+            header( "Location: ../../list-extinguisher.php?success-delete=1" );
             exit;
         }
-
-
-        header(
-            "Location: ../../list-extinguisher.php?error=delete_failed"
-        );
-
+        header( "Location: ../../list-extinguisher.php?error=delete_failed" );
         exit;
     }
 
@@ -605,21 +524,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-
-// =====================================================
 // GET NEXT CODE
-// =====================================================
-
 function getNextFireExtinguisherCode($branch)
 {
     return getNextFireExtinguisherCodeModel($branch);
 }
 
 
-// =====================================================
 // GET TOTAL FIRE EXTINGUISHERS
-// =====================================================
-
 function getTotalFireExtinguishers(
     $placementType = 'all',
     $conditionType = 'all',
@@ -653,10 +565,7 @@ function getAllArchiveFireExtinguishers(
 }
 
 
-// =====================================================
 // GET TOTAL DELETED FIRE EXTINGUISHERS
-// =====================================================
-
 function getTotalDeletedFireExtinguishers()
 {
     return getAllDeletedFireExtinguishersModel();

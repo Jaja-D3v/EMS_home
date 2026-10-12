@@ -2,8 +2,6 @@
 
 require_once __DIR__ . '/../config/db.php';
 
-// $default_branch = $_SESSION['Branch'] ?? 'all';
-
 function getInventoryReportIds($branch = 'all')
 {
     global $conn;

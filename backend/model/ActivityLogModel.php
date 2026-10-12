@@ -75,9 +75,7 @@ function getActivityLogs($limit = 10, $offset = 0, $month = '', $date = '')
     }
 
     mysqli_stmt_bind_param($stmt, $types, ...$params);
-
     mysqli_stmt_execute($stmt);
-
     $result = mysqli_stmt_get_result($stmt);
 
     return $result;
@@ -89,7 +87,6 @@ function getActivityLogsCount($month = '', $date = '')
     global $conn;
 
     $user_name = $_SESSION['EmployeeName'] ?? '';
-
     $conditions = ["user_name = ?"];
     $params = [$user_name];
     $types = "s";
@@ -121,9 +118,7 @@ function getActivityLogsCount($month = '', $date = '')
     }
 
     mysqli_stmt_bind_param($stmt, $types, ...$params);
-
     mysqli_stmt_execute($stmt);
-
     $result = mysqli_stmt_get_result($stmt);
     $row = mysqli_fetch_assoc($result);
 

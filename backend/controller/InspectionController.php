@@ -5,7 +5,6 @@ require_once __DIR__ . '/../model/FireExtinguisherModel.php';
 require_once __DIR__ . '/ActivityLogController.php';
 require_once __DIR__ . '/../authentication/SessionChecker.php';
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $action = $_GET['action'] ?? null;
@@ -82,7 +81,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $remarks = $_POST['remarks'] ?? null;
         $branch = $_POST['branch'] ?? null;
 
-
         // Inspection Checklist
         $is_seal_ok = isset($_POST['is_seal_ok']) ? 1 : 0;
         $is_pin_ok = isset($_POST['is_pin_ok']) ? 1 : 0;
@@ -94,7 +92,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $is_demarcation_line_ok = isset($_POST['is_demarcation_line_ok']) ? 1 : 0;
         $is_signage_ok = isset($_POST['is_signage_ok']) ? 1 : 0;
         $is_cleaning_of_unit_ok = isset($_POST['is_cleaning_of_unit_ok']) ? 1 : 0;
-
 
         // Determine Overall Status
         if ($is_pressure_ok && $is_hose_ok && $is_nozzle_ok && $is_cylinder_body_ok) {
@@ -133,7 +130,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $remarks
         );
 
-
         // Redirect After Successful Submission
         if ($success) {
             $user_name = $_SESSION['EmployeeName'] ?? 'error while getting employee name';
@@ -159,9 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $remarks = trim($_POST['remarks'] ?? '');
         $rejectReason = $_POST['reject_reason'] ?? '';
 
-
         // Record Approval or Rejection
-
         if ($eval_stats == "Approved") {
 
             ApprovedBy($Approver_name, $inspect_id);
@@ -179,31 +173,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Update Evaluation Status
-        $statusSuccess = updateEvalStats(
-            $inspect_id,
-            $eval_stats
-        );
+        $statusSuccess = updateEvalStats( $inspect_id, $eval_stats );
 
         // Update Corrective Action
-        $actionSuccess = updateCorrectiveAction(
-            $inspect_id,
-            $action_taken,
-            $target_date,
-            $rejectReason
-        );
+        $actionSuccess = updateCorrectiveAction( $inspect_id, $action_taken, $target_date, $rejectReason );
 
         // Redirect After Evaluation
-        if (
-            $statusSuccess &&
-            $actionSuccess &&
-            $eval_stats == "Approved"
-        ) {
+        if ( $statusSuccess && $actionSuccess && $eval_stats == "Approved" )
+        {
 
-            updateFireExtinguisherStatus(
-                $extinguisher_code,
-                $condition_status,
-                $remarks
-            );
+            updateFireExtinguisherStatus( $extinguisher_code, $condition_status, $remarks );
 
             header("Location: ../../inspection-pending.php?approved_success=1");
 
@@ -215,7 +194,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ) {
 
             header("Location: ../../inspection-pending.php?rejected_success=1");
-
             exit;
         }
 
@@ -247,33 +225,22 @@ function getAllInspected()
 // Get Pending Approvals
 function getPendingApprovals($limit = 10, $offset = 0, $date = null)
 {
-
     $role = strtolower(
         trim($_SESSION['Role'] ?? '')
     );
 
-
     if ($role === 'admin') {
 
-        // Default to the Admin's assigned branch
         $sessionBranch = trim($_SESSION['Branch'] ?? '');
-
-        // Use the branch selected in the URL when available
         $branch = trim($_GET['branch'] ?? $sessionBranch);
-
-        // Use all branches when no branch is assigned
         if ($branch === '') $branch = 'all';
 
         return getAllPendingApproval($limit, $offset, $date, $branch);
     }
 
-
     if ($role === 'inspector') {
-
         // Restrict inspectors to their assigned branch
-        $branch = trim(
-            $_SESSION['Branch'] ?? ''
-        );
+        $branch = trim( $_SESSION['Branch'] ?? '' );
 
         if ($branch === '') {
             return false;
@@ -281,11 +248,8 @@ function getPendingApprovals($limit = 10, $offset = 0, $date = null)
 
         return getAllPendingApproval($limit, $offset, $date, $branch);
     }
-
-
     return false;
 }
-
 
 // Get Pending Approval Total
 function getPendingApprovalTotal($date = null)
@@ -297,15 +261,9 @@ function getPendingApprovalTotal($date = null)
 
     if ($role === 'admin') {
 
-        // Default to the Admin's assigned branch
         $sessionBranch = trim($_SESSION['Branch'] ?? '');
-
-        // Use the branch selected in the URL when available
         $branch = trim($_GET['branch'] ?? $sessionBranch);
-
-        // Use all branches when no branch is assigned
         if ($branch === '')  $branch = 'all';
-
         return getPendingApprovalCount($date, $branch);
     }
 
@@ -313,9 +271,7 @@ function getPendingApprovalTotal($date = null)
 
         // Restrict inspectors to their assigned branch
         $branch = trim($_SESSION['Branch'] ?? '');
-
         if ($branch === '')  return 0;
-
         return getPendingApprovalCount($date, $branch);
     }
 
@@ -329,21 +285,13 @@ function getApprovedApprovals(
     $date = null
 ) {
 
-    $role = strtolower(
-        trim($_SESSION['Role'] ?? '')
-    );
+    $role = strtolower( trim($_SESSION['Role'] ?? '') );
 
     if ($role === 'admin') {
 
-        // Default to the Admin's assigned branch
         $sessionBranch = trim($_SESSION['Branch'] ?? '');
-
-        // Use the selected branch from the URL when available
         $branch = trim($_GET['branch'] ?? $sessionBranch);
-
-        // Use all branches if no branch is assigned
         if ($branch === '')  $branch = 'all';
-
         return getAllApprovedApproval($limit, $offset, $date, $branch);
     }
 
@@ -351,17 +299,9 @@ function getApprovedApprovals(
 
         // Restrict inspectors to their assigned branch
         $branch = trim($_SESSION['Branch'] ?? '');
-
         if ($branch === '')  return false;
-
-        return getAllApprovedApproval(
-            $limit,
-            $offset,
-            $date,
-            $branch
-        );
+        return getAllApprovedApproval( $limit, $offset, $date, $branch );
     }
-
     return false;
 }
 
@@ -374,12 +314,8 @@ function getApprovedApprovalTotal($date = null)
 
     if ($role === 'admin') {
 
-        // Default to the Admin's assigned branch
         $sessionBranch = trim($_SESSION['Branch'] ?? '');
-
-        // Use the selected branch from the URL when available
         $branch = trim($_GET['branch'] ?? $sessionBranch);
-        // Use all branches if no branch is assigned
         if ($branch === '')  $branch = 'all';
 
         return getApprovedApprovalCount($date, $branch);
@@ -389,30 +325,22 @@ function getApprovedApprovalTotal($date = null)
 
         // Restrict inspectors to their assigned branch
         $branch = trim($_SESSION['Branch'] ?? '');
-
         if ($branch === '')  return 0;
 
         return getApprovedApprovalCount($date, $branch);
     }
-
     return 0;
 }
 
 // Get Rejected Approvals
 function getRejectedApprovals($limit = 10, $offset = 0, $date = null)
 {
-
     $role = strtolower(trim($_SESSION['Role'] ?? ''));
 
     if ($role === 'admin') {
 
-        // Default to the Admin's assigned branch
         $sessionBranch = trim($_SESSION['Branch'] ?? '');
-
-        // Use the selected branch from the URL when available
         $branch = trim($_GET['branch'] ?? $sessionBranch);
-
-        // Use all branches if no branch is assigned
         if ($branch === '')  $branch = 'all';
 
         return getAllRejectedApproval($limit, $offset, $date, $branch);
@@ -425,7 +353,6 @@ function getRejectedApprovals($limit = 10, $offset = 0, $date = null)
         if ($branch === '')  return false;
         return getAllRejectedApproval($limit, $offset, $date, $branch);
     }
-
     return false;
 }
 
@@ -438,41 +365,29 @@ function getRejectedApprovalTotal($date = null)
 
     if ($role === 'admin') {
 
-        // Default to the Admin's assigned branch
         $sessionBranch = trim($_SESSION['Branch'] ?? '');
-
-        // Use the selected branch from the URL when available
         $branch = trim($_GET['branch'] ?? $sessionBranch);
-
-        // Use all branches if no branch is assigned
         if ($branch === '')  $branch = 'all';
-
         return getRejectedApprovalCount($date, $branch);
     }
 
     if ($role === 'inspector') {
 
-        // Restrict inspectors to their assigned branch
         $branch = trim($_SESSION['Branch'] ?? '');
-
         if ($branch === '')  return 0;
-
         return getRejectedApprovalCount($date, $branch);
     }
-
     return 0;
 }
 
 
 function updateEvalStats($eval_id, $evalStatus)
 {
-
     return updateEvaluationStatus($eval_id, $evalStatus);
 }
 
 
 // Retrieve Approved Inspection for generate report 
-
 function getApprovedInspectionReportsController($ids)
 {
     if (empty($ids))  return [];

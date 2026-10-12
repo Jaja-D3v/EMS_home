@@ -2,12 +2,7 @@
 
 require_once __DIR__ . '/../config/db.php';
 
-
-
-// ============================================================
 // INSPECTION - LAST 3 MONTHS
-// ============================================================
-
 function getInspectionLastThreeMonths($branch)
 {
     global $conn;
@@ -28,9 +23,7 @@ function getInspectionLastThreeMonths($branch)
     ";
 
     if ($branch !== 'all') {
-        $sql .= "
-            AND LOWER(TRIM(i.branch)) = LOWER(TRIM(?))
-        ";
+        $sql .= " AND LOWER(TRIM(i.branch)) = LOWER(TRIM(?)) ";
     }
 
     $sql .= "
@@ -45,9 +38,7 @@ function getInspectionLastThreeMonths($branch)
     }
 
     $stmt->execute();
-
     $result = $stmt->get_result();
-
     $data = [];
 
     while ($row = $result->fetch_assoc()) {
@@ -60,10 +51,7 @@ function getInspectionLastThreeMonths($branch)
 }
 
 
-// ============================================================
 // NEARLY EXPIRING FIRE EXTINGUISHERS
-// ============================================================
-
 function getExpiringFireExtinguishers($branch)
 {
     global $conn;
@@ -80,15 +68,11 @@ function getExpiringFireExtinguishers($branch)
     ";
 
     /*
-    |--------------------------------------------------------------------------
     | Only filter branch if NOT admin/all
-    |--------------------------------------------------------------------------
     */
 
     if ($branch !== 'all') {
-        $sql .= "
-            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
-        ";
+        $sql .= " AND LOWER(TRIM(branch)) = LOWER(TRIM(?)) ";
     }
 
     $stmt = $conn->prepare($sql);
@@ -102,21 +86,14 @@ function getExpiringFireExtinguishers($branch)
     }
 
     $stmt->execute();
-
     $result = $stmt->get_result();
-
     $row = $result->fetch_assoc();
-
     $stmt->close();
-
     return (int) ($row['total'] ?? 0);
 }
 
 
-// ============================================================
 // ALL NOT GOOD CONDITION
-// ============================================================
-
 function getAllNotGoodCondition($branch)
 {
     global $conn;
@@ -129,9 +106,7 @@ function getAllNotGoodCondition($branch)
     ";
 
     if ($branch !== 'all') {
-        $sql .= "
-            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
-        ";
+        $sql .= " AND LOWER(TRIM(branch)) = LOWER(TRIM(?)) ";
     }
 
     $stmt = $conn->prepare($sql);
@@ -141,21 +116,13 @@ function getAllNotGoodCondition($branch)
     }
 
     $stmt->execute();
-
     $result = $stmt->get_result();
-
     $row = $result->fetch_assoc();
-
     $stmt->close();
-
     return (int) ($row['total'] ?? 0);
 }
 
-
-// ============================================================
 // FIRE EXTINGUISHER TYPE COUNTS
-// ============================================================
-
 function getFireExtinguisherTypeCounts($branch)
 {
     global $conn;
@@ -171,9 +138,7 @@ function getFireExtinguisherTypeCounts($branch)
     ";
 
     if ($branch !== 'all') {
-        $sql .= "
-            AND LOWER(TRIM(f.branch)) = LOWER(TRIM(?))
-        ";
+        $sql .= " AND LOWER(TRIM(f.branch)) = LOWER(TRIM(?)) ";
     }
 
     $sql .= "
@@ -188,9 +153,7 @@ function getFireExtinguisherTypeCounts($branch)
     }
 
     $stmt->execute();
-
     $result = $stmt->get_result();
-
     $data = [];
 
     while ($row = $result->fetch_assoc()) {
@@ -202,12 +165,7 @@ function getFireExtinguisherTypeCounts($branch)
     return $data;
 }
 
-
-
-// ============================================================
 // ALL GOOD CONDITION
-// ============================================================
-
 function getAllGoodCondition($branch)
 {
     global $conn;
@@ -220,9 +178,7 @@ function getAllGoodCondition($branch)
     ";
 
     if ($branch !== 'all') {
-        $sql .= "
-            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
-        ";
+        $sql .= " AND LOWER(TRIM(branch)) = LOWER(TRIM(?)) ";
     }
 
     $stmt = $conn->prepare($sql);
@@ -238,11 +194,7 @@ function getAllGoodCondition($branch)
     return (int) ($row['total'] ?? 0);
 }
 
-
-// ============================================================
 // INSTALLED - NOT GOOD
-// ============================================================
-
 function getNotGoodInstalledFireExtinguishersCount($branch)
 {
     global $conn;
@@ -257,9 +209,7 @@ function getNotGoodInstalledFireExtinguishersCount($branch)
     ";
 
     if ($branch !== 'all') {
-        $sql .= "
-            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
-        ";
+        $sql .= " AND LOWER(TRIM(branch)) = LOWER(TRIM(?)) ";
     }
 
     $stmt = $conn->prepare($sql);
@@ -275,11 +225,7 @@ function getNotGoodInstalledFireExtinguishersCount($branch)
     return (int) ($row['total'] ?? 0);
 }
 
-
-// ============================================================
 // INSTALLED - GOOD
-// ============================================================
-
 function getGoodInstalledFireExtinguishersCount($branch)
 {
     global $conn;
@@ -293,9 +239,7 @@ function getGoodInstalledFireExtinguishersCount($branch)
     ";
 
     if ($branch !== 'all') {
-        $sql .= "
-            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
-        ";
+        $sql .= " AND LOWER(TRIM(branch)) = LOWER(TRIM(?)) ";
     }
 
     $stmt = $conn->prepare($sql);
@@ -305,21 +249,13 @@ function getGoodInstalledFireExtinguishersCount($branch)
     }
 
     $stmt->execute();
-
     $result = $stmt->get_result();
-
     $row = $result->fetch_assoc();
-
     $stmt->close();
-
     return (int) ($row['total'] ?? 0);
 }
 
-
-// ============================================================
 // ALL INSTALLED FIRE EXTINGUISHERS
-// ============================================================
-
 function getInstalledFireExtinguishersCount($branch)
 {
     global $conn;
@@ -332,9 +268,7 @@ function getInstalledFireExtinguishersCount($branch)
     ";
 
     if ($branch !== 'all') {
-        $sql .= "
-            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
-        ";
+        $sql .= " AND LOWER(TRIM(branch)) = LOWER(TRIM(?)) ";
     }
 
     $stmt = $conn->prepare($sql);
@@ -344,21 +278,14 @@ function getInstalledFireExtinguishersCount($branch)
     }
 
     $stmt->execute();
-
     $result = $stmt->get_result();
-
     $row = $result->fetch_assoc();
-
     $stmt->close();
-
     return (int) ($row['total'] ?? 0);
 }
 
 
-// ============================================================
 // SPARE - NOT GOOD
-// ============================================================
-
 function getNotGoodSpareFireExtinguishersCount($branch)
 {
     global $conn;
@@ -372,9 +299,7 @@ function getNotGoodSpareFireExtinguishersCount($branch)
     ";
 
     if ($branch !== 'all') {
-        $sql .= "
-            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
-        ";
+        $sql .= " AND LOWER(TRIM(branch)) = LOWER(TRIM(?)) ";
     }
 
     $stmt = $conn->prepare($sql);
@@ -390,11 +315,7 @@ function getNotGoodSpareFireExtinguishersCount($branch)
     return (int) ($row['total'] ?? 0);
 }
 
-
-// ============================================================
 // SPARE - GOOD
-// ============================================================
-
 function getGoodSpareFireExtinguishersCount($branch)
 {
     global $conn;
@@ -409,9 +330,7 @@ function getGoodSpareFireExtinguishersCount($branch)
     ";
 
     if ($branch !== 'all') {
-        $sql .= "
-            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
-        ";
+        $sql .= " AND LOWER(TRIM(branch)) = LOWER(TRIM(?)) ";
     }
 
     $stmt = $conn->prepare($sql);
@@ -421,21 +340,13 @@ function getGoodSpareFireExtinguishersCount($branch)
     }
 
     $stmt->execute();
-
     $result = $stmt->get_result();
-
     $row = $result->fetch_assoc();
-
     $stmt->close();
-
     return (int) ($row['total'] ?? 0);
 }
 
-
-// ============================================================
 // ALL SPARE FIRE EXTINGUISHERS
-// ============================================================
-
 function getSpareFireExtinguishersCount($branch)
 {
     global $conn;
@@ -448,9 +359,7 @@ function getSpareFireExtinguishersCount($branch)
     ";
 
     if ($branch !== 'all') {
-        $sql .= "
-            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
-        ";
+        $sql .= " AND LOWER(TRIM(branch)) = LOWER(TRIM(?)) ";
     }
 
     $stmt = $conn->prepare($sql);
@@ -460,21 +369,14 @@ function getSpareFireExtinguishersCount($branch)
     }
 
     $stmt->execute();
-
     $result = $stmt->get_result();
-
     $row = $result->fetch_assoc();
-
     $stmt->close();
-
     return (int) ($row['total'] ?? 0);
 }
 
 
-// ============================================================
 // ALL ACTIVE REGISTERED FIRE EXTINGUISHERS
-// ============================================================
-
 function getAllFireExtinguishersCount($branch)
 {
     global $conn;
@@ -486,9 +388,7 @@ function getAllFireExtinguishersCount($branch)
     ";
 
     if ($branch !== 'all') {
-        $sql .= "
-            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
-        ";
+        $sql .= " AND LOWER(TRIM(branch)) = LOWER(TRIM(?)) ";
     }
 
     $stmt = $conn->prepare($sql);
@@ -498,12 +398,8 @@ function getAllFireExtinguishersCount($branch)
     }
 
     $stmt->execute();
-
     $result = $stmt->get_result();
-
     $row = $result->fetch_assoc();
-
     $stmt->close();
-
     return (int) ($row['total'] ?? 0);
 }

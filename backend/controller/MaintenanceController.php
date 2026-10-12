@@ -42,10 +42,8 @@ function addController()
     $category = trim($_POST['category'] ?? '');
     $value = trim($_POST['value'] ?? '');
 
-    if (
-        empty($category) ||
-        empty($value)
-    ) {
+    if ( empty($category) || empty($value) ) 
+    {
         header("Location: maintenance.php?error=empty");
         exit;
     }
@@ -64,10 +62,7 @@ function addController()
         exit;
     }
 
-    $result = add(
-        $category,
-        $value
-    );
+    $result = add( $category, $value );
 
     if ($result) {
 
@@ -98,10 +93,7 @@ function updateController()
         exit;
     }
 
-    $result = update(
-        $id,
-        $value
-    );
+    $result = update( $id, $value );
 
     if ($result) {
 

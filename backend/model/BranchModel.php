@@ -14,12 +14,9 @@ function getAllBranches()
     ";
 
     $result = $conn->query($sql);
-
     $branches = [];
-
     while ($row = $result->fetch_assoc()) {
         $branches[] = $row;
     }
-
     return $branches;
 }

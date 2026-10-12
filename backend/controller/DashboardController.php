@@ -16,7 +16,6 @@ require_once __DIR__ . '/../model/DashboardModel.php';
 |--------------------------------------------------------------------------
 */
 
-
 /**
  * Get selected branch based on user role.
  *
@@ -55,7 +54,6 @@ function getInspectLastThreeMonths()
     return getInspectionLastThreeMonths($branch);
 }
 
-
 /**
  * FIRE EXTINGUISHER TYPE COUNTS
  */
@@ -65,7 +63,6 @@ function getFireExtinguisherTypeCountsController()
 
     return getFireExtinguisherTypeCounts($branch);
 }
-
 
 /**
  * EXPIRING FIRE EXTINGUISHERS
@@ -77,7 +74,6 @@ function getAllExpiringCount()
     return getExpiringFireExtinguishers($branch);
 }
 
-
 /**
  * NOT GOOD CONDITION
  */
@@ -87,7 +83,6 @@ function getNotGoodCondition()
 
     return getAllNotGoodCondition($branch);
 }
-
 
 /**
  * GOOD CONDITION
@@ -99,7 +94,6 @@ function getGoodCondition()
     return getAllGoodCondition($branch);
 }
 
-
 /**
  * INSTALLED - NOT GOOD
  */
@@ -109,7 +103,6 @@ function getTotalNotGoodInstalledFireExtinguishers()
 
     return getNotGoodInstalledFireExtinguishersCount($branch);
 }
-
 
 /**
  * INSTALLED - GOOD
@@ -121,7 +114,6 @@ function getTotalGoodInstalledFireExtinguishers()
     return getGoodInstalledFireExtinguishersCount($branch);
 }
 
-
 /**
  * TOTAL INSTALLED
  */
@@ -131,7 +123,6 @@ function getTotalInstalledFireExtinguishers()
 
     return getInstalledFireExtinguishersCount($branch);
 }
-
 
 /**
  * SPARE - NOT GOOD
@@ -143,7 +134,6 @@ function getTotalNotGoodSpareFireExtinguishers()
     return getNotGoodSpareFireExtinguishersCount($branch);
 }
 
-
 /**
  * SPARE - GOOD
  */
@@ -154,7 +144,6 @@ function getTotalGoodSpareFireExtinguishers()
     return getGoodSpareFireExtinguishersCount($branch);
 }
 
-
 /**
  * TOTAL SPARE
  */
@@ -164,7 +153,6 @@ function getTotalSpareFireExtinguishers()
 
     return getSpareFireExtinguishersCount($branch);
 }
-
 
 /**
  * TOTAL FIRE EXTINGUISHERS
