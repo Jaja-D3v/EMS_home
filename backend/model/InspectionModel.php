@@ -99,14 +99,7 @@ function addInspectionChecklist(
               WHERE extinguisher_code = ?";
 
     $updateStmt = mysqli_prepare($conn, $updateSql);
-
-    mysqli_stmt_bind_param(
-        $updateStmt,
-        "ss",
-        $inspected_by,
-        $extinguisher_code
-    );
-
+    mysqli_stmt_bind_param($updateStmt, "ss", $inspected_by, $extinguisher_code);
     return mysqli_stmt_execute($updateStmt);
 }
 
@@ -117,11 +110,7 @@ function getBranch()
     return $_SESSION['Branch'] ?? null;
 }
 
-
-// ============================================================
 // GET ALL LIST
-// ============================================================
-
 function getAllInspectionCheckList()
 {
     global $conn;
@@ -147,19 +136,13 @@ function getAllInspectionCheckList()
     mysqli_stmt_execute($stmt);
 
     $result = mysqli_stmt_get_result($stmt);
-
     $data = mysqli_fetch_all($result, MYSQLI_ASSOC);
-
     mysqli_stmt_close($stmt);
-
     return $data;
 }
 
 
-// ============================================================
 // GET ALL LIST BY ID
-// ============================================================
-
 function getInspectionCheckListById($id)
 {
     global $conn;
@@ -182,21 +165,13 @@ function getInspectionCheckListById($id)
     );
 
     mysqli_stmt_execute($stmt);
-
     $result = mysqli_stmt_get_result($stmt);
-
     $inspection = mysqli_fetch_assoc($result);
-
     mysqli_stmt_close($stmt);
-
     return $inspection ?: null;
 }
 
-
-
-// ============================================================
 // GET ALL PENDING APPROVAL
-// ============================================================
 function getAllPendingApproval(
     $limit = 10,
     $offset = 0,
@@ -212,57 +187,22 @@ function getAllPendingApproval(
     $types = "";
     $params = [];
 
-    // ========================================================
     // DATE FILTER - AS OF SELECTED DATE
-    // ========================================================
-    //
-    // Example:
-    // Filter = 2026-10-06
-    //
-    // Includes:
-    // 2026-10-06 08:00:00
-    // 2026-10-06 14:30:00
-    // 2026-10-06 23:59:59
-    //
-    // Excludes:
-    // 2026-10-07 00:00:00
-    //
-    // ========================================================
-
     if (!empty($date)) {
 
-        $sql .= "
-            AND date_inspected < DATE_ADD(?, INTERVAL 1 DAY)
-        ";
-
+        $sql .= " AND date_inspected < DATE_ADD(?, INTERVAL 1 DAY) ";
         $types .= "s";
         $params[] = $date;
     }
 
-    // ========================================================
     // BRANCH FILTER
-    // ========================================================
 
     if ($branch !== 'all' && !empty($branch)) {
 
-        $sql .= "
-            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
-        ";
-
+        $sql .= " AND LOWER(TRIM(branch)) = LOWER(TRIM(?)) ";
         $types .= "s";
         $params[] = $branch;
     }
-
-    // ========================================================
-    // LATEST RECORD PER EXTINGUISHER CODE
-    // AS OF SELECTED DATE
-    // ========================================================
-    //
-    // date_inspected = primary basis
-    // time = included automatically because DATETIME is compared
-    // inspect_id = tie-breaker if exact same datetime
-    //
-    // ========================================================
 
     $sql .= "
         AND NOT EXISTS (
@@ -286,60 +226,37 @@ function getAllPendingApproval(
             )
     ";
 
-    // ========================================================
     // NEWER RECORD MUST ALSO BE WITHIN SELECTED DATE
-    // ========================================================
-
     if (!empty($date)) {
 
-        $sql .= "
-            AND newer.date_inspected < DATE_ADD(?, INTERVAL 1 DAY)
-        ";
-
+        $sql .= " AND newer.date_inspected < DATE_ADD(?, INTERVAL 1 DAY) ";
         $types .= "s";
         $params[] = $date;
     }
 
-    $sql .= "
-        )
-    ";
+    $sql .= " ) ";
 
-    // ========================================================
     // STATUS
-    // ========================================================
+    $sql .= " AND evaluation_status = 'Pending' ";
 
-    $sql .= "
-        AND evaluation_status = 'Pending'
-    ";
-
-    // ========================================================
     // PAGINATION
-    // ========================================================
-
     $sql .= "
         ORDER BY date_inspected DESC, inspect_id DESC
         LIMIT ? OFFSET ?
     ";
 
     $types .= "ii";
-
     $params[] = (int) $limit;
     $params[] = (int) $offset;
 
-    // ========================================================
     // PREPARE
-    // ========================================================
-
     $stmt = mysqli_prepare($conn, $sql);
 
     if (!$stmt) {
         return false;
     }
 
-    // ========================================================
     // BIND PARAMETERS
-    // ========================================================
-
     if (!empty($types)) {
 
         mysqli_stmt_bind_param(
@@ -349,31 +266,20 @@ function getAllPendingApproval(
         );
     }
 
-    // ========================================================
     // EXECUTE
-    // ========================================================
-
     if (!mysqli_stmt_execute($stmt)) {
         mysqli_stmt_close($stmt);
         return false;
     }
 
-    // ========================================================
     // RESULT
-    // ========================================================
-
     $result = mysqli_stmt_get_result($stmt);
-
     mysqli_stmt_close($stmt);
-
     return $result;
 }
 
 
-// ============================================================
 // FOR COUNT ALL PENDING APPROVAL
-// ============================================================
-
 function getPendingApprovalCount(
     $date = null,
     $branch = 'all'
@@ -387,10 +293,7 @@ function getPendingApprovalCount(
     $types = "";
     $params = [];
 
-    // ========================================================
     // DATE FILTER - AS OF SELECTED DATE
-    // ========================================================
-
     if (!empty($date)) {
 
         $sql .= "
@@ -401,10 +304,7 @@ function getPendingApprovalCount(
         $params[] = $date;
     }
 
-    // ========================================================
     // BRANCH FILTER
-    // ========================================================
-
     if ($branch !== 'all' && !empty($branch)) {
 
         $sql .= "
@@ -415,11 +315,8 @@ function getPendingApprovalCount(
         $params[] = $branch;
     }
 
-    // ========================================================
     // LATEST RECORD PER EXTINGUISHER CODE
     // AS OF SELECTED DATE
-    // ========================================================
-
     $sql .= "
         AND NOT EXISTS (
             SELECT 1
@@ -442,10 +339,7 @@ function getPendingApprovalCount(
             )
     ";
 
-    // ========================================================
     // NEWER RECORD MUST ALSO BE WITHIN SELECTED DATE
-    // ========================================================
-
     if (!empty($date)) {
 
         $sql .= "
@@ -460,28 +354,19 @@ function getPendingApprovalCount(
         )
     ";
 
-    // ========================================================
     // STATUS
-    // ========================================================
-
     $sql .= "
         AND evaluation_status = 'Pending'
     ";
 
-    // ========================================================
     // PREPARE
-    // ========================================================
-
     $stmt = mysqli_prepare($conn, $sql);
 
     if (!$stmt) {
         return 0;
     }
 
-    // ========================================================
     // BIND PARAMETERS
-    // ========================================================
-
     if (!empty($types)) {
 
         mysqli_stmt_bind_param(
@@ -491,28 +376,18 @@ function getPendingApprovalCount(
         );
     }
 
-    // ========================================================
     // EXECUTE
-    // ========================================================
-
     if (!mysqli_stmt_execute($stmt)) {
         mysqli_stmt_close($stmt);
         return 0;
     }
 
-    // ========================================================
     // RESULT
-    // ========================================================
-
     $result = mysqli_stmt_get_result($stmt);
-
     $row = mysqli_fetch_assoc($result);
-
     mysqli_stmt_close($stmt);
-
     return (int) ($row['total'] ?? 0);
 }
-
 
 // For generating report
 function getAllApprovedApprovalIds($date = null, $branch = null)
@@ -536,10 +411,7 @@ function getAllApprovedApprovalIds($date = null, $branch = null)
     $types = "";
     $params = array();
 
-    // ========================================================
     // DATE FILTER - SELECTED DATE ONLY
-    // ========================================================
-
     if (!empty($date)) {
 
         $sql .= "
@@ -553,10 +425,7 @@ function getAllApprovedApprovalIds($date = null, $branch = null)
         $params[] = $date;
     }
 
-    // ========================================================
     // BRANCH FILTER
-    // ========================================================
-
     if ($branch !== 'all' && !empty($branch)) {
 
         $sql .= "
@@ -568,11 +437,8 @@ function getAllApprovedApprovalIds($date = null, $branch = null)
         $params[] = $branch;
     }
 
-    // ========================================================
     // GET ONLY THE LATEST INSPECTION
     // PER EXTINGUISHER CODE
-    // ========================================================
-
     $sql .= "
         AND NOT EXISTS (
             SELECT 1
@@ -597,11 +463,8 @@ function getAllApprovedApprovalIds($date = null, $branch = null)
             )
     ";
 
-    // ========================================================
     // WHEN DATE IS SELECTED:
     // NEWER RECORD MUST ALSO BE WITHIN SELECTED DATE
-    // ========================================================
-
     if (!empty($date)) {
 
         $sql .= "
@@ -616,42 +479,26 @@ function getAllApprovedApprovalIds($date = null, $branch = null)
     }
 
     // CLOSE NOT EXISTS
-    $sql .= "
-        )
-    ";
+    $sql .= " ) ";
 
-    // ========================================================
     // APPROVED ONLY
-    // ========================================================
+    $sql .= " AND inspection_checklist_tbl.evaluation_status = 'Approved' ";
 
-    $sql .= "
-        AND inspection_checklist_tbl.evaluation_status = 'Approved'
-    ";
-
-    // ========================================================
     // ORDER
-    // ========================================================
-
     $sql .= "
         ORDER BY
             inspection_checklist_tbl.date_inspected DESC,
             inspection_checklist_tbl.inspect_id DESC
     ";
 
-    // ========================================================
     // PREPARE
-    // ========================================================
-
     $stmt = mysqli_prepare($conn, $sql);
 
     if (!$stmt) {
         return array();
     }
 
-    // ========================================================
     // BIND PARAMETERS
-    // ========================================================
-
     if (!empty($types)) {
 
         mysqli_stmt_bind_param(
@@ -661,23 +508,15 @@ function getAllApprovedApprovalIds($date = null, $branch = null)
         );
     }
 
-    // ========================================================
     // EXECUTE
-    // ========================================================
-
     if (!mysqli_stmt_execute($stmt)) {
 
         mysqli_stmt_close($stmt);
-
         return array();
     }
 
-    // ========================================================
     // RESULT
-    // ========================================================
-
     $result = mysqli_stmt_get_result($stmt);
-
     $ids = array();
 
     while ($row = mysqli_fetch_assoc($result)) {
@@ -686,14 +525,10 @@ function getAllApprovedApprovalIds($date = null, $branch = null)
     }
 
     mysqli_stmt_close($stmt);
-
     return $ids;
 }
 
-// ============================================================
 // GET ALL APPROVED APPROVAL - REVISING LOGIC
-// ============================================================
-
 function getAllApprovedApproval(
     $limit = 10,
     $offset = 0,
@@ -709,40 +544,30 @@ function getAllApprovedApproval(
     $types = "";
     $params = array();
 
-    // ========================================================
     // DATE FILTER - SELECTED DATE ONLY
-    // ========================================================
-
     if (!empty($date)) {
 
         $sql .= "
             AND date_inspected >= ?
             AND date_inspected < DATE_ADD(?, INTERVAL 1 DAY)
         ";
-
         $types .= "ss";
         $params[] = $date;
         $params[] = $date;
     }
-    // ========================================================
-    // BRANCH FILTER - FROM URL
-    // ========================================================
 
+    // BRANCH FILTER - FROM URL
     $branch = trim(isset($_GET['branch']) ? $_GET['branch'] : $_SESSION['Branch']);
 
     if ($branch !== 'all' && $branch !== '') {
 
-        $sql .= "
-        AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
-    ";
+        $sql .= " AND LOWER(TRIM(branch)) = LOWER(TRIM(?)) ";
 
         $types .= "s";
         $params[] = $branch;
     }
-    // ========================================================
-    // LATEST RECORD PER EXTINGUISHER CODE
-    // ========================================================
 
+    // LATEST RECORD PER EXTINGUISHER CODE
     $sql .= "
         AND NOT EXISTS (
             SELECT 1
@@ -765,11 +590,8 @@ function getAllApprovedApproval(
             )
     ";
 
-    // ========================================================
     // WHEN DATE IS SELECTED:
     // NEWER RECORD MUST ALSO BE WITHIN SELECTED DATE
-    // ========================================================
-
     if (!empty($date)) {
 
         $sql .= "
@@ -783,22 +605,12 @@ function getAllApprovedApproval(
     }
 
     // CLOSE NOT EXISTS
-    $sql .= "
-        )
-    ";
+    $sql .= " ) ";
 
-    // ========================================================
     // STATUS
-    // ========================================================
+    $sql .= " AND evaluation_status = 'Approved' ";
 
-    $sql .= "
-        AND evaluation_status = 'Approved'
-    ";
-
-    // ========================================================
     // PAGINATION
-    // ========================================================
-
     $sql .= "
         ORDER BY date_inspected DESC, inspect_id DESC
         LIMIT ? OFFSET ?
@@ -809,20 +621,14 @@ function getAllApprovedApproval(
     $params[] = (int) $limit;
     $params[] = (int) $offset;
 
-    // ========================================================
     // PREPARE
-    // ========================================================
-
     $stmt = mysqli_prepare($conn, $sql);
 
     if (!$stmt) {
         return false;
     }
 
-    // ========================================================
     // BIND PARAMETERS
-    // ========================================================
-
     if (!empty($types)) {
 
         mysqli_stmt_bind_param(
@@ -832,31 +638,20 @@ function getAllApprovedApproval(
         );
     }
 
-    // ========================================================
     // EXECUTE
-    // ========================================================
-
     if (!mysqli_stmt_execute($stmt)) {
         mysqli_stmt_close($stmt);
         return false;
     }
 
-    // ========================================================
     // RESULT
-    // ========================================================
-
     $result = mysqli_stmt_get_result($stmt);
-
     mysqli_stmt_close($stmt);
-
     return $result;
 }
 
 
-// ============================================================
 // FOR COUNT ALL APPROVED APPROVAL
-// ============================================================
-
 function getApprovedApprovalCount(
     $date = null,
     $branch = 'all'
@@ -870,9 +665,7 @@ function getApprovedApprovalCount(
     $types = "";
     $params = array();
 
-    // ========================================================
     // DATE FILTER - SELECTED DATE ONLY
-    // ========================================================
 
     if (!empty($date)) {
 
@@ -886,10 +679,7 @@ function getApprovedApprovalCount(
         $params[] = $date;
     }
 
-    // ========================================================
     // BRANCH FILTER
-    // ========================================================
-
     if ($branch !== 'all' && !empty($branch)) {
 
         $sql .= "
@@ -900,10 +690,7 @@ function getApprovedApprovalCount(
         $params[] = $branch;
     }
 
-    // ========================================================
     // LATEST RECORD PER EXTINGUISHER CODE
-    // ========================================================
-
     $sql .= "
         AND NOT EXISTS (
             SELECT 1
@@ -926,11 +713,8 @@ function getApprovedApprovalCount(
             )
     ";
 
-    // ========================================================
     // WHEN DATE IS SELECTED:
     // NEWER RECORD MUST ALSO BE WITHIN SELECTED DATE
-    // ========================================================
-
     if (!empty($date)) {
 
         $sql .= "
@@ -944,32 +728,19 @@ function getApprovedApprovalCount(
     }
 
     // CLOSE NOT EXISTS
-    $sql .= "
-        )
-    ";
+    $sql .= " ) ";
 
-    // ========================================================
     // STATUS
-    // ========================================================
+    $sql .= " AND evaluation_status = 'Approved' ";
 
-    $sql .= "
-        AND evaluation_status = 'Approved'
-    ";
-
-    // ========================================================
     // PREPARE
-    // ========================================================
-
     $stmt = mysqli_prepare($conn, $sql);
 
     if (!$stmt) {
         return 0;
     }
 
-    // ========================================================
     // BIND PARAMETERS
-    // ========================================================
-
     if (!empty($types)) {
 
         mysqli_stmt_bind_param(
@@ -979,32 +750,20 @@ function getApprovedApprovalCount(
         );
     }
 
-    // ========================================================
     // EXECUTE
-    // ========================================================
-
     if (!mysqli_stmt_execute($stmt)) {
         mysqli_stmt_close($stmt);
         return 0;
     }
 
-    // ========================================================
     // RESULT
-    // ========================================================
-
     $result = mysqli_stmt_get_result($stmt);
-
     $row = mysqli_fetch_assoc($result);
-
     mysqli_stmt_close($stmt);
-
     return (int) ($row['total'] ?? 0);
 }
 
-// ============================================================
 // GET ALL REJECTED APPROVAL
-// ============================================================
-
 function getAllRejectedApproval(
     $limit = 10,
     $offset = 0,
@@ -1020,16 +779,11 @@ function getAllRejectedApproval(
     $types = "";
     $params = [];
 
-    // ========================================================
     // DATE FILTER - AS OF SELECTED DATE
-    // ========================================================
 
     if (!empty($date)) {
 
-        $sql .= "
-            AND date_inspected < DATE_ADD(?, INTERVAL 1 DAY)
-        ";
-
+        $sql .= " AND date_inspected < DATE_ADD(?, INTERVAL 1 DAY) ";
         $types .= "s";
         $params[] = $date;
     }
@@ -1040,18 +794,13 @@ function getAllRejectedApproval(
 
     if ($branch !== 'all' && !empty($branch)) {
 
-        $sql .= "
-            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
-        ";
-
+        $sql .= " AND LOWER(TRIM(branch)) = LOWER(TRIM(?)) ";
         $types .= "s";
         $params[] = $branch;
     }
 
-    // ========================================================
     // LATEST RECORD PER EXTINGUISHER CODE
     // AS OF SELECTED DATE
-    // ========================================================
 
     $sql .= "
         AND NOT EXISTS (
@@ -1075,60 +824,38 @@ function getAllRejectedApproval(
             )
     ";
 
-    // ========================================================
     // NEWER RECORD MUST ALSO BE WITHIN SELECTED DATE
-    // ========================================================
-
     if (!empty($date)) {
 
-        $sql .= "
-            AND newer.date_inspected < DATE_ADD(?, INTERVAL 1 DAY)
-        ";
+        $sql .= " AND newer.date_inspected < DATE_ADD(?, INTERVAL 1 DAY) ";
 
         $types .= "s";
         $params[] = $date;
     }
 
-    $sql .= "
-        )
-    ";
+    $sql .= " ) ";
 
-    // ========================================================
     // STATUS
-    // ========================================================
+    $sql .= " AND evaluation_status = 'Rejected' ";
 
-    $sql .= "
-        AND evaluation_status = 'Rejected'
-    ";
-
-    // ========================================================
     // PAGINATION
-    // ========================================================
-
     $sql .= "
         ORDER BY date_inspected DESC, inspect_id DESC
         LIMIT ? OFFSET ?
     ";
 
     $types .= "ii";
-
     $params[] = (int) $limit;
     $params[] = (int) $offset;
 
-    // ========================================================
     // PREPARE
-    // ========================================================
-
     $stmt = mysqli_prepare($conn, $sql);
 
     if (!$stmt) {
         return false;
     }
 
-    // ========================================================
     // BIND PARAMETERS
-    // ========================================================
-
     if (!empty($types)) {
 
         mysqli_stmt_bind_param(
@@ -1138,31 +865,20 @@ function getAllRejectedApproval(
         );
     }
 
-    // ========================================================
     // EXECUTE
-    // ========================================================
-
     if (!mysqli_stmt_execute($stmt)) {
         mysqli_stmt_close($stmt);
         return false;
     }
 
-    // ========================================================
     // RESULT
-    // ========================================================
-
     $result = mysqli_stmt_get_result($stmt);
-
     mysqli_stmt_close($stmt);
-
     return $result;
 }
 
 
-// ============================================================
 // GET REJECTED APPROVAL COUNT
-// ============================================================
-
 function getRejectedApprovalCount(
     $date = null,
     $branch = 'all'
@@ -1176,38 +892,24 @@ function getRejectedApprovalCount(
     $types = "";
     $params = [];
 
-    // ========================================================
     // DATE FILTER - AS OF SELECTED DATE
-    // ========================================================
-
     if (!empty($date)) {
 
-        $sql .= "
-            AND date_inspected < DATE_ADD(?, INTERVAL 1 DAY)
-        ";
-
+        $sql .= " AND date_inspected < DATE_ADD(?, INTERVAL 1 DAY) ";
         $types .= "s";
         $params[] = $date;
     }
 
-    // ========================================================
     // BRANCH FILTER
-    // ========================================================
-
     if ($branch !== 'all' && !empty($branch)) {
 
-        $sql .= "
-            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
-        ";
-
+        $sql .= " AND LOWER(TRIM(branch)) = LOWER(TRIM(?)) ";
         $types .= "s";
         $params[] = $branch;
     }
 
-    // ========================================================
     // LATEST RECORD PER EXTINGUISHER CODE
     // AS OF SELECTED DATE
-    // ========================================================
 
     $sql .= "
         AND NOT EXISTS (
@@ -1231,46 +933,27 @@ function getRejectedApprovalCount(
             )
     ";
 
-    // ========================================================
     // NEWER RECORD MUST ALSO BE WITHIN SELECTED DATE
-    // ========================================================
-
     if (!empty($date)) {
 
-        $sql .= "
-            AND newer.date_inspected < DATE_ADD(?, INTERVAL 1 DAY)
-        ";
-
+        $sql .= " AND newer.date_inspected < DATE_ADD(?, INTERVAL 1 DAY) ";
         $types .= "s";
         $params[] = $date;
     }
 
-    $sql .= "
-        )
-    ";
+    $sql .= " ) ";
 
-    // ========================================================
     // STATUS
-    // ========================================================
+    $sql .= " AND evaluation_status = 'Rejected' ";
 
-    $sql .= "
-        AND evaluation_status = 'Rejected'
-    ";
-
-    // ========================================================
     // PREPARE
-    // ========================================================
-
     $stmt = mysqli_prepare($conn, $sql);
 
     if (!$stmt) {
         return 0;
     }
 
-    // ========================================================
     // BIND PARAMETERS
-    // ========================================================
-
     if (!empty($types)) {
 
         mysqli_stmt_bind_param(
@@ -1280,32 +963,20 @@ function getRejectedApprovalCount(
         );
     }
 
-    // ========================================================
     // EXECUTE
-    // ========================================================
-
     if (!mysqli_stmt_execute($stmt)) {
         mysqli_stmt_close($stmt);
         return 0;
     }
 
-    // ========================================================
     // RESULT
-    // ========================================================
-
     $result = mysqli_stmt_get_result($stmt);
-
     $row = mysqli_fetch_assoc($result);
-
     mysqli_stmt_close($stmt);
-
     return (int) ($row['total'] ?? 0);
 }
 
-// ============================================================
 // FOR UPDATE EVALUATION STATUS
-// ============================================================
-
 function updateEvaluationStatus($id, $evaluation_status)
 {
     global $conn;
@@ -1365,7 +1036,6 @@ function Approved_by($name, $id)
     }
 
     $stmt->bind_param("si", $name, $id);
-
     return $stmt->execute();
 }
 
@@ -1470,13 +1140,8 @@ function updateFireExtinguisherExpiryDate($exp_date, $code)
     return $success;
 }
 
-
-
-// ============================================================
 // GET APPROVED INSPECTION REPORTS
 // EXACT RECORDS FROM APPROVED LIST
-// ============================================================
-
 function getApprovedInspectionReports($ids)
 {
     global $conn;
@@ -1495,19 +1160,13 @@ function getApprovedInspectionReports($ids)
         return [];
     }
 
-    // ========================================================
     // CREATE PLACEHOLDERS
-    // ========================================================
-
     $placeholders = implode(
         ',',
         array_fill(0, count($ids), '?')
     );
 
-    // ========================================================
     // QUERY
-    // ========================================================
-
     $sql = "
         SELECT
             i.inspect_id,
@@ -1556,20 +1215,14 @@ function getApprovedInspectionReports($ids)
             i.inspect_id ASC
     ";
 
-    // ========================================================
     // PREPARE
-    // ========================================================
-
     $stmt = mysqli_prepare($conn, $sql);
 
     if (!$stmt) {
         return [];
     }
 
-    // ========================================================
     // BIND IDS
-    // ========================================================
-
     $types = str_repeat('i', count($ids));
 
     mysqli_stmt_bind_param(
@@ -1578,21 +1231,14 @@ function getApprovedInspectionReports($ids)
         ...$ids
     );
 
-    // ========================================================
     // EXECUTE
-    // ========================================================
-
     if (!mysqli_stmt_execute($stmt)) {
         mysqli_stmt_close($stmt);
         return [];
     }
 
-    // ========================================================
     // GET RESULT
-    // ========================================================
-
     $result = mysqli_stmt_get_result($stmt);
-
     $inspections = [];
 
     while ($row = mysqli_fetch_assoc($result)) {
@@ -1600,7 +1246,6 @@ function getApprovedInspectionReports($ids)
     }
 
     mysqli_stmt_close($stmt);
-
     return $inspections;
 }
 

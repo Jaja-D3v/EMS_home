@@ -23,7 +23,6 @@ function getAllFireExtinguishersCode()
         }
 
         // If Admin has no assigned branch
-        // fallback to all branches
         if ($selectedBranch === '') {
             $selectedBranch = 'all';
         }
@@ -31,14 +30,12 @@ function getAllFireExtinguishersCode()
         return getExtinguisher($selectedBranch);
     }
 
-
     // INSPECTOR
     if ($role === 'inspector') {
 
         if (empty($sessionBranch)) {
             return false;
         }
-
         return getExtinguisher($sessionBranch);
     }
 

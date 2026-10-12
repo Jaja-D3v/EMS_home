@@ -16,7 +16,6 @@ function getExtinguisher($branch = 'all')
         WHERE archived = 0
     ";
 
-    // Kapag hindi all, branch-specific
     if ($branch !== 'all') {
         
         $sql .= " AND LOWER(TRIM(branch)) = LOWER(TRIM(?)) ";
