@@ -67,6 +67,4 @@ ___________________________________________________________________________
 - added last inspected in view all fire ex
 - revise the query of get rejected in rejected module 
 
-
-
-Completed system enhancements, bug fixes, and improvements to inspection monitoring, expiry tracking, branch filtering, and report generation.
+Implemented the rejected inspection module for inspectors, including UI design, backend revisions, search and date filters, pagination, and improved rejected inspection queries. Added the last inspected date to the View All Fire Extinguishers module.

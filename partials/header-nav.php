@@ -1,151 +1,66 @@
-<header class="header header-sticky p-0 mb-2">
-  <div class="container-fluid border-bottom px-4">
+<header class="header header-sticky p-0 ims-topbar">
+  <div class="container-fluid px-3 px-lg-4">
+    <div class="d-flex align-items-center gap-3">
+      <button
+        class="header-toggler ims-sidebar-toggle"
+        type="button"
+        aria-label="Toggle navigation"
+        onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()">
+        <svg class="icon icon-lg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
+          <path fill="currentColor" d="M80 96h352v32H80zm0 144h352v32H80zm0 144h352v32H80z" />
+        </svg>
+      </button>
 
-    <button
-      class="header-toggler"
-      type="button"
-      onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()"
-      style="margin-inline-start: -14px">
+      <!-- <div class="ims-topbar-context">
+        <span class="ims-topbar-eyebrow">IMS SAFETY MANAGEMENT</span>
+        <span class="ims-topbar-title">Operations workspace</span>
+      </div> -->
+    </div>
 
-      <svg
-        class="icon icon-lg"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 512 512">
+    <div class="d-flex align-items-center gap-2 gap-md-3 ms-auto">
+      <span class="ims-role-chip">
+        <i class="bi bi-shield-check" aria-hidden="true"></i>
+        <?= htmlspecialchars($_SESSION['Role'] ?? 'User') ?>
+      </span>
 
-        <path
-          fill="var(--ci-primary-color, currentcolor)"
-          d="M80 96h352v32H80zm0 144h352v32H80zm0 144h352v32H80z"
-          class="ci-primary" />
+      <?php
+      $employeeName = trim($_SESSION['EmployeeName'] ?? 'User');
+      $nameParts = preg_split('/\s+/', $employeeName);
+      if (count($nameParts) >= 2) {
+        $initials = strtoupper(substr($nameParts[0], 0, 1) . substr($nameParts[count($nameParts) - 1], 0, 1));
+      } elseif (!empty($nameParts[0])) {
+        $initials = strtoupper(substr($nameParts[0], 0, 2));
+      } else {
+        $initials = 'U';
+      }
+      ?>
 
-      </svg>
-
-    </button>
-
-
-    <ul class="header-nav ms-auto">
-    </ul>
-
-
-    <ul class="header-nav">
-
-      <!-- PROFILE -->
-      <li class="nav-item dropdown">
-
-        <?php
-        $employeeName = trim($_SESSION['EmployeeName'] ?? 'User');
-
-        $nameParts = preg_split('/\s+/', $employeeName);
-
-        if (count($nameParts) >= 2) {
-          $initials = strtoupper(
-            substr($nameParts[0], 0, 1) .
-              substr($nameParts[count($nameParts) - 1], 0, 1)
-          );
-        } elseif (!empty($nameParts[0])) {
-          $initials = strtoupper(substr($nameParts[0], 0, 2));
-        } else {
-          $initials = 'U';
-        }
-        ?>
-
+      <div class="dropdown">
         <a
-          class="nav-link d-flex align-items-center py-1 px-2"
+          class="ims-profile-button"
           data-coreui-toggle="dropdown"
           href="#"
           role="button"
           aria-haspopup="true"
-          aria-expanded="false">
-
-          <!-- PROFILE PILL -->
-          <div
-            class="d-flex align-items-center rounded-pill px-2 py-1"
-                  style="
-                    background: #ffffff;
-                    min-height: 44px;
-                    border: 1px solid #e9ecef;
-                    box-shadow:
-                    0 3px 8px rgba(0, 0, 0, 0.10),
-                    0 1px 2px rgba(0, 0, 0, 0.06),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.9);
-                  ">
-
-            <!-- AVATAR -->
-            <div
-              class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center flex-shrink-0"
-              style="
-                width: 36px;
-                height: 36px;
-                font-size: 13px;
-                font-weight: 600;
-                box-shadow:
-                0 2px 5px rgba(0, 0, 0, 0.20),
-                inset 0 1px 1px rgba(255, 255, 255, 0.25);
-               ">
-
-              <?= htmlspecialchars($initials) ?>
-
-            </div>
-
-            <!-- NAME -->
-            <span
-              class="fw-semibold ms-2 text-dark"
-              style="
-                    max-width: 150px;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                ">
-
-              <?= htmlspecialchars($employeeName) ?>
-
-            </span>
-
-            <!-- ARROW -->
-            <i
-              class="bi bi-chevron-down ms-2 me-1 text-dark"
-              style="font-size: 12px;">
-            </i>
-
-          </div>
+          aria-expanded="false"
+          aria-label="User menu for <?= htmlspecialchars($employeeName) ?>">
+          <span class="ims-avatar"><?= htmlspecialchars($initials) ?></span>
+          <span class="ims-profile-name d-none d-sm-inline"><?= htmlspecialchars($employeeName) ?></span>
+          <i class="bi bi-chevron-down ims-profile-chevron" aria-hidden="true"></i>
         </a>
 
-
-        <!-- DROPDOWN -->
-        <div class="dropdown-menu dropdown-menu-end shadow">
-
-          <a
-            class="dropdown-item"
-            href="#"
-            id="logoutBtn">
-
-            <svg
-              class="icon me-2"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 512 512">
-
-              <path
-                fill="currentColor"
-                d="M77.155 272.034H351.75v-32.001H77.155l75.053-75.053v-.001l-22.628-22.626-113.681 113.68.001.001h-.001L129.58 369.715l22.628-22.627v-.001z" />
-
-              <path
-                fill="currentColor"
-                d="M160 16v32h304v416H160v32h336V16z" />
-
-            </svg>
-
-            Logout
-
+        <div class="dropdown-menu dropdown-menu-end ims-profile-menu">
+          <div class="ims-profile-menu-label">Signed in as</div>
+          <div class="ims-profile-menu-name"><?= htmlspecialchars($employeeName) ?></div>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#" id="logoutBtn">
+            <i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i>Log out
           </a>
-
         </div>
-
-      </li>
-
-    </ul>
-
+      </div>
+    </div>
   </div>
 </header>
-
 
 <script>
   document.getElementById('logoutBtn').addEventListener('click', function(e) {
@@ -166,9 +81,7 @@
         cancelButton: 'btn btn-light border px-4'
       }
     }).then((result) => {
-
       if (result.isConfirmed) {
-
         Swal.fire({
           title: 'Logging out...',
           text: 'Please wait a moment.',
@@ -176,12 +89,9 @@
           showConfirmButton: false,
           allowOutsideClick: false,
           allowEscapeKey: false,
-          didOpen: () => {
-            Swal.showLoading();
-          }
+          didOpen: () => Swal.showLoading()
         });
 
-        // Small delay for a smoother logout experience
         setTimeout(() => {
           window.location.href = 'backend/authentication/logout.php';
         }, 1200);

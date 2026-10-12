@@ -11,6 +11,8 @@ _____________________________________________________________
 ## authentication
 - backend files should not be accessible through url                                        
 
+- search for Approved Inspection Record
+
 ____________________________________________________________DONE___________________________________________________________________________
 
 ## implementation of dropdown
