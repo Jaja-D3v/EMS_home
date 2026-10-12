@@ -1,14 +1,8 @@
 <?php 
 require_once __DIR__ . '/../config/db.php';
 
-
-
-function getRejectedInspections(
-    $inspectedBy,
-    $branch,
-    $search = '',
-    $dateFilter = 'all'
-) {
+function getRejectedInspections( $inspectedBy, $branch, $search = '', $dateFilter = 'all' ) 
+{
     global $conn;
 
     $sql = "
@@ -44,7 +38,8 @@ function getRejectedInspections(
     $types = 'ss';
     $params = [$inspectedBy, $branch];
 
-    if ($search !== '') {
+    if ($search !== '') 
+    {
         $sql .= "
             AND (
                 extinguisher_code LIKE ?
@@ -54,15 +49,8 @@ function getRejectedInspections(
         ";
 
         $keyword = '%' . $search . '%';
-
         $types .= 'sss';
-
-        array_push(
-            $params,
-            $keyword,
-            $keyword,
-            $keyword
-        );
+        array_push( $params, $keyword, $keyword, $keyword );
     }
 
     switch ($dateFilter) {
@@ -84,23 +72,23 @@ function getRejectedInspections(
     }
 
     $sql .= " ORDER BY date_inspected DESC, inspect_id DESC";
-
     $stmt = $conn->prepare($sql);
 
-    if (!$stmt) {
+    if (!$stmt) 
+    {
         return false;
     }
 
     $stmt->bind_param($types, ...$params);
 
-    if (!$stmt->execute()) {
+    if (!$stmt->execute()) 
+    {
         $stmt->close();
         return false;
     }
 
     $result = $stmt->get_result();
     $data = $result->fetch_all(MYSQLI_ASSOC);
-
     $stmt->close();
 
     return $data;

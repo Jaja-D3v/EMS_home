@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/../config/db.php';
 
-
 function getExtinguisher($branch = 'all')
 {
     global $conn;
@@ -19,13 +18,11 @@ function getExtinguisher($branch = 'all')
 
     // Kapag hindi all, branch-specific
     if ($branch !== 'all') {
-        $sql .= "
-            AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
-        ";
+        
+        $sql .= " AND LOWER(TRIM(branch)) = LOWER(TRIM(?)) ";
     }
 
     $sql .= " ORDER BY extinguisher_code ASC";
-
     $stmt = $conn->prepare($sql);
 
     if (!$stmt) {
@@ -37,7 +34,6 @@ function getExtinguisher($branch = 'all')
     }
 
     $stmt->execute();
-
     return $stmt->get_result();
 }
 

@@ -1,24 +1,15 @@
 <?php
 require_once __DIR__ . '/../config/db.php';
 
-class MaintenanceModel
-{
-    private $conn;
-
-    public function __construct($conn)
-    {
-        $this->conn = $conn;
-    }
-
-
     /*
     |--------------------------------------------------------------------------
     | GET PAGINATED DATA
     |--------------------------------------------------------------------------
     */
 
-    public function getData($category, $page = 1, $limit = 5, $search = '')
+    function getData($category, $page = 1, $limit = 5, $search = '')
     {
+        global $conn;
         $offset = ($page - 1) * $limit;
 
         $sql = "
@@ -49,7 +40,7 @@ class MaintenanceModel
 
         $types .= "ii";
 
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $conn->prepare($sql);
 
         $stmt->bind_param(
             $types,
@@ -70,8 +61,9 @@ class MaintenanceModel
     |--------------------------------------------------------------------------
     */
 
-    public function getTotal($category, $search = '')
+    function getTotal($category, $search = '')
     {
+        global $conn;
         $sql = " SELECT COUNT(*) AS total
             FROM maintenance_dropdown_tbl
             WHERE category = ?
@@ -89,7 +81,7 @@ class MaintenanceModel
             $types .= "s";
         }
 
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $conn->prepare($sql);
 
         $stmt->bind_param(
             $types,
@@ -110,8 +102,9 @@ class MaintenanceModel
     |--------------------------------------------------------------------------
     */
 
-    public function getById($id)
+     function getById($id)
     {
+        global $conn;
         $sql = "
             SELECT *
             FROM maintenance_dropdown_tbl
@@ -119,7 +112,7 @@ class MaintenanceModel
             LIMIT 1
         ";
 
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $conn->prepare($sql);
 
         $stmt->bind_param("i", $id);
 
@@ -137,12 +130,12 @@ class MaintenanceModel
     |--------------------------------------------------------------------------
     */
 
-    public function add($category, $value)
+     function add($category, $value)
     {
+        global $conn;
+
         $value = trim($value);
-
         $value = strtolower($value);
-
         $value = ucwords($value);
 
         $sql = "
@@ -151,7 +144,7 @@ class MaintenanceModel
             VALUES (?, ?)
         ";
 
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $conn->prepare($sql);
 
         $stmt->bind_param(
             "ss",
@@ -169,12 +162,11 @@ class MaintenanceModel
     |--------------------------------------------------------------------------
     */
 
-    public function update($id, $value)
+     function update($id, $value)
     {
+        global $conn;
         $value = trim($value);
-
         $value = strtolower($value);
-        
         $value = ucwords($value);
 
         $sql = "
@@ -183,8 +175,7 @@ class MaintenanceModel
         WHERE id = ?
     ";
 
-        $stmt = $this->conn->prepare($sql);
-
+        $stmt = $conn->prepare($sql);
         $stmt->bind_param(
             "si",
             $value,
@@ -201,15 +192,16 @@ class MaintenanceModel
     |--------------------------------------------------------------------------
     */
 
-    public function delete($id)
+     function delete($id)
     {
+        global $conn;
         $sql = "
             UPDATE maintenance_dropdown_tbl
             SET status = 'inactive'
             WHERE id = ?
         ";
 
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $conn->prepare($sql);
 
         $stmt->bind_param(
             "i",
@@ -218,4 +210,3 @@ class MaintenanceModel
 
         return $stmt->execute();
     }
-}

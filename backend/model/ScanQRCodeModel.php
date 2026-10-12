@@ -24,15 +24,8 @@ function getFeInfoByCode($code)
         return false;
     }
 
-    mysqli_stmt_bind_param(
-        $stmt,
-        "s",
-        $code
-    );
-
+    mysqli_stmt_bind_param( $stmt, "s", $code );
     mysqli_stmt_execute($stmt);
-
     $result = mysqli_stmt_get_result($stmt);
-
     return mysqli_fetch_assoc($result);
 }
