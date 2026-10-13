@@ -38,6 +38,20 @@
 
       <?php if (strtolower(trim($_SESSION['Role'] ?? '')) === 'inspector'): ?>
 
+    <?php
+    $rejectedInspectorName = trim($_SESSION['EmployeeName'] ?? '');
+    $rejectedInspectorBranch = trim($_SESSION['Branch'] ?? '');
+    $rejectedInspectionCount = 0;
+
+    if ($rejectedInspectorName !== '' && $rejectedInspectorBranch !== '') {
+      require_once __DIR__ . '/../backend/model/RejectedInspectionModel.php';
+      $rejectedInspectionCount = getRejectedInspectionCountForSidebar(
+        $rejectedInspectorName,
+        $rejectedInspectorBranch
+      );
+    }
+    ?>
+
     <li class="nav-item">
       <a class="nav-link" href="QR-code.php">
         <i class="fa-solid fa-qrcode"></i>
@@ -51,7 +65,15 @@
 
       <a class="nav-link" href="rejected-inspection.php">
         <i class="fa-solid fa-file-circle-xmark"></i>
-        Rejected Inspection
+        <span>Rejected Inspection</span>
+        <?php if ($rejectedInspectionCount > 0): ?>
+          <span
+            class="ms-2 d-inline-flex align-items-center justify-content-center bg-danger text-white fw-semibold"
+            style="min-width: 1.25rem; height: 1.25rem; padding: 0 .25rem; border-radius: 999px; font-size: .65rem; line-height: 1;"
+            aria-label="<?= $rejectedInspectionCount ?> rejected inspections">
+            <?= $rejectedInspectionCount ?>
+          </span>
+        <?php endif; ?>
       </a>
     </li>
   <?php endif; ?>
