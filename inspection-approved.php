@@ -262,7 +262,7 @@ include 'partials/header.php';
         <div class="card-body p-0">
 
           <div
-            class="bg-body border-top shadow-sm py-2 inspection-pagination"
+            class="bg-body border-top shadow-sm py-2 inspection-pagination table-responsive"
             style="position: sticky; bottom: 0; z-index: 1;">
 
             <table class="table table-hover align-middle inspection-table">
