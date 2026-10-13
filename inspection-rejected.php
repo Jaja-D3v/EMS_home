@@ -589,12 +589,9 @@ if ($result) {
 
                         </div>
 
-                    </div>
-
                     <!-- PAGINATION FOOTER -->
                     <div
-                        class="position-fixed bottom-0 start-0 end-0 bg-body border-top shadow-sm py-2 inspection-pagination"
-                        style="z-index: 1020;">
+                        class="bg-body border-top shadow-sm py-2 inspection-pagination">
 
                         <div class="container-fluid px-3 px-md-4">
 
@@ -710,6 +707,7 @@ if ($result) {
 
                         </div>
 
+                    </div>
                     </div>
 
                 </div>

@@ -493,12 +493,10 @@ include 'partials/header.php';
               </tbody>
             </table>
           </div>
-        </div>
 
         <!-- Pagination -->
         <div
-          class="position-fixed bottom-0 start-0 end-0 bg-body border-top shadow-sm py-2 inspection-pagination"
-          style="z-index: 1;">
+          class="bg-body border-top shadow-sm py-2 inspection-pagination">
 
           <div class="container-fluid px-3 px-md-4">
 
@@ -602,6 +600,7 @@ include 'partials/header.php';
 
           </div>
 
+        </div>
         </div>
 
       </div>

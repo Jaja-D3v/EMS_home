@@ -450,11 +450,10 @@ if ($result) {
                 </tbody>
               </table>
             </div>
-          </div>
 
           <!-- Pagination Footer -->
 
-          <div class="position-fixed bottom-0 start-0 end-0 bg-body border-top shadow-sm py-2 inspection-pagination" style="z-index: 1020;">
+          <div class="bg-body border-top shadow-sm py-2 inspection-pagination">
             <div class="container-fluid px-3 px-md-4">
               <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
 
@@ -527,6 +526,7 @@ if ($result) {
                 <?php endif; ?>
               </div>
             </div>
+          </div>
           </div>
         </div>
       </div>

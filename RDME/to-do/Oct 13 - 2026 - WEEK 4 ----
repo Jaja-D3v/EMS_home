@@ -23,9 +23,10 @@ ____________________________________________________________DONE________________
 # added my inspections module for inspector 
 - fix bugg for fetching pagination and and total in head is not match #fixed
 
-- search in inspection approved  #fixed
-- search in inspection pending  #fixed
-- search in inspection rejected  #fixed
-- date filter in inspection rejected  #fixed
-- date filter in inspection Approved  #fixed
-- date filter in inspection pending  #fixed
+- search in inspection approved, pagination  #fixed  
+- search in inspection pending, pagination  #fixed
+- search in inspection rejected, pagination  #fixed
+- date filter in inspection rejected, pagination  #fixed
+- date filter in inspection Approved, pagination  #fixed
+- date filter in inspection pending, pagination  #fixed
+
