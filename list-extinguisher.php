@@ -31,7 +31,7 @@ $branchDropdown = getAllDropdownBranches();
     ?>
     <div class="container-fluid py-0">
 
-      <div class="card border-0 shadow-sm text-white mb-1 mt-0 overflow-hidden" style="background: linear-gradient(135deg, #0f0870, #088af5);">
+      <div class="card border-0 shadow-sm text-white mb-1 mt-0 overflow-hidden" style="background: linear-gradient(135deg, #203D70, #55A9E8);">
 
         <div class="card-body p-4">
           <div class="row align-items-center g-3">

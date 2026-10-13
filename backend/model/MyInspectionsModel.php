@@ -184,7 +184,6 @@ function getMyInspectionsModel(
     }
 
     $result = mysqli_stmt_get_result($stmt);
-
     $records = $result
         ? mysqli_fetch_all($result, MYSQLI_ASSOC)
         : [];
@@ -194,12 +193,9 @@ function getMyInspectionsModel(
     return $records;
 }
 
-
 /**
  * Count records using the same filters as the listing.
  */
-
-
 function getMyInspectionsCountModel(
     string $inspectorName,
     string $search,

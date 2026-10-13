@@ -47,7 +47,7 @@ include './backend/controller/DropdownController.php';
             <!-- PAGE HEADER -->
             <!-- ============================= -->
 
-            <div class="card border-0 shadow-sm text-white mb-1 mt-0 overflow-hidden" style="background: linear-gradient(135deg, #343a40, #6c757d);">
+            <div class="card border-0 shadow-sm text-white mb-1 mt-0 overflow-hidden" style="background: linear-gradient(135deg, #203D70, #6c757d);">
                 <div class="card-body p-4">
                     <div class="row align-items-center g-3">
 

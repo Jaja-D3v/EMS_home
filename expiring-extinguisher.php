@@ -21,7 +21,7 @@ $search = trim($_GET['search'] ?? '');
     <div class="container-fluid py-0">
 
       <div class="card border-0 shadow-sm text-white mb-1 mt-0 overflow-hidden "
-        style="background: linear-gradient(135deg, #704f08, #f59a08);">
+        style="background: linear-gradient(135deg, #203D70, #203D70);">
 
         <div class="card-body p-4">
 
