@@ -30,15 +30,47 @@ include './backend/controller/DropdownController.php';
         $limit = 10;
 
         $page = max(1, (int) ($_GET['page'] ?? 1));
+        $search = isset($_GET['search']) && is_string($_GET['search'])
+            ? trim($_GET['search'])
+            : '';
+        $totalRecords = getTotalDeletedFireExtinguishers();
+
+        if ($search !== '') {
+            $allArchivedInfo = getAllDeletedFireExtinguishersController(max(1, $totalRecords), 0);
+            $allArchivedInfo = is_array($allArchivedInfo) ? $allArchivedInfo : [];
+
+            $info = array_values(array_filter($allArchivedInfo, function ($data) use ($search) {
+                $code = (string) ($data['extinguisher_code'] ?? '');
+                $location = (string) ($data['location'] ?? '');
+
+                return stripos($code, $search) !== false || stripos($location, $search) !== false;
+            }));
+
+            $totalRecords = count($info);
+        }
+
+        $totalPages = (int) ceil($totalRecords / $limit);
+
+        if ($totalPages > 0 && $page > $totalPages) {
+            $page = $totalPages;
+        } elseif ($totalPages === 0) {
+            $page = 1;
+        }
+
         $offset = ($page - 1) * $limit;
-        $info = getAllDeletedFireExtinguishers($limit, $offset);
-        $totalRecords = getTotalDeletedFireExtinguishers();
-        $totalPages = (int) ceil($totalRecords / $limit);
 
+        if ($search === '') {
+            $info = getAllDeletedFireExtinguishersController($limit, $offset);
+        } else {
+            $info = array_slice($info, $offset, $limit);
+        }
 
-        $info = getAllDeletedFireExtinguishersController($limit, $offset);
-        $totalRecords = getTotalDeletedFireExtinguishers();
-        $totalPages = (int) ceil($totalRecords / $limit);
+        $paginationParams = $_GET;
+        unset($paginationParams['page']);
+        if ($search === '') {
+            unset($paginationParams['search']);
+        }
+        $paginationQuery = http_build_query($paginationParams);
         ?>
 
         <div class="container-fluid py-0">
@@ -81,12 +113,24 @@ include './backend/controller/DropdownController.php';
 
                     <!-- SEARCH -->
                     <div class="d-flex flex-column flex-md-row gap-2 mb-3">
-                        <div class="input-group">
+                        <form method="get" action="archived-extinguisher.php" class="input-group flex-grow-1">
+                            <input type="hidden" name="page" value="1">
+                            <?php if (isset($_GET['branch'])): ?>
+                                <input type="hidden" name="branch" value="<?= htmlspecialchars((string) $_GET['branch'], ENT_QUOTES, 'UTF-8') ?>">
+                            <?php endif; ?>
                             <span class="input-group-text bg-body border-end-0">
                                 <i class="bi bi-search text-primary"></i>
                             </span>
-                            <input type="text" id="searchDeletedExtinguisher" class="form-control border-start-0 ps-1" placeholder="Search FE code or location...">
-                        </div>
+                            <input
+                                type="search"
+                                id="searchDeletedExtinguisher"
+                                name="search"
+                                data-server-search="true"
+                                value="<?= htmlspecialchars($search, ENT_QUOTES, 'UTF-8') ?>"
+                                class="form-control border-start-0 ps-1"
+                                placeholder="Search archived extinguishers...">
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </form>
 
                         <!-- Branch Filter - ADMIN ONLY -->
                         <?php if (strtolower(trim($_SESSION['Role'] ?? '')) === 'admin'): ?>
@@ -350,55 +394,23 @@ include './backend/controller/DropdownController.php';
                                 <div class="py-3">
                                     <i class="bi bi-trash3 fs-1 d-block mb-3"></i>
                                     <div class="fw-semibold fs-6">
-                                        No deleted fire extinguishers.
+                                        <?php if ($search !== ''): ?>
+                                            No archived extinguishers match “<?= htmlspecialchars($search, ENT_QUOTES, 'UTF-8') ?>”.
+                                        <?php else: ?>
+                                            No deleted fire extinguishers.
+                                        <?php endif; ?>
                                     </div>
                                     <small class="text-body-secondary">
-                                        Deleted fire extinguishers will appear here.
+                                        <?php if ($search !== ''): ?>
+                                            Try another extinguisher code or location.
+                                        <?php else: ?>
+                                            Deleted fire extinguishers will appear here.
+                                        <?php endif; ?>
                                     </small>
                                 </div>
                             </div>
                         <?php endif; ?>
                     </div>
-
-                    <!-- SEARCH SCRIPT -->
-                    <script>
-                        const deletedSearchInput = document.getElementById('searchDeletedExtinguisher');
-
-                        if (deletedSearchInput) {
-
-                            deletedSearchInput.addEventListener('input', function() {
-
-                                const searchValue = this.value.trim().toLowerCase();
-                                const cards = document.querySelectorAll('#deletedExtinguisherContainer .extinguisher-card');
-
-                                let visibleCount = 0;
-
-                                cards.forEach(card => {
-
-                                    const codeElement = card.querySelector('.extinguisher-code');
-                                    const locationElement = card.querySelector('.extinguisher-location');
-                                    const code = codeElement ? codeElement.textContent.trim().toLowerCase() : '';
-                                    const location = locationElement ? locationElement.textContent.trim().toLowerCase() : '';
-                                    const match = searchValue === '' || code.includes(searchValue) || location.includes(searchValue);
-
-                                    if (match) {
-
-                                        card.style.display = '';
-
-                                        visibleCount++;
-
-                                    } else {
-
-                                        card.style.display = 'none';
-
-                                    }
-
-                                });
-
-                            });
-
-                        }
-                    </script>
 
                     <!-- PAGINATION -->
                     <?php if ($totalRecords >= 0): ?>
@@ -442,7 +454,7 @@ include './backend/controller/DropdownController.php';
 
                                                 <a
                                                     class="page-link"
-                                                    href="archived-extinguisher.php?page=<?= max(1, $page - 1) ?>&branch=<?= urlencode($_GET['branch'] ?? 'all') ?>"
+                                                    href="archived-extinguisher.php?page=<?= max(1, $page - 1) ?><?= $paginationQuery !== '' ? '&' . htmlspecialchars($paginationQuery, ENT_QUOTES, 'UTF-8') : '' ?>"
                                                     aria-label="Previous">
 
                                                     <span aria-hidden="true">&lsaquo;</span>
@@ -459,7 +471,7 @@ include './backend/controller/DropdownController.php';
 
                                                     <a
                                                         class="page-link"
-                                                        href="archived-extinguisher.php?page=<?= $i ?>&branch=<?= urlencode($_GET['branch'] ?? 'all') ?>">
+                                                        href="archived-extinguisher.php?page=<?= $i ?><?= $paginationQuery !== '' ? '&' . htmlspecialchars($paginationQuery, ENT_QUOTES, 'UTF-8') : '' ?>">
 
                                                         <?= $i ?>
 
@@ -474,7 +486,7 @@ include './backend/controller/DropdownController.php';
 
                                                 <a
                                                     class="page-link"
-                                                    href="archived-extinguisher.php?page=<?= min($totalPages, $page + 1) ?>&branch=<?= urlencode($_GET['branch'] ?? 'all') ?>"
+                                                    href="archived-extinguisher.php?page=<?= min($totalPages, $page + 1) ?><?= $paginationQuery !== '' ? '&' . htmlspecialchars($paginationQuery, ENT_QUOTES, 'UTF-8') : '' ?>"
                                                     aria-label="Next">
 
                                                     Next

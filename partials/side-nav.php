@@ -142,7 +142,7 @@
 
           <a class="nav-link" href="archived-extinguisher.php">
             <i class="bi bi-trash3 me-2"></i>
-            Deleted
+            Archived
           </a>
         </li>
       </ul>
