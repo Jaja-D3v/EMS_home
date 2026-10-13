@@ -18,13 +18,16 @@ if ($page < 1) {
 }
 
 $date = $_GET['date'] ?? null;
+$search = isset($_GET['search']) && is_string($_GET['search'])
+  ? trim($_GET['search'])
+  : '';
 
 if ($date === '') {
 
   $date = null;
 }
 
-$totalRecords = getPendingApprovalTotal($date);
+$totalRecords = getPendingApprovalTotal($date, $search);
 
 $totalPages = (int) ceil($totalRecords / $limit);
 
@@ -38,8 +41,13 @@ $offset = ($page - 1) * $limit;
 $result = getPendingApprovals(
   $limit,
   $offset,
-  $date
+  $date,
+  $search
 );
+
+$paginationParams = $_GET;
+unset($paginationParams['page']);
+$paginationQuery = http_build_query($paginationParams);
 
 $inspectionChecklists = [];
 
@@ -114,7 +122,10 @@ if ($result) {
               <!-- Search Filter -->
 
               <div class="col-12 col-lg-6">
-                <div class="input-group">
+                <form method="get" action="inspection-pending.php" class="input-group">
+                  <input type="hidden" name="page" value="1">
+                  <?php if (!empty($date)): ?><input type="hidden" name="date" value="<?= htmlspecialchars($date, ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
+                  <?php if (isset($_GET['branch'])): ?><input type="hidden" name="branch" value="<?= htmlspecialchars($_GET['branch'], ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
                   <span class="input-group-text bg-white">
                     <i class="bi bi-search"></i>
                   </span>
@@ -122,8 +133,12 @@ if ($result) {
                     type="text"
                     class="form-control"
                     id="inspectionSearch"
+                    name="search"
+                    data-server-search="true"
+                    value="<?= htmlspecialchars($search, ENT_QUOTES, 'UTF-8') ?>"
                     placeholder="Search by FE code or location...">
-                </div>
+                  <button type="submit" class="btn btn-primary" aria-label="Search inspections">Search</button>
+                </form>
               </div>
 
               <!-- Date Filter -->
@@ -140,14 +155,19 @@ if ($result) {
                     id="inspectionDateFilter"
                     value="<?= htmlspecialchars($date ?? '') ?>"
                     onchange="
-                  const selectedDate = this.value;
-                  if (selectedDate) {
-                    window.location.href =
-                      'inspection-pending.php?page=1&date=' +
-                      encodeURIComponent(selectedDate);}
-                       else {
-                    window.location.href =
-                      'inspection-pending.php?page=1';}">
+                      const selectedDate = this.value;
+                      const branchFilter = document.getElementById('branchFilter');
+                      const searchInput = document.getElementById('inspectionSearch');
+                      const branch = branchFilter ? branchFilter.value : '';
+                      const search = searchInput ? searchInput.value.trim() : '';
+                      const url = new window.URL(window.location.href);
+                      url.searchParams.set('page', '1');
+                      if (selectedDate) url.searchParams.set('date', selectedDate);
+                      else url.searchParams.delete('date');
+                      if (search) url.searchParams.set('search', search);
+                      else url.searchParams.delete('search');
+                      if (branch) url.searchParams.set('branch', branch);
+                      window.location.href = url.toString();">
                 </div>
               </div>
               <!-- Branch Filter (Admin Only) -->
@@ -216,6 +236,7 @@ if ($result) {
                     const url = new URL(window.location.href);
                     // Preserve the selected branch in the URL.
                     url.searchParams.set('branch', selectedBranch);
+                    url.searchParams.set('page', '1');
                     // Reload the page using the selected branch.
                     window.location.href = url.toString();
 
@@ -463,7 +484,7 @@ if ($result) {
                     <ul class="pagination pagination-sm mb-0">
                       <!-- Previous -->
                       <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
-                        <a class="page-link" href="inspection-pending.php?page=<?= max(1, $page - 1) ?><?= !empty($date) ? '&date='.urlencode($date) : '' ?>" aria-label="Previous">
+                        <a class="page-link" href="inspection-pending.php?page=<?= max(1, $page - 1) ?><?= $paginationQuery !== '' ? '&' . htmlspecialchars($paginationQuery, ENT_QUOTES, 'UTF-8') : '' ?>" aria-label="Previous">
                           <i class="bi bi-chevron-left"></i>
                           <span class="d-none d-lg-inline ms-1">
                             Previous
@@ -475,7 +496,7 @@ if ($result) {
 
                       <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                         <li class="page-item d-none d-md-block <?= ($i == $page) ? 'active' : '' ?>">
-                          <a class="page-link" href="inspection-pending.php?page=<?= $i ?><?= !empty($date) ? '&date=' . urlencode($date) : '' ?>">
+                          <a class="page-link" href="inspection-pending.php?page=<?= $i ?><?= $paginationQuery !== '' ? '&' . htmlspecialchars($paginationQuery, ENT_QUOTES, 'UTF-8') : '' ?>">
                             <?= $i ?>
                           </a>
                         </li>
@@ -494,7 +515,7 @@ if ($result) {
                       <!-- Next -->
 
                       <li class="page-item <?= ($page >= $totalPages) ? 'disabled' : '' ?>">
-                        <a class="page-link" href="inspection-pending.php?page=<?= min($totalPages, $page + 1) ?><?= !empty($date) ? '&date=' . urlencode($date) : '' ?>" aria-label="Next">
+                        <a class="page-link" href="inspection-pending.php?page=<?= min($totalPages, $page + 1) ?><?= $paginationQuery !== '' ? '&' . htmlspecialchars($paginationQuery, ENT_QUOTES, 'UTF-8') : '' ?>" aria-label="Next">
                           <span class="d-none d-lg-inline me-1">
                             Next
                           </span>

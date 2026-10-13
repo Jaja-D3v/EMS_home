@@ -223,7 +223,7 @@ function getAllInspected()
 }
 
 // Get Pending Approvals
-function getPendingApprovals($limit = 10, $offset = 0, $date = null)
+function getPendingApprovals($limit = 10, $offset = 0, $date = null, $search = '')
 {
     $role = strtolower(
         trim($_SESSION['Role'] ?? '')
@@ -235,7 +235,7 @@ function getPendingApprovals($limit = 10, $offset = 0, $date = null)
         $branch = trim($_GET['branch'] ?? $sessionBranch);
         if ($branch === '') $branch = 'all';
 
-        return getAllPendingApproval($limit, $offset, $date, $branch);
+        return getAllPendingApproval($limit, $offset, $date, $branch, $search);
     }
 
     if ($role === 'inspector') {
@@ -246,13 +246,13 @@ function getPendingApprovals($limit = 10, $offset = 0, $date = null)
             return false;
         }
 
-        return getAllPendingApproval($limit, $offset, $date, $branch);
+        return getAllPendingApproval($limit, $offset, $date, $branch, $search);
     }
     return false;
 }
 
 // Get Pending Approval Total
-function getPendingApprovalTotal($date = null)
+function getPendingApprovalTotal($date = null, $search = '')
 {
     $role = strtolower(
         trim($_SESSION['Role'] ?? '')
@@ -264,7 +264,7 @@ function getPendingApprovalTotal($date = null)
         $sessionBranch = trim($_SESSION['Branch'] ?? '');
         $branch = trim($_GET['branch'] ?? $sessionBranch);
         if ($branch === '')  $branch = 'all';
-        return getPendingApprovalCount($date, $branch);
+        return getPendingApprovalCount($date, $branch, $search);
     }
 
     if ($role === 'inspector') {
@@ -272,7 +272,7 @@ function getPendingApprovalTotal($date = null)
         // Restrict inspectors to their assigned branch
         $branch = trim($_SESSION['Branch'] ?? '');
         if ($branch === '')  return 0;
-        return getPendingApprovalCount($date, $branch);
+        return getPendingApprovalCount($date, $branch, $search);
     }
 
     return 0;

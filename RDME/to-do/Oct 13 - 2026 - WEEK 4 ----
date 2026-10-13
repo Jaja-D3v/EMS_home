@@ -11,15 +11,9 @@ _____________________________________________________________
 ## authentication
 - backend files should not be accessible through url                                        
 
-- search for Approved Inspection Record
-
-
-- search in inspection rejected
-- search in inspection deleted
-
-
-
 - may bugg sa search ng active extinguisher 
+
+- pagination
 
 
 
@@ -30,6 +24,8 @@ ____________________________________________________________DONE________________
 - fix bugg for fetching pagination and and total in head is not match #fixed
 
 - search in inspection approved  #fixed
+- search in inspection pending  #fixed
 - search in inspection rejected  #fixed
 - date filter in inspection rejected  #fixed
 - date filter in inspection Approved  #fixed
+- date filter in inspection pending  #fixed

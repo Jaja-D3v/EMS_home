@@ -176,7 +176,8 @@ function getAllPendingApproval(
     $limit = 10,
     $offset = 0,
     $date = null,
-    $branch = 'all'
+    $branch = 'all',
+    $search = ''
 ) {
     global $conn;
 
@@ -202,6 +203,14 @@ function getAllPendingApproval(
         $sql .= " AND LOWER(TRIM(branch)) = LOWER(TRIM(?)) ";
         $types .= "s";
         $params[] = $branch;
+    }
+
+    if ($search !== '') {
+        $sql .= " AND (extinguisher_code LIKE ? OR location LIKE ?) ";
+        $types .= "ss";
+        $keyword = '%' . $search . '%';
+        $params[] = $keyword;
+        $params[] = $keyword;
     }
 
     $sql .= "
@@ -282,7 +291,8 @@ function getAllPendingApproval(
 // FOR COUNT ALL PENDING APPROVAL
 function getPendingApprovalCount(
     $date = null,
-    $branch = 'all'
+    $branch = 'all',
+    $search = ''
 ) {
     global $conn;
 
@@ -313,6 +323,14 @@ function getPendingApprovalCount(
 
         $types .= "s";
         $params[] = $branch;
+    }
+
+    if ($search !== '') {
+        $sql .= " AND (extinguisher_code LIKE ? OR location LIKE ?) ";
+        $types .= "ss";
+        $keyword = '%' . $search . '%';
+        $params[] = $keyword;
+        $params[] = $keyword;
     }
 
     // LATEST RECORD PER EXTINGUISHER CODE
