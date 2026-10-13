@@ -666,11 +666,8 @@ if (generateInventoryReportBtn) {
         return;
     }
 
-    // =====================================================
     // UPDATE URL WHILE TYPING
     // Hindi pa ito magre-request ng search results.
-    // =====================================================
-
     function updateSearchUrl() {
         const url = new URL(window.location.href);
         const searchValue = searchInput.value.trim();
@@ -735,30 +732,14 @@ if (generateInventoryReportBtn) {
                 'text/html'
             );
 
-            const newResults = parsedDocument.querySelector(
-                '#inventoryResults'
-            );
+            const newResults = parsedDocument.querySelector( '#inventoryResults' );
+            const newPagination = parsedDocument.querySelector( '#inventoryPagination' );
+            const currentResults = document.querySelector( '#inventoryResults' );
+            const currentPagination = document.querySelector( '#inventoryPagination' );
 
-            const newPagination = parsedDocument.querySelector(
-                '#inventoryPagination'
-            );
-
-            const currentResults = document.querySelector(
-                '#inventoryResults'
-            );
-
-            const currentPagination = document.querySelector(
-                '#inventoryPagination'
-            );
-
-            if (
-                !newResults ||
-                !newPagination ||
-                !currentResults ||
-                !currentPagination
-            ) {
+            if ( !newResults || !newPagination || !currentResults || !currentPagination ) {
                 throw new Error(
-                    'Hindi makita ang inventory results o pagination wrapper.'
+                    'empty results.'
                 );
             }
 
@@ -798,10 +779,10 @@ if (generateInventoryReportBtn) {
                 error
             );
 
-            alert(
-                'Hindi ma-load ang search results. ' +
-                'Pakisubukan ulit.'
-            );
+            // alert(
+            //     'Hindi ma-load ang search results. ' +
+            //     'Pakisubukan ulit.'
+            // );
 
         } finally {
             searchButton.disabled = false;

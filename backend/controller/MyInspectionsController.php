@@ -8,9 +8,7 @@ function getMyInspectionsPageData(): array
 {
     // Use the logged-in inspector, not a user-supplied GET value.
     $inspectorName = trim((string) ($_SESSION['EmployeeName'] ?? ''));
-
     $search = trim((string) ($_GET['search'] ?? ''));
-
     $dateFilter = (string) ($_GET['date'] ?? 'all');
     $allowedDates = ['all', 'today', 'yesterday', '7', '30'];
 

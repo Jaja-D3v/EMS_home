@@ -101,6 +101,7 @@ function myInspectionsBindParams(
 /**
  * Get paginated inspection records.
  */
+
 function getMyInspectionsModel(
     string $inspectorName,
     string $search,
@@ -121,16 +122,30 @@ function getMyInspectionsModel(
     $sql = "
         SELECT i.*
         FROM inspection_checklist_tbl AS i
-        INNER JOIN (
-            SELECT
-                extinguisher_code,
-                MAX(inspect_id) AS latest_inspect_id
-            FROM inspection_checklist_tbl
-            WHERE branch = ?
-            GROUP BY extinguisher_code
-        ) AS latest
-            ON latest.latest_inspect_id = i.inspect_id
-        WHERE {$filters['sql']}
+        WHERE i.inspected_by = ?
+          AND i.branch = ?
+
+          -- Only the latest inspection per extinguisher is eligible.
+          AND NOT EXISTS (
+              SELECT 1
+              FROM inspection_checklist_tbl AS newer
+              WHERE newer.extinguisher_code = i.extinguisher_code
+                AND newer.branch = i.branch
+                AND (
+                    newer.date_inspected > i.date_inspected
+                    OR (
+                        newer.date_inspected = i.date_inspected
+                        AND newer.inspect_id > i.inspect_id
+                    )
+                )
+          )
+
+          -- Exclude the extinguisher if its latest inspection is rejected.
+          AND i.evaluation_status IN ('Pending', 'Approved')
+
+          -- Apply search, date, and status filters to the latest record.
+          AND {$filters['sql']}
+
         ORDER BY i.date_inspected DESC, i.inspect_id DESC
         LIMIT ? OFFSET ?
     ";
@@ -144,12 +159,13 @@ function getMyInspectionsModel(
         return [];
     }
 
-    // Unang parameter ang branch para sa subquery.
-    $params = array_merge([$branch], $filters['params']);
-    $types = 's' . $filters['types'] . 'ii';
+    $params = array_merge(
+        [$inspectorName, $branch],
+        $filters['params'],
+        [$limit, $offset]
+    );
 
-    $params[] = $limit;
-    $params[] = $offset;
+    $types = 'ss' . $filters['types'] . 'ii';
 
     if (!myInspectionsBindParams($stmt, $types, $params)) {
         error_log(
@@ -178,16 +194,19 @@ function getMyInspectionsModel(
     return $records;
 }
 
+
 /**
  * Count records using the same filters as the listing.
  */
+
+
 function getMyInspectionsCountModel(
     string $inspectorName,
     string $search,
     string $dateFilter,
     string $statusFilter
 ): int {
-    global $conn;
+    global $conn, $branch;
 
     $filters = myInspectionsBuildFilters(
         $inspectorName,
@@ -198,19 +217,30 @@ function getMyInspectionsCountModel(
 
     $sql = "
         SELECT COUNT(*) AS total
-        FROM (
-            SELECT i.inspect_id
-            FROM inspection_checklist_tbl AS i
-            INNER JOIN (
-                SELECT
-                    extinguisher_code,
-                    MAX(inspect_id) AS latest_inspect_id
-                FROM inspection_checklist_tbl
-                GROUP BY extinguisher_code
-            ) AS latest
-                ON latest.latest_inspect_id = i.inspect_id
-            WHERE {$filters['sql']}
-        ) AS unique_inspections
+        FROM inspection_checklist_tbl AS i
+        WHERE i.inspected_by = ?
+          AND i.branch = ?
+
+          -- Use the same latest-inspection rule as the listing query.
+          AND NOT EXISTS (
+              SELECT 1
+              FROM inspection_checklist_tbl AS newer
+              WHERE newer.extinguisher_code = i.extinguisher_code
+                AND newer.branch = i.branch
+                AND (
+                    newer.date_inspected > i.date_inspected
+                    OR (
+                        newer.date_inspected = i.date_inspected
+                        AND newer.inspect_id > i.inspect_id
+                    )
+                )
+          )
+
+          -- Exclude latest rejected inspections.
+          AND i.evaluation_status IN ('Pending', 'Approved')
+
+          -- Same filters as the listing query.
+          AND {$filters['sql']}
     ";
 
     $stmt = mysqli_prepare($conn, $sql);
@@ -222,9 +252,14 @@ function getMyInspectionsCountModel(
         return 0;
     }
 
-    $params = $filters['params'];
+    $params = array_merge(
+        [$inspectorName, $branch],
+        $filters['params']
+    );
 
-    if (!myInspectionsBindParams($stmt, $filters['types'], $params)) {
+    $types = 'ss' . $filters['types'];
+
+    if (!myInspectionsBindParams($stmt, $types, $params)) {
         error_log(
             'My Inspections count bind failed: ' . mysqli_stmt_error($stmt)
         );
@@ -234,7 +269,7 @@ function getMyInspectionsCountModel(
 
     if (!mysqli_stmt_execute($stmt)) {
         error_log(
-            'My Inspections count failed: ' . mysqli_stmt_error($stmt)
+            'My Inspections count query failed: ' . mysqli_stmt_error($stmt)
         );
         mysqli_stmt_close($stmt);
         return 0;
@@ -247,6 +282,8 @@ function getMyInspectionsCountModel(
 
     return (int) ($row['total'] ?? 0);
 }
+
+
 
 
 /**

@@ -34,196 +34,32 @@ $paginatedInspections = $myInspections;
 <body>
 
   <?php include 'partials/side-nav.php'; ?>
-
   <div class="wrapper d-flex flex-column min-vh-100">
-
     <?php include 'partials/header-nav.php'; ?>
-
     <main class="body flex-grow-1 px-3 py-4">
-
       <div class="container-fluid">
-
-        <!-- SUMMARY CARDS -->
-        <div class="row g-3 mb-4">
-
-          <!-- TOTAL -->
-          <div class="col-12 col-sm-6 col-xl-4">
-
-            <div class="card border-0 shadow-sm h-100">
-
-              <div class="card-body p-3">
-
-                <div class="d-flex align-items-center
-                                            justify-content-between">
-
-                  <div>
-
-                    <div class="text-body-secondary mb-2"
-                      style="font-size: 12px;">
-                      Total Inspections
-                    </div>
-
-                    <h4 class="fw-semibold mb-0">
-                      <?= $summary['total'] ?>
-                    </h4>
-
-                  </div>
-
-                  <div class="rounded-3 bg-primary-subtle
-                                                text-primary d-flex
-                                                align-items-center
-                                                justify-content-center"
-                    style="width: 44px; height: 44px;">
-
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                      width="22" height="22"
-                      fill="none" viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      stroke-width="1.8">
-                      <path stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2M9 12h6m-6 4h6" />
-                    </svg>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-          <!-- PENDING -->
-          <div class="col-12 col-sm-6 col-xl-4">
-
-            <div class="card border-0 shadow-sm h-100">
-
-              <div class="card-body p-3">
-
-                <div class="d-flex align-items-center
-                                            justify-content-between">
-
-                  <div>
-
-                    <div class="text-body-secondary mb-2"
-                      style="font-size: 12px;">
-                      Pending Approval
-                    </div>
-
-                    <h4 class="fw-semibold mb-0">
-                      <?= $totalPending ?>
-                    </h4>
-
-                  </div>
-
-                  <div class="rounded-3 bg-warning-subtle
-                                                text-warning d-flex
-                                                align-items-center
-                                                justify-content-center"
-                    style="width: 44px; height: 44px;">
-
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                      width="22" height="22"
-                      fill="none" viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      stroke-width="1.8">
-                      <circle cx="12" cy="12" r="9" />
-                      <path stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M12 7v5l3 2" />
-                    </svg>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-          <!-- APPROVED -->
-          <div class="col-12 col-sm-6 col-xl-4">
-
-            <div class="card border-0 shadow-sm h-100">
-
-              <div class="card-body p-3">
-
-                <div class="d-flex align-items-center
-                                            justify-content-between">
-
-                  <div>
-
-                    <div class="text-body-secondary mb-2"
-                      style="font-size: 12px;">
-                      Approved
-                    </div>
-
-                    <h4 class="fw-semibold mb-0">
-                      <?= $totalApproved ?>
-                    </h4>
-
-                  </div>
-
-                  <div class="rounded-3 bg-success-subtle
-                                                text-success d-flex
-                                                align-items-center
-                                                justify-content-center"
-                    style="width: 44px; height: 44px;">
-
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                      width="22" height="22"
-                      fill="none" viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      stroke-width="1.8">
-                      <circle cx="12" cy="12" r="9" />
-                      <path stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="m8 12 2.5 2.5L16 9" />
-                    </svg>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
 
         <!-- MAIN TABLE CARD -->
         <div class="card border-0 shadow-sm">
 
           <!-- CARD HEADER -->
           <div class="card-header bg-body border-bottom py-3">
-
-            <div class="d-flex flex-column flex-sm-row
-                                    align-items-sm-center
-                                    justify-content-between gap-2">
+            <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-2">
 
               <div>
 
-                <h6 class="fw-semibold mb-1"
-                  style="font-size: 13px;">
+                <h6 class="fw-semibold mb-1" style="font-size: 13px;">
                   Inspection History
                 </h6>
 
-                <small class="text-body-secondary"
-                  style="font-size: 11px;">
+                <small class="text-body-secondary"  style="font-size: 11px;">
                   Review your inspection records and
                   approval status.
                 </small>
 
               </div>
 
-              <span class="badge bg-primary-subtle text-primary"
-                style="font-size: 11px;">
+              <span class="badge bg-primary-subtle text-primary" style="font-size: 11px;">
                 <?= $totalInspections ?> Records
               </span>
 
@@ -235,28 +71,15 @@ $paginatedInspections = $myInspections;
           <form method="GET" class="card border-0 shadow-sm mb-2">
 
             <div class="card-body p-3">
-
               <div class="row g-2 align-items-end">
 
                 <!-- SEARCH -->
                 <div class="col-12 col-md-6 col-xl">
 
-                  <label class="form-label text-body-secondary mb-1"
-                    style="font-size: 11px;">
+                  <label class="form-label text-body-secondary mb-1" style="font-size: 11px;">
                     Search
                   </label>
-
-                  <input
-                    type="text"
-                    name="search"
-                    class="form-control"
-                    placeholder="Search code, location, or type..."
-                    value="<?= htmlspecialchars(
-                              $search,
-                              ENT_QUOTES,
-                              'UTF-8'
-                            ) ?>"
-                    style="font-size: 12px;">
+                  <input type="text" name="search" class="form-control" placeholder="Search code, location, or type..." value="<?= htmlspecialchars( $search, ENT_QUOTES, 'UTF-8' ) ?>" style="font-size: 12px;">
 
                 </div>
 
@@ -363,13 +186,11 @@ $paginatedInspections = $myInspections;
             style="min-height: 390px;">
 
             <table class="table table-hover align-middle mb-0">
-
               <thead class="table-light">
 
                 <tr>
 
-                  <th class="px-3"
-                    style="font-size: 12px;">
+                  <th class="px-3" style="font-size: 12px;">
                     Date Inspected
                   </th>
 
@@ -389,8 +210,7 @@ $paginatedInspections = $myInspections;
                     Status
                   </th>
 
-                  <th class="text-end px-3"
-                    style="font-size: 12px;">
+                  <th class="text-end px-3" style="font-size: 12px;">
                     Action
                   </th>
 
