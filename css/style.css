@@ -91,7 +91,8 @@
   --cui-body-color-rgb: 37, 42.92, 54.02;
   --cui-body-bg: #f9fafb;
   --cui-body-bg-rgb: 255, 255, 255;
-  --cui-emphasis-color: #080a0c;
+
+  --cui-emphasis-color: #ffffff;
   --cui-emphasis-color-rgb: 8, 10, 12;
   --cui-secondary-color: rgba(37, 42.92, 54.02, 0.681);
   --cui-secondary-color-rgb: 37, 42.92, 54.02;
@@ -99,7 +100,7 @@
   --cui-secondary-bg-rgb: 231, 234, 238;
   --cui-tertiary-color: rgba(37, 42.92, 54.02, 0.38);
   --cui-tertiary-color-rgb: 37, 42.92, 54.02;
-  --cui-tertiary-bg: #f3f4f7;
+  --cui-tertiary-bg: #0b2b53;
   --cui-tertiary-bg-rgb: 243, 244, 247;
   --cui-body-color-dark: rgba(255, 255, 255, 0.87);
   --cui-body-color-rgb-dark: 255, 255, 255;
@@ -9120,7 +9121,7 @@ fieldset:disabled .btn {
   --cui-footer-padding-x: 1rem;
   --cui-footer-padding-y: 0.5rem;
   --cui-footer-color: var(--cui-body-color);
-  --cui-footer-bg: var(--cui-tertiary-bg);
+  --cui-footer-bg: #ffffff;
   --cui-footer-border-color: var(--cui-border-color);
   --cui-footer-border: var(--cui-border-width) solid var(--cui-footer-border-color);
   display: flex;
@@ -17294,10 +17295,10 @@ body {
   --cui-sidebar-nav-link-padding-y: 11px;
   --cui-sidebar-nav-link-color: #55637a;
   --cui-sidebar-nav-link-border-radius: 10px;
-  --cui-sidebar-nav-link-active-color: #174d9f;
-  --cui-sidebar-nav-link-active-bg: #edf4ff;
-  --cui-sidebar-nav-link-hover-color: #174d9f;
-  --cui-sidebar-nav-link-hover-bg: #f4f7fc;
+  --cui-sidebar-nav-link-active-color: #fefeff;
+  --cui-sidebar-nav-link-active-bg: #0b2b53;
+  --cui-sidebar-nav-link-hover-color: #fefeff;
+  --cui-sidebar-nav-link-hover-bg: #0b2b538f;
   --cui-sidebar-nav-link-icon-color: #8592a6;
   --cui-sidebar-nav-link-active-icon-color: #2368d8;
   --cui-sidebar-nav-link-hover-icon-color: #2368d8;
