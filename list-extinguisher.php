@@ -1312,10 +1312,10 @@ $branchDropdown = getAllDropdownBranches();
                       <a
                         href="#"
                         id="viewDeleteFireExtinguisherBtn"
-                        class="btn btn-danger px-3">
+                        class="btn btn-secondary px-3">
 
                         <i class="bi bi-trash me-1"></i>
-                        Delete
+                        Archive
                       </a>
                     <?php endif; ?>
 
