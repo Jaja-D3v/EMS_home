@@ -17,7 +17,7 @@ require_once '../backend/authentication/SessionChecker.php';
 </head>
 
 
-<body class="dark-mode">
+<body>
     <div class="page-container">
 
 
