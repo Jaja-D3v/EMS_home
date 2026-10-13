@@ -533,7 +533,8 @@ function getAllApprovedApproval(
     $limit = 10,
     $offset = 0,
     $date = null,
-    $branch = 'all'
+    $branch = 'all',
+    $search = ''
 ) {
     global $conn;
 
@@ -556,15 +557,21 @@ function getAllApprovedApproval(
         $params[] = $date;
     }
 
-    // BRANCH FILTER - FROM URL
-    $branch = trim(isset($_GET['branch']) ? $_GET['branch'] : $_SESSION['Branch']);
-
+    // BRANCH FILTER - USE THE ROLE-SCOPED VALUE PROVIDED BY THE CONTROLLER
     if ($branch !== 'all' && $branch !== '') {
 
         $sql .= " AND LOWER(TRIM(branch)) = LOWER(TRIM(?)) ";
 
         $types .= "s";
         $params[] = $branch;
+    }
+
+    if ($search !== '') {
+        $sql .= " AND (extinguisher_code LIKE ? OR location LIKE ?) ";
+        $types .= "ss";
+        $keyword = '%' . $search . '%';
+        $params[] = $keyword;
+        $params[] = $keyword;
     }
 
     // LATEST RECORD PER EXTINGUISHER CODE
@@ -654,7 +661,8 @@ function getAllApprovedApproval(
 // FOR COUNT ALL APPROVED APPROVAL
 function getApprovedApprovalCount(
     $date = null,
-    $branch = 'all'
+    $branch = 'all',
+    $search = ''
 ) {
     global $conn;
 
@@ -680,7 +688,7 @@ function getApprovedApprovalCount(
     }
 
     // BRANCH FILTER
-    if ($branch !== 'all' && !empty($branch)) {
+    if ($branch !== 'all' && $branch !== '') {
 
         $sql .= "
             AND LOWER(TRIM(branch)) = LOWER(TRIM(?))
@@ -688,6 +696,14 @@ function getApprovedApprovalCount(
 
         $types .= "s";
         $params[] = $branch;
+    }
+
+    if ($search !== '') {
+        $sql .= " AND (extinguisher_code LIKE ? OR location LIKE ?) ";
+        $types .= "ss";
+        $keyword = '%' . $search . '%';
+        $params[] = $keyword;
+        $params[] = $keyword;
     }
 
     // LATEST RECORD PER EXTINGUISHER CODE
@@ -768,7 +784,8 @@ function getAllRejectedApproval(
     $limit = 10,
     $offset = 0,
     $date = null,
-    $branch = 'all'
+    $branch = 'all',
+    $search = ''
 ) {
     global $conn;
 
@@ -779,12 +796,13 @@ function getAllRejectedApproval(
     $types = "";
     $params = [];
 
-    // DATE FILTER - AS OF SELECTED DATE
+    // DATE FILTER - SELECTED DATE ONLY
 
     if (!empty($date)) {
 
-        $sql .= " AND date_inspected < DATE_ADD(?, INTERVAL 1 DAY) ";
-        $types .= "s";
+        $sql .= " AND date_inspected >= ? AND date_inspected < DATE_ADD(?, INTERVAL 1 DAY) ";
+        $types .= "ss";
+        $params[] = $date;
         $params[] = $date;
     }
 
@@ -799,8 +817,16 @@ function getAllRejectedApproval(
         $params[] = $branch;
     }
 
+    if ($search !== '') {
+        $sql .= " AND (extinguisher_code LIKE ? OR location LIKE ?) ";
+        $types .= "ss";
+        $keyword = '%' . $search . '%';
+        $params[] = $keyword;
+        $params[] = $keyword;
+    }
+
     // LATEST RECORD PER EXTINGUISHER CODE
-    // AS OF SELECTED DATE
+    // WITHIN THE SELECTED DATE
 
     $sql .= "
         AND NOT EXISTS (
@@ -827,9 +853,10 @@ function getAllRejectedApproval(
     // NEWER RECORD MUST ALSO BE WITHIN SELECTED DATE
     if (!empty($date)) {
 
-        $sql .= " AND newer.date_inspected < DATE_ADD(?, INTERVAL 1 DAY) ";
+        $sql .= " AND newer.date_inspected >= ? AND newer.date_inspected < DATE_ADD(?, INTERVAL 1 DAY) ";
 
-        $types .= "s";
+        $types .= "ss";
+        $params[] = $date;
         $params[] = $date;
     }
 
@@ -881,7 +908,8 @@ function getAllRejectedApproval(
 // GET REJECTED APPROVAL COUNT
 function getRejectedApprovalCount(
     $date = null,
-    $branch = 'all'
+    $branch = 'all',
+    $search = ''
 ) {
     global $conn;
 
@@ -892,11 +920,12 @@ function getRejectedApprovalCount(
     $types = "";
     $params = [];
 
-    // DATE FILTER - AS OF SELECTED DATE
+    // DATE FILTER - SELECTED DATE ONLY
     if (!empty($date)) {
 
-        $sql .= " AND date_inspected < DATE_ADD(?, INTERVAL 1 DAY) ";
-        $types .= "s";
+        $sql .= " AND date_inspected >= ? AND date_inspected < DATE_ADD(?, INTERVAL 1 DAY) ";
+        $types .= "ss";
+        $params[] = $date;
         $params[] = $date;
     }
 
@@ -908,8 +937,16 @@ function getRejectedApprovalCount(
         $params[] = $branch;
     }
 
+    if ($search !== '') {
+        $sql .= " AND (extinguisher_code LIKE ? OR location LIKE ?) ";
+        $types .= "ss";
+        $keyword = '%' . $search . '%';
+        $params[] = $keyword;
+        $params[] = $keyword;
+    }
+
     // LATEST RECORD PER EXTINGUISHER CODE
-    // AS OF SELECTED DATE
+    // WITHIN THE SELECTED DATE
 
     $sql .= "
         AND NOT EXISTS (
@@ -936,8 +973,9 @@ function getRejectedApprovalCount(
     // NEWER RECORD MUST ALSO BE WITHIN SELECTED DATE
     if (!empty($date)) {
 
-        $sql .= " AND newer.date_inspected < DATE_ADD(?, INTERVAL 1 DAY) ";
-        $types .= "s";
+        $sql .= " AND newer.date_inspected >= ? AND newer.date_inspected < DATE_ADD(?, INTERVAL 1 DAY) ";
+        $types .= "ss";
+        $params[] = $date;
         $params[] = $date;
     }
 

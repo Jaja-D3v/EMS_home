@@ -318,12 +318,7 @@ function setCorrectiveActionValues(type) {
     let actionValue = actionSelect.value;
     let customAction = "";
 
-    // Validate action selection
-    if (!actionValue) {
-        alert("Please select an action taken.");
-        actionSelect.focus();
-        return false;
-    }
+ 
 
     // Handle Others
     if (actionValue === "Others") {
@@ -423,7 +418,21 @@ function confirmReject() {
 // for search ng approve pending na module 
 const inspectionSearch = document.getElementById("inspectionSearch");
 
-if (inspectionSearch) {
+if (inspectionSearch && inspectionSearch.dataset.serverSearch === "true") {
+    inspectionSearch.addEventListener("input", function () {
+        if (this.value.trim() !== "") {
+            return;
+        }
+
+        const url = new URL(window.location.href);
+        url.searchParams.delete("search");
+        url.searchParams.set("page", "1");
+
+        if (url.href !== window.location.href) {
+            window.location.href = url.toString();
+        }
+    });
+} else if (inspectionSearch) {
     inspectionSearch.addEventListener("input", function () {
         const searchValue = this.value.trim().toLowerCase();
         const rows = document.querySelectorAll("#inspectionList .inspection-row");

@@ -15,12 +15,15 @@ if ($page < 1) {
 }
 
 $date = $_GET['date'] ?? null;
+$search = isset($_GET['search']) && is_string($_GET['search'])
+  ? trim($_GET['search'])
+  : '';
 
 if ($date === '') {
   $date = null;
 }
 
-$totalRecords = getApprovedApprovalTotal($date);
+$totalRecords = getApprovedApprovalTotal($date, $search);
 $totalPages = (int) ceil($totalRecords / $limit);
 
 if ($totalPages > 0 && $page > $totalPages) {
@@ -32,8 +35,13 @@ $offset = ($page - 1) * $limit;
 $result = getApprovedApprovals(
   $limit,
   $offset,
-  $date
+  $date,
+  $search
 );
+
+$paginationParams = $_GET;
+unset($paginationParams['page']);
+$paginationQuery = http_build_query($paginationParams);
 
 $inspectionChecklists = [];
 
@@ -114,7 +122,10 @@ include 'partials/header.php';
 
             <!-- Search -->
             <div class="col-12 col-lg">
-              <div class="input-group">
+              <form method="get" action="inspection-approved.php" class="input-group">
+                <input type="hidden" name="page" value="1">
+                <?php if (!empty($date)): ?><input type="hidden" name="date" value="<?= htmlspecialchars($date, ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
+                <?php if (isset($_GET['branch'])): ?><input type="hidden" name="branch" value="<?= htmlspecialchars($_GET['branch'], ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
                 <span class="input-group-text bg-white">
                   <i class="bi bi-search"></i>
                 </span>
@@ -122,8 +133,12 @@ include 'partials/header.php';
                   type="text"
                   class="form-control"
                   id="inspectionSearch"
+                  name="search"
+                  data-server-search="true"
+                  value="<?= htmlspecialchars($search, ENT_QUOTES, 'UTF-8') ?>"
                   placeholder="Search by FE code or location...">
-              </div>
+                <button type="submit" class="btn btn-primary" aria-label="Search inspections">Search</button>
+              </form>
             </div>
 
             <!-- Date Filter -->
@@ -140,19 +155,18 @@ include 'partials/header.php';
                   onchange="
                           var selectedDate = this.value;
                           var branchFilter = document.getElementById('branchFilter');
+                          var searchInput = document.getElementById('inspectionSearch');
                           var branch = branchFilter ? branchFilter.value : '';
+                          var search = searchInput ? searchInput.value.trim() : '';
 
-                          var url = 'inspection-approved.php?page=1';
-
-                          if (selectedDate !== '') {
-                              url += '&date=' + encodeURIComponent(selectedDate);
-                          }
-
-                          if (branch !== '') {
-                              url += '&branch=' + encodeURIComponent(branch);
-                          }
-
-                          window.location.href = url;
+                          var url = new window.URL(window.location.href);
+                          url.searchParams.set('page', '1');
+                          if (selectedDate !== '') url.searchParams.set('date', selectedDate);
+                          else url.searchParams.delete('date');
+                          if (search !== '') url.searchParams.set('search', search);
+                          else url.searchParams.delete('search');
+                          if (branch !== '') url.searchParams.set('branch', branch);
+                          window.location.href = url.toString();
                       ">
               </div>
             </div>
@@ -201,17 +215,12 @@ include 'partials/header.php';
                     const branch = this.value;
                     const date = document.getElementById('inspectionDateFilter')?.value || '';
 
-                    let url = 'inspection-approved.php?page=1';
-
-                    if (date) {
-                      url += '&date=' + encodeURIComponent(date);
-                    }
-
-                    if (branch) {
-                      url += '&branch=' + encodeURIComponent(branch);
-                    }
-
-                    window.location.href = url;
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('page', '1');
+                    if (date) url.searchParams.set('date', date);
+                    else url.searchParams.delete('date');
+                    if (branch) url.searchParams.set('branch', branch);
+                    window.location.href = url.toString();
                   });
                 </script>
               </div>
@@ -476,18 +485,14 @@ include 'partials/header.php';
                           No inspection records found.
                         </div>
                       </div>
-
                     </td>
                   </tr>
 
                 <?php endif; ?>
 
               </tbody>
-
             </table>
-
           </div>
-
         </div>
 
         <!-- Pagination -->
@@ -532,7 +537,7 @@ include 'partials/header.php';
 
                       <a
                         class="page-link"
-                        href="inspection-rejected.php?page=<?= max(1, $page - 1) ?><?= !empty($date) ? '&date=' . urlencode($date) : '' ?>"
+                        href="inspection-approved.php?page=<?= max(1, $page - 1) ?><?= $paginationQuery !== '' ? '&' . htmlspecialchars($paginationQuery, ENT_QUOTES, 'UTF-8') : '' ?>"
                         aria-label="Previous">
 
                         <i class="bi bi-chevron-left"></i>
@@ -552,7 +557,7 @@ include 'partials/header.php';
 
                         <a
                           class="page-link"
-                          href="inspection-rejected.php?page=<?= $i ?><?= !empty($date) ? '&date=' . urlencode($date) : '' ?>">
+                          href="inspection-approved.php?page=<?= $i ?><?= $paginationQuery !== '' ? '&' . htmlspecialchars($paginationQuery, ENT_QUOTES, 'UTF-8') : '' ?>">
 
                           <?= $i ?>
 
@@ -574,7 +579,7 @@ include 'partials/header.php';
 
                       <a
                         class="page-link"
-                        href="inspection-rejected.php?page=<?= min($totalPages, $page + 1) ?><?= !empty($date) ? '&date=' . urlencode($date) : '' ?>"
+                        href="inspection-approved.php?page=<?= min($totalPages, $page + 1) ?><?= $paginationQuery !== '' ? '&' . htmlspecialchars($paginationQuery, ENT_QUOTES, 'UTF-8') : '' ?>"
                         aria-label="Next">
 
                         <span class="d-none d-lg-inline me-1">

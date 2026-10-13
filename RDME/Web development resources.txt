@@ -8,3 +8,5 @@ https://storyset.com/search?q=login -> for vector templates   note:need ng attri
 https://colorlib.com/wp/template/login-form-08/ -> login form 
 
 https://cloudconvert.com/jpg-to-webp
+
+https://www.figma.com/board/DGwQ7e4e6y6a17Ln6XFZcm/Untitled?node-id=0-1&p=f&t=5fD516BNsSwtmpNT-0 -> flowchart

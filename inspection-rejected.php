@@ -15,12 +15,15 @@ if ($page < 1) {
 }
 
 $date = $_GET['date'] ?? null;
+$search = isset($_GET['search']) && is_string($_GET['search'])
+    ? trim($_GET['search'])
+    : '';
 
 if ($date === '') {
     $date = null;
 }
 
-$totalRecords = getRejectedApprovalTotal($date);
+$totalRecords = getRejectedApprovalTotal($date, $search);
 
 $totalPages = (int) ceil($totalRecords / $limit);
 
@@ -33,8 +36,13 @@ $offset = ($page - 1) * $limit;
 $result = getRejectedApprovals(
     $limit,
     $offset,
-    $date
+    $date,
+    $search
 );
+
+$paginationParams = $_GET;
+unset($paginationParams['page']);
+$paginationQuery = http_build_query($paginationParams);
 
 $inspectionChecklists = [];
 
@@ -111,7 +119,10 @@ if ($result) {
                             <!-- Search -->
                             <div class="col-12 col-lg-6">
 
-                                <div class="input-group">
+                                <form method="get" action="inspection-rejected.php" class="input-group">
+                                    <input type="hidden" name="page" value="1">
+                                    <?php if (!empty($date)): ?><input type="hidden" name="date" value="<?= htmlspecialchars($date, ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
+                                    <?php if (isset($_GET['branch'])): ?><input type="hidden" name="branch" value="<?= htmlspecialchars($_GET['branch'], ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
 
                                     <span class="input-group-text bg-white">
 
@@ -119,9 +130,10 @@ if ($result) {
 
                                     </span>
 
-                                    <input type="text" class="form-control" id="inspectionSearch" placeholder="Search by FE code or location...">
+                                    <input type="text" class="form-control" id="inspectionSearch" name="search" data-server-search="true" value="<?= htmlspecialchars($search, ENT_QUOTES, 'UTF-8') ?>" placeholder="Search by FE code or location...">
 
-                                </div>
+                                    <button type="submit" class="btn btn-primary" aria-label="Search inspections">Search</button>
+                                </form>
 
                             </div>
 
@@ -142,16 +154,15 @@ if ($result) {
                                         id="inspectionDateFilter"
                                         value="<?= htmlspecialchars($date ?? '') ?>"
                                         onchange="
-                                            const selectedDate = this.value;
-
-                                            if (selectedDate) {
-                                                window.location.href =
-                                                    'inspection-rejected.php?page=1&date=' +
-                                                    encodeURIComponent(selectedDate);
-                                            } else {
-                                                window.location.href =
-                                                    'inspection-rejected.php?page=1';
-                                            }
+                                            const url = new window.URL(window.location.href);
+                                            const searchInput = document.getElementById('inspectionSearch');
+                                            const search = searchInput ? searchInput.value.trim() : '';
+                                            url.searchParams.set('page', '1');
+                                            if (this.value) url.searchParams.set('date', this.value);
+                                            else url.searchParams.delete('date');
+                                            if (search) url.searchParams.set('search', search);
+                                            else url.searchParams.delete('search');
+                                            window.location.href = url.toString();
                                         ">
 
                                 </div>
@@ -230,6 +241,7 @@ if ($result) {
                                         // Always set the branch parameter.
                                         // This allows "all" to remain selected after reload.
                                         url.searchParams.set('branch', selectedBranch);
+                                        url.searchParams.set('page', '1');
 
                                         // Reload page with selected branch
                                         window.location.href = url.toString();
@@ -627,7 +639,7 @@ if ($result) {
 
                                                 <a
                                                     class="page-link"
-                                                    href="inspection-rejected.php?page=<?= max(1, $page - 1) ?><?= !empty($date) ? '&date=' . urlencode($date) : '' ?>"
+                                                    href="inspection-rejected.php?page=<?= max(1, $page - 1) ?><?= $paginationQuery !== '' ? '&' . htmlspecialchars($paginationQuery, ENT_QUOTES, 'UTF-8') : '' ?>"
                                                     aria-label="Previous">
 
                                                     <i class="bi bi-chevron-left"></i>
@@ -648,7 +660,7 @@ if ($result) {
 
                                                     <a
                                                         class="page-link"
-                                                        href="inspection-rejected.php?page=<?= $i ?><?= !empty($date) ? '&date=' . urlencode($date) : '' ?>">
+                                                        href="inspection-rejected.php?page=<?= $i ?><?= $paginationQuery !== '' ? '&' . htmlspecialchars($paginationQuery, ENT_QUOTES, 'UTF-8') : '' ?>">
 
                                                         <?= $i ?>
 
@@ -675,7 +687,7 @@ if ($result) {
 
                                                 <a
                                                     class="page-link"
-                                                    href="inspection-rejected.php?page=<?= min($totalPages, $page + 1) ?><?= !empty($date) ? '&date=' . urlencode($date) : '' ?>"
+                                                    href="inspection-rejected.php?page=<?= min($totalPages, $page + 1) ?><?= $paginationQuery !== '' ? '&' . htmlspecialchars($paginationQuery, ENT_QUOTES, 'UTF-8') : '' ?>"
                                                     aria-label="Next">
 
                                                     <span class="d-none d-lg-inline me-1">

@@ -14,11 +14,9 @@ _____________________________________________________________
 - search for Approved Inspection Record
 
 
-- search in inspection approved
 - search in inspection rejected
 - search in inspection deleted
 
-- search in inspection approved
 
 
 - may bugg sa search ng active extinguisher 
@@ -30,3 +28,8 @@ ____________________________________________________________DONE________________
 
 # added my inspections module for inspector 
 - fix bugg for fetching pagination and and total in head is not match #fixed
+
+- search in inspection approved  #fixed
+- search in inspection rejected  #fixed
+- date filter in inspection rejected  #fixed
+- date filter in inspection Approved  #fixed
