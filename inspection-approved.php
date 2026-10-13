@@ -15,9 +15,7 @@ if ($page < 1) {
 }
 
 $date = $_GET['date'] ?? null;
-$search = isset($_GET['search']) && is_string($_GET['search'])
-  ? trim($_GET['search'])
-  : '';
+$search = isset($_GET['search']) && is_string($_GET['search']) ? trim($_GET['search']) : '';
 
 if ($date === '') {
   $date = null;
@@ -31,18 +29,11 @@ if ($totalPages > 0 && $page > $totalPages) {
 }
 
 $offset = ($page - 1) * $limit;
-
-$result = getApprovedApprovals(
-  $limit,
-  $offset,
-  $date,
-  $search
-);
+$result = getApprovedApprovals($limit, $offset, $date, $search);
 
 $paginationParams = $_GET;
 unset($paginationParams['page']);
 $paginationQuery = http_build_query($paginationParams);
-
 $inspectionChecklists = [];
 
 if ($result) {
@@ -52,7 +43,6 @@ if ($result) {
 }
 
 
-// _________________
 $date = $_GET['date'] ?? null;
 
 if ($date === '') {
@@ -87,9 +77,7 @@ include 'partials/header.php';
     <div class="container-fluid py-0 inspection-content">
 
       <!-- Page Header -->
-      <div
-        class="card border-0 shadow-sm text-white mb-3 mt-0 overflow-hidden inspection-header"
-        style="background: linear-gradient(135deg, #1e3dc8, #57f9ff);">
+      <div class="card border-0 shadow-sm text-white mb-3 mt-0 overflow-hidden inspection-header" style="background: linear-gradient(135deg, #1e3dc8, #57f9ff);">
 
         <div class="card-body p-4">
           <div class="row align-items-center g-3">
@@ -454,13 +442,9 @@ include 'partials/header.php';
                   <?php endforeach; ?>
 
                   <!-- Search Result State -->
-                  <tr
-                    id="noSearchResult"
-                    style="display: none;">
+                  <tr id="noSearchResult" style="display: none;">
 
-                    <td
-                      colspan="6"
-                      class="text-center py-5">
+                    <td colspan="6" class="text-center py-5">
 
                       <div class="text-body-secondary">
                         <i class="bi bi-search fs-1 d-block mb-2"></i>
@@ -475,9 +459,7 @@ include 'partials/header.php';
 
                   <!-- Empty State -->
                   <tr>
-                    <td
-                      colspan="6"
-                      class="text-center py-5">
+                    <td colspan="6" class="text-center py-5">
 
                       <div class="text-body-secondary inspection-empty-state">
                         <div>
@@ -485,6 +467,7 @@ include 'partials/header.php';
                           No inspection records found.
                         </div>
                       </div>
+
                     </td>
                   </tr>
 
@@ -494,117 +477,99 @@ include 'partials/header.php';
             </table>
           </div>
 
-        <!-- Pagination -->
-        <div
-          class="bg-body border-top shadow-sm py-2 inspection-pagination">
+          <!-- Pagination -->
+          <div class="bg-body border-top shadow-sm py-2 inspection-pagination">
+            <div class="container-fluid px-3 px-md-4">
+              <div class="inspection-pagination-inner d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
 
-          <div class="container-fluid px-3 px-md-4">
+                <div class="text-body-secondary small text-center text-md-start">
+                  Showing
 
-            <div
-              class="inspection-pagination-inner d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+                  <strong>
+                    <?= $totalRecords > 0 ? $offset + 1 : 0 ?>
+                  </strong>
 
-              <div class="text-body-secondary small text-center text-md-start">
-                Showing
+                  -
 
-                <strong>
-                  <?= $totalRecords > 0 ? $offset + 1 : 0 ?>
-                </strong>
+                  <strong>
+                    <?= min($offset + $limit, $totalRecords) ?>
+                  </strong>
 
-                -
+                  of
 
-                <strong>
-                  <?= min($offset + $limit, $totalRecords) ?>
-                </strong>
+                  <strong>
+                    <?= $totalRecords ?>
+                  </strong>
 
-                of
+                  inspections
+                </div>
 
-                <strong>
-                  <?= $totalRecords ?>
-                </strong>
+                <?php if ($totalPages > 1): ?>
 
-                inspections
-              </div>
-
-              <?php if ($totalPages > 1): ?>
-
-                <nav aria-label="Inspection pagination">
-
-                  <ul class="pagination pagination-sm mb-0">
-
-                    <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
-
-                      <a
-                        class="page-link"
-                        href="inspection-approved.php?page=<?= max(1, $page - 1) ?><?= $paginationQuery !== '' ? '&' . htmlspecialchars($paginationQuery, ENT_QUOTES, 'UTF-8') : '' ?>"
-                        aria-label="Previous">
-
-                        <i class="bi bi-chevron-left"></i>
-
-                        <span class="d-none d-lg-inline ms-1">
-                          Previous
-                        </span>
-
-                      </a>
-
-                    </li>
-
-                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-
-                      <li
-                        class="page-item d-none d-md-block <?= ($i == $page) ? 'active' : '' ?>">
+                  <nav aria-label="Inspection pagination">
+                    <ul class="pagination pagination-sm mb-0">
+                      <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
 
                         <a
                           class="page-link"
-                          href="inspection-approved.php?page=<?= $i ?><?= $paginationQuery !== '' ? '&' . htmlspecialchars($paginationQuery, ENT_QUOTES, 'UTF-8') : '' ?>">
-
-                          <?= $i ?>
+                          href="inspection-approved.php?page=<?= max(1, $page - 1) ?><?= $paginationQuery !== '' ? '&' . htmlspecialchars($paginationQuery, ENT_QUOTES, 'UTF-8') : '' ?>"
+                          aria-label="Previous">
+                          <i class="bi bi-chevron-left"></i>
+                          <span class="d-none d-lg-inline ms-1">
+                            Previous
+                          </span>
 
                         </a>
 
                       </li>
 
-                    <?php endfor; ?>
+                      <?php for ($i = 1; $i <= $totalPages; $i++): ?>
 
-                    <li class="page-item d-md-none active">
+                        <li class="page-item d-none d-md-block <?= ($i == $page) ? 'active' : '' ?>">
 
-                      <span class="page-link">
-                        <?= $page ?> / <?= $totalPages ?>
-                      </span>
+                          <a
+                            class="page-link"
+                            href="inspection-approved.php?page=<?= $i ?><?= $paginationQuery !== '' ? '&' . htmlspecialchars($paginationQuery, ENT_QUOTES, 'UTF-8') : '' ?>">
 
-                    </li>
+                            <?= $i ?>
+                          </a>
 
-                    <li class="page-item <?= ($page >= $totalPages) ? 'disabled' : '' ?>">
+                        </li>
 
-                      <a
-                        class="page-link"
-                        href="inspection-approved.php?page=<?= min($totalPages, $page + 1) ?><?= $paginationQuery !== '' ? '&' . htmlspecialchars($paginationQuery, ENT_QUOTES, 'UTF-8') : '' ?>"
-                        aria-label="Next">
+                      <?php endfor; ?>
 
-                        <span class="d-none d-lg-inline me-1">
-                          Next
+                      <li class="page-item d-md-none active">
+
+                        <span class="page-link">
+                          <?= $page ?> / <?= $totalPages ?>
                         </span>
 
-                        <i class="bi bi-chevron-right"></i>
+                      </li>
 
-                      </a>
+                      <li class="page-item <?= ($page >= $totalPages) ? 'disabled' : '' ?>">
 
-                    </li>
+                        <a
+                          class="page-link"
+                          href="inspection-approved.php?page=<?= min($totalPages, $page + 1) ?><?= $paginationQuery !== '' ? '&' . htmlspecialchars($paginationQuery, ENT_QUOTES, 'UTF-8') : '' ?>"
+                          aria-label="Next">
 
-                  </ul>
+                          <span class="d-none d-lg-inline me-1">
+                            Next
+                          </span>
 
-                </nav>
+                          <i class="bi bi-chevron-right"></i>
 
-              <?php endif; ?>
+                        </a>
 
+                      </li>
+                    </ul>
+                  </nav>
+                <?php endif; ?>
+              </div>
             </div>
-
           </div>
-
         </div>
-        </div>
-
       </div>
-
     </div>
 
     <?php include './partials/view-inspection-modal.php'; ?>
@@ -618,8 +583,5 @@ include 'partials/header.php';
     include_once 'notification/loading-for-generating-report.php';
     ?>
 
-
-
 </body>
-
 </html>

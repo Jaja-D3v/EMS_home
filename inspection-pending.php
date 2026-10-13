@@ -103,7 +103,7 @@ if ($result) {
               </div>
               <div class="col">
                 <h2 class="fw-bold mb-1">
-                 Pending Inspection Record
+                  Pending Inspection Record
                 </h2>
                 <p class="mb-0 text-white-50">
                   Pending inspection reports.
@@ -142,7 +142,6 @@ if ($result) {
               </div>
 
               <!-- Date Filter -->
-
               <div class="col-12 col-md-6 col-lg-3">
                 <div class="input-group">
                   <span class="input-group-text bg-white">
@@ -208,7 +207,6 @@ if ($result) {
 
                           value="<?= htmlspecialchars($branch['value']) ?>"
                           <?= $selectedBranch === $branch['value'] ? 'selected' : '' ?>>
-
                           <?= htmlspecialchars($branch['value']) ?>
 
                         </option>
@@ -321,7 +319,7 @@ if ($result) {
                         $timestamp = strtotime($inspection['date_inspected']);
 
                         if ($timestamp !== false) {
-                          $inspectionDate = date('Y-m-d',$timestamp);
+                          $inspectionDate = date('Y-m-d', $timestamp);
                         }
                       }
 
@@ -364,9 +362,9 @@ if ($result) {
                             ?>
 
                             <?php if ($timestamp !== false): ?>
-                              <?= date( 'M d, Y', $timestamp ) ?>
+                              <?= date('M d, Y', $timestamp) ?>
                               <small class="text-body-secondary d-block">
-                                <?= date( 'h:i A',  $timestamp) ?>
+                                <?= date('h:i A',  $timestamp) ?>
                               </small>
 
                             <?php else: ?>
@@ -383,16 +381,16 @@ if ($result) {
 
                         <td>
                           <span class="badge rounded-pill <?= $statusClass ?> px-3 py-2">
-                            <i  class="bi <?= $statusIcon ?> me-1">
+                            <i class="bi <?= $statusIcon ?> me-1">
                             </i>
-                            <?= htmlspecialchars( $statusLabel ) ?>
+                            <?= htmlspecialchars($statusLabel) ?>
                           </span>
                         </td>
 
                         <!-- Branch -->
 
                         <td>
-                          <?= htmlspecialchars(  $inspection['branch'] ?? '—' ) ?>
+                          <?= htmlspecialchars($inspection['branch'] ?? '—') ?>
                         </td>
 
                         <!-- Actions -->
@@ -402,7 +400,7 @@ if ($result) {
                             <button
                               type="button"
                               class="btn btn-sm btn-primary"
-                              onclick="viewInspection( <?= (int) $inspection['inspect_id'] ?>, '<?= htmlspecialchars($inspection['extinguisher_code'] ?? '', ENT_QUOTES ) ?>')">
+                              onclick="viewInspection( <?= (int) $inspection['inspect_id'] ?>, '<?= htmlspecialchars($inspection['extinguisher_code'] ?? '', ENT_QUOTES) ?>')">
                               <i class="bi bi-eye me-1"></i>
                               View
                             </button>
@@ -451,89 +449,89 @@ if ($result) {
               </table>
             </div>
 
-          <!-- Pagination Footer -->
+            <!-- Pagination Footer -->
 
-          <div class="bg-body border-top shadow-sm py-2 inspection-pagination">
-            <div class="container-fluid px-3 px-md-4">
-              <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+            <div class="bg-body border-top shadow-sm py-2 inspection-pagination">
+              <div class="container-fluid px-3 px-md-4">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
 
-                <!-- Result Summary -->
-                <div class="text-body-secondary small text-center text-md-start">
-                  Showing
-                  <strong>
-                    <?= $totalRecords > 0 ? $offset + 1 : 0 ?>
-                  </strong>
-                  -
-                  <strong>
-                    <?= min($offset + $limit, $totalRecords) ?>
-                  </strong>
-                     of
-                  <strong>
-                    <?= $totalRecords ?>
-                  </strong>
-                  inspections
+                  <!-- Result Summary -->
+                  <div class="text-body-secondary small text-center text-md-start">
+                    Showing
+                    <strong>
+                      <?= $totalRecords > 0 ? $offset + 1 : 0 ?>
+                    </strong>
+                    -
+                    <strong>
+                      <?= min($offset + $limit, $totalRecords) ?>
+                    </strong>
+                    of
+                    <strong>
+                      <?= $totalRecords ?>
+                    </strong>
+                    inspections
 
-                </div>
+                  </div>
 
-                <!-- Pagination -->
+                  <!-- Pagination -->
 
-                <?php if ($totalPages > 1): ?>
+                  <?php if ($totalPages > 1): ?>
 
-                  <nav aria-label="Inspection pagination">
-                    <ul class="pagination pagination-sm mb-0">
-                      <!-- Previous -->
-                      <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
-                        <a class="page-link" href="inspection-pending.php?page=<?= max(1, $page - 1) ?><?= $paginationQuery !== '' ? '&' . htmlspecialchars($paginationQuery, ENT_QUOTES, 'UTF-8') : '' ?>" aria-label="Previous">
-                          <i class="bi bi-chevron-left"></i>
-                          <span class="d-none d-lg-inline ms-1">
-                            Previous
-                          </span>
-                        </a>
-                      </li>
-
-                      <!-- Page Numbers -->
-
-                      <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                        <li class="page-item d-none d-md-block <?= ($i == $page) ? 'active' : '' ?>">
-                          <a class="page-link" href="inspection-pending.php?page=<?= $i ?><?= $paginationQuery !== '' ? '&' . htmlspecialchars($paginationQuery, ENT_QUOTES, 'UTF-8') : '' ?>">
-                            <?= $i ?>
+                    <nav aria-label="Inspection pagination">
+                      <ul class="pagination pagination-sm mb-0">
+                        <!-- Previous -->
+                        <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
+                          <a class="page-link" href="inspection-pending.php?page=<?= max(1, $page - 1) ?><?= $paginationQuery !== '' ? '&' . htmlspecialchars($paginationQuery, ENT_QUOTES, 'UTF-8') : '' ?>" aria-label="Previous">
+                            <i class="bi bi-chevron-left"></i>
+                            <span class="d-none d-lg-inline ms-1">
+                              Previous
+                            </span>
                           </a>
                         </li>
 
-                      <?php endfor; ?>
+                        <!-- Page Numbers -->
 
-                      <!-- Mobile Page Indicator -->
+                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                          <li class="page-item d-none d-md-block <?= ($i == $page) ? 'active' : '' ?>">
+                            <a class="page-link" href="inspection-pending.php?page=<?= $i ?><?= $paginationQuery !== '' ? '&' . htmlspecialchars($paginationQuery, ENT_QUOTES, 'UTF-8') : '' ?>">
+                              <?= $i ?>
+                            </a>
+                          </li>
 
-                      <li class="page-item d-md-none active">
-                        <span class="page-link">
-                          <?= $page ?> / <?= $totalPages ?>
-                        </span>
+                        <?php endfor; ?>
 
-                      </li>
+                        <!-- Mobile Page Indicator -->
 
-                      <!-- Next -->
-
-                      <li class="page-item <?= ($page >= $totalPages) ? 'disabled' : '' ?>">
-                        <a class="page-link" href="inspection-pending.php?page=<?= min($totalPages, $page + 1) ?><?= $paginationQuery !== '' ? '&' . htmlspecialchars($paginationQuery, ENT_QUOTES, 'UTF-8') : '' ?>" aria-label="Next">
-                          <span class="d-none d-lg-inline me-1">
-                            Next
+                        <li class="page-item d-md-none active">
+                          <span class="page-link">
+                            <?= $page ?> / <?= $totalPages ?>
                           </span>
-                          <i class="bi bi-chevron-right"></i>
-                        </a>
-                      </li>
-                    </ul>
-                  </nav>
-                <?php endif; ?>
+
+                        </li>
+
+                        <!-- Next -->
+
+                        <li class="page-item <?= ($page >= $totalPages) ? 'disabled' : '' ?>">
+                          <a class="page-link" href="inspection-pending.php?page=<?= min($totalPages, $page + 1) ?><?= $paginationQuery !== '' ? '&' . htmlspecialchars($paginationQuery, ENT_QUOTES, 'UTF-8') : '' ?>" aria-label="Next">
+                            <span class="d-none d-lg-inline me-1">
+                              Next
+                            </span>
+                            <i class="bi bi-chevron-right"></i>
+                          </a>
+                        </li>
+                      </ul>
+                    </nav>
+                  <?php endif; ?>
+                </div>
               </div>
             </div>
-          </div>
           </div>
         </div>
       </div>
     </div>
 
     <?php include_once 'partials/inspection-details-modal-pending.php'; ?>
-    
+
 
     <!-- CoreUI and Required Plugins -->
     <script src="vendors/@coreui/coreui/js/coreui.bundle.min.js"></script>

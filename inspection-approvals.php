@@ -5,7 +5,6 @@ require_once 'backend/controller/InspectionController.php';
 
 $limit = 10;
 
-// Current page
 $page = isset($_GET['page'])
   ? (int) $_GET['page']
   : 1;
@@ -14,42 +13,16 @@ if ($page < 1) {
   $page = 1;
 }
 
-// Date filter
 $date = $_GET['date'] ?? null;
 
 if ($date === '') {
   $date = null;
 }
 
-// Offset
 $offset = ($page - 1) * $limit;
-
-// ========================================
-// GET TOTAL PENDING APPROVALS
-// ========================================
-
 $totalRecords = getPendingApprovalTotal($date);
-
-// ========================================
-// TOTAL PAGES
-// ========================================
-
 $totalPages = (int) ceil($totalRecords / $limit);
-
-// ========================================
-// GET CURRENT PAGE DATA
-// ========================================
-
-$result = getPendingApprovals(
-  $limit,
-  $offset,
-  $date
-);
-
-// ========================================
-// CONVERT TO ARRAY
-// ========================================
-
+$result = getPendingApprovals($limit, $offset, $date);
 $inspectionChecklists = [];
 
 if ($result) {
@@ -58,22 +31,11 @@ if ($result) {
   }
 }
 
-// ========================================
-// PREVENT INVALID PAGE
-// ========================================
-
 if ($totalPages > 0 && $page > $totalPages) {
 
   $page = $totalPages;
-
   $offset = ($page - 1) * $limit;
-
-  $result = getPendingApprovals(
-    $limit,
-    $offset,
-    $date
-  );
-
+  $result = getPendingApprovals($limit, $offset, $date);
   $inspectionChecklists = [];
 
   if ($result) {
@@ -107,160 +69,90 @@ if ($totalPages > 0 && $page > $totalPages) {
 
     <?php include 'partials/header-nav.php'; ?>
 
-    <!-- CONTENT -->
     <div class="container-fluid py-0">
 
-      <!-- Page Header -->
-      <div
-        class="card border-0 shadow-sm text-white mb-1 mt-0 overflow-hidden"
-        style="background: linear-gradient(135deg, #c81e3a, #ff7657);">
-
+      <div class="card border-0 shadow-sm text-white mb-1 mt-0 overflow-hidden" style="background: linear-gradient(135deg, #c81e3a, #ff7657);">
         <div class="card-body p-4">
-
           <div class="row align-items-center g-3">
-
             <div class="col-auto">
-
               <div class="bg-white bg-opacity-25 rounded-3 p-3 fs-2">
-
                 <i class="bi bi-clipboard2-check"></i>
-
               </div>
-
             </div>
-
             <div class="col">
-
               <h2 class="fw-bold mb-1">
                 Inspection List
               </h2>
-
               <p class="mb-0 text-white-50">
                 Review and approve inspection reports.
               </p>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
 
 
       <!-- Filters -->
-
       <div class="card border-0 shadow-sm mb-3">
-
         <div class="card-body p-3">
-
           <div class="row g-2">
 
             <!-- Search -->
-
             <div class="col-12 col-md-6 col-lg-6">
-
               <div class="input-group">
-
                 <span class="input-group-text bg-white">
-
                   <i class="bi bi-search"></i>
-
                 </span>
-
-                <input
-                  type="text"
-                  class="form-control"
-                  id="inspectionSearch"
-                  placeholder="Search by FE code or location...">
-
+                <input type="text" class="form-control" id="inspectionSearch" placeholder="Search by FE code or location...">
               </div>
-
             </div>
 
-
-            <!-- Status -->
-
-
             <!-- Date -->
-
             <div class="col-12 col-md-3 col-lg-3">
-
               <div class="input-group">
-
                 <span class="input-group-text bg-white">
-
                   <i class="bi bi-calendar3"></i>
-
                 </span>
-
-                <input
-                  type="date"
-                  class="form-control"
-                  id="inspectionDateFilter">
-
+                <input type="date" class="form-control" id="inspectionDateFilter">
               </div>
-
             </div>
 
           </div>
-
         </div>
-
       </div>
 
-
       <!-- Inspection Table -->
-
       <div class="card border-0 shadow-sm">
 
         <!-- Table -->
-
         <div class="card-body p-0">
-
           <div class="table-responsive">
-
             <table class="table table-hover align-middle mb-0">
-
               <thead class="table-light">
-
                 <tr>
-
                   <th class="ps-4 py-3 text-nowrap">
                     FE Code
                   </th>
-
                   <th class="py-3 text-nowrap">
                     Location
                   </th>
-
                   <th class="py-3 text-nowrap">
                     Date Inspected
                   </th>
-
                   <th class="py-3 text-nowrap">
                     Status
                   </th>
-
                   <th class="py-3 text-nowrap text-end pe-3">
                     Actions
                   </th>
-
                 </tr>
-
               </thead>
 
-
               <tbody id="inspectionList">
-
                 <?php if (!empty($inspectionChecklists)): ?>
-
                   <?php foreach ($inspectionChecklists as $inspection): ?>
-
                     <?php
-
                     $status = $inspection['evaluation_status'] ?? 'Pending';
-
                     switch ($status) {
 
                       case 'Approved':
@@ -294,13 +186,7 @@ if ($totalPages > 0 && $page > $totalPages) {
                         break;
                     }
 
-
-                    /*
-                |--------------------------------------------------------------------------
-                | Inspection Date
-                |--------------------------------------------------------------------------
-                */
-
+                    //  Inspection Date
                     $inspectionDate = '';
 
                     if (!empty($inspection['date_inspected'])) {
