@@ -1,4 +1,3 @@
-
 const header = document.querySelector("header.header");
 
 document.addEventListener("scroll", () => {
@@ -6,7 +5,6 @@ document.addEventListener("scroll", () => {
         header.classList.toggle("shadow-sm", document.documentElement.scrollTop > 0);
     }
 });
-
 
 // this js is for edit form 
 document.querySelectorAll('.edit-extinguisher-btn').forEach(button => {
@@ -26,39 +24,17 @@ document.querySelectorAll('.edit-extinguisher-btn').forEach(button => {
 
                 const data = result.data;
 
-                document.getElementById('editExtinguisherId').value =
-                    data.extinguisher_id;
-
-                document.getElementById('editExtinguisherCode').value =
-                    data.extinguisher_code;
-
-                document.getElementById('editType').value =
-                    data.type;
-
-                document.getElementById('editCapacity').value =
-                    data.capacity;
-
-                document.getElementById('editClass').value =
-                    data.class;
-
-                document.getElementById('editPlacement').value =
-                    data.placement;
-
-                document.getElementById('editLocation').value =
-                    data.location;
-
-                document.getElementById('editConditionStatus').value =
-                    data.condition_status;
-
-                document.getElementById('editManufacturedDate').value =
-                    data.manufactured_date;
-
-                document.getElementById('editExpirationDate').value =
-                    data.expiration_date;
-
-                document.getElementById('editRemarks').value =
-                    data.remarks ?? '';
-
+                document.getElementById('editExtinguisherId').value = data.extinguisher_id;
+                document.getElementById('editExtinguisherCode').value = data.extinguisher_code;
+                document.getElementById('editType').value = data.type;
+                document.getElementById('editCapacity').value = data.capacity;
+                document.getElementById('editClass').value = data.class;
+                document.getElementById('editPlacement').value = data.placement;
+                document.getElementById('editLocation').value = data.location;
+                document.getElementById('editConditionStatus').value = data.condition_status;
+                document.getElementById('editManufacturedDate').value = data.manufactured_date;
+                document.getElementById('editExpirationDate').value = data.expiration_date;
+                document.getElementById('editRemarks').value = data.remarks ?? '';
             })
             .catch(error => {
                 console.error(error);
@@ -69,11 +45,7 @@ document.querySelectorAll('.edit-extinguisher-btn').forEach(button => {
 
 });
 
-
-// ========================================
 // FIRE EXTINGUISHER CODE
-// ========================================
-
 const codeInput = document.getElementById('extinguisherCode');
 const codeFeedback = document.getElementById('extinguisherCodeFeedback');
 const addFireExtinguisherBtn = document.getElementById('addFireExtinguisherBtn');
@@ -81,11 +53,7 @@ const addFireExtinguisherBtn = document.getElementById('addFireExtinguisherBtn')
 let codeCheckTimeout;
 let isCodeDuplicate = false;
 
-
-// ========================================
 // CHECK IF CODE EXISTS
-// ========================================
-
 function checkFireExtinguisherCode(code) {
 
     clearTimeout(codeCheckTimeout);
@@ -107,7 +75,6 @@ function checkFireExtinguisherCode(code) {
 
         return;
     }
-
 
     // Delay checking
     codeCheckTimeout = setTimeout(() => {
@@ -132,55 +99,30 @@ function checkFireExtinguisherCode(code) {
 
                 console.log('Code check result:', result);
 
-
-                // ========================================
                 // DUPLICATE
-                // ========================================
-
                 if (result.exists === true) {
 
                     isCodeDuplicate = true;
 
-                    codeFeedback.textContent =
-                        'This fire extinguisher code already exists.';
-
-                    codeFeedback.className =
-                        'small mt-1 text-danger';
-
-                    codeInput.classList.add(
-                        'is-invalid'
-                    );
-
-                    codeInput.classList.remove(
-                        'is-valid'
-                    );
+                    codeFeedback.textContent = 'This fire extinguisher code already exists.';
+                    codeFeedback.className = 'small mt-1 text-danger';
+                    codeInput.classList.add( 'is-invalid' );
+                    codeInput.classList.remove( 'is-valid' );
 
                     // DISABLE ADD BUTTON
                     addFireExtinguisherBtn.disabled = true;
 
                 }
 
-
-                // ========================================
                 // AVAILABLE
-                // ========================================
                 else {
 
                     isCodeDuplicate = false;
 
-                    codeFeedback.textContent =
-                        'Fire extinguisher code is available.';
-
-                    codeFeedback.className =
-                        'small mt-1 text-success';
-
-                    codeInput.classList.remove(
-                        'is-invalid'
-                    );
-
-                    codeInput.classList.add(
-                        'is-valid'
-                    );
+                    codeFeedback.textContent = 'Fire extinguisher code is available.';
+                    codeFeedback.className = 'small mt-1 text-success';
+                    codeInput.classList.remove( 'is-invalid' );
+                    codeInput.classList.add( 'is-valid' );
 
                     // ENABLE ADD BUTTON
                     addFireExtinguisherBtn.disabled = false;
@@ -190,23 +132,11 @@ function checkFireExtinguisherCode(code) {
             })
             .catch(error => {
 
-                console.error(
-                    'Code check error:',
-                    error
-                );
-
+                console.error( 'Code check error:', error );
                 isCodeDuplicate = false;
-
-                codeFeedback.textContent =
-                    'Unable to check fire extinguisher code.';
-
-                codeFeedback.className =
-                    'small mt-1 text-warning';
-
-                codeInput.classList.remove(
-                    'is-valid',
-                    'is-invalid'
-                );
+                codeFeedback.textContent = 'Unable to check fire extinguisher code.';
+                codeFeedback.className = 'small mt-1 text-warning';
+                codeInput.classList.remove( 'is-valid', 'is-invalid' );
 
                 // Disable while checking has failed
                 addFireExtinguisherBtn.disabled = true;
@@ -216,24 +146,15 @@ function checkFireExtinguisherCode(code) {
     }, 400);
 }
 
-
-// ========================================
 // MANUAL CODE INPUT
-// ========================================
-
 codeInput.addEventListener('input', function () {
 
     const code = this.value.trim();
-
     checkFireExtinguisherCode(code);
 
 });
 
-
-// ========================================
 // AUTO-GENERATE FIRE EXTINGUISHER CODE
-// ========================================
-
 function generateFireExtinguisherCode() {
 
     const branch = document.getElementById('branch').value;
@@ -294,26 +215,15 @@ function generateFireExtinguisherCode() {
         })
         .catch(error => {
 
-            console.error(
-                'Generate code error:',
-                error
-            );
-
+            console.error( 'Generate code error:', error );
             codeInput.value = '';
             addFireExtinguisherBtn.disabled = true;
         });
 }
 
 
-// ========================================
 // AUTO-GENERATE WHEN ADD MODAL OPENS
-// ========================================
-
-const addFireExtinguisherModal =
-    document.getElementById(
-        'addFireExtinguisherModal'
-    );
-
+const addFireExtinguisherModal = document.getElementById( 'addFireExtinguisherModal' );
 
 if (addFireExtinguisherModal) {
 
@@ -326,7 +236,6 @@ if (addFireExtinguisherModal) {
 
                 // Disable while generating/checking
                 addFireExtinguisherBtn.disabled = true;
-
                 generateFireExtinguisherCode();
 
             } else {
@@ -342,10 +251,7 @@ if (addFireExtinguisherModal) {
 
 }
 
-// ========================================
 // PREVENT SUBMIT IF DUPLICATE
-// ========================================
-
 const addForm = addFireExtinguisherBtn.closest('form');
 
 if (addForm) {
@@ -359,16 +265,9 @@ if (addForm) {
         if (code === '') {
 
             event.preventDefault();
-
-            codeFeedback.textContent =
-                'Fire extinguisher code is required.';
-
-            codeFeedback.className =
-                'small mt-1 text-danger';
-
-            codeInput.classList.add(
-                'is-invalid'
-            );
+            codeFeedback.textContent = 'Fire extinguisher code is required.';
+            codeFeedback.className = 'small mt-1 text-danger';
+            codeInput.classList.add( 'is-invalid' );
 
             return;
         }
@@ -378,17 +277,9 @@ if (addForm) {
         if (isCodeDuplicate) {
 
             event.preventDefault();
-
-            codeFeedback.textContent =
-                'This fire extinguisher code already exists.';
-
-            codeFeedback.className =
-                'small mt-1 text-danger';
-
-            codeInput.classList.add(
-                'is-invalid'
-            );
-
+            codeFeedback.textContent = 'This fire extinguisher code already exists.';
+            codeFeedback.className = 'small mt-1 text-danger';
+            codeInput.classList.add( 'is-invalid' );
             addFireExtinguisherBtn.disabled = true;
 
             return;
@@ -399,16 +290,11 @@ if (addForm) {
 }
 
 // this is for view ng fire extinguisher
-
 document.querySelectorAll('.view-extinguisher-btn').forEach(button => {
 
     button.addEventListener('click', function () {
-
         const id = this.dataset.id;
-
-        fetch(
-            `backend/controller/FireExtinguisherController.php?action=get&id=${id}`
-        )
+        fetch( `backend/controller/FireExtinguisherController.php?action=get&id=${id}` )
 
             .then(response => {
 
@@ -424,86 +310,29 @@ document.querySelectorAll('.view-extinguisher-btn').forEach(button => {
 
                 if (!result.success) {
 
-                    alert(
-                        result.message ||
-                        'Failed to load fire extinguisher.'
-                    );
+                    alert( result.message || 'Failed to load fire extinguisher.' );
 
                     return;
                 }
 
                 const data = result.data;
 
-
-                // ========================================
                 // FILL VIEW MODAL
-                // ========================================
+                document.getElementById( 'viewExtinguisherCode' ).value = data.extinguisher_code ?? '';
+                document.getElementById( 'viewType' ).value = data.type ?? '';
+                document.getElementById( 'viewCapacity' ).value = data.capacity ?? '';
+                document.getElementById( 'viewClass' ).value = data.class ?? '';
+                document.getElementById( 'viewPlacement' ).value = data.placement ?? '';
+                document.getElementById( 'viewLocation' ).value = data.location ?? '';
+                document.getElementById( 'viewConditionStatus' ).value = data.condition_status ?? '';
+                document.getElementById( 'viewManufacturedDate' ).value = data.manufactured_date ?? '';
+                document.getElementById( 'viewLastRefilledDate' ).value = data.refilled_date ?? '';
+                document.getElementById( 'viewExpirationDate' ).value = data.expiration_date ?? '';
+                document.getElementById( 'viewRemarks' ).value = data.remarks ?? '';
 
-                document.getElementById(
-                    'viewExtinguisherCode'
-                ).value = data.extinguisher_code ?? '';
-
-
-                document.getElementById(
-                    'viewType'
-                ).value = data.type ?? '';
-
-
-                document.getElementById(
-                    'viewCapacity'
-                ).value = data.capacity ?? '';
-
-
-                document.getElementById(
-                    'viewClass'
-                ).value = data.class ?? '';
-
-
-                document.getElementById(
-                    'viewPlacement'
-                ).value = data.placement ?? '';
-
-
-                document.getElementById(
-                    'viewLocation'
-                ).value = data.location ?? '';
-
-
-                document.getElementById(
-                    'viewConditionStatus'
-                ).value = data.condition_status ?? '';
-
-
-                document.getElementById(
-                    'viewManufacturedDate'
-                ).value = data.manufactured_date ?? '';
-
-                document.getElementById(
-                    'viewLastRefilledDate'
-                ).value = data.refilled_date ?? '';
-
-
-                document.getElementById(
-                    'viewExpirationDate'
-                ).value = data.expiration_date ?? '';
-
-
-                document.getElementById(
-                    'viewRemarks'
-                ).value = data.remarks ?? '';
-
-
-                // ========================================
                 // STORE ID FOR EDIT / DELETE
-                // ========================================
-
-                const editBtn = document.getElementById(
-                    'viewEditFireExtinguisherBtn'
-                );
-
-                const deleteBtn = document.getElementById(
-                    'viewDeleteFireExtinguisherBtn'
-                );
+                const editBtn = document.getElementById( 'viewEditFireExtinguisherBtn' );
+                const deleteBtn = document.getElementById( 'viewDeleteFireExtinguisherBtn' );
 
                 if (editBtn) {
                     editBtn.dataset.id = data.extinguisher_id;
@@ -536,14 +365,9 @@ document.querySelectorAll('.view-extinguisher-btn').forEach(button => {
 
 });
 
-// ========================================
 // FILTER BY PLACEMENT TYPE
-// ========================================
 
-const placementTypeFilter =
-    document.getElementById(
-        'placementTypeFilter'
-    );
+const placementTypeFilter = document.getElementById( 'placementTypeFilter' );
 
 if (placementTypeFilter) {
 
@@ -571,13 +395,9 @@ if (placementTypeFilter) {
         }
     );
 }
-//==================================================
-// CONDITION TYPE FILTER
-// ============================================================
 
-const conditionFilter = document.getElementById(
-    'conditionFilter'
-);
+// CONDITION TYPE FILTER
+const conditionFilter = document.getElementById( 'conditionFilter' );
 
 if (conditionFilter) {
 
@@ -609,9 +429,7 @@ if (conditionFilter) {
 }
 
 // this script is for generate inventory report button
-const generateInventoryReportBtn = document.getElementById(
-    'generateInventoryReportBtn'
-);
+const generateInventoryReportBtn = document.getElementById( 'generateInventoryReportBtn' );
 
 if (generateInventoryReportBtn) {
 
@@ -627,47 +445,27 @@ if (generateInventoryReportBtn) {
         'click',
         function (event) {
 
-            const branchFilter =
-                document.getElementById('branchFilter');
+            const branchFilter = document.getElementById('branchFilter');
+            const branch = branchFilter ? branchFilter.value : 'all';
+            const reportUrl = new URL( 'backend/controller/GenerateInventoryReportController.php', window.location.href );
 
-            const branch = branchFilter ?
-                branchFilter.value :
-                'all';
+            reportUrl.searchParams.set( 'branch', branch );
 
-            const reportUrl = new URL(
-                'backend/controller/GenerateInventoryReportController.php',
-                window.location.href
-            );
-
-            reportUrl.searchParams.set(
-                'branch',
-                branch
-            );
-
-            generateReport(
-                event,
-                reportUrl.toString()
-            );
+            generateReport( event, reportUrl.toString() );
         }
     );
 }
 
 
 (function () {
-    const searchInput = document.getElementById(
-        'fireExtinguisherSearchInput'
-    );
-
-    const searchButton = document.getElementById(
-        'searchFireExtinguisherBtn'
-    );
+    const searchInput = document.getElementById( 'fireExtinguisherSearchInput' );
+    const searchButton = document.getElementById( 'searchFireExtinguisherBtn' );
 
     if (!searchInput || !searchButton) {
         return;
     }
 
     // UPDATE URL WHILE TYPING
-    // Hindi pa ito magre-request ng search results.
     function updateSearchUrl() {
         const url = new URL(window.location.href);
         const searchValue = searchInput.value.trim();
@@ -696,10 +494,7 @@ if (generateInventoryReportBtn) {
         }
     });
 
-    // =====================================================
     // FETCH SERVER-SIDE RESULTS WITHOUT PAGE RELOAD
-    // =====================================================
-
     async function loadInventoryResults(requestUrl) {
         const originalButtonText = searchButton.innerHTML;
 
@@ -724,29 +519,22 @@ if (generateInventoryReportBtn) {
             }
 
             const html = await response.text();
-
             const parser = new DOMParser();
+            const parsedDocument = parser.parseFromString( html, 'text/html' );
 
-            const parsedDocument = parser.parseFromString(
-                html,
-                'text/html'
-            );
+            const newResults = parsedDocument.querySelector('#inventoryResults');
+            const newPagination = parsedDocument.querySelector('#inventoryPagination');
+            const currentResults = document.querySelector('#inventoryResults');
+            const currentPagination = document.querySelector('#inventoryPagination');
 
-            const newResults = parsedDocument.querySelector( '#inventoryResults' );
-            const newPagination = parsedDocument.querySelector( '#inventoryPagination' );
-            const currentResults = document.querySelector( '#inventoryResults' );
-            const currentPagination = document.querySelector( '#inventoryPagination' );
-
-            if ( !newResults || !newPagination || !currentResults || !currentPagination ) {
+            if (!newResults || !newPagination || !currentResults || !currentPagination) {
                 throw new Error(
                     'empty results.'
                 );
             }
 
-            // Palitan lamang ang cards.
             currentResults.innerHTML = newResults.innerHTML;
 
-            // Kapag walang matching records, magpakita ng empty state.
             if (
                 !currentResults.querySelector('.extinguisher-card')
             ) {
@@ -769,48 +557,33 @@ if (generateInventoryReportBtn) {
             }
 
             // for search filter
-            currentPagination.replaceWith(
-                newPagination.cloneNode(true)
-            );
+            currentPagination.replaceWith( newPagination.cloneNode(true) );
 
         } catch (error) {
-            console.error(
-                'Inventory search error:',
-                error
-            );
 
-            // alert(
-            //     'Hindi ma-load ang search results. ' +
-            //     'Pakisubukan ulit.'
-            // );
+            console.error( 'Inventory search error:', error );
 
         } finally {
+
             searchButton.disabled = false;
             searchButton.innerHTML = originalButtonText;
         }
     }
 
-
-
     searchButton.addEventListener('click', function () {
-        updateSearchUrl();
 
-        loadInventoryResults(
-            window.location.href
-        );
+        updateSearchUrl();
+        loadInventoryResults( window.location.href );
     });
 
 
 
     searchInput.addEventListener('keydown', function (event) {
         if (event.key === 'Enter') {
+
             event.preventDefault();
-
             updateSearchUrl();
-
-            loadInventoryResults(
-                window.location.href
-            );
+            loadInventoryResults( window.location.href );
         }
     });
 
@@ -826,20 +599,9 @@ if (generateInventoryReportBtn) {
         }
 
         event.preventDefault();
-
-        const targetUrl = new URL(
-            pageLink.href,
-            window.location.origin
-        );
-
-        window.history.pushState({},
-            '',
-            targetUrl.toString()
-        );
-
-        loadInventoryResults(
-            targetUrl.toString()
-        );
+        const targetUrl = new URL( pageLink.href, window.location.origin );
+        window.history.pushState({}, '', targetUrl.toString() );
+        loadInventoryResults( targetUrl.toString() );
     });
 
     // page back

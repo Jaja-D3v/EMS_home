@@ -48,7 +48,6 @@ foreach ($codes as $code) {
     // Border ng buong 64mm × 36mm label
     $pdf->SetLineWidth(0.3);
     $pdf->SetDrawColor(0, 0, 0);
-
     $pdf->Rect(
         1,
         1,
@@ -82,32 +81,6 @@ foreach ($codes as $code) {
         'N'
     );
 
-    // // EMS Logo
-    // $logoPath = __DIR__ . '/../assets/img/EMS-LOGO-GRAY.png';
-
-    // $pdf->Image(
-    //     $logoPath,
-    //     49,
-    //     22,
-    //     13,
-    //     13,
-    //     'PNG',
-    //     '',
-    //     '',
-    //     false,
-    //     300,
-    //     '',
-    //     false,
-    //     false,
-    //     0,
-    //     false,
-    //     false,
-    //     false
-    // );
-
-    // $infoX = 35;
-    // $infoY = 9;
-    // $infoWidth = 27;
 
     // // ems logo end
     $infoX = 35;

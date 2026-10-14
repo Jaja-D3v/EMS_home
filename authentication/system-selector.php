@@ -131,8 +131,8 @@ require_once '../backend/authentication/SessionChecker.php';
                         </div>
 
                         <h2 class="system-title">
-                            Equipment<br>
-                            Management
+                           Fire Equipment<br>
+                            Management System
                         </h2>
 
                         <p class="system-description">
@@ -161,14 +161,14 @@ require_once '../backend/authentication/SessionChecker.php';
 
 
                         <h2 class="system-title">
-                            Accident
+                            Incident 
                             <br>
-                            Management
+                            Management System
                         </h2>
 
 
                         <p class="system-description">
-                            Accident reports,
+                            Incident reports,
                             investigation,
                             incident records
                         </p>

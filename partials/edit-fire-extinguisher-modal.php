@@ -132,7 +132,7 @@
                 class="form-select"
                 id="editCapacity"
                 name="capacity"
-                value="  "
+                value=""
                 required>
 
                 <?php

@@ -566,8 +566,7 @@ function renderPagination(
                             'li'
                         );
 
-                    dotsLi.className =
-                        'page-item disabled';
+                    dotsLi.className = 'page-item disabled';
 
 
                     dotsLi.innerHTML = `
@@ -587,12 +586,7 @@ function renderPagination(
                 // PAGE BUTTON
                 // ==============================
 
-                const li =
-                    document.createElement(
-                        'li'
-                    );
-
-
+                const li = document.createElement( 'li' );
                 li.className =
                     'page-item' +
                     (
@@ -602,22 +596,10 @@ function renderPagination(
                     );
 
 
-                const button =
-                    document.createElement(
-                        'button'
-                    );
-
-
-                button.type =
-                    'button';
-
-
-                button.className =
-                    'page-link';
-
-
-                button.textContent =
-                    page;
+                const button = document.createElement( 'button' );
+                button.type = 'button';
+                button.className = 'page-link';
+                button.textContent = page;
 
 
                 button.addEventListener(
@@ -652,19 +634,8 @@ function renderPagination(
         // NEXT
         // ==============================
 
-        const nextLi =
-            document.createElement(
-                'li'
-            );
-
-
-        nextLi.className =
-            'page-item' +
-            (
-                currentPage === totalPages
-                    ? ' disabled'
-                    : ''
-            );
+        const nextLi = document.createElement( 'li' );
+        nextLi.className = 'page-item' + ( currentPage === totalPages ? ' disabled' : '' );
 
 
         const nextButton =
@@ -673,17 +644,9 @@ function renderPagination(
             );
 
 
-        nextButton.type =
-            'button';
-
-
-        nextButton.className =
-            'page-link';
-
-
-        nextButton.innerHTML =
-            '<i class="bi bi-chevron-right"></i>';
-
+        nextButton.type = 'button';
+        nextButton.className = 'page-link';
+        nextButton.innerHTML = '<i class="bi bi-chevron-right"></i>';
 
         nextButton.addEventListener(
             'click',
@@ -702,28 +665,16 @@ function renderPagination(
         );
 
 
-        nextLi.appendChild(
-            nextButton
-        );
-
-
-        ul.appendChild(
-            nextLi
-        );
+        nextLi.appendChild( nextButton );
+        ul.appendChild( nextLi );
 
 
         // ==============================
         // APPEND PAGINATION
         // ==============================
 
-        nav.appendChild(
-            ul
-        );
-
-
-        paginationWrapper.appendChild(
-            nav
-        );
+        nav.appendChild( ul );
+        paginationWrapper.appendChild( nav );
     }
 
 
@@ -731,19 +682,9 @@ function renderPagination(
     // FOOTER
     // ==============================
 
-    footerWrapper.appendChild(
-        itemCount
-    );
-
-
-    footerWrapper.appendChild(
-        paginationWrapper
-    );
-
-
-    paginationContainer.appendChild(
-        footerWrapper
-    );
+    footerWrapper.appendChild( itemCount );
+    footerWrapper.appendChild( paginationWrapper );
+    paginationContainer.appendChild( footerWrapper );
 }
 
 
@@ -773,12 +714,7 @@ if (qrSearch) {
                             )
                         ) {
 
-                            const checkbox =
-                                row.querySelector(
-                                    '.extinguisher-checkbox'
-                                );
-
-
+                            const checkbox = row.querySelector( '.extinguisher-checkbox' );
                             if (checkbox) {
 
                                 checkbox.checked =
@@ -803,35 +739,19 @@ function toggleSelectAll(
     source
 ) {
 
-    const filteredRows =
-        getFilteredRows();
-
-
-    const start =
-        (currentPage - 1) *
-        rowsPerPage;
-
-
-    const currentPageRows =
-        filteredRows.slice(
-            start,
-            start + rowsPerPage
-        );
-
+    const filteredRows = getFilteredRows();
+    const start = (currentPage - 1) * rowsPerPage;
+    const currentPageRows = filteredRows.slice( start, start + rowsPerPage );
 
     currentPageRows.forEach(
         row => {
 
-            const checkbox =
-                row.querySelector(
-                    '.extinguisher-checkbox'
-                );
+            const checkbox = row.querySelector( '.extinguisher-checkbox' );
 
 
             if (checkbox) {
 
-                checkbox.checked =
-                    source.checked;
+                checkbox.checked = source.checked;
             }
         }
     );
@@ -847,17 +767,8 @@ function toggleSelectAll(
 
 function updateSelection() {
 
-    const checkboxes =
-        document.querySelectorAll(
-            '.extinguisher-checkbox'
-        );
-
-
-    const selected =
-        document.querySelectorAll(
-            '.extinguisher-checkbox:checked'
-        ).length;
-
+    const checkboxes = document.querySelectorAll( '.extinguisher-checkbox' );
+    const selected = document.querySelectorAll( '.extinguisher-checkbox:checked' ).length;
 
     const visibleCheckboxes =
         Array.from(
@@ -879,58 +790,27 @@ function updateSelection() {
         );
 
 
-    const visibleSelected =
-        visibleCheckboxes.filter(
-            cb => cb.checked
-        ).length;
+    const visibleSelected = visibleCheckboxes.filter( cb => cb.checked ).length;
+    const selectedCount = document.getElementById( 'selectedCount' );
+    const selectionFooter = document.getElementById( 'selectionFooter' );
+    const selectAll = document.getElementById( 'selectAll' );
 
-
-    const selectedCount =
-        document.getElementById(
-            'selectedCount'
-        );
-
-
-    const selectionFooter =
-        document.getElementById(
-            'selectionFooter'
-        );
-
-
-    const selectAll =
-        document.getElementById(
-            'selectAll'
-        );
-
-
-    // ==============================
     // SELECTED COUNT
-    // ==============================
-
     if (selectedCount) {
 
-        selectedCount.textContent =
-            selected;
+        selectedCount.textContent = selected;
     }
 
-
-    // ==============================
     // SELECTION FOOTER
-    // ==============================
-
     if (selectionFooter) {
 
         if (selected > 0) {
 
-            selectionFooter.classList.remove(
-                'd-none'
-            );
+            selectionFooter.classList.remove( 'd-none' );
 
         } else {
 
-            selectionFooter.classList.add(
-                'd-none'
-            );
+            selectionFooter.classList.add( 'd-none' );
         }
     }
 
@@ -947,31 +827,24 @@ function updateSelection() {
             visibleCheckboxes.length
         ) {
 
-            selectAll.checked =
-                true;
-
-            selectAll.indeterminate =
-                false;
+            selectAll.checked = true;
+            selectAll.indeterminate = false;
 
 
         } else if (
+
             visibleSelected > 0
+
         ) {
 
-            selectAll.checked =
-                false;
-
-            selectAll.indeterminate =
-                true;
+            selectAll.checked = false;
+            selectAll.indeterminate = true;
 
 
         } else {
 
-            selectAll.checked =
-                false;
-
-            selectAll.indeterminate =
-                false;
+            selectAll.checked = false;
+            selectAll.indeterminate = false;
         }
     }
 }
@@ -996,19 +869,13 @@ function clearSelection() {
         );
 
 
-    const selectAll =
-        document.getElementById(
-            'selectAll'
-        );
+    const selectAll = document.getElementById( 'selectAll' );
 
 
     if (selectAll) {
 
-        selectAll.checked =
-            false;
-
-        selectAll.indeterminate =
-            false;
+        selectAll.checked = false;
+        selectAll.indeterminate = false;
     }
 
     updateSelection();
@@ -1042,13 +909,7 @@ function printSelected() {
     }
 
 
-    window.open(
-        'helpers/print-qr.php?codes=' +
-        encodeURIComponent(
-            selected.join(',')
-        ),
-        '_blank'
-    );
+    window.open( 'helpers/print-qr.php?codes=' + encodeURIComponent( selected.join(',') ), '_blank' );
 }
 
 // ==============================

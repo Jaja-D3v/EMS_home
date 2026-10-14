@@ -208,59 +208,30 @@ if ($totalPages > 0 && $page > $totalPages) {
 
                     <tr
                       class="inspection-row"
-
-                      data-fe-code="<?= htmlspecialchars(
-                                      strtolower(
-                                        $inspection['extinguisher_code'] ?? ''
-                                      )
-                                    ) ?>"
-
-                      data-location="<?= htmlspecialchars(
-                                        strtolower(
-                                          $inspection['location'] ?? ''
-                                        )
-                                      ) ?>"
-
-                      data-status="<?= htmlspecialchars(
-                                      $statusFilterValue
-                                    ) ?>"
-
-                      data-date="<?= htmlspecialchars(
-                                    $inspectionDate
-                                  ) ?>">
+                      data-fe-code="<?= htmlspecialchars(strtolower($inspection['extinguisher_code'] ?? '')) ?>"
+                      data-location="<?= htmlspecialchars(strtolower($inspection['location'] ?? '')) ?>"
+                      data-status="<?= htmlspecialchars($statusFilterValue) ?>"
+                      data-date="<?= htmlspecialchars($inspectionDate) ?>">
 
                       <!-- FE Code -->
-
                       <td class="ps-4">
 
                         <span class="text-primary fw-semibold">
-
                           <?= htmlspecialchars(
                             $inspection['extinguisher_code'] ?? '—'
                           ) ?>
-
                         </span>
-
                       </td>
-
 
                       <!-- Location -->
-
                       <td>
-
-                        <?= htmlspecialchars(
-                          $inspection['location'] ?? '—'
-                        ) ?>
-
+                        <?= htmlspecialchars($inspection['location'] ?? '—') ?>
                       </td>
 
-
                       <!-- Date Inspected -->
-
                       <td class="text-nowrap">
 
                         <?php if (!empty($inspection['date_inspected'])): ?>
-
                           <?php
 
                           $timestamp = strtotime(
@@ -271,42 +242,24 @@ if ($totalPages > 0 && $page > $totalPages) {
 
                           <?php if ($timestamp !== false): ?>
 
-                            <?= date(
-                              'M d, Y',
-                              $timestamp
-                            ) ?>
-
+                            <?= date('M d, Y', $timestamp) ?>
                             <small class="text-body-secondary d-block">
 
-                              <?= date(
-                                'h:i A',
-                                $timestamp
-                              ) ?>
+                              <?= date('h:i A', $timestamp) ?>
 
                             </small>
 
                           <?php else: ?>
-
                             —
-
                           <?php endif; ?>
-
                         <?php else: ?>
-
                           —
-
                         <?php endif; ?>
-
                       </td>
 
-
                       <!-- Status -->
-
                       <td>
-
-                        <span
-                          class="badge rounded-pill <?= $statusClass ?> px-3 py-2">
-
+                        <span class="badge rounded-pill <?= $statusClass ?> px-3 py-2">
                           <i
                             class="bi <?= $statusIcon ?> me-1">
                           </i>
@@ -321,50 +274,25 @@ if ($totalPages > 0 && $page > $totalPages) {
 
 
                       <!-- Actions -->
-
                       <td class="text-end pe-3">
-
                         <div class="d-flex justify-content-end gap-1">
-
-                          <button
-                            type="button"
-                            class="btn btn-sm btn-primary"
-                            onclick="viewInspection(<?= (int) $inspection['inspect_id'] ?>)">
-
+                          <button type="button" class="btn btn-sm btn-primary" onclick="viewInspection(<?= (int) $inspection['inspect_id'] ?>)">
                             <i class="bi bi-eye me-1"></i>
-
                             View
-
                           </button>
-
 
                           <?php if ($status === 'Pending'): ?>
 
                             <!-- Approve -->
-
-                            <button
-                              type="button"
-                              class="btn btn-sm btn-success"
-                              onclick="approveInspection(<?= (int) $inspection['inspect_id'] ?>)">
-
+                            <button type="button" class="btn btn-sm btn-success" onclick="approveInspection(<?= (int) $inspection['inspect_id'] ?>)">
                               <i class="bi bi-check-lg me-1"></i>
-
                               Approve
-
                             </button>
 
-
                             <!-- Reject -->
-
-                            <button
-                              type="button"
-                              class="btn btn-sm btn-danger"
-                              onclick="rejectInspection(<?= (int) $inspection['inspect_id'] ?>)">
-
+                            <button type="button" class="btn btn-sm btn-danger" onclick="rejectInspection(<?= (int) $inspection['inspect_id'] ?>)">
                               <i class="bi bi-x-lg me-1"></i>
-
                               Reject
-
                             </button>
 
 

@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (
         $user &&
         $username === $user['LoginID'] &&
-        md5($password) === $user['password'] && $user['Status'] == '1' &&  ($user['what_system'] === 'KPEMS' || $user['what_system'] === 'KPAMS')
+        md5($password) === $user['password'] && $user['Status'] == '1' &&  ($user['what_system'] === 'KPFEMS' || $user['what_system'] === 'KPAMS')
     ) {
 
         /*

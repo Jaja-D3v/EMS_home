@@ -1488,10 +1488,7 @@ $search = trim($_GET['search'] ?? '');
             .catch(error => {
 
               console.error(error);
-
-              alert(
-                'Something went wrong while loading fire extinguisher.'
-              );
+              alert( 'Something went wrong while loading fire extinguisher.' );
 
             });
 

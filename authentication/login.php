@@ -225,7 +225,7 @@ if (isset($_SESSION['id'])) {
           <!-- FOOTER -->
           <div class=" text-center mt-4  ">
             <div class="login-footer">
-              IMS Safety Management System v1.0
+              IMS Safety Management System
             </div>
           </div>
         </div>
