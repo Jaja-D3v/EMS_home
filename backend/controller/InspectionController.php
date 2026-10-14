@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $date_inspected = $_POST['date_inspected'] ?? null;
         $inspected_by = $_SESSION['EmployeeName'] ?? 'error while getting employee name';
         $verified_and_approved_by = 'N/A';
-        $action_taken = 'N/A';
+        $action_taken = '';
         $target_date_of_implementation = 'N/A';
         $remarks = $_POST['remarks'] ?? null;
         $branch = $_POST['branch'] ?? null;
@@ -138,9 +138,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 "Inspect Fire Extinguisher",
                 "Inspect fire extinguisher $extinguisher_code"
             );
-            header(
-                "Location: ../../QR-code.php?success-inspect=1"
-            );
+            header( "Location: ../../scan-QR-Code.php?success-inspect=1" );
+            
             exit;
         }
     } elseif ($action == 'update_evaluation_status') {

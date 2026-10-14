@@ -4,7 +4,6 @@ require_once 'backend/authentication/SessionChecker.php';
 
 ?>
 
-
 <!DOCTYPE html>
 <!--
 * CoreUI - Free Bootstrap Admin Template
@@ -22,25 +21,17 @@ require_once 'backend/authentication/SessionChecker.php';
   <div class="wrapper d-flex flex-column min-vh-100">
     <?php include 'partials/header-nav.php'; ?>
 
-
     <div class="body flex-grow-1">
       <div class="container-fluid py-4">
-
         <div class="row justify-content-center">
-
           <div class="col-12 col-md-9 col-lg-7 col-xl-6">
-
             <div class="card border-0 shadow-sm overflow-hidden">
 
               <!-- Scanner Header -->
-              <div
-                class="card-header border-0 text-white p-4"
-                style="background: linear-gradient(135deg, #081770, #0846f5);">
-
+              <div class="card-header border-0 text-white p-4" style="background: linear-gradient(135deg, #081770, #0846f5);">
                 <div class="d-flex align-items-center gap-3">
 
-                  <div
-                    class="bg-white bg-opacity-10 rounded-3 p-3 fs-3 flex-shrink-0">
+                  <div class="bg-white bg-opacity-10 rounded-3 p-3 fs-3 flex-shrink-0">
                     <i class="bi bi-qr-code-scan"></i>
                   </div>
 
@@ -53,26 +44,18 @@ require_once 'backend/authentication/SessionChecker.php';
                       Point your camera at the QR code on the fire extinguisher to view its details and perform an inspection.
                     </p>
                   </div>
-
                 </div>
-
               </div>
 
               <!-- Scanner Body -->
               <div class="card-body p-3 p-md-4">
 
-                <!-- IMPORTANT:
-                         Keep this ID exactly as qr-reader
-                    -->
-                <div
-                  class="scanner-wrapper rounded-3 overflow-hidden"
-                  id="qr-reader-wrapper">
-
+                <!-- IMPORTANT: Keep this ID exactly as qr-reader -->
+                <div class="scanner-wrapper rounded-3 overflow-hidden" id="qr-reader-wrapper">
                   <div
                     id="qr-reader"
                     class="w-100 overflow-hidden">
                   </div>
-
                 </div>
 
                 <!-- IMPORTANT: Keep this ID exactly as scan-result -->
@@ -80,163 +63,102 @@ require_once 'backend/authentication/SessionChecker.php';
 
                 <!-- Scanner Instructions -->
                 <div class="scanner-instructions rounded-3 p-3 mt-3">
-
                   <div class="row g-3">
+
                     <!-- Find -->
                     <div class="col-12 col-md-4">
-
                       <div class="d-flex align-items-start gap-2">
-
                         <div class="scanner-step-icon">
                           <i class="bi bi-search"></i>
                         </div>
-
                         <div>
                           <div class="fw-semibold">
                             1. Find
                           </div>
-
                           <small class="text-body-secondary">
                             Locate the QR code on the fire
                             extinguisher.
                           </small>
                         </div>
-
                       </div>
-
                     </div>
-
 
                     <!-- Scan -->
                     <div class="col-12 col-md-4">
-
                       <div class="d-flex align-items-start gap-2">
-
                         <div class="scanner-step-icon">
                           <i class="bi bi-camera"></i>
                         </div>
-
                         <div>
                           <div class="fw-semibold">
                             2. Scan
                           </div>
-
                           <small class="text-body-secondary">
                             Point your camera at the QR code.
                           </small>
                         </div>
-
                       </div>
-
                     </div>
-
 
                     <!-- View -->
                     <div class="col-12 col-md-4">
-
                       <div class="d-flex align-items-start gap-2">
-
                         <div class="scanner-step-icon">
                           <i class="bi bi-check-circle"></i>
                         </div>
-
                         <div>
                           <div class="fw-semibold">
                             3. Inspect
                           </div>
-
                           <small class="text-body-secondary">
                             Inspect the fire extinguisher details and condition.
                           </small>
                         </div>
-
                       </div>
-
                     </div>
-
                   </div>
-
                 </div>
-
               </div>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
       <script src="js/QR-code.js"></script>
-    
+
       <!-- inspection checklist modal -->
-
       <div class="modal fade" id="inspectionChecklistModal" tabindex="-1" aria-labelledby="inspectionChecklistModalLabel" aria-hidden="true">
-
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-
           <div class="modal-content inspection-modal">
 
-            <!-- =================================================
-                 HEADER
-            ================================================== -->
+            <!-- HEADER -->
             <div class="modal-header inspection-header">
-
               <div class="d-flex align-items-center gap-3">
-
                 <div class="inspection-header-icon">
                   <i class="bi bi-clipboard2-check"></i>
                 </div>
-
                 <div>
                   <h5
                     class="modal-title fw-bold mb-1"
                     id="inspectionChecklistModalLabel">
                     Inspection Checklist
                   </h5>
-
                   <div class="inspection-subtitle">
                     Fire extinguisher safety inspection
                   </div>
                 </div>
-
               </div>
-
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-                onclick="location.reload()">
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.reload()">
               </button>
-
             </div>
 
-
-            <!-- =================================================
-                 BODY
-            ================================================== -->
+            <!-- BODY -->
             <div class="modal-body inspection-body">
+              <form id="inspectionChecklistForm" action="backend/controller/InspectionController.php" method="post">
+                <input type="hidden" name="action" value="inspect">
 
-              <form
-                id="inspectionChecklistForm"
-                action="backend/controller/InspectionController.php"
-                method="post">
-
-                <input
-                  type="hidden"
-                  name="action"
-                  value="inspect">
-
-
-                <!-- =================================================
-                         SECTION 1 — BASIC INFORMATION
-                    ================================================== -->
-
+                <!-- SECTION 1 — BASIC INFORMATION -->
                 <section class="inspection-section">
-
                   <div class="section-heading">
-
                     <div class="section-number">
                       1
                     </div>
@@ -250,38 +172,23 @@ require_once 'backend/authentication/SessionChecker.php';
                         Fire extinguisher details retrieved from the QR code.
                       </p>
                     </div>
-
                   </div>
 
 
                   <div class="information-grid">
-
                     <!-- FIRE EXTINGUISHER CODE -->
                     <div class="info-field">
 
-                      <label
-                        for="extinguisherCode"
-                        class="info-label">
+                      <label for="extinguisherCode" class="info-label">
                         Fire Extinguisher Code
                       </label>
 
                       <div class="modern-input">
-
                         <div class="input-icon">
                           <i class="bi bi-qr-code"></i>
                         </div>
-
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="extinguisherCode"
-                          name="extinguisher_code"
-                          placeholder="FE-0001"
-                          readonly
-                          required>
-
+                        <input type="text" class="form-control" id="extinguisherCode" name="extinguisher_code" placeholder="FE-0001" readonly required>
                       </div>
-
                     </div>
 
 
@@ -295,22 +202,11 @@ require_once 'backend/authentication/SessionChecker.php';
                       </label>
 
                       <div class="modern-input">
-
                         <div class="input-icon">
                           <i class="bi bi-geo-alt"></i>
                         </div>
-
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="inspectionLocation"
-                          name="location"
-                          placeholder="Building A - 1st Floor"
-                          readonly
-                          required>
-
+                        <input type="text" class="form-control" id="inspectionLocation" name="location" placeholder="Building A - 1st Floor" readonly required>
                       </div>
-
                     </div>
 
 
@@ -339,9 +235,7 @@ require_once 'backend/authentication/SessionChecker.php';
                           required>
 
                       </div>
-
                     </div>
-
 
                     <!-- TYPE -->
                     <div class="info-field">
@@ -397,9 +291,7 @@ require_once 'backend/authentication/SessionChecker.php';
                           required>
 
                       </div>
-
                     </div>
-
 
                     <!-- CLASS -->
                     <div class="info-field">
@@ -426,9 +318,7 @@ require_once 'backend/authentication/SessionChecker.php';
                           required>
 
                       </div>
-
                     </div>
-
 
                     <!-- DATE INSPECTED -->
                     <div class="info-field">
@@ -482,65 +372,45 @@ require_once 'backend/authentication/SessionChecker.php';
                           readonly>
 
                       </div>
-
                     </div>
-
                   </div>
-
                 </section>
 
-
-                <!-- =================================================
-                         SECTION 2 — INSPECTION CHECKLIST
-                    ================================================== -->
-
+                <!-- SECTION 2 — INSPECTION CHECKLIST -->
                 <section class="inspection-section">
-
                   <div class="section-heading checklist-heading">
-
                     <div class="section-number">
                       2
                     </div>
-
                     <div class="flex-grow-1">
-
                       <h6 class="section-title">
                         Inspection Checklist
                       </h6>
-
                       <p class="section-description">
                         Verify each component of the fire extinguisher.
                       </p>
-
                     </div>
-
 
                     <!-- STATUS -->
                     <div class="condition-status">
-
                       <span class="condition-label">
                         Overall Condition
                       </span>
-
                       <span
                         id="inspectionConditionStatus"
                         class="condition-badge good">
                         <i class="bi bi-check-circle-fill"></i>
                         Good
                       </span>
-
                     </div>
-
                   </div>
 
 
                   <!-- INFO NOTICE -->
                   <div class="inspection-notice">
-
                     <div class="notice-icon">
                       <i class="bi bi-info-circle-fill"></i>
                     </div>
-
                     <div>
 
                       <div class="notice-title">
@@ -550,9 +420,7 @@ require_once 'backend/authentication/SessionChecker.php';
                       <div class="notice-text">
                         Check the box when the component is in good condition.
                       </div>
-
                     </div>
-
                   </div>
 
 
@@ -560,426 +428,274 @@ require_once 'backend/authentication/SessionChecker.php';
                   <div class="checklist-grid">
 
 
-                    <!-- =================================================
-                                 SEAL
-                            ================================================== -->
-
+                    <!-- SEAL -->
                     <div class="check-item">
-
                       <div class="check-item-icon">
                         <i class="bi bi-tag"></i>
                       </div>
-
                       <div class="check-item-content">
-
                         <div class="check-item-title">
                           Seal
                         </div>
-
                         <div class="check-item-description">
                           Safety seal condition
                         </div>
-
                       </div>
-
                       <div class="form-check check-control">
-
                         <input
                           class="form-check-input"
                           type="checkbox"
                           id="sealCheck"
                           name="is_seal_ok"
                           value="1">
-
                       </div>
-
                     </div>
 
-
-                    <!-- =================================================
-                                 PIN
-                            ================================================== -->
-
+                    <!-- PIN -->
                     <div class="check-item">
-
                       <div class="check-item-icon">
                         <i class="bi bi-pin-angle"></i>
                       </div>
-
                       <div class="check-item-content">
-
                         <div class="check-item-title">
                           Pin
                         </div>
-
                         <div class="check-item-description">
                           Safety pin condition
                         </div>
-
                       </div>
-
                       <div class="form-check check-control">
-
                         <input
                           class="form-check-input"
                           type="checkbox"
                           id="pinCheck"
                           name="is_pin_ok"
                           value="1">
-
                       </div>
-
                     </div>
 
-
-                    <!-- =================================================
-                                 PRESSURE
-                            ================================================== -->
-
+                    <!-- PRESSURE -->
                     <div class="check-item">
-
                       <div class="check-item-icon">
                         <i class="bi bi-speedometer2"></i>
                       </div>
-
                       <div class="check-item-content">
-
                         <div class="check-item-title">
                           Pressure
                         </div>
-
                         <div class="check-item-description">
                           Pressure gauge condition
                         </div>
-
                       </div>
-
                       <div class="form-check check-control">
-
                         <input
                           class="form-check-input"
                           type="checkbox"
                           id="pressureCheck"
                           name="is_pressure_ok"
                           value="1">
-
                       </div>
-
                     </div>
-
-
-                    <!-- =================================================
-                                 HOSE
-                            ================================================== -->
-
+                    <!-- HOSE -->
                     <div class="check-item">
-
                       <div class="check-item-icon">
                         <i class="bi bi-arrow-repeat"></i>
                       </div>
-
                       <div class="check-item-content">
-
                         <div class="check-item-title">
                           Hose
                         </div>
-
                         <div class="check-item-description">
                           Hose condition
                         </div>
-
                       </div>
-
                       <div class="form-check check-control">
-
                         <input
                           class="form-check-input"
                           type="checkbox"
                           id="hoseCheck"
                           name="is_hose_ok"
                           value="1">
-
                       </div>
-
                     </div>
 
-
-                    <!-- =================================================
-                                 NOZZLE
-                            ================================================== -->
-
+                    <!-- NOZZLE -->
                     <div class="check-item">
-
                       <div class="check-item-icon">
                         <i class="bi bi-send"></i>
                       </div>
-
                       <div class="check-item-content">
-
                         <div class="check-item-title">
                           Nozzle
                         </div>
-
                         <div class="check-item-description">
                           Nozzle condition
                         </div>
-
                       </div>
-
                       <div class="form-check check-control">
-
                         <input
                           class="form-check-input"
                           type="checkbox"
                           id="nozzleCheck"
                           name="is_nozzle_ok"
                           value="1">
-
                       </div>
-
                     </div>
 
-
-                    <!-- =================================================
-                                 BELT
-                            ================================================== -->
-
+                    <!-- BELT -->
                     <div class="check-item">
-
                       <div class="check-item-icon">
                         <i class="bi bi-link-45deg"></i>
                       </div>
-
                       <div class="check-item-content">
-
                         <div class="check-item-title">
                           Belt
                         </div>
-
                         <div class="check-item-description">
                           Belt condition
                         </div>
-
                       </div>
-
                       <div class="form-check check-control">
-
                         <input
                           class="form-check-input"
                           type="checkbox"
                           id="beltCheck"
                           name="is_belt_ok"
                           value="1">
-
                       </div>
-
                     </div>
 
-
-                    <!-- =================================================
-                                 CYLINDER BODY
-                            ================================================== -->
-
+                    <!-- CYLINDER BODY -->
                     <div class="check-item">
-
                       <div class="check-item-icon">
                         <i class="bi bi-fire"></i>
                       </div>
-
                       <div class="check-item-content">
-
                         <div class="check-item-title">
                           Cylinder Body
                         </div>
-
                         <div class="check-item-description">
                           Cylinder body condition
                         </div>
-
                       </div>
-
                       <div class="form-check check-control">
-
                         <input
                           class="form-check-input"
                           type="checkbox"
                           id="cylinderBodyCheck"
                           name="is_cylinder_body_ok"
                           value="1">
-
                       </div>
-
                     </div>
 
-
-                    <!-- =================================================
-                                 DEMARCATION LINE
-                            ================================================== -->
-
+                    <!-- DEMARCATION LINE -->
                     <div class="check-item">
-
                       <div class="check-item-icon">
                         <i class="bi bi-sign-turn-slight-right"></i>
                       </div>
-
                       <div class="check-item-content">
-
                         <div class="check-item-title">
                           Demarcation Line
                         </div>
-
                         <div class="check-item-description">
                           Visibility and condition
                         </div>
-
                       </div>
-
                       <div class="form-check check-control">
-
                         <input
                           class="form-check-input"
                           type="checkbox"
                           id="demarcationLineCheck"
                           name="is_demarcation_line_ok"
                           value="1">
-
                       </div>
-
                     </div>
 
-
-                    <!-- =================================================
-                                 SIGNAGE
-                            ================================================== -->
-
+                    <!-- SIGNAGE -->
                     <div class="check-item">
-
                       <div class="check-item-icon">
                         <i class="bi bi-signpost-2"></i>
                       </div>
-
                       <div class="check-item-content">
-
                         <div class="check-item-title">
                           Signage
                         </div>
-
                         <div class="check-item-description">
                           Safety signage condition
                         </div>
-
                       </div>
 
                       <div class="form-check check-control">
-
                         <input
                           class="form-check-input"
                           type="checkbox"
                           id="signageCheck"
                           name="is_signage_ok"
                           value="1">
-
                       </div>
-
                     </div>
 
-                    <!-- =================================================
-     CLEANING OF UNIT
-================================================== -->
-
+                    <!-- CLEANING OF UNIT -->
                     <div class="check-item">
-
                       <div class="check-item-icon">
                         <i class="bi bi-stars"></i>
                       </div>
-
                       <div class="check-item-content">
-
                         <div class="check-item-title">
                           Cleaning of Unit
                         </div>
-
                         <div class="check-item-description">
                           Unit cleanliness condition
                         </div>
-
                       </div>
-
                       <div class="form-check check-control">
-
                         <input
                           class="form-check-input"
                           type="checkbox"
                           id="cleaningOfUnitCheck"
                           name="is_cleaning_of_unit_ok"
                           value="1">
-
                       </div>
-
                     </div>
-
                   </div>
-
                 </section>
 
-                <!-- =================================================
-                         SECTION 3 — REMARKS
-                    ================================================== -->
-
+                <!-- SECTION 3 — REMARKS -->
                 <section class="inspection-section remarks-section">
-
                   <div class="section-heading">
-
                     <div class="section-number">
                       3
                     </div>
-
                     <div>
                       <h6 class="section-title">
                         Remarks / Comments
                       </h6>
-
                       <p class="section-description">
                         Add additional notes about the inspection.
                       </p>
                     </div>
-
                   </div>
-
-
                   <textarea
                     class="form-control remarks-input"
                     id="remarks"
                     name="remarks"
                     rows="4"
                     placeholder="Enter inspection remarks or type N/A if not applicable"></textarea>
-
                 </section>
-
-
               </form>
-
             </div>
 
 
-            <!-- =================================================
-                 FOOTER
-            ================================================== -->
-
+            <!-- FOOTER -->
             <div class="modal-footer inspection-footer">
-
               <button
                 type="button"
                 class="btn btn-light cancel-btn"
                 data-bs-dismiss="modal"
                 onclick="location.reload()">
-
                 <i class="bi bi-x-lg me-1"></i>
                 Cancel
-
               </button>
-
-
               <button
                 type="submit"
                 form="inspectionChecklistForm"
@@ -987,26 +703,16 @@ require_once 'backend/authentication/SessionChecker.php';
 
                 <i class="bi bi-check2-circle me-1"></i>
                 Save Inspection
-
               </button>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
-
-
-      <!-- =========================================================
-     INSPECTION MODAL DESIGN
-========================================================= -->
 
       <style>
         /* =========================================================
        MODAL
-    ========================================================= */
+                   ========================================================= */
 
         .inspection-modal {
           border: 0;
@@ -1019,7 +725,7 @@ require_once 'backend/authentication/SessionChecker.php';
 
         /* =========================================================
        HEADER
-    ========================================================= */
+           ========================================================= */
 
         .inspection-header {
           background: #ffffff;
@@ -1050,7 +756,7 @@ require_once 'backend/authentication/SessionChecker.php';
 
         /* =========================================================
        BODY
-    ========================================================= */
+           ========================================================= */
 
         .inspection-body {
           padding: 24px;
@@ -1060,7 +766,7 @@ require_once 'backend/authentication/SessionChecker.php';
 
         /* =========================================================
        SECTION
-    ========================================================= */
+        ========================================================= */
 
         .inspection-section {
           background: #ffffff;
@@ -1077,7 +783,7 @@ require_once 'backend/authentication/SessionChecker.php';
 
         /* =========================================================
        SECTION HEADING
-    ========================================================= */
+          ========================================================= */
 
         .section-heading {
           display: flex;
@@ -1120,7 +826,7 @@ require_once 'backend/authentication/SessionChecker.php';
 
         /* =========================================================
        INFORMATION GRID
-    ========================================================= */
+          ========================================================= */
 
         .information-grid {
           display: grid;
@@ -1144,7 +850,7 @@ require_once 'backend/authentication/SessionChecker.php';
 
         /* =========================================================
        MODERN INPUT
-    ========================================================= */
+         ========================================================= */
 
         .modern-input {
           display: flex;
@@ -1204,7 +910,7 @@ require_once 'backend/authentication/SessionChecker.php';
 
         /* =========================================================
        CHECKLIST HEADER
-    ========================================================= */
+           ========================================================= */
 
         .checklist-heading {
           margin-bottom: 18px;
@@ -1245,7 +951,7 @@ require_once 'backend/authentication/SessionChecker.php';
 
         /* =========================================================
        NOTICE
-    ========================================================= */
+          ========================================================= */
 
         .inspection-notice {
           display: flex;
@@ -1283,7 +989,7 @@ require_once 'backend/authentication/SessionChecker.php';
 
         /* =========================================================
        CHECKLIST GRID
-    ========================================================= */
+           ========================================================= */
 
         .checklist-grid {
           display: grid;
@@ -1355,7 +1061,7 @@ require_once 'backend/authentication/SessionChecker.php';
 
         /* =========================================================
        CHECKBOX
-    ========================================================= */
+             ========================================================= */
 
         .check-control {
           margin: 0;
@@ -1391,7 +1097,7 @@ require_once 'backend/authentication/SessionChecker.php';
 
         /* =========================================================
        REMARKS
-    ========================================================= */
+          ========================================================= */
 
         .remarks-section {
           margin-bottom: 0;
@@ -1426,7 +1132,7 @@ require_once 'backend/authentication/SessionChecker.php';
 
         /* =========================================================
        FOOTER
-    ========================================================= */
+               ========================================================= */
 
         .inspection-footer {
           padding: 16px 24px;
@@ -1477,7 +1183,7 @@ require_once 'backend/authentication/SessionChecker.php';
 
         /* =========================================================
        RESPONSIVE
-    ========================================================= */
+                 ========================================================= */
 
         @media (max-width: 991px) {
 
@@ -1589,7 +1295,6 @@ require_once 'backend/authentication/SessionChecker.php';
     inspectionModalElement.addEventListener('show.bs.modal', function() {
 
       const today = new Date().toISOString().split('T')[0];
-
       document.getElementById('dateInspected').value = today;
 
     });

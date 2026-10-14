@@ -13,7 +13,8 @@ function getFeInfoByCode($code)
             type,
             capacity,
             class,
-            branch
+            branch,
+            archived
         FROM fire_extinguishers_tbl
         WHERE extinguisher_code = ?
     ";

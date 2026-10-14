@@ -58,6 +58,11 @@
         Scan QR CODE
       </a>
 
+       <a class="nav-link" href="scan-QR-code.php">
+        <i class="fa-solid fa-qrcode"></i>
+        Device Scan QR CODE
+      </a>
+
       <a class="nav-link" href="my-inspections.php">
         <i class="fa-solid fa-magnifying-glass-chart"></i>
         My Inspections

@@ -52,7 +52,7 @@ async function viewInspection(inspectId, extinguisherCode) {
         document.getElementById("viewActionTaken").value = inspection.action_taken || "—";
 
         /* REMARKS */
-        document.getElementById("viewRemarks").value = inspection.remarks || "N/A";
+        document.getElementById("viewRemarks").value = inspection.remarks || "";
 
         /* DATE INSPECTED */
         if (inspection.date_inspected) {
@@ -173,16 +173,16 @@ async function viewInspection(inspectId, extinguisherCode) {
 
         const checklistFields = [
 
-            inspection.is_seal_ok,
-            inspection.is_pin_ok,
+            // inspection.is_seal_ok,
+            // inspection.is_pin_ok,
             inspection.is_pressure_ok,
             inspection.is_hose_ok,
             inspection.is_nozzle_ok,
-            inspection.is_belt_ok,
+            // inspection.is_belt_ok,
             inspection.is_cylinder_body_ok,
-            inspection.is_demarcation_line_ok,
-            inspection.is_signage_ok,
-            inspection.is_cleaning_of_unit_ok
+            // inspection.is_demarcation_line_ok,
+            // inspection.is_signage_ok,
+            // inspection.is_cleaning_of_unit_ok
 
         ];
 

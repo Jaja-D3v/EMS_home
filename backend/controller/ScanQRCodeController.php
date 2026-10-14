@@ -9,19 +9,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if ($action === 'getFeInfo') {
         header('Content-Type: application/json');
+
         $code = trim($_GET['code'] ?? '');
+
         if ($code === '') {
             echo json_encode([
                 'success' => false,
-                'message' => 'Invalid QR code.'
+                'message' => 'No QR code was provided.'
             ]);
             exit;
         }
+
+        // Kunin ang FE kasama ang archived status.
         $data = getFeInfoByCodeController($code);
+
         if (!$data) {
             echo json_encode([
                 'success' => false,
-                'message' => 'Fire extinguisher not found.'
+                'message' => 'Fire extinguisher not found. Please verify the QR code.'
+            ]);
+            exit;
+        }
+
+        // I-check kung archived.
+        if ((int)($data['archived'] ?? 0) === 1) {
+            echo json_encode([
+                'success' => false,
+                'archived' => true,
+                'message' => 'This fire extinguisher has been archived and cannot be inspected. Please contact your admin or safety officer for assistance.'
             ]);
             exit;
         }

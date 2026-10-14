@@ -13,19 +13,22 @@ _____________________________________________________________
 
 ## GENERATE EXPIRY LIST PDF
 
-- revise the color of view inspection icon it should be blue
-
-## New module for Scan QR Device 
-- input auto focused 
-- after scan auto type 
-- validation 
-
 WEEKLY REPORT 
 add img add #DONE if finished 
+
+add new column Provider in fire_extinguishers_tbl
 
 ____________________________________________________________DONE___________________________________________________________________________
 
 ## QR code design revised
 - add some information in QR CODE 
+
+## New module for Scan QR Device 
+- input auto focused 
+- after scan auto type 
+- validation 
+- added new module scan QR Code
+- revise the color of view inspection icon it should be blue
+
 
 

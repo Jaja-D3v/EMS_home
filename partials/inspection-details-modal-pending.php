@@ -8,7 +8,7 @@
 
       <div class="modal-header px-4 py-3 border-bottom">
         <div class="d-flex align-items-center gap-3">
-          <div class="bg-danger-subtle text-danger rounded-3 p-3">
+          <div class="bg-primary-subtle text-primary rounded-3 p-3">
             <i class="bi bi-clipboard2-check fs-4"></i>
           </div>
 
@@ -239,7 +239,7 @@
             <div class="col-12 col-md-6 col-lg-4">
               <div class="border rounded-4 p-3 shadow-sm h-100">
                 <div class="d-flex align-items-center gap-3">
-                  <div class="bg-danger-subtle text-danger rounded-3 p-2 flex-shrink-0">
+                  <div class="bg-primary-subtle text-primary rounded-3 p-2 flex-shrink-0">
                     <i class="bi bi-speedometer2 fs-5"></i>
                   </div>
                   <div class="flex-grow-1">
@@ -262,7 +262,7 @@
             <div class="col-12 col-md-6 col-lg-4">
               <div class="border rounded-4 p-3 shadow-sm h-100">
                 <div class="d-flex align-items-center gap-3">
-                  <div class="bg-danger-subtle text-danger rounded-3 p-2 flex-shrink-0">
+                  <div class="bg-primary-subtle text-primary rounded-3 p-2 flex-shrink-0">
                     <i class="bi bi-arrow-repeat fs-5"></i>
                   </div>
                   <div class="flex-grow-1">
@@ -284,7 +284,7 @@
             <div class="col-12 col-md-6 col-lg-4">
               <div class="border rounded-4 p-3 shadow-sm h-100">
                 <div class="d-flex align-items-center gap-3">
-                  <div class="bg-danger-subtle text-danger rounded-3 p-2 flex-shrink-0">
+                  <div class="bg-primary-subtle text-primary rounded-3 p-2 flex-shrink-0">
                     <i class="bi bi-send fs-5"></i>
                   </div>
                   <div class="flex-grow-1">
@@ -330,7 +330,7 @@
             <div class="col-12 col-md-6 col-lg-4">
               <div class="border rounded-4 p-3 shadow-sm h-100">
                 <div class="d-flex align-items-center gap-3">
-                  <div class="bg-danger-subtle text-danger rounded-3 p-2 flex-shrink-0">
+                  <div class="bg-primary-subtle text-primary rounded-3 p-2 flex-shrink-0">
                     <i class="bi bi-fire fs-5"></i>
                   </div>
 
@@ -378,7 +378,7 @@
             <div class="col-12 col-md-6 col-lg-4">
               <div class="border rounded-4 p-3 shadow-sm h-100">
                 <div class="d-flex align-items-center gap-3">
-                  <div class="bg-success-subtle text-success rounded-3 p-2 flex-shrink-0">
+                  <div class="bg-primary-subtle text-primary rounded-3 p-2 flex-shrink-0">
                     <i class="bi bi-signpost-2 fs-5"></i>
                   </div>
                   <div class="flex-grow-1">
