@@ -44,6 +44,11 @@ function getAllFireExtinguishersCode()
 }
 
 
+function getFireExtinguisherQRDetails($code)
+{
+    return getFireExtinguisherDetailsByCode($code);
+}
+
 function getAllBranches()
 {
     return getBranches();

@@ -6,7 +6,26 @@ _____________________________________________________________
 - Make total number cards clickable.                                                            #
 
 ## authentication
-- backend files should not be accessible through url                                        
+- backend files should not be accessible through url       
+
+## generate inspection report 
+- CSV accessible in EXCEL 
+
+## GENERATE EXPIRY LIST PDF
+
+- revise the color of view inspection icon it should be blue
+
+## New module for Scan QR Device 
+- input auto focused 
+- after scan auto type 
+- validation 
+
+WEEKLY REPORT 
+add img add #DONE if finished 
+
 ____________________________________________________________DONE___________________________________________________________________________
+
+## QR code design revised
+- add some information in QR CODE 
 
 

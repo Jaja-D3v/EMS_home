@@ -17,7 +17,7 @@ function getExtinguisher($branch = 'all')
     ";
 
     if ($branch !== 'all') {
-        
+
         $sql .= " AND LOWER(TRIM(branch)) = LOWER(TRIM(?)) ";
     }
 
@@ -50,4 +50,38 @@ function getBranches()
     ";
 
     return $conn->query($sql);
+}
+
+function getFireExtinguisherDetailsByCode($code)
+{
+    global $conn;
+
+    $sql = "
+        SELECT
+            extinguisher_code,
+            location,
+            class,
+            type,
+            branch
+        FROM fire_extinguishers_tbl
+        WHERE extinguisher_code = ?
+          AND archived = 0
+        LIMIT 1
+    ";
+
+    $stmt = $conn->prepare($sql);
+
+    if (!$stmt) {
+        return false;
+    }
+
+    $stmt->bind_param("s", $code);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+    $data = $result->fetch_assoc();
+
+    $stmt->close();
+
+    return $data ?: false;
 }
