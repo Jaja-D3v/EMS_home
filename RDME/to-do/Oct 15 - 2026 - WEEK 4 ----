@@ -11,7 +11,8 @@ _____________________________________________________________
 # approved inspection record
 - create dropdown for filtering by month 
 
-- revise the
+## NEED TO ADD NEW COLUMN FOR PROVIDER FOR KP LIMA
+
 
 WEEKLY REPORT 
 add img add #DONE if finished 
@@ -31,3 +32,5 @@ ____________________________________________________________DONE________________
 ## revised the dialog
 - revised the dialog design of 2 inspector module  
 
+## bugg fix scan qr code module
+- fix bugg in scan qr code module

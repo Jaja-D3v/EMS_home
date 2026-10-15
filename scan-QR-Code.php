@@ -671,8 +671,8 @@ require_once 'backend/authentication/SessionChecker.php';
 
             <style>
                 /* =========================================================
-       MODAL
-                   ========================================================= */
+                                MODAL
+                        ========================================================= */
 
                 .inspection-modal {
                     border: 0;
@@ -684,8 +684,8 @@ require_once 'backend/authentication/SessionChecker.php';
 
 
                 /* =========================================================
-       HEADER
-           ========================================================= */
+                                HEADER
+                        ========================================================= */
 
                 .inspection-header {
                     background: #ffffff;
@@ -715,8 +715,8 @@ require_once 'backend/authentication/SessionChecker.php';
 
 
                 /* =========================================================
-       BODY
-           ========================================================= */
+                                        BODY
+                                                    ========================================================= */
 
                 .inspection-body {
                     padding: 24px;
@@ -725,8 +725,8 @@ require_once 'backend/authentication/SessionChecker.php';
 
 
                 /* =========================================================
-       SECTION
-        ========================================================= */
+                            SECTION
+                                ========================================================= */
 
                 .inspection-section {
                     background: #ffffff;
@@ -742,8 +742,8 @@ require_once 'backend/authentication/SessionChecker.php';
 
 
                 /* =========================================================
-       SECTION HEADING
-          ========================================================= */
+                                SECTION HEADING
+                                    ========================================================= */
 
                 .section-heading {
                     display: flex;
@@ -785,8 +785,8 @@ require_once 'backend/authentication/SessionChecker.php';
 
 
                 /* =========================================================
-       INFORMATION GRID
-          ========================================================= */
+                                        INFORMATION GRID
+                                            ========================================================= */
 
                 .information-grid {
                     display: grid;
@@ -809,8 +809,8 @@ require_once 'backend/authentication/SessionChecker.php';
 
 
                 /* =========================================================
-       MODERN INPUT
-         ========================================================= */
+                                        MODERN INPUT
+                                            ========================================================= */
 
                 .modern-input {
                     display: flex;
@@ -869,8 +869,8 @@ require_once 'backend/authentication/SessionChecker.php';
 
 
                 /* =========================================================
-       CHECKLIST HEADER
-           ========================================================= */
+                                        CHECKLIST HEADER
+                                            ========================================================= */
 
                 .checklist-heading {
                     margin-bottom: 18px;
@@ -910,8 +910,8 @@ require_once 'backend/authentication/SessionChecker.php';
 
 
                 /* =========================================================
-       NOTICE
-          ========================================================= */
+                                NOTICE
+                                    ========================================================= */
 
                 .inspection-notice {
                     display: flex;
@@ -948,8 +948,8 @@ require_once 'backend/authentication/SessionChecker.php';
 
 
                 /* =========================================================
-       CHECKLIST GRID
-           ========================================================= */
+                                            CHECKLIST GRID
+                                                ========================================================= */
 
                 .checklist-grid {
                     display: grid;
@@ -1020,8 +1020,8 @@ require_once 'backend/authentication/SessionChecker.php';
 
 
                 /* =========================================================
-       CHECKBOX
-             ========================================================= */
+                                    CHECKBOX
+                                            ========================================================= */
 
                 .check-control {
                     margin: 0;
@@ -1056,8 +1056,8 @@ require_once 'backend/authentication/SessionChecker.php';
 
 
                 /* =========================================================
-       REMARKS
-          ========================================================= */
+                                    REMARKS
+                                        ========================================================= */
 
                 .remarks-section {
                     margin-bottom: 0;
@@ -1091,8 +1091,8 @@ require_once 'backend/authentication/SessionChecker.php';
 
 
                 /* =========================================================
-       FOOTER
-               ========================================================= */
+                        FOOTER
+                                ========================================================= */
 
                 .inspection-footer {
                     padding: 16px 24px;
@@ -1142,8 +1142,8 @@ require_once 'backend/authentication/SessionChecker.php';
 
 
                 /* =========================================================
-       RESPONSIVE
-                 ========================================================= */
+                        RESPONSIVE
+                                    ========================================================= */
 
                 @media (max-width: 991px) {
 
@@ -1266,26 +1266,52 @@ require_once 'backend/authentication/SessionChecker.php';
             let isValidating = false;
             let qrTypingTimer = null;
 
-            // ========================================
             // FOCUS QR INPUT
-            // ========================================
+            function isSideNavVisible() {
+                const sidebar = document.querySelector(".sidebar");
+
+                if (!sidebar) {
+                    return false;
+                }
+
+                // CoreUI sidebar is hidden on mobile when it has "hide" or
+                // is not currently visible.
+                return !sidebar.classList.contains("hide") &&
+                    sidebar.getClientRects().length > 0 &&
+                    getComputedStyle(sidebar).visibility !== "hidden";
+            }
+
             function focusQRInput() {
                 if (
                     !isValidating &&
                     !inspectionModalElement.classList.contains("show") &&
-                    !qrInput.disabled
+                    !qrInput.disabled &&
+                    !isSideNavVisible()
                 ) {
                     qrInput.focus();
 
-                    // Ilagay ang cursor sa dulo; huwag i-select lahat.
                     const cursorPosition = qrInput.value.length;
                     qrInput.setSelectionRange(cursorPosition, cursorPosition);
                 }
             }
 
-            // ========================================
+            function restoreQRFocus() {
+                if (
+                    !isValidating &&
+                    !inspectionModalElement.classList.contains("show") &&
+                    !qrInput.disabled &&
+                    !isSideNavVisible()
+                ) {
+                    setTimeout(() => {
+                        qrInput.focus();
+
+                        const cursorPosition = qrInput.value.length;
+                        qrInput.setSelectionRange(cursorPosition, cursorPosition);
+                    }, 150);
+                }
+            }
+
             // DISPLAY VALIDATION MESSAGE
-            // ========================================
             function showScanMessage(type, title, message) {
                 scanResult.innerHTML = `
             <div class="alert alert-${type}" role="alert">

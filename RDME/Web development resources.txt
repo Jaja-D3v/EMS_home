@@ -27,3 +27,8 @@ Version: 1.29.0
 Purpose: Pag-generate at pag-format ng Excel .xlsx reports gamit ang PHP.
 Installation: Composer
 Compatibility: PHP 7.4 pataas para sa version na ito.
+
+TCPDF 6.10.1.
+
+http:// 10.20.31.21/EMS_home/authentication/login.php
+Honeywell ScanPal EDA50-111 - DEVICE
