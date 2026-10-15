@@ -68,7 +68,7 @@
         My Inspections
       </a>
 
-      <a class="nav-link" href="rejected-inspection.php">
+      <a class="nav-link" href="inspector-rejected-inspection.php">
         <i class="fa-solid fa-file-circle-xmark"></i>
         <span>Rejected Inspection</span>
         <?php if ($rejectedInspectionCount > 0): ?>

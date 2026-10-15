@@ -152,7 +152,7 @@ $paginatedInspections = array_slice(
                                 <div class="col-6 col-sm-auto">
 
                                     <a
-                                        href="rejected-inspection.php"
+                                        href="inspector-rejected-inspection.php"
                                         class="btn btn-light border w-100"
                                         style="font-size: 12px;">
                                         Clear
@@ -311,7 +311,7 @@ $paginatedInspections = array_slice(
 
                                                 <span
                                                     class="text-body-secondary">
-                                                    Not recorded
+                                                    N/A
                                                 </span>
 
                                             <?php endif; ?>
@@ -329,6 +329,8 @@ $paginatedInspections = array_slice(
                                                 View
 
                                             </button>
+
+
 
                                         </td>
 
@@ -665,570 +667,527 @@ $paginatedInspections = array_slice(
                 )
                 : false;
 
-            $targetDate = !empty($inspection['target_date_of_implementation'])
-                ? strtotime(
-                    $inspection['target_date_of_implementation']
-                )
+            $targetDate = trim(
+                (string) ($inspection['target_date_of_implementation'] ?? '')
+            );
+
+            $targetDate = (
+                $targetDate !== '' &&
+                $targetDate !== '0000-00-00'
+            )
+                ? strtotime($targetDate)
                 : false;
+
+
 
             ?>
 
-            <dialog
-                id="rejectionDetails<?= (int) $inspection['inspect_id'] ?>"
-                style="
+
+
+            <style>
+                .rejection-details-dialog {
                     width: min(900px, calc(100% - 24px));
                     max-width: 900px;
                     max-height: 90vh;
-                    border: 0;
-                    border-radius: 14px;
+                    margin: auto;
                     padding: 0;
+                    border: 1px solid #DEE2E6;
+                    border-radius: 16px;
                     overflow: hidden;
-                    box-shadow: 0 20px 60px rgba(0, 0, 0, .25);
-                ">
+                    background: #FFFFFF;
+                    color: #212529;
+                    box-shadow: 0 20px 60px rgba(0, 0, 0, .22);
+                }
 
-                <!-- MODAL HEADER -->
-                <div class="bg-white border-bottom">
+                .rejection-details-dialog::backdrop {
+                    background: rgba(0, 0, 0, .45);
+                }
 
-                    <div
-                        class="d-flex align-items-center justify-content-between p-4">
+                .rejection-details-header {
+                    background: #203D70;
+                    color: #FFFFFF;
+                }
 
-                        <div
-                            class="d-flex align-items-center gap-3">
+                .rejection-details-body {
+                    max-height: calc(90vh - 135px);
+                    overflow-y: auto;
+                    overflow-x: hidden;
+                    background: #FFFFFF;
+                }
 
-                            <div
-                                class="rounded-circle bg-danger d-flex align-items-center justify-content-center text-white"
+                .rejection-details-dialog .info-card {
+                    min-width: 0;
+                    overflow-wrap: anywhere;
+                    background: #F8FAFC;
+                    border: 1px solid #D9E2EF;
+                    border-radius: 10px;
+                    padding: 12px;
+                    height: 100%;
+                }
+
+                .rejection-details-dialog .info-label {
+                    font-size: 10px;
+                    color: #667085;
+                    letter-spacing: .3px;
+                }
+
+                .rejection-details-dialog .info-value {
+                    font-size: 13px;
+                    color: #172033;
+                    font-weight: 600;
+                    overflow-wrap: anywhere;
+                }
+
+                @media (max-width: 575.98px) {
+                    .rejection-details-dialog {
+                        width: calc(100% - 16px);
+                        max-width: none;
+                        max-height: 94vh;
+                        border-radius: 12px;
+                    }
+
+                    .rejection-details-body {
+                        max-height: calc(94vh - 120px);
+                    }
+
+                    .rejection-details-dialog .info-card {
+                        padding: 10px;
+                    }
+
+                    .rejection-details-dialog .row {
+                        --bs-gutter-x: .5rem;
+                        --bs-gutter-y: .5rem;
+                    }
+
+                    .rejection-details-dialog .section-card {
+                        padding: 12px !important;
+                    }
+                }
+            </style>
+
+            <dialog
+                id="rejectionDetails<?= (int) $inspection['inspect_id'] ?>"
+                class="rejection-details-dialog">
+
+                <!-- HEADER -->
+                <div class="rejection-details-header border-bottom">
+                    <div class="d-flex align-items-center justify-content-between gap-2 px-3 px-md-4 py-3">
+
+                        <div class="d-flex align-items-center gap-2 gap-md-3 min-width-0">
+                            <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
                                 style="
-                                    width: 48px;
-                                    height: 48px;
-                                    font-size: 22px;
-                                    flex-shrink: 0;
-                                ">
-                                ×
+                        width: 44px;
+                        height: 44px;
+                        background: #DC3545;
+                        color: #FFFFFF;
+                    ">
+                                <i class="bi bi-x-circle-fill fs-4"></i>
                             </div>
 
-                            <div>
-
-                                <h5
-                                    class="fw-semibold mb-1"
-                                    style="font-size: 18px;">
+                            <div class="min-width-0">
+                                <h5 class="fw-bold mb-1"
+                                    style="font-size: 17px; color: #FFFFFF;">
                                     Rejection Details
                                 </h5>
 
-                                <div
-                                    class="text-body-secondary"
-                                    style="font-size: 11px;">
+                                <div style="font-size: 11px; color: #D6E2F5;">
                                     Inspection rejection information and corrective actions.
                                 </div>
-
                             </div>
-
                         </div>
 
-                        <button
-                            type="button"
-                            class="btn btn-light border-0"
-                            style="
-                                font-size: 22px;
-                                line-height: 1;
-                            "
+                        <button type="button"
+                            class="btn btn-light d-flex align-items-center justify-content-center flex-shrink-0"
+                            style="width: 36px; height: 36px;"
+                            aria-label="Close"
                             onclick="this.closest('dialog').close();">
-
-                            ×
-
+                            <i class="bi bi-x-lg"></i>
                         </button>
 
                     </div>
-
                 </div>
 
-                <!-- MODAL BODY -->
-                <div
-                    class="p-4 bg-body"
-                    style="max-height: calc(90vh - 150px); overflow-y: auto;">
+                <!-- BODY -->
+                <div class="rejection-details-body p-2 p-sm-3 p-md-4">
 
                     <!-- STATUS SUMMARY -->
-                    <div
-                        class="rounded-3 border border-danger-subtle bg-danger-subtle p-3 mb-3">
+                    <div class="rounded-3 border p-3 mb-3"
+                        style="background: #FFF0F1; border-color: #FFB8BF !important;">
 
                         <div class="row g-3 align-items-center">
 
                             <!-- STATUS -->
                             <div class="col-12 col-md-4">
-
-                                <div
-                                    class="d-flex align-items-center gap-3">
-
-                                    <div
-                                        class="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center"
-                                        style="
-                                            width: 38px;
-                                            height: 38px;
-                                            font-size: 18px;
-                                            flex-shrink: 0;
-                                        ">
-                                        ✓
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                        style="width: 42px; height: 42px; background: #DC3545; color: #FFFFFF;">
+                                        <i class="bi bi-x-lg fs-5"></i>
                                     </div>
 
                                     <div>
-
-                                        <div
-                                            class="text-body-secondary"
-                                            style="font-size: 10px;">
-                                            STATUS
-                                        </div>
-
-                                        <span
-                                            class="badge bg-danger mt-1"
-                                            style="font-size: 10px;">
+                                        <div class="info-label">STATUS</div>
+                                        <span class="badge rounded-pill mt-1 px-3 py-2"
+                                            style="background: #DC3545; color: #FFFFFF;">
                                             Rejected
                                         </span>
-
                                     </div>
-
                                 </div>
-
                             </div>
 
                             <!-- REJECTED BY -->
-                            <div class="col-12 col-md-4">
-
-                                <div>
-
-                                    <div
-                                        class="text-body-secondary"
-                                        style="font-size: 10px;">
-                                        REJECTED BY
+                            <div class="col-12 col-sm-6 col-md-4">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                        style="width: 36px; height: 36px; background: #FCE0E3; color: #C82333;">
+                                        <i class="bi bi-person-fill fs-5"></i>
                                     </div>
 
-                                    <div
-                                        class="fw-semibold mt-1"
-                                        style="font-size: 12px;">
-
-                                        <?= htmlspecialchars(
-                                            $rejectedBy,
-                                            ENT_QUOTES,
-                                            'UTF-8'
-                                        ) ?>
-
+                                    <div class="min-width-0">
+                                        <div class="info-label">REJECTED BY</div>
+                                        <div class="info-value mt-1">
+                                            <?= htmlspecialchars(
+                                                (string) $rejectedBy,
+                                                ENT_QUOTES,
+                                                'UTF-8'
+                                            ) ?>
+                                        </div>
                                     </div>
-
                                 </div>
-
                             </div>
 
                             <!-- REJECTION DATE -->
-                            <div class="col-12 col-md-4">
-
-                                <div>
-
-                                    <div
-                                        class="text-body-secondary"
-                                        style="font-size: 10px;">
-                                        REJECTION DATE
+                            <div class="col-12 col-sm-6 col-md-4">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                        style="width: 36px; height: 36px; background: #FCE0E3; color: #C82333;">
+                                        <i class="bi bi-calendar-x fs-5"></i>
                                     </div>
 
-                                    <div
-                                        class="fw-semibold mt-1"
-                                        style="font-size: 12px;">
-
-                                        <?= $rejectionDate
-                                            ? date(
-                                                'M d, Y',
-                                                $rejectionDate
-                                            )
-                                            : 'Not recorded'
-                                        ?>
-
-                                    </div>
-
-                                    <?php if ($rejectionDate): ?>
-
-                                        <div
-                                            class="text-body-secondary"
-                                            style="font-size: 10px;">
-
-                                            <?= date(
-                                                'h:i A',
-                                                $rejectionDate
-                                            ) ?>
-
+                                    <div class="min-width-0">
+                                        <div class="info-label">REJECTION DATE</div>
+                                        <div class="info-value mt-1">
+                                            <?= $rejectionDate
+                                                ? date('M d, Y', $rejectionDate)
+                                                : 'Not recorded'
+                                            ?>
                                         </div>
 
-                                    <?php endif; ?>
-
+                                        <?php if ($rejectionDate): ?>
+                                            <div class="small text-body-secondary">
+                                                <?= date('h:i A', $rejectionDate) ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
-
                             </div>
 
                         </div>
-
                     </div>
 
                     <!-- REJECTION REASON -->
-                    <div class="card border mb-3">
+                    <div class="section-card border rounded-3 p-3 mb-3"
+                        style="border-color: #DEE2E6 !important;">
 
-                        <div class="card-body p-3">
-
-                            <div
-                                class="d-flex align-items-center gap-2 mb-3">
-
-                                <div
-                                    class="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center"
-                                    style="
-                                        width: 32px;
-                                        height: 32px;
-                                        font-size: 16px;
-                                    ">
-                                    💬
-                                </div>
-
-                                <div
-                                    class="fw-semibold"
-                                    style="font-size: 13px;">
-                                    Rejection Reason
-                                </div>
-
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                style="width: 34px; height: 34px; background: #FCE0E3; color: #C82333;">
+                                <i class="bi bi-chat-left-text fs-5"></i>
                             </div>
 
-                            <div
-                                class="rounded-3 bg-danger-subtle p-3">
-
-                                <div
-                                    style="
-                                        font-size: 12px;
-                                        line-height: 1.6;
-                                    ">
-
-                                    <?= nl2br(
-                                        htmlspecialchars(
-                                            $reason,
-                                            ENT_QUOTES,
-                                            'UTF-8'
-                                        )
-                                    ) ?>
-
-                                </div>
-
-                            </div>
-
+                            <h6 class="fw-bold mb-0" style="font-size: 14px;">
+                                Rejection Reason
+                            </h6>
                         </div>
 
+                        <div class="rounded-3 p-3"
+                            style="
+                    background: #FFF0F1;
+                    color: #344054;
+                    font-size: 12px;
+                    line-height: 1.6;
+                    overflow-wrap: anywhere;
+                 ">
+                            <?= nl2br(
+                                htmlspecialchars(
+                                    $reason,
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                )
+                            ) ?>
+                        </div>
                     </div>
 
                     <!-- INSPECTION INFORMATION -->
-                    <div class="card border mb-3">
+                    <div class="section-card border rounded-3 p-3 mb-3"
+                        style="border-color: #DEE2E6 !important;">
 
-                        <div class="card-body p-3">
-
-                            <!-- SECTION HEADER -->
-                            <div class="d-flex align-items-center gap-2 mb-3">
-
-                                <div class="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center" style=" width: 32px; height: 32px; font-size: 16px; ">
-                                    ℹ
-                                </div>
-
-                                <div
-                                    class="fw-semibold"
-                                    style="font-size: 13px;">
-                                    Inspection Information
-                                </div>
-
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                style="width: 34px; height: 34px; background: #E0EDFF; color: #0D6EFD;">
+                                <i class="bi bi-info-circle-fill fs-5"></i>
                             </div>
 
-                            <!-- INFORMATION -->
-                            <div class="row g-3">
-
-                                <!-- ROW 1 -->
-
-                                <div class="col-12 col-md-6">
-
-                                    <div
-                                        class="text-body-secondary"
-                                        style="font-size: 10px;">
-                                        EXTINGUISHER CODE
-                                    </div>
-
-                                    <div
-                                        class="fw-semibold mt-1"
-                                        style="font-size: 12px;">
-
-                                        <?= htmlspecialchars(
-                                            $inspection['extinguisher_code'],
-                                            ENT_QUOTES,
-                                            'UTF-8'
-                                        ) ?>
-
-                                    </div>
-
-                                </div>
-
-                                <div class="col-12 col-md-6">
-
-                                    <div
-                                        class="text-body-secondary"
-                                        style="font-size: 10px;">
-                                        LOCATION
-                                    </div>
-
-                                    <div
-                                        class="fw-semibold mt-1"
-                                        style="font-size: 12px;">
-
-                                        <?= htmlspecialchars(
-                                            $inspection['location'],
-                                            ENT_QUOTES,
-                                            'UTF-8'
-                                        ) ?>
-
-                                    </div>
-
-                                </div>
-
-                                <!-- ROW 2 -->
-
-                                <div class="col-12 col-md-6">
-
-                                    <div
-                                        class="text-body-secondary"
-                                        style="font-size: 10px;">
-                                        TYPE
-                                    </div>
-
-                                    <div
-                                        class="mt-1"
-                                        style="font-size: 12px;">
-
-                                        <?= htmlspecialchars(
-                                            $inspection['type'],
-                                            ENT_QUOTES,
-                                            'UTF-8'
-                                        ) ?>
-
-                                    </div>
-
-                                </div>
-
-                                <div class="col-12 col-md-6">
-
-                                    <div
-                                        class="text-body-secondary"
-                                        style="font-size: 10px;">
-                                        CAPACITY
-                                    </div>
-
-                                    <div
-                                        class="mt-1"
-                                        style="font-size: 12px;">
-
-                                        <?= htmlspecialchars(
-                                            $inspection['capacity'],
-                                            ENT_QUOTES,
-                                            'UTF-8'
-                                        ) ?>
-
-                                    </div>
-
-                                </div>
-
-                                <!-- ROW 3 -->
-
-                                <div class="col-12 col-md-6">
-
-                                    <div
-                                        class="text-body-secondary"
-                                        style="font-size: 10px;">
-                                        DATE INSPECTED
-                                    </div>
-
-                                    <div
-                                        class="mt-1"
-                                        style="font-size: 12px;">
-
-                                        <?= date(
-                                            'M d, Y h:i A',
-                                            $inspectionDate
-                                        ) ?>
-
-                                    </div>
-
-                                </div>
-
-                                <div class="col-12 col-md-6">
-
-                                    <div
-                                        class="text-body-secondary"
-                                        style="font-size: 10px;">
-                                        INSPECTED BY
-                                    </div>
-
-                                    <div
-                                        class="mt-1"
-                                        style="font-size: 12px;">
-
-                                        <?= !empty($inspection['inspected_by'])
-                                            ? htmlspecialchars(
-                                                $inspection['inspected_by'],
-                                                ENT_QUOTES,
-                                                'UTF-8'
-                                            )
-                                            : 'Not recorded'
-                                        ?>
-
-                                    </div>
-
-                                </div>
-
-                                <!-- ROW 4 -->
-
-                                <div class="col-12 col-md-6">
-
-                                    <div
-                                        class="text-body-secondary"
-                                        style="font-size: 10px;">
-                                        VERIFIED AND APPROVED BY
-                                    </div>
-
-                                    <div
-                                        class="mt-1"
-                                        style="font-size: 12px;">
-
-                                        <?= !empty($inspection['verified_and_approved_by'])
-                                            ? htmlspecialchars(
-                                                $inspection['verified_and_approved_by'],
-                                                ENT_QUOTES,
-                                                'UTF-8'
-                                            )
-                                            : 'Not recorded'
-                                        ?>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
+                            <h6 class="fw-bold mb-0" style="font-size: 14px;">
+                                Inspection Information
+                            </h6>
                         </div>
 
-                    </div>
+                        <div class="row g-2">
 
-                    <!-- CORRECTIVE ACTION -->
-                    <div class="card border">
-
-                        <div class="card-body p-3">
-
-                            <div
-                                class="d-flex align-items-center gap-2 mb-3">
-
-                                <div
-                                    class="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center"
-                                    style="
-                                        width: 32px;
-                                        height: 32px;
-                                        font-size: 16px;
-                                    ">
-                                    🔧
-                                </div>
-
-                                <div
-                                    class="fw-semibold"
-                                    style="font-size: 13px;">
-                                    Corrective Action
-                                </div>
-
-                            </div>
-
-                            <div class="row g-3">
-
-                                <!-- ACTION TAKEN -->
-                                <div class="col-12 col-md-7">
-
-                                    <div
-                                        class="rounded-3 bg-primary-subtle p-3 h-100">
-
-                                        <div
-                                            class="text-primary mb-2"
-                                            style="font-size: 10px;">
-                                            ACTION TAKEN
+                            <!-- EXTINGUISHER CODE -->
+                            <div class="col-12 col-sm-6">
+                                <div class="info-card">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                            style="width: 34px; height: 34px; background: #E0EDFF; color: #0D6EFD;">
+                                            <i class="bi bi-qr-code fs-5"></i>
                                         </div>
 
-                                        <div
-                                            style="
-                                                font-size: 12px;
-                                                line-height: 1.6;
-                                            ">
+                                        <div class="min-width-0">
+                                            <div class="info-label">EXTINGUISHER CODE</div>
+                                            <div class="info-value mt-1">
+                                                <?= htmlspecialchars(
+                                                    $inspection['extinguisher_code'],
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                ) ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                                            <?= !empty($inspection['action_taken'])
-                                                ? nl2br(
-                                                    htmlspecialchars(
-                                                        $inspection['action_taken'],
+                            <!-- LOCATION -->
+                            <div class="col-12 col-sm-6">
+                                <div class="info-card">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                            style="width: 34px; height: 34px; background: #E0EDFF; color: #0D6EFD;">
+                                            <i class="bi bi-geo-alt fs-5"></i>
+                                        </div>
+
+                                        <div class="min-width-0">
+                                            <div class="info-label">LOCATION</div>
+                                            <div class="info-value mt-1">
+                                                <?= htmlspecialchars(
+                                                    $inspection['location'],
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                ) ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TYPE -->
+                            <div class="col-12 col-sm-6">
+                                <div class="info-card">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                            style="width: 34px; height: 34px; background: #FFF0D6; color: #D99000;">
+                                            <i class="bi bi-fire fs-5"></i>
+                                        </div>
+
+                                        <div class="min-width-0">
+                                            <div class="info-label">TYPE</div>
+                                            <div class="info-value mt-1">
+                                                <?= htmlspecialchars(
+                                                    $inspection['type'],
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                ) ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- CAPACITY -->
+                            <div class="col-12 col-sm-6">
+                                <div class="info-card">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                            style="width: 34px; height: 34px; background: #E0EDFF; color: #0D6EFD;">
+                                            <i class="bi bi-box-seam fs-5"></i>
+                                        </div>
+
+                                        <div class="min-width-0">
+                                            <div class="info-label">CAPACITY</div>
+                                            <div class="info-value mt-1">
+                                                <?= htmlspecialchars(
+                                                    $inspection['capacity'],
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                ) ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- DATE INSPECTED -->
+                            <div class="col-12 col-sm-6">
+                                <div class="info-card">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                            style="width: 34px; height: 34px; background: #E0EDFF; color: #0D6EFD;">
+                                            <i class="bi bi-calendar3 fs-5"></i>
+                                        </div>
+
+                                        <div class="min-width-0">
+                                            <div class="info-label">DATE INSPECTED</div>
+                                            <div class="info-value mt-1">
+                                                <?= date(
+                                                    'M d, Y h:i A',
+                                                    $inspectionDate
+                                                ) ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- INSPECTED BY -->
+                            <div class="col-12 col-sm-6">
+                                <div class="info-card">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                            style="width: 34px; height: 34px; background: #E0EDFF; color: #0D6EFD;">
+                                            <i class="bi bi-person-badge fs-5"></i>
+                                        </div>
+
+                                        <div class="min-width-0">
+                                            <div class="info-label">INSPECTED BY</div>
+                                            <div class="info-value mt-1">
+                                                <?= !empty($inspection['inspected_by'])
+                                                    ? htmlspecialchars(
+                                                        $inspection['inspected_by'],
                                                         ENT_QUOTES,
                                                         'UTF-8'
                                                     )
-                                                )
-                                                : 'Not recorded'
-                                            ?>
+                                                    : 'Not recorded'
+                                                ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
+                            
+
+                        </div>
+                    </div>
+
+                    <!-- CORRECTIVE ACTION -->
+                    <div class="section-card border rounded-3 p-3"
+                        style="border-color: #DEE2E6 !important;">
+
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                style="width: 34px; height: 34px; background: #F0E1FF; color: #7C3AED;">
+                                <i class="bi bi-wrench-adjustable fs-5"></i>
+                            </div>
+
+                            <h6 class="fw-bold mb-0" style="font-size: 14px;">
+                                Corrective Action
+                            </h6>
+                        </div>
+
+                        <div class="row g-2">
+
+                            <!-- ACTION TAKEN -->
+                            <div class="col-12 col-md-7">
+                                <div class="rounded-3 p-3 h-100"
+                                    style="background: #E7F1FF;">
+
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                            style="width: 32px; height: 32px; background: #D2E5FF; color: #0D6EFD;">
+                                            <i class="bi bi-file-earmark-text fs-5"></i>
                                         </div>
 
+                                        <div style="font-size: 10px; font-weight: 600; color: #1557A6;">
+                                            ACTION TAKEN
+                                        </div>
+                                    </div>
+
+                                    <div style="
+                            font-size: 12px;
+                            line-height: 1.6;
+                            color: #172033;
+                            overflow-wrap: anywhere;
+                        ">
+                                        <?= !empty($inspection['action_taken'])
+                                            ? nl2br(
+                                                htmlspecialchars(
+                                                    $inspection['action_taken'],
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                )
+                                            )
+                                            : 'N/A'
+                                        ?>
                                     </div>
 
                                 </div>
+                            </div>
 
-                                <!-- TARGET DATE -->
-                                <div class="col-12 col-md-5">
+                            <!-- TARGET DATE -->
+                            <div class="col-12 col-md-5">
+                                <div class="rounded-3 p-3 h-100"
+                                    style="background: #E5F4EC;">
 
-                                    <div
-                                        class="rounded-3 bg-success-subtle p-3 h-100">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                            style="width: 32px; height: 32px; background: #D0EBDD; color: #16804A;">
+                                            <i class="bi bi-calendar-check fs-5"></i>
+                                        </div>
 
-                                        <div
-                                            class="text-success mb-2"
-                                            style="font-size: 10px;">
+                                        <div style="font-size: 10px; font-weight: 600; color: #246B48;">
                                             TARGET DATE OF IMPLEMENTATION
                                         </div>
+                                    </div>
 
-                                        <div
-                                            class="fw-semibold"
-                                            style="font-size: 12px;">
-
-                                            <?= $targetDate
-                                                ? date(
-                                                    'M d, Y',
-                                                    $targetDate
-                                                )
-                                                : 'Not recorded'
-                                            ?>
-
-                                        </div>
-
+                                    <div class="fw-semibold"
+                                        style="font-size: 12px; color: #172033;">
+                                        <?= $targetDate !== false
+                                            ? date('M d, Y', $targetDate)
+                                            : 'N/A'
+                                        ?>
                                     </div>
 
                                 </div>
-
                             </div>
 
                         </div>
-
                     </div>
 
                 </div>
 
-                <!-- MODAL FOOTER -->
-                <div
-                    class="border-top bg-white p-3 text-end">
+                <!-- FOOTER -->
+                <div class="border-top px-3 px-md-4 py-2 d-flex justify-content-end"
+                    style="background: #F8FAFC; border-color: #DEE2E6 !important;">
 
-                    <button
-                        type="button"
-                        class="btn btn-secondary"
-                        style="font-size: 12px;"
+                    <button type="button"
+                        class="btn px-3 py-2"
+                        style="
+                    font-size: 12px;
+                    border-radius: 8px;
+                    background: #203D70;
+                    color: #FFFFFF;
+                    border: 1px solid #203D70;
+                "
                         onclick="this.closest('dialog').close();">
-
+                        <i class="bi bi-x-circle me-1"></i>
                         Close
-
                     </button>
 
                 </div>
 
             </dialog>
+
+
 
         <?php endforeach; ?>
 

@@ -142,7 +142,7 @@ function getAllInspectionCheckList()
 }
 
 
-// GET ALL LIST BY ID
+// GET LIST BY ID
 function getInspectionCheckListById($id)
 {
     global $conn;

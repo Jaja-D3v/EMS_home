@@ -52,7 +52,7 @@ $paginatedInspections = $myInspections;
                   Inspection History
                 </h6>
 
-                <small class="text-body-secondary"  style="font-size: 11px;">
+                <small class="text-body-secondary" style="font-size: 11px;">
                   Review your inspection records and
                   approval status.
                 </small>
@@ -79,7 +79,7 @@ $paginatedInspections = $myInspections;
                   <label class="form-label text-body-secondary mb-1" style="font-size: 11px;">
                     Search
                   </label>
-                  <input type="text" name="search" class="form-control" placeholder="Search code, location, or type..." value="<?= htmlspecialchars( $search, ENT_QUOTES, 'UTF-8' ) ?>" style="font-size: 12px;">
+                  <input type="text" name="search" class="form-control" placeholder="Search code, location, or type..." value="<?= htmlspecialchars($search, ENT_QUOTES, 'UTF-8') ?>" style="font-size: 12px;">
 
                 </div>
 
@@ -669,7 +669,7 @@ $paginatedInspections = $myInspections;
                       <?php endif; ?>
 
                     <?php endforeach; ?>
-                    
+
 
                     <!-- NEXT -->
                     <li class="page-item <?= $currentPage >= $totalPages
@@ -730,213 +730,417 @@ $paginatedInspections = $myInspections;
         $inspection['evaluation_status'] === 'Approved';
       ?>
 
+
       <dialog
         id="inspectionDetails<?= (int) $inspection['inspect_id'] ?>"
         style="
-                    width: min(700px, calc(100% - 24px));
-                    max-width: 700px;
-                    max-height: 90vh;
-                    border: 0;
-                    border-radius: 14px;
-                    padding: 0;
-                    overflow: hidden;
-                    box-shadow: 0 20px 60px rgba(0,0,0,.25);
-                ">
+        width: min(650px, calc(100% - 24px));
+        max-width: 650px;
+        max-height: 90vh;
+        border: 1px solid #DEE2E6;
+        border-radius: 16px;
+        padding: 0;
+        overflow: hidden;
+        box-shadow: 0 20px 55px rgba(0, 0, 0, .20);
+        color: #212529;
+        background: #FFFFFF;
+    ">
 
         <!-- DIALOG HEADER -->
-        <div class="bg-body border-bottom">
+        <div style="
+        background: #203D70;
+        color: #FFFFFF;
+        border-bottom: 1px solid #183158;
+    ">
+          <div class="d-flex align-items-center justify-content-between gap-3 px-3 py-2">
 
-          <div class="d-flex align-items-center
-                                justify-content-between p-4">
-
-            <div>
-
-              <h5 class="fw-semibold mb-1"
-                style="font-size: 17px;">
-                Inspection Details
-              </h5>
-
-              <div class="text-body-secondary"
-                style="font-size: 11px;">
-                Inspection record and evaluation status.
+            <div class="d-flex align-items-center gap-2">
+              <div class="d-flex align-items-center justify-content-center rounded-3 flex-shrink-0"
+                style="
+                        width: 38px;
+                        height: 38px;
+                        background: rgba(255,255,255,.12);
+                        color: #FFFFFF;
+                     ">
+                <i class="bi bi-clipboard2-check fs-5"></i>
               </div>
 
+              <div>
+                <h5 class="fw-bold mb-1"
+                  style="font-size: 15px; color: #FFFFFF;">
+                  Inspection Details
+                </h5>
+
+                <div style="font-size: 11px; color: #D6E2F5;">
+                  Inspection record and evaluation summary
+                </div>
+              </div>
             </div>
 
-            <button type="button"
-              class="btn btn-light border-0"
-              style="font-size: 22px; line-height: 1;"
+            <button
+              type="button"
+              class="btn d-flex align-items-center justify-content-center flex-shrink-0"
+              style="
+                    width: 34px;
+                    height: 34px;
+                    border: 0;
+                    border-radius: 8px;
+                    background: #FFFFFF;
+                    color: #203D70;
+                    font-size: 17px;
+                "
               aria-label="Close"
               onclick="this.closest('dialog').close();">
-              ×
+              <i class="bi bi-x-lg"></i>
             </button>
 
           </div>
-
         </div>
 
         <!-- DIALOG BODY -->
-        <div class="p-4 bg-body"
-          style="max-height: calc(90vh - 140px); overflow-y: auto;">
+        <div class="p-3"
+          style="
+            max-height: calc(90vh - 110px);
+            overflow-y: auto;
+            background: #FFFFFF;
+            color: #212529;
+         ">
 
-          <!-- STATUS -->
-          <div class="rounded-3 border p-3 mb-4
+          <!-- EVALUATION STATUS -->
+          <div class="rounded-3 border p-3 mb-3"
+            style="
+                <?= $isApproved
+                  ? 'background: #E8F5EE; border-color: #B7DFC8 !important;'
+                  : 'background: #FFF7E6; border-color: #F5D58A !important;' ?>
+             ">
+
+            <div class="d-flex align-items-center gap-2">
+
+              <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0"
+                style="
+                        width: 38px;
+                        height: 38px;
                         <?= $isApproved
-                          ? 'border-success-subtle bg-success-subtle'
-                          : 'border-warning-subtle bg-warning-subtle' ?>">
+                          ? 'background: #D0EBDD; color: #16804A;'
+                          : 'background: #FCECC5; color: #946200;' ?>
+                     ">
+                <i class="bi <?= $isApproved
+                                ? 'bi-check-circle-fill'
+                                : 'bi-clock-history' ?> fs-5"></i>
+              </div>
 
-            <div class="text-body-secondary mb-2"
-              style="font-size: 10px;">
-              EVALUATION STATUS
+              <div class="flex-grow-1">
+
+                <div class="mb-1"
+                  style="
+                            font-size: 10px;
+                            font-weight: 700;
+                            letter-spacing: .5px;
+                            color: <?= $isApproved ? '#246B48' : '#805B10' ?>;
+                         ">
+                  EVALUATION STATUS
+                </div>
+
+                <?php if ($isApproved): ?>
+
+                  <span class="badge rounded-pill px-3 py-1"
+                    style="
+                                background: #16804A;
+                                color: #FFFFFF;
+                                font-size: 11px;
+                              ">
+                    <i class="bi bi-check-lg me-1"></i>
+                    Approved
+                  </span>
+
+                <?php else: ?>
+
+                  <span class="badge rounded-pill px-3 py-1"
+                    style="
+                                background: #F5D58A;
+                                color: #533A00;
+                                font-size: 11px;
+                              ">
+                    <i class="bi bi-clock me-1"></i>
+                    Pending Approval
+                  </span>
+
+                <?php endif; ?>
+
+              </div>
             </div>
-
-            <?php if ($isApproved): ?>
-
-              <span class="badge bg-success">
-                ✓ Approved
-              </span>
-
-            <?php else: ?>
-
-              <span class="badge bg-warning text-dark">
-                ◷ Pending Approval
-              </span>
-
-            <?php endif; ?>
-
           </div>
 
-          <!-- DETAILS -->
-          <div class="card border-0 mb-3">
+          <!-- SECTION HEADING -->
+          <div class="d-flex align-items-center gap-2 mb-2">
 
-            <div class="card-body p-0">
+            <div class="d-flex align-items-center justify-content-center rounded-3 flex-shrink-0"
+              style="
+                    width: 34px;
+                    height: 34px;
+                    background: #E8EDF5;
+                    color: #203D70;
+                 ">
+              <i class="bi bi-fire fs-5"></i>
+            </div>
 
-              <h6 class="fw-semibold mb-3"
-                style="font-size: 13px;">
+            <div>
+              <h6 class="fw-bold mb-1"
+                style="font-size: 13px; color: #212529;">
                 Fire Extinguisher Information
               </h6>
 
-              <div class="row g-3">
+              <small style="font-size: 10px; color: #667085;">
+                Equipment details and inspection record
+              </small>
+            </div>
 
-                <div class="col-12 col-sm-6">
+          </div>
 
-                  <small class="text-body-secondary d-block mb-1">
-                    INSPECTION ID
-                  </small>
+          <!-- APPROVER INFORMATION -->
+          <div class="rounded-3 border p-2 mb-2"
+            style="
+                background: #F8FAFC;
+                border-color: #DEE2E6 !important;
+             ">
 
-                  <div class="fw-semibold"
-                    style="font-size: 12px;">
-                    #<?= (int) $inspection['inspect_id'] ?>
-                  </div>
+            <div class="d-flex align-items-center gap-2">
 
+              <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0"
+                style="
+                        width: 34px;
+                        height: 34px;
+                        background: #E8EDF5;
+                        color: #203D70;
+                     ">
+                <i class="bi bi-person-check"></i>
+              </div>
+
+              <div class="min-width-0">
+
+                <div class="mb-1"
+                  style="
+                            font-size: 9px;
+                            font-weight: 600;
+                            letter-spacing: .4px;
+                            color: #667085;
+                         ">
+                  VERIFIED &amp; APPROVED BY
                 </div>
 
-                <div class="col-12 col-sm-6">
-
-                  <small class="text-body-secondary d-block mb-1">
-                    EXTINGUISHER CODE
-                  </small>
-
-                  <div class="fw-semibold"
-                    style="font-size: 12px;">
-
-                    <?= htmlspecialchars(
-                      $inspection['extinguisher_code'],
-                      ENT_QUOTES,
-                      'UTF-8'
-                    ) ?>
-
-                  </div>
-
+                <div class="fw-semibold text-break"
+                  style="font-size: 12px; color: #212529;">
+                  <?= htmlspecialchars(
+                    (string) ($inspection['verified_and_approved_by'] ?? ''),
+                    ENT_QUOTES,
+                    'UTF-8'
+                  ) ?>
                 </div>
 
-                <div class="col-12 col-sm-6">
-
-                  <small class="text-body-secondary d-block mb-1">
-                    LOCATION
-                  </small>
-
-                  <div style="font-size: 12px;">
-
-                    <?= htmlspecialchars(
-                      $inspection['location'],
-                      ENT_QUOTES,
-                      'UTF-8'
-                    ) ?>
-
-                  </div>
-
-                </div>
-
-                <div class="col-12 col-sm-6">
-
-                  <small class="text-body-secondary d-block mb-1">
-                    TYPE
-                  </small>
-
-                  <div style="font-size: 12px;">
-
-                    <?= htmlspecialchars(
-                      $inspection['type'],
-                      ENT_QUOTES,
-                      'UTF-8'
-                    ) ?>
-
-                  </div>
-
-                </div>
-
-                <div class="col-12 col-sm-6">
-
-                  <small class="text-body-secondary d-block mb-1">
-                    CAPACITY
-                  </small>
-
-                  <div style="font-size: 12px;">
-
-                    <?= htmlspecialchars(
-                      $inspection['capacity'],
-                      ENT_QUOTES,
-                      'UTF-8'
-                    ) ?>
-
-                  </div>
-
-                </div>
-
-                <div class="col-12 col-sm-6">
-
-                  <small class="text-body-secondary d-block mb-1">
-                    DATE INSPECTED
-                  </small>
-
-                  <div style="font-size: 12px;">
-
-                    <?= date(
-                      'M d, Y h:i A',
-                      $inspectionDate
-                    ) ?>
-
-                  </div>
-                </div>
               </div>
             </div>
+          </div>
+
+          <!-- EXTINGUISHER DETAILS -->
+          <div class="row g-2">
+
+            <!-- EXTINGUISHER CODE -->
+            <div class="col-12 col-sm-6">
+              <div class="border rounded-3 p-2 h-100"
+                style="
+                        background: #FFFFFF;
+                        border-color: #DEE2E6 !important;
+                     ">
+
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <i class="bi bi-qr-code"
+                    style="color: #0D6EFD; font-size: 13px;"></i>
+
+                  <small style="
+                            font-size: 9px;
+                            font-weight: 600;
+                            letter-spacing: .3px;
+                            color: #667085;
+                        ">
+                    EXTINGUISHER CODE
+                  </small>
+                </div>
+
+                <div class="fw-bold text-break"
+                  style="font-size: 12px; color: #212529;">
+                  <?= htmlspecialchars(
+                    $inspection['extinguisher_code'],
+                    ENT_QUOTES,
+                    'UTF-8'
+                  ) ?>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- LOCATION -->
+            <div class="col-12 col-sm-6">
+              <div class="border rounded-3 p-2 h-100"
+                style="
+                        background: #FFFFFF;
+                        border-color: #DEE2E6 !important;
+                     ">
+
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <i class="bi bi-geo-alt"
+                    style="color: #0D6EFD; font-size: 13px;"></i>
+
+                  <small style="
+                            font-size: 9px;
+                            font-weight: 600;
+                            letter-spacing: .3px;
+                            color: #667085;
+                        ">
+                    LOCATION
+                  </small>
+                </div>
+
+                <div class="fw-semibold text-break"
+                  style="font-size: 12px; color: #212529;">
+                  <?= htmlspecialchars(
+                    $inspection['location'],
+                    ENT_QUOTES,
+                    'UTF-8'
+                  ) ?>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- TYPE -->
+            <div class="col-12 col-sm-6">
+              <div class="border rounded-3 p-2 h-100"
+                style="
+                        background: #FFFFFF;
+                        border-color: #DEE2E6 !important;
+                     ">
+
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <i class="bi bi-fire"
+                    style="color: #E5A000; font-size: 13px;"></i>
+
+                  <small style="
+                            font-size: 9px;
+                            font-weight: 600;
+                            letter-spacing: .3px;
+                            color: #667085;
+                        ">
+                    TYPE
+                  </small>
+                </div>
+
+                <div class="fw-semibold text-break"
+                  style="font-size: 12px; color: #212529;">
+                  <?= htmlspecialchars(
+                    $inspection['type'],
+                    ENT_QUOTES,
+                    'UTF-8'
+                  ) ?>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- CAPACITY -->
+            <div class="col-12 col-sm-6">
+              <div class="border rounded-3 p-2 h-100"
+                style="
+                        background: #FFFFFF;
+                        border-color: #DEE2E6 !important;
+                     ">
+
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <i class="bi bi-box-seam"
+                    style="color: #0D6EFD; font-size: 13px;"></i>
+
+                  <small style="
+                            font-size: 9px;
+                            font-weight: 600;
+                            letter-spacing: .3px;
+                            color: #667085;
+                        ">
+                    CAPACITY
+                  </small>
+                </div>
+
+                <div class="fw-semibold text-break"
+                  style="font-size: 12px; color: #212529;">
+                  <?= htmlspecialchars(
+                    $inspection['capacity'],
+                    ENT_QUOTES,
+                    'UTF-8'
+                  ) ?>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- DATE INSPECTED -->
+            <div class="col-12">
+              <div class="border rounded-3 p-2"
+                style="
+                        background: #F8FAFC;
+                        border-color: #DEE2E6 !important;
+                     ">
+
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <i class="bi bi-calendar2-check"
+                    style="color: #0D6EFD; font-size: 13px;"></i>
+
+                  <small style="
+                            font-size: 9px;
+                            font-weight: 600;
+                            letter-spacing: .3px;
+                            color: #667085;
+                        ">
+                    DATE INSPECTED
+                  </small>
+                </div>
+
+                <div class="fw-semibold"
+                  style="font-size: 12px; color: #212529;">
+                  <?= date('M d, Y h:i A', $inspectionDate) ?>
+                </div>
+
+              </div>
+            </div>
+
           </div>
         </div>
 
         <!-- DIALOG FOOTER -->
-        <div class="border-top bg-body p-3 text-end">
+        <div class="border-top px-3 py-2 d-flex justify-content-end"
+          style="
+            background: #F8FAFC;
+            border-color: #DEE2E6 !important;
+         ">
 
-          <button type="button"
-            class="btn btn-secondary"
-            style="font-size: 12px;"
+          <button
+            type="button"
+            class="btn px-3 py-2"
+            style="
+                font-size: 11px;
+                border-radius: 7px;
+                background: #203D70;
+                color: #FFFFFF;
+                border: 1px solid #203D70;
+            "
             onclick="this.closest('dialog').close();">
+
+            <i class="bi bi-x-circle me-1"></i>
             Close
+
           </button>
 
         </div>
 
       </dialog>
+
 
     <?php endforeach; ?>
 

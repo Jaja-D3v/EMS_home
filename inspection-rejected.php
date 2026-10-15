@@ -111,9 +111,7 @@ if ($result) {
 
                 <!-- Filters -->
                 <div class="card border-0 shadow-sm mb-3 inspection-filter-card">
-
                     <div class="card-body">
-
                         <div class="row g-3 align-items-center">
 
                             <!-- Search -->
@@ -123,15 +121,10 @@ if ($result) {
                                     <input type="hidden" name="page" value="1">
                                     <?php if (!empty($date)): ?><input type="hidden" name="date" value="<?= htmlspecialchars($date, ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
                                     <?php if (isset($_GET['branch'])): ?><input type="hidden" name="branch" value="<?= htmlspecialchars($_GET['branch'], ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
-
                                     <span class="input-group-text bg-white">
-
                                         <i class="bi bi-search"></i>
-
                                     </span>
-
                                     <input type="text" class="form-control" id="inspectionSearch" name="search" data-server-search="true" value="<?= htmlspecialchars($search, ENT_QUOTES, 'UTF-8') ?>" placeholder="Search by FE code or location...">
-
                                     <button type="submit" class="btn btn-primary" aria-label="Search inspections">Search</button>
                                 </form>
 
@@ -139,9 +132,7 @@ if ($result) {
 
                             <!-- Date -->
                             <div class="col-12 col-md-6 col-lg-3">
-
                                 <div class="input-group">
-
                                     <span class="input-group-text bg-white">
 
                                         <i class="bi bi-calendar3"></i>
@@ -202,9 +193,7 @@ if ($result) {
                                         </option>
 
                                         <?php if (!empty($branches)): ?>
-
                                             <?php foreach ($branches as $branch): ?>
-
                                                 <option
                                                     value="<?= htmlspecialchars($branch['value']) ?>"
                                                     <?= $selectedBranch === $branch['value'] ? 'selected' : '' ?>>
@@ -212,13 +201,9 @@ if ($result) {
                                                     <?= htmlspecialchars($branch['value']) ?>
 
                                                 </option>
-
                                             <?php endforeach; ?>
-
                                         <?php endif; ?>
-
                                     </select>
-
                                 </div>
 
                             <?php endif; ?>
