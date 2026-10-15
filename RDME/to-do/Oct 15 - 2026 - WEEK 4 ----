@@ -8,8 +8,7 @@ _____________________________________________________________
 ## authentication
 - backend files should not be accessible through url       
 
-## expiry soon fire extinguisher
-- generate pdf list of expiry fire extinguisher
+
 
 # approved inspection record
 - create dropdown for filtering by month 
@@ -26,4 +25,7 @@ ____________________________________________________________DONE________________
 - created generate csv  button to generate csv file 
 - designed csv layout 
 - implemented backend retrieval of the selected approved inspection id 
+
+## expiry soon fire extinguisher
+- generate pdf list of expiry fire extinguisher
 

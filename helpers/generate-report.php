@@ -60,26 +60,12 @@ $pdf = new TCPDF(
 
 );
 
-$pdf->SetCreator(
-    'IMS Safety Management System'
-);
-
-$pdf->SetAuthor(
-    'KanePackage Philippine Inc.'
-);
-
-$pdf->SetTitle(
-    'Fire Extinguisher Inspection Checksheet'
-);
-
-$pdf->SetSubject(
-    'Approved Fire Extinguisher Inspection Report'
-);
-
+$pdf->SetCreator( 'IMS Safety Management System' );
+$pdf->SetAuthor( 'KanePackage Philippine Inc.' );
+$pdf->SetTitle( 'Fire Extinguisher Inspection Checksheet' );
+$pdf->SetSubject( 'Approved Fire Extinguisher Inspection Report' );
 $pdf->setPrintHeader(false);
-
 $pdf->setPrintFooter(false);
-
 $pdf->SetMargins(
     8,
     8,
@@ -283,7 +269,7 @@ $width = [
     'cylinder'    => 12,
     'demarcation' => 12,
     'signage'     => 12,
-    'cleaning' => 12,
+    'cleaning'    => 12,
 
     'comments'    => 30,
     'status'      => 12,

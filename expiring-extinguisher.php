@@ -6,6 +6,22 @@ require_once 'backend/authentication/SessionChecker.php';
 
 $search = trim($_GET['search'] ?? '');
 
+
+$limit = 10;
+$page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+
+if ($page < 1) {
+
+  $page = 1;
+}
+
+$offset = ($page - 1) * $limit;
+$condition = strtolower(trim($_GET['condition'] ?? 'all'));
+$expiryResult = getExpiry($limit, $offset, $search, $condition);
+$info = $expiryResult['data'];
+$totalRecords = $expiryResult['total'];
+$totalPages = (int) ceil($totalRecords / $limit);
+
 ?>
 
 <!DOCTYPE html>
@@ -36,9 +52,77 @@ $search = trim($_GET['search'] ?? '');
                 List of all fire extinguishers that are expiring soon.
               </p>
             </div>
+
+
+
+            <?php
+            $role = strtolower(trim(
+              isset($_SESSION['Role']) ? $_SESSION['Role'] : ''
+            ));
+
+            $sessionBranch = trim(
+              isset($_SESSION['Branch']) ? $_SESSION['Branch'] : ''
+            );
+
+            if ($role === 'admin') {
+              if (isset($_GET['branch'])) {
+                // Use URL branch, including "all".
+                $reportBranch = trim($_GET['branch']);
+              } else {
+                // No branch in URL: use session branch.
+                $reportBranch = $sessionBranch;
+              }
+            } else {
+              // Non-admin users always use their session branch.
+              $reportBranch = $sessionBranch;
+            }
+
+            if ($reportBranch === '') {
+              $reportBranch = 'all';
+            }
+
+            $reportCondition = isset($_GET['condition'])
+              ? $_GET['condition']
+              : 'all';
+
+            $reportSearch = isset($_GET['search'])
+              ? $_GET['search']
+              : '';
+
+            $reportUrl = 'helpers/generate-expiring-extinguisher-report.php?' .
+              http_build_query(array(
+                'branch' => $reportBranch,
+                'condition' => $reportCondition,
+                'search' => $reportSearch
+              ));
+            ?>
+
+
+            <?php if (!empty($info)): ?>
+              <a href="<?= htmlspecialchars($reportUrl, ENT_QUOTES, 'UTF-8') ?>"
+                class="btn btn-success"
+                style="width: 200px;"
+                target="_blank">
+                <i class="bi bi-file-earmark-pdf me-1"></i>
+                Generate PDF
+              </a>
+            <?php else: ?>
+              <button type="button"
+                class="btn btn-success"
+                style="width: 200px;"
+                disabled>
+                <i class="bi bi-file-earmark-pdf me-1"></i>
+                Generate PDF Report
+              </button>
+            <?php endif; ?>
           </div>
         </div>
+
       </div>
+
+
+
+
     </div>
 
     <div class="body flex-grow-1">
@@ -110,74 +194,10 @@ $search = trim($_GET['search'] ?? '');
 
               <?php endif; ?>
 
-              <script>
-                document.addEventListener('DOMContentLoaded', function() {
 
-                  const branchFilter = document.getElementById('branchFilter');
-
-                  if (!branchFilter) {
-                    return;
-                  }
-
-                  branchFilter.addEventListener('change', function() {
-
-                    const selectedBranch = this.value;
-                    const url = new URL(window.location.href);
-
-                    url.searchParams.set('branch', selectedBranch);
-                    url.searchParams.set('page', '1');
-                    window.location.href = url.toString();
-
-                  });
-
-                });
-
-                const conditionFilter = document.getElementById('conditionFilter');
-
-                if (conditionFilter) {
-
-                  conditionFilter.addEventListener('change', function() {
-
-                    const selectedCondition = this.value;
-                    const url = new URL(window.location.href);
-
-                    if (selectedCondition === 'all') {
-
-                      url.searchParams.delete('condition');
-
-                    } else {
-
-                      url.searchParams.set('condition', selectedCondition);
-
-                    }
-
-                    url.searchParams.set('page', '1');
-                    window.location.href = url.toString();
-
-                  });
-
-                }
-              </script>
 
             </div>
-            <?php
 
-            $limit = 10;
-            $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
-
-            if ($page < 1) {
-
-              $page = 1;
-            }
-
-            $offset = ($page - 1) * $limit;
-            $condition = strtolower(trim($_GET['condition'] ?? 'all'));
-            $expiryResult = getExpiry($limit, $offset, $search, $condition);
-            $info = $expiryResult['data'];
-            $totalRecords = $expiryResult['total'];
-            $totalPages = (int) ceil($totalRecords / $limit);
-
-            ?>
 
             <div id="expiringExtinguisherResults">
 
@@ -1038,9 +1058,7 @@ $search = trim($_GET['search'] ?? '');
                 }
 
                 const date = new Date(this.value + 'T00:00:00');
-
                 date.setFullYear(date.getFullYear() + 3);
-
                 const year = date.getFullYear();
                 const month = String(date.getMonth() + 1).padStart(2, '0');
                 const day = String(date.getDate()).padStart(2, '0');
@@ -1059,444 +1077,7 @@ $search = trim($_GET['search'] ?? '');
   <!-- CoreUI and necessary plugins-->
   <script src="vendors/@coreui/coreui/js/coreui.bundle.min.js"></script>
   <script src="vendors/simplebar/js/simplebar.min.js"></script>
-  <script>
-    const header = document.querySelector("header.header");
-
-    document.addEventListener("scroll", () => {
-      if (header) {
-        header.classList.toggle("shadow-sm", document.documentElement.scrollTop > 0);
-      }
-    });
-
-    document.querySelectorAll('.edit-extinguisher-btn').forEach(button => {
-
-      button.addEventListener('click', function() {
-
-        const id = this.dataset.id;
-
-        fetch(`backend/controller/FireExtinguisherController.php?action=get&id=${id}`)
-          .then(response => response.json())
-          .then(result => {
-
-            if (!result.success) {
-              alert('Failed to load fire extinguisher.');
-              return;
-            }
-
-            const data = result.data;
-
-            document.getElementById('editExtinguisherId').value =
-              data.extinguisher_id;
-
-            document.getElementById('editExtinguisherCode').value =
-              data.extinguisher_code;
-
-            document.getElementById('editType').value =
-              data.type;
-
-            document.getElementById('editCapacity').value =
-              data.capacity;
-
-            document.getElementById('editClass').value =
-              data.class;
-
-            document.getElementById('editPlacement').value =
-              data.placement;
-
-            document.getElementById('editLocation').value =
-              data.location;
-
-            document.getElementById('editConditionStatus').value =
-              data.condition_status;
-
-            document.getElementById('editManufacturedDate').value =
-              data.manufactured_date;
-
-            document.getElementById('editExpirationDate').value =
-              data.expiration_date;
-
-            document.getElementById('editRemarks').value =
-              data.remarks ?? '';
-
-          })
-          .catch(error => {
-            console.error(error);
-            alert('Something went wrong.');
-          });
-
-      });
-
-    });
-
-    const codeInput = document.getElementById('extinguisherCode');
-    const codeFeedback = document.getElementById('extinguisherCodeFeedback');
-    const addFireExtinguisherBtn = document.getElementById('addFireExtinguisherBtn');
-
-    let codeCheckTimeout;
-    let isCodeDuplicate = false;
-
-    function checkFireExtinguisherCode(code) {
-
-      clearTimeout(codeCheckTimeout);
-
-      codeFeedback.textContent = '';
-      codeFeedback.className = 'small mt-1';
-
-      isCodeDuplicate = false;
-      addFireExtinguisherBtn.disabled = false;
-
-      if (code === '') {
-
-        codeInput.classList.remove(
-          'is-valid',
-          'is-invalid'
-        );
-
-        return;
-      }
-
-      codeCheckTimeout = setTimeout(() => {
-
-        fetch(
-            `backend/controller/FireExtinguisherController.php?action=checkCode&code=${encodeURIComponent(code)}`
-          )
-          .then(response => {
-
-            if (!response.ok) {
-              throw new Error(
-                `HTTP error: ${response.status}`
-              );
-            }
-
-            return response.json();
-
-          })
-          .then(result => {
-
-            console.log('Code check result:', result);
-
-            if (result.exists === true) {
-
-              isCodeDuplicate = true;
-
-              codeFeedback.textContent =
-                'This fire extinguisher code already exists.';
-
-              codeFeedback.className =
-                'small mt-1 text-danger';
-
-              codeInput.classList.add(
-                'is-invalid'
-              );
-
-              codeInput.classList.remove(
-                'is-valid'
-              );
-
-              addFireExtinguisherBtn.disabled = true;
-
-            } else {
-
-              isCodeDuplicate = false;
-
-              codeFeedback.textContent =
-                'Fire extinguisher code is available.';
-
-              codeFeedback.className =
-                'small mt-1 text-success';
-
-              codeInput.classList.remove(
-                'is-invalid'
-              );
-
-              codeInput.classList.add(
-                'is-valid'
-              );
-
-              addFireExtinguisherBtn.disabled = false;
-
-            }
-
-          })
-          .catch(error => {
-
-            console.error(
-              'Code check error:',
-              error
-            );
-
-            isCodeDuplicate = false;
-
-            codeFeedback.textContent =
-              'Unable to check fire extinguisher code.';
-
-            codeFeedback.className =
-              'small mt-1 text-warning';
-
-            codeInput.classList.remove(
-              'is-valid',
-              'is-invalid'
-            );
-
-            addFireExtinguisherBtn.disabled = true;
-
-          });
-
-      }, 400);
-    }
-
-    codeInput.addEventListener('input', function() {
-
-      const code = this.value.trim();
-
-      checkFireExtinguisherCode(code);
-
-    });
-
-    function generateFireExtinguisherCode() {
-
-      fetch(
-          'backend/controller/FireExtinguisherController.php?action=getNextCode'
-        )
-        .then(response => {
-
-          if (!response.ok) {
-
-            throw new Error(
-              `HTTP error: ${response.status}`
-            );
-
-          }
-
-          return response.json();
-
-        })
-        .then(result => {
-
-          console.log(
-            'Generated code:',
-            result
-          );
-
-          if (result.success) {
-
-            codeInput.value = result.code;
-
-            checkFireExtinguisherCode(
-              result.code
-            );
-
-          } else {
-
-            console.error(
-              'Failed to generate fire extinguisher code.'
-            );
-
-            addFireExtinguisherBtn.disabled = true;
-
-          }
-
-        })
-        .catch(error => {
-
-          console.error(
-            'Generate code error:',
-            error
-          );
-
-          addFireExtinguisherBtn.disabled = true;
-
-        });
-
-    }
-
-    const addFireExtinguisherModal =
-      document.getElementById(
-        'addFireExtinguisherModal'
-      );
-
-    if (addFireExtinguisherModal) {
-
-      addFireExtinguisherModal.addEventListener(
-        'shown.bs.modal',
-        function() {
-
-          if (codeInput.value.trim() === '') {
-
-            addFireExtinguisherBtn.disabled = true;
-
-            generateFireExtinguisherCode();
-
-          } else {
-
-            checkFireExtinguisherCode(
-              codeInput.value.trim()
-            );
-
-          }
-
-        }
-      );
-
-    }
-
-    const addForm = addFireExtinguisherBtn.closest('form');
-
-    if (addForm) {
-
-      addForm.addEventListener('submit', function(event) {
-
-        const code = codeInput.value.trim();
-
-        if (code === '') {
-
-          event.preventDefault();
-
-          codeFeedback.textContent =
-            'Fire extinguisher code is required.';
-
-          codeFeedback.className =
-            'small mt-1 text-danger';
-
-          codeInput.classList.add(
-            'is-invalid'
-          );
-
-          return;
-        }
-
-        if (isCodeDuplicate) {
-
-          event.preventDefault();
-
-          codeFeedback.textContent =
-            'This fire extinguisher code already exists.';
-
-          codeFeedback.className =
-            'small mt-1 text-danger';
-
-          codeInput.classList.add(
-            'is-invalid'
-          );
-
-          addFireExtinguisherBtn.disabled = true;
-
-          return;
-        }
-
-      });
-
-    }
-
-    const expiringExtinguisherResults =
-      document.getElementById('expiringExtinguisherResults');
-
-    if (expiringExtinguisherResults) {
-
-      expiringExtinguisherResults.addEventListener(
-        'click',
-        function(event) {
-
-          const button =
-            event.target.closest('.view-extinguisher-btn');
-
-          if (!button) {
-            return;
-          }
-
-          const id = button.dataset.id;
-
-          fetch(
-              `backend/controller/FireExtinguisherController.php?action=get&id=${id}`
-            )
-
-            .then(response => {
-
-              if (!response.ok) {
-                throw new Error(
-                  'Failed to fetch fire extinguisher.'
-                );
-              }
-
-              return response.json();
-
-            })
-
-            .then(result => {
-
-              if (!result.success) {
-
-                alert(
-                  result.message ||
-                  'Failed to load fire extinguisher.'
-                );
-
-                return;
-              }
-
-              const data = result.data;
-
-              document.getElementById(
-                'viewExtinguisherCode'
-              ).value = data.extinguisher_code ?? '';
-
-              document.getElementById(
-                'viewType'
-              ).value = data.type ?? '';
-
-              document.getElementById(
-                'viewCapacity'
-              ).value = data.capacity ?? '';
-
-              document.getElementById(
-                'viewClass'
-              ).value = data.class ?? '';
-
-              document.getElementById(
-                'viewPlacement'
-              ).value = data.placement ?? '';
-
-              document.getElementById(
-                'viewLocation'
-              ).value = data.location ?? '';
-
-              document.getElementById(
-                'viewConditionStatus'
-              ).value = data.condition_status ?? '';
-
-              document.getElementById(
-                'viewManufacturedDate'
-              ).value = data.manufactured_date ?? '';
-
-              document.getElementById(
-                'viewLastRefilledDate'
-              ).value = data.refilled_date ?? '';
-
-              document.getElementById(
-                'viewExpirationDate'
-              ).value = data.expiration_date ?? '';
-
-              document.getElementById(
-                'viewRemarks'
-              ).value = data.remarks ?? '';
-
-
-
-
-            })
-
-            .catch(error => {
-
-              console.error(error);
-              alert( 'Something went wrong while loading fire extinguisher.' );
-
-            });
-
-        }
-      );
-
-    }
-  </script>
+  <script src="js/expiring-extinguisher.js"></script>
   <?php include_once 'notification/session_timeout.php'; ?>
 
 </body>

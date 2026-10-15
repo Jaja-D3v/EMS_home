@@ -114,13 +114,11 @@ if ($result) {
         </div>
 
         <!-- Filters -->
-
         <div class="card border-0 shadow-sm mb-3 inspection-filter-card">
           <div class="card-body">
             <div class="row g-3 align-items-center">
 
               <!-- Search Filter -->
-
               <div class="col-12 col-lg-6">
                 <form method="get" action="inspection-pending.php" class="input-group">
                   <input type="hidden" name="page" value="1">
