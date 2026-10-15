@@ -56,13 +56,15 @@ $branchDropdown = getAllDropdownBranches();
 
             <!-- Generate Report -->
             <div class="col-12 col-md-auto">
-              <button
-                type="button"
-                class="btn btn-light px-3 py-2 w-100"
-                id="generateInventoryReportBtn">
-                <i class="bi bi-file-earmark-pdf me-1"></i>
-                Generate Inventory Report
-              </button>
+              <?php if (strtolower(trim($_SESSION['Role'] ?? '')) === 'admin'): ?>
+                <button
+                  type="button"
+                  class="btn btn-light px-3 py-2 w-100"
+                  id="generateInventoryReportBtn">
+                  <i class="bi bi-file-earmark-pdf me-1"></i>
+                  Generate Inventory Report
+                </button>
+              <?php endif; ?>
             </div>
           </div>
         </div>
@@ -337,7 +339,7 @@ $branchDropdown = getAllDropdownBranches();
                       <!-- Icon -->
                       <div
                         class="d-flex align-items-center justify-content-center
-                           bg-danger bg-opacity-10 text-danger
+                           bg-primary bg-opacity-10 text-primary
                            rounded-3 flex-shrink-0"
                         style="width: 50px; height: 50px;">
 
@@ -349,7 +351,7 @@ $branchDropdown = getAllDropdownBranches();
                       <div class="flex-grow-1 min-width-0">
 
                         <div class="mb-1">
-                          <span class="badge bg-danger-subtle text-danger rounded-pill px-2 py-1"
+                          <span class="badge bg-primary-subtle text-primary rounded-pill px-2 py-1"
                             style="font-size: 0.65rem;">
 
                             <i class="bi bi-shield-fill me-1"></i>
@@ -399,7 +401,7 @@ $branchDropdown = getAllDropdownBranches();
                       <!-- FE Code -->
                       <div class="col-6 col-md">
                         <div class="d-flex align-items-center gap-2">
-                          <div class="d-flex align-items-center justify-content-center bg-danger bg-opacity-10 text-danger rounded-3 flex-shrink-0"
+                          <div class="d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-3 flex-shrink-0"
                             style="width: 32px; height: 32px;">
                             <i class="bi bi-qr-code"></i>
                           </div>
@@ -986,9 +988,9 @@ $branchDropdown = getAllDropdownBranches();
                 <div class="modal-content rounded-4 border-0 shadow-lg overflow-hidden">
 
                   <!-- Header -->
-                  <div class="modal-header border-0 bg-danger-subtle px-4 py-3">
+                  <div class="modal-header border-0 bg-primary-subtle px-4 py-3">
                     <div class="d-flex align-items-center gap-3">
-                      <div class="d-flex align-items-center justify-content-center bg-danger text-white rounded-3 flex-shrink-0"
+                      <div class="d-flex align-items-center justify-content-center bg-primary text-white rounded-3 flex-shrink-0"
                         style="width: 46px; height: 46px;">
                         <i class="bi bi-fire fs-4"></i>
                       </div>
@@ -1030,7 +1032,7 @@ $branchDropdown = getAllDropdownBranches();
                             </div>
 
                             <div class="d-flex align-items-center gap-2">
-                              <div class="d-flex align-items-center justify-content-center bg-danger bg-opacity-10 text-danger rounded-3"
+                              <div class="d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-3"
                                 style="width: 36px; height: 36px;">
                                 <i class="bi bi-qr-code"></i>
                               </div>

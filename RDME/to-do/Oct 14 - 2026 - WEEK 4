@@ -1,0 +1,33 @@
+
+Day 16   TO-DO                       STATUS
+_____________________________________________________________
+                                                    
+## Dashboard Module
+- Make total number cards clickable.                                                            #
+
+## authentication
+- backend files should not be accessible through url       
+
+## generate inspection report 
+- CSV accessible in EXCEL 
+
+## GENERATE EXPIRY LIST PDF
+
+WEEKLY REPORT 
+add img add #DONE if finished 
+add new column Provider in fire_extinguishers_tbl
+
+____________________________________________________________DONE___________________________________________________________________________
+
+## QR code design revised
+- add some information in QR CODE 
+
+## New module for Scan QR Device 
+- input auto focused 
+- after scan auto type 
+- validation 
+- added new module scan QR Code
+- revise the color of view inspection icon it should be blue
+
+
+

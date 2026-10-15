@@ -516,11 +516,11 @@ include './backend/controller/DropdownController.php';
                 <div class="modal-content rounded-4 border-0 shadow-lg overflow-hidden">
 
                     <!-- Header -->
-                    <div class="modal-header border-0 bg-danger-subtle px-4 py-3">
+                    <div class="modal-header border-0 bg-primary-subtle px-4 py-3">
 
                         <div class="d-flex align-items-center gap-3">
 
-                            <div class="d-flex align-items-center justify-content-center bg-danger text-white rounded-3 flex-shrink-0"
+                            <div class="d-flex align-items-center justify-content-center bg-primary text-white rounded-3 flex-shrink-0"
                                 style="width: 46px; height: 46px;">
 
                                 <i class="bi bi-fire fs-4"></i>
@@ -559,7 +559,7 @@ include './backend/controller/DropdownController.php';
 
                                 <div class="d-flex align-items-center gap-2 mb-3">
 
-                                    <div class="d-flex align-items-center justify-content-center bg-danger-subtle text-danger rounded-2"
+                                    <div class="d-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-2"
                                         style="width: 34px; height: 34px;">
 
                                         <i class="bi bi-info-circle"></i>
@@ -588,7 +588,7 @@ include './backend/controller/DropdownController.php';
                                         <div class="input-group">
 
                                             <span class="input-group-text bg-white border-end-0">
-                                                <i class="bi bi-upc-scan text-danger"></i>
+                                                <i class="bi bi-upc-scan text-primary"></i>
                                             </span>
 
                                             <input
@@ -607,7 +607,7 @@ include './backend/controller/DropdownController.php';
 
                                         <div class="input-group">
                                             <span class="input-group-text bg-white border-end-0">
-                                                <i class="bi bi-building text-danger"></i>
+                                                <i class="bi bi-building text-primary"></i>
                                             </span>
 
                                             <input
@@ -626,7 +626,7 @@ include './backend/controller/DropdownController.php';
                         <div class="mb-3">
                             <div class="d-flex align-items-center gap-2 mb-3">
                                 <div
-                                    class="d-flex align-items-center justify-content-center bg-danger-subtle text-danger rounded-2"
+                                    class="d-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-2"
                                     style="width: 34px; height: 34px;">
                                     <i class="bi bi-fire"></i>
                                 </div>
@@ -716,7 +716,7 @@ include './backend/controller/DropdownController.php';
                         <!-- Dates & Maintenance -->
                         <div class="border-top pt-4 mt-4">
                             <div class="d-flex align-items-center gap-2 mb-3">
-                                <div class="d-flex align-items-center justify-content-center bg-danger-subtle text-danger rounded-2" style="width: 34px; height: 34px;">
+                                <div class="d-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-2" style="width: 34px; height: 34px;">
 
                                     <i class="bi bi-calendar3"></i>
 
@@ -792,7 +792,7 @@ include './backend/controller/DropdownController.php';
                         <!-- Remarks -->
                         <div class="border-top pt-4 mt-4">
                             <div class="d-flex align-items-center gap-2 mb-3">
-                                <div class="d-flex align-items-center justify-content-center bg-danger-subtle text-danger rounded-2" style="width: 34px; height: 34px;">
+                                <div class="d-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-2" style="width: 34px; height: 34px;">
                                     <i class="bi bi-chat-left-text"></i>
                                 </div>
 

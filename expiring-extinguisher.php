@@ -240,14 +240,14 @@ $search = trim($_GET['search'] ?? '');
                     <div class="card-body p-2 p-md-3">
                       <div class="d-flex align-items-center gap-3">
 
-                        <div class="d-flex align-items-center justify-content-center bg-danger bg-opacity-10 text-danger rounded-3 flex-shrink-0" style="width: 50px; height: 50px;">
+                        <div class="d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-3 flex-shrink-0" style="width: 50px; height: 50px;">
                           <i class="bi bi-fire fs-4"></i>
                         </div>
 
                         <div class="flex-grow-1 min-width-0">
 
                           <div class="mb-1">
-                            <span class="badge bg-danger-subtle text-danger rounded-pill px-2 py-1" style="font-size: 0.65rem;">
+                            <span class="badge bg-primary-subtle text-primary rounded-pill px-2 py-1" style="font-size: 0.65rem;">
                               <i class="bi bi-shield-fill me-1"></i>
                               Fire Safety Equipment
                             </span>
@@ -290,7 +290,7 @@ $search = trim($_GET['search'] ?? '');
                       <div class="row g-2 g-md-3 mt-2 align-items-center">
                         <div class="col-6 col-md-2">
                           <div class="d-flex align-items-center gap-2">
-                            <div class="d-flex align-items-center justify-content-center bg-danger bg-opacity-10 text-danger rounded-3 flex-shrink-0" style="width: 32px; height: 32px;">
+                            <div class="d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-3 flex-shrink-0" style="width: 32px; height: 32px;">
                               <i class="bi bi-qr-code"></i>
                             </div>
                             <div class="min-width-0">
@@ -764,9 +764,9 @@ $search = trim($_GET['search'] ?? '');
               <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content rounded-4 border-0 shadow-lg overflow-hidden">
 
-                  <div class="modal-header border-0 bg-danger-subtle px-4 py-3">
+                  <div class="modal-header border-0 bg-primary-subtle px-4 py-3">
                     <div class="d-flex align-items-center gap-3">
-                      <div class="d-flex align-items-center justify-content-center bg-danger text-white rounded-3 flex-shrink-0" style="width: 46px; height: 46px;">
+                      <div class="d-flex align-items-center justify-content-center bg-primary text-white rounded-3 flex-shrink-0" style="width: 46px; height: 46px;">
                         <i class="bi bi-fire fs-4"></i>
                       </div>
 
@@ -802,7 +802,7 @@ $search = trim($_GET['search'] ?? '');
 
                             <div class="d-flex align-items-center gap-2">
 
-                              <div class="d-flex align-items-center justify-content-center bg-danger bg-opacity-10 text-danger rounded-3" style="width: 36px; height: 36px;">
+                              <div class="d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-3" style="width: 36px; height: 36px;">
                                 <i class="bi bi-qr-code"></i>
                               </div>
 

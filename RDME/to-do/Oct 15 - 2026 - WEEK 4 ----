@@ -1,5 +1,5 @@
 
-Day 16   TO-DO                       STATUS
+Day 17   TO-DO                       STATUS
 _____________________________________________________________
                                                     
 ## Dashboard Module
@@ -8,27 +8,18 @@ _____________________________________________________________
 ## authentication
 - backend files should not be accessible through url       
 
-## generate inspection report 
-- CSV accessible in EXCEL 
+## expiry soon fire extinguisher
+- generate pdf list of expiry fire extinguisher
 
-## GENERATE EXPIRY LIST PDF
+# approved inspection record
+- create dropdown for filtering by month 
+- generate csv  button to generate csv file 
 
 WEEKLY REPORT 
 add img add #DONE if finished 
-
 add new column Provider in fire_extinguishers_tbl
-
 ____________________________________________________________DONE___________________________________________________________________________
-
-## QR code design revised
-- add some information in QR CODE 
-
-## New module for Scan QR Device 
-- input auto focused 
-- after scan auto type 
-- validation 
-- added new module scan QR Code
-- revise the color of view inspection icon it should be blue
-
+# fire extinguisher modal 
+- revise the color of modal, change the red color to blue
 
 
