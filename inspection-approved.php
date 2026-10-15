@@ -77,7 +77,7 @@ include 'partials/header.php';
     <div class="container-fluid py-0 inspection-content">
 
       <!-- Page Header -->
-      <div class="card border-0 shadow-sm text-white mb-3 mt-0 overflow-hidden inspection-header" style="background: linear-gradient(135deg, #1e3dc8, #57f9ff);">
+      <div class="card border-0 shadow-sm text-white mb-3 mt-0 overflow-hidden inspection-header" style="background: linear-gradient(135deg, #12217e, #003554);">
 
         <div class="card-body p-4">
           <div class="row align-items-center g-3">
@@ -97,6 +97,32 @@ include 'partials/header.php';
                 Approved inspection reports.
               </p>
             </div>
+
+
+            <!-- Generate CSV Report -->
+            <div class="col-12 col-lg-auto">
+              <?php if (!empty($approvedReportIds)): ?>
+
+                <a
+                  href="helpers/generate-inspection-report-csv.php?ids=<?= urlencode($approvedReportIdString) ?>"
+                  class="btn btn-success w-100">
+                  <i class="bi bi-file-earmark-spreadsheet me-1"></i>
+                  Generate CSV
+                </a>
+
+              <?php else: ?>
+
+                <button
+                  type="button"
+                  class="btn btn-success w-100"
+                  disabled>
+                  <i class="bi bi-file-earmark-spreadsheet me-1"></i>
+                  Generate CSV
+                </button>
+
+              <?php endif; ?>
+            </div>
+
 
           </div>
         </div>
@@ -224,7 +250,7 @@ include 'partials/header.php';
                   class="btn btn-primary w-100"
                   onclick="generateReport(event, this.href)">
                   <i class="bi bi-file-earmark-pdf me-1"></i>
-                  Generate Report
+                  Generate PDF Report
                 </a>
 
               <?php else: ?>
@@ -584,4 +610,5 @@ include 'partials/header.php';
     ?>
 
 </body>
+
 </html>

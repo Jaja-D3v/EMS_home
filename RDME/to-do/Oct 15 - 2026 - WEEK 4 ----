@@ -13,7 +13,7 @@ _____________________________________________________________
 
 # approved inspection record
 - create dropdown for filtering by month 
-- generate csv  button to generate csv file 
+
 
 WEEKLY REPORT 
 add img add #DONE if finished 
@@ -22,4 +22,8 @@ ____________________________________________________________DONE________________
 # fire extinguisher modal 
 - revise the color of modal, change the red color to blue
 
+# approved inspection record
+- created generate csv  button to generate csv file 
+- designed csv layout 
+- implemented backend retrieval of the selected approved inspection id 
 
