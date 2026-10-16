@@ -4,7 +4,6 @@
 ob_start();
 
 require_once __DIR__ . '/../authentication/SessionChecker.php';
-// require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../model/GenerateInspectionReportCsvModel.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 

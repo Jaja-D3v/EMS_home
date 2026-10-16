@@ -293,7 +293,8 @@ function getById($id)
                 created_at,
                 updated_at,
                 refilled_date,
-                branch
+                branch,
+                provider
             FROM fire_extinguishers_tbl
             WHERE extinguisher_id = ?
               AND archived = 0";

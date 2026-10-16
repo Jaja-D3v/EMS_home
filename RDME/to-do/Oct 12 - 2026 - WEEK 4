@@ -26,13 +26,26 @@ _____________________________________________________________
 
 ____________________________________________________________DONE___________________________________________________________________________
 
-- revised header nav                    #done
-- remove spaces in backend code         #done   
-- redesign side nav                     #done
-- fix pagination in archived extinguisher #done
-- added notification for restored success #done
+- revised header nav                   
+- remove spaces in backend code           
+- redesign side nav                    
+- fix pagination in archived extinguisher
+- added notification for restored success 
 
 # added my inspections module for inspector 
 - create inspection UI for my inspections
 - implemented backend 
 - created fetch 
+
+
+3. Redesigned the side navigation to provide a cleaner layout and improve accessibility to system modules.
+
+4. Fixed the pagination functionality in the Archived Fire Extinguisher module to ensure proper navigation between records.
+
+5. Added a success notification to inform users when an archived fire extinguisher has been successfully restored.
+
+6. Developed Inspection Module module UI for inspectors to provide a dedicated interface for viewing their inspection records.
+
+7. Implemented the backend functionality of the My Inspections module to retrieve and process inspection records for the logged-in inspector.
+
+8. Created the data-fetching functionality to retrieve inspection records from the database and dynamically display them in the My Inspections module.

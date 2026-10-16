@@ -1,212 +1,204 @@
 <?php
 require_once __DIR__ . '/../config/db.php';
 
-    /*
+/*
     |--------------------------------------------------------------------------
     | GET PAGINATED DATA
     |--------------------------------------------------------------------------
     */
 
-    function getData($category, $page = 1, $limit = 5, $search = '')
-    {
-        global $conn;
-        $offset = ($page - 1) * $limit;
+function getData($category, $page = 1, $limit = 5, $search = '')
+{
+    global $conn;
+    $offset = ($page - 1) * $limit;
 
-        $sql = "
+    $sql = "
             SELECT id, category, value, status
             FROM maintenance_dropdown_tbl
             WHERE category = ?
             AND status = 'active'
         ";
 
-        $params = [$category];
-        $types = "s";
+    $params = [$category];
+    $types = "s";
 
-        if (!empty($search)) {
+    if (!empty($search)) {
 
-            $sql .= " AND value LIKE ?";
+        $sql .= " AND value LIKE ?";
 
-            $params[] = "%" . $search . "%";
-            $types .= "s";
-        }
+        $params[] = "%" . $search . "%";
+        $types .= "s";
+    }
 
-        $sql .= "
+    $sql .= "
             ORDER BY value ASC
             LIMIT ? OFFSET ?
         ";
 
-        $params[] = $limit;
-        $params[] = $offset;
+    $params[] = $limit;
+    $params[] = $offset;
 
-        $types .= "ii";
+    $types .= "ii";
 
-        $stmt = $conn->prepare($sql);
+    $stmt = $conn->prepare($sql);
 
-        $stmt->bind_param(
-            $types,
-            ...$params
-        );
+    $stmt->bind_param(
+        $types,
+        ...$params
+    );
 
-        $stmt->execute();
+    $stmt->execute();
 
-        $result = $stmt->get_result();
+    $result = $stmt->get_result();
 
-        return $result->fetch_all(MYSQLI_ASSOC);
-    }
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
 
 
-    /*
+/*
     |--------------------------------------------------------------------------
     | GET TOTAL
     |--------------------------------------------------------------------------
     */
 
-    function getTotal($category, $search = '')
-    {
-        global $conn;
-        $sql = " SELECT COUNT(*) AS total
+function getTotal($category, $search = '')
+{
+    global $conn;
+    $sql = " SELECT COUNT(*) AS total
             FROM maintenance_dropdown_tbl
             WHERE category = ?
             AND status = 'active'
         ";
 
-        $params = [$category];
-        $types = "s";
+    $params = [$category];
+    $types = "s";
 
-        if (!empty($search)) {
+    if (!empty($search)) {
 
-            $sql .= " AND value LIKE ?";
+        $sql .= " AND value LIKE ?";
 
-            $params[] = "%" . $search . "%";
-            $types .= "s";
-        }
-
-        $stmt = $conn->prepare($sql);
-
-        $stmt->bind_param(
-            $types,
-            ...$params
-        );
-
-        $stmt->execute();
-
-        $result = $stmt->get_result();
-
-        return $result->fetch_assoc()['total'];
+        $params[] = "%" . $search . "%";
+        $types .= "s";
     }
 
+    $stmt = $conn->prepare($sql);
 
-    /*
+    $stmt->bind_param(
+        $types,
+        ...$params
+    );
+
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+
+    return $result->fetch_assoc()['total'];
+}
+
+
+/*
     |--------------------------------------------------------------------------
     | GET SINGLE RECORD
     |--------------------------------------------------------------------------
     */
 
-     function getById($id)
-    {
-        global $conn;
-        $sql = "
+function getById($id)
+{
+    global $conn;
+    $sql = "
             SELECT *
             FROM maintenance_dropdown_tbl
             WHERE id = ?
             LIMIT 1
         ";
 
-        $stmt = $conn->prepare($sql);
+    $stmt = $conn->prepare($sql);
 
-        $stmt->bind_param("i", $id);
+    $stmt->bind_param("i", $id);
 
-        $stmt->execute();
+    $stmt->execute();
 
-        return $stmt
-            ->get_result()
-            ->fetch_assoc();
-    }
+    return $stmt
+        ->get_result()
+        ->fetch_assoc();
+}
 
 
-    /*
+/*
     |--------------------------------------------------------------------------
     | ADD
     |--------------------------------------------------------------------------
     */
 
-     function add($category, $value)
-    {
-        global $conn;
+function add($category, $value)
+{
+    global $conn;
 
-        $value = trim($value);
-        $value = strtolower($value);
-        $value = ucwords($value);
+    $value = trim($value);
 
-        $sql = "
-            INSERT INTO maintenance_dropdown_tbl
-            (category, value)
-            VALUES (?, ?)
-        ";
+    $sql = "
+        INSERT INTO maintenance_dropdown_tbl
+        (category, value)
+        VALUES (?, ?)
+    ";
 
-        $stmt = $conn->prepare($sql);
+    $stmt = $conn->prepare($sql);
 
-        $stmt->bind_param(
-            "ss",
-            $category,
-            $value
-        );
+    $stmt->bind_param(
+        "ss",
+        $category,
+        $value
+    );
 
-        return $stmt->execute();
-    }
+    return $stmt->execute();
+}
 
+function update($id, $value)
+{
+    global $conn;
 
-    /*
-    |--------------------------------------------------------------------------
-    | UPDATE
-    |--------------------------------------------------------------------------
-    */
+    $value = trim($value);
 
-     function update($id, $value)
-    {
-        global $conn;
-        $value = trim($value);
-        $value = strtolower($value);
-        $value = ucwords($value);
-
-        $sql = "
+    $sql = "
         UPDATE maintenance_dropdown_tbl
         SET value = ?
         WHERE id = ?
     ";
 
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param(
-            "si",
-            $value,
-            $id
-        );
+    $stmt = $conn->prepare($sql);
 
-        return $stmt->execute();
-    }
+    $stmt->bind_param(
+        "si",
+        $value,
+        $id
+    );
+
+    return $stmt->execute();
+}
 
 
-    /*
+
+
+
+/*
     |--------------------------------------------------------------------------
     | DEACTIVATE
     |--------------------------------------------------------------------------
     */
 
-     function delete($id)
-    {
-        global $conn;
-        $sql = "
-            UPDATE maintenance_dropdown_tbl
-            SET status = 'inactive'
-            WHERE id = ?
-        ";
 
-        $stmt = $conn->prepare($sql);
+function delete($id)
+{
+    global $conn;
 
-        $stmt->bind_param(
-            "i",
-            $id
-        );
+    $sql = "
+        DELETE FROM maintenance_dropdown_tbl
+        WHERE id = ?
+    ";
 
-        return $stmt->execute();
-    }
+    $stmt = $conn->prepare($sql);
+
+    $stmt->bind_param("i", $id);
+
+    return $stmt->execute();
+}

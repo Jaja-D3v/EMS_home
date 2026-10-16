@@ -38,19 +38,19 @@
 
       <?php if (strtolower(trim($_SESSION['Role'] ?? '')) === 'inspector'): ?>
 
-    <?php
-    $rejectedInspectorName = trim($_SESSION['EmployeeName'] ?? '');
-    $rejectedInspectorBranch = trim($_SESSION['Branch'] ?? '');
-    $rejectedInspectionCount = 0;
+        <?php
+        $rejectedInspectorName = trim($_SESSION['EmployeeName'] ?? '');
+        $rejectedInspectorBranch = trim($_SESSION['Branch'] ?? '');
+        $rejectedInspectionCount = 0;
 
-    if ($rejectedInspectorName !== '' && $rejectedInspectorBranch !== '') {
-      require_once __DIR__ . '/../backend/model/RejectedInspectionModel.php';
-      $rejectedInspectionCount = getRejectedInspectionCountForSidebar(
-        $rejectedInspectorName,
-        $rejectedInspectorBranch
-      );
-    }
-    ?>
+        if ($rejectedInspectorName !== '' && $rejectedInspectorBranch !== '') {
+          require_once __DIR__ . '/../backend/model/RejectedInspectionModel.php';
+          $rejectedInspectionCount = getRejectedInspectionCountForSidebar(
+            $rejectedInspectorName,
+            $rejectedInspectorBranch
+          );
+        }
+        ?>
 
     <li class="nav-item">
       <a class="nav-link" href="QR-code.php">
@@ -58,15 +58,17 @@
         Scan QR CODE
       </a>
 
-       <a class="nav-link" href="scan-QR-code.php">
+      <a class="nav-link" href="scan-QR-code.php">
         <i class="fa-solid fa-qrcode"></i>
         Device Scan QR CODE
       </a>
 
       <a class="nav-link" href="my-inspections.php">
         <i class="fa-solid fa-magnifying-glass-chart"></i>
-        My Inspections
+        Inspection Records
       </a>
+
+     
 
       <a class="nav-link" href="inspector-rejected-inspection.php">
         <i class="fa-solid fa-file-circle-xmark"></i>
@@ -204,15 +206,18 @@
   <!-- Activity Log -->
   <li class="nav-item">
 
-    <a
-      class="nav-link"
-      href="activity-log.php">
-
+    <a class="nav-link" href="activity-log.php">
       <i class="fa-solid fa-user-pen me-2"></i>
       Activity Log
-
     </a>
+  </li>
 
+
+   <li class="nav-item">
+    <a class="nav-link" href="fire-extinguisher-history.php">
+      <i class="fa-solid fa-user-pen me-2"></i>
+      Fire Extinguisher History
+    </a>
   </li>
   <?php if (strtolower(trim($_SESSION['Role'] ?? '')) === 'admin'): ?>
 

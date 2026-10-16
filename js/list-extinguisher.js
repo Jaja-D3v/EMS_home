@@ -318,17 +318,18 @@ document.querySelectorAll('.view-extinguisher-btn').forEach(button => {
                 const data = result.data;
 
                 // FILL VIEW MODAL
-                document.getElementById( 'viewExtinguisherCode' ).value = data.extinguisher_code ?? '';
-                document.getElementById( 'viewType' ).value = data.type ?? '';
-                document.getElementById( 'viewCapacity' ).value = data.capacity ?? '';
-                document.getElementById( 'viewClass' ).value = data.class ?? '';
-                document.getElementById( 'viewPlacement' ).value = data.placement ?? '';
-                document.getElementById( 'viewLocation' ).value = data.location ?? '';
-                document.getElementById( 'viewConditionStatus' ).value = data.condition_status ?? '';
+                document.getElementById( 'viewExtinguisherCode' ).value = data.extinguisher_code ?? 'N/A';
+                document.getElementById( 'viewType' ).value = data.type ?? 'N/A';
+                document.getElementById( 'viewCapacity' ).value = data.capacity ?? 'N/A';
+                document.getElementById( 'viewClass' ).value = data.class ?? 'N/A';
+                document.getElementById( 'viewPlacement' ).value = data.placement ?? 'N/A';
+                document.getElementById( 'viewLocation' ).value = data.location ?? 'N/A';
+                document.getElementById( 'viewConditionStatus' ).value = data.condition_status ?? 'N/A';
                 document.getElementById( 'viewManufacturedDate' ).value = data.manufactured_date ?? '';
-                document.getElementById( 'viewLastRefilledDate' ).value = data.refilled_date ?? '';
-                document.getElementById( 'viewExpirationDate' ).value = data.expiration_date ?? '';
-                document.getElementById( 'viewRemarks' ).value = data.remarks ?? '';
+                document.getElementById( 'viewLastRefilledDate' ).value = data.refilled_date ?? 'N/A';
+                document.getElementById( 'viewExpirationDate' ).value = data.expiration_date ?? 'N/A';
+                document.getElementById( 'viewRemarks' ).value = data.remarks ?? 'N/A';
+                document.getElementById( 'viewProvider' ).value = data.provider ?? 'N/A';
 
                 // STORE ID FOR EDIT / DELETE
                 const editBtn = document.getElementById( 'viewEditFireExtinguisherBtn' );

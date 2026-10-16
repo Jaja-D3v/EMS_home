@@ -1091,7 +1091,7 @@ $branchDropdown = getAllDropdownBranches();
                         <div class="col-12 col-md-6">
                           <div class="border rounded-3 p-3 h-100">
                             <label class="form-label small text-body-secondary mb-1">
-                              <i class="bi bi-fire me-1 text-warning"></i>
+                              <i class="bi bi-fire me-1 text-primary"></i>
                               Type
                             </label>
 
@@ -1126,7 +1126,7 @@ $branchDropdown = getAllDropdownBranches();
                         <div class="col-6 col-md-3">
                           <div class="border rounded-3 p-3 h-100">
                             <label class="form-label small text-body-secondary mb-1">
-                              <i class="bi bi-shield-check me-1 text-success"></i>
+                              <i class="bi bi-shield-check me-1 text-primary"></i>
                               Fire Class
                             </label>
 
@@ -1143,7 +1143,7 @@ $branchDropdown = getAllDropdownBranches();
                         <div class="col-12 col-md-6">
                           <div class="border rounded-3 p-3 h-100">
                             <label class="form-label small text-body-secondary mb-1">
-                              <i class="bi bi-pin-map me-1 text-danger"></i>
+                              <i class="bi bi-pin-map me-1 text-primary"></i>
                               Placement
                             </label>
 
@@ -1180,18 +1180,18 @@ $branchDropdown = getAllDropdownBranches();
                     <!-- Important Dates -->
                     <div class="mb-3">
                       <div class="d-flex align-items-center gap-2 mb-2">
-                        <div class="d-flex align-items-center justify-content-center bg-warning bg-opacity-10 text-warning rounded-3"
+                        <div class="d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-3"
                           style="width: 32px; height: 32px;">
-                          <i class="bi bi-calendar3"></i>
+                          <i class="bi bi-info-circle"></i>
                         </div>
 
                         <div>
                           <div class="fw-bold">
-                            Important Dates
+                            Product & Provider Details
                           </div>
 
                           <small class="text-body-secondary">
-                            Manufacturing and expiration information
+                            Supplier and manufacturing and expiration details
                           </small>
                         </div>
                       </div>
@@ -1202,7 +1202,7 @@ $branchDropdown = getAllDropdownBranches();
                         <div class="col-12 col-md-6">
                           <div class="border rounded-3 p-3">
                             <label class="form-label small text-body-secondary mb-1">
-                              <i class="bi bi-calendar-event me-1 text-secondary"></i>
+                              <i class="bi bi-calendar-event me-1 text-primary"></i>
                               Manufactured Date
                             </label>
                             <input
@@ -1217,7 +1217,7 @@ $branchDropdown = getAllDropdownBranches();
                         <div class="col-12 col-md-6">
                           <div class="border rounded-3 p-3">
                             <label class="form-label small text-body-secondary mb-1">
-                              <i class="bi bi-arrow-repeat me-1 text-secondary"></i>
+                              <i class="bi bi-arrow-repeat me-1 text-primary"></i>
                               Last Refilled Date
                             </label>
                             <input
@@ -1233,7 +1233,7 @@ $branchDropdown = getAllDropdownBranches();
                           <div class="border rounded-3 p-3">
 
                             <label class="form-label small text-body-secondary mb-1">
-                              <i class="bi bi-calendar-x me-1 text-danger"></i>
+                              <i class="bi bi-calendar-x me-1 text-primary"></i>
                               Expiration Date
                             </label>
 
@@ -1243,12 +1243,32 @@ $branchDropdown = getAllDropdownBranches();
                               id="viewExpirationDate"
                               readonly>
 
-                            <small class="text-body-secondary d-block mt-1">
-                              Automatically calculated as 3 years from the manufacturing or refill date.
-                            </small>
+                          </div>
+                          <small class="text-body-secondary d-block mt-1">
+                            Automatically calculated as 3 years from the manufacturing or refill date.
+                          </small>
+                        </div>
+
+                        <!-- Provider -->
+                        <div class="col-12 col-md-6">
+                          <div class="border rounded-3 p-3">
+
+                            <label class="form-label small text-body-secondary mb-1">
+                              <i class="bi bi-building me-1 text-primary"></i>
+                              Provider
+                            </label>
+
+                            <input
+                              type="text"
+                              class="form-control-plaintext fw-semibold p-0"
+                              id="viewProvider"
+                              readonly>
 
                           </div>
                         </div>
+
+
+
                       </div>
                     </div>
 
@@ -1260,7 +1280,7 @@ $branchDropdown = getAllDropdownBranches();
                         <div
                           class="d-flex align-items-center justify-content-center bg-secondary bg-opacity-10 text-secondary rounded-3"
                           style="width: 32px; height: 32px;">
-                          <i class="bi bi-chat-left-text"></i>
+                          <i class="bi bi-chat-left-text text-primary"></i>
                         </div>
 
                         <div>
